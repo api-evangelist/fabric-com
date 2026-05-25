@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/json-schema/fabric-cart-schema.json",
+  "title": "fabric Cart",
+  "description": "Cart representation returned by fabric Cart and Cart Orchestrator (ShopperXP) APIs.",
+  "type": "object",
+  "required": ["cartId", "status"],
+  "properties": {
+    "cartId": {"type": "string"},
+    "customerId": {"type": ["string", "null"], "description": "Null for guest carts."},
+    "status": {"type": "string", "enum": ["ACTIVE", "ABANDONED", "CONVERTED", "EXPIRED"]},
+    "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["itemId", "sku", "quantity"],
+        "properties": {
+          "itemId": {"type": "string"},
+          "sku": {"type": "string"},
+          "quantity": {"type": "integer", "minimum": 1},
+          "unitPrice": {"type": "number"},
+          "adjustments": {"type": "array", "items": {"type": "object"}}
+        }
+      }
+    },
+    "fulfillments": {"type": "array", "items": {"type": "object"}},
+    "promotions": {"type": "array", "items": {"type": "object"}},
+    "totals": {
+      "type": "object",
+      "properties": {
+        "subtotal": {"type": "number"},
+        "discount": {"type": "number"},
+        "tax": {"type": "number"},
+        "shipping": {"type": "number"},
+        "grandTotal": {"type": "number"}
+      }
+    }
+  },
+  "additionalProperties": true
+}

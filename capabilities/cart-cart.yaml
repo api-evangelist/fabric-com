@@ -1,0 +1,367 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Cart — Cart
+  description: 'fabric Cart — Cart. 8 operations. Lead operation: Create an Order Draft. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Cart
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: cart-cart
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Cart — Cart consumed operations from fabric-cart-openapi.yml.
+    resources:
+    - name: order-drafts
+      path: /order-drafts
+      operations:
+      - name: create-an-order-draft
+        method: POST
+        description: 'Create an Order Draft'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: carts
+      path: /carts
+      operations:
+      - name: create-an-empty-cart
+        method: POST
+        description: 'Create an Empty Cart'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: carts-cartid-sequence
+      path: /carts/{cartId}/sequence
+      operations:
+      - name: sequence-calling
+        method: POST
+        description: 'Sequence Calling'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: carts-search
+      path: /carts/search
+      operations:
+      - name: search-for-multiple-carts
+        method: POST
+        description: 'Search for Multiple Carts'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: carts-cartid
+      path: /carts/{cartId}
+      operations:
+      - name: get-the-provided-cart
+        method: GET
+        description: 'Get the Provided Cart'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+      - name: delete-cart
+        method: DELETE
+        description: 'Delete Cart'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+      - name: update-cart
+        method: PATCH
+        description: 'Update Cart'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: order-drafts-orderdraftid
+      path: /order-drafts/{orderDraftId}
+      operations:
+      - name: get-the-order-draft-by-the-order-draft-id
+        method: GET
+        description: 'Get the Order Draft by the Order Draft ID'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: orderDraftId
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: cart-cart-rest
+    port: 8080
+    description: REST adapter for fabric Cart — Cart. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/order-drafts
+      name: order-drafts
+      description: REST surface for order-drafts.
+      operations:
+      - method: POST
+        name: create-an-order-draft
+        description: 'Create an Order Draft'
+        call: cart-cart.create-an-order-draft
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts
+      name: carts
+      description: REST surface for carts.
+      operations:
+      - method: POST
+        name: create-an-empty-cart
+        description: 'Create an Empty Cart'
+        call: cart-cart.create-an-empty-cart
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts/{cartId}/sequence
+      name: carts-cartid-sequence
+      description: REST surface for carts-cartid-sequence.
+      operations:
+      - method: POST
+        name: sequence-calling
+        description: 'Sequence Calling'
+        call: cart-cart.sequence-calling
+        with:
+          cartId: rest.path.cartId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts/search
+      name: carts-search
+      description: REST surface for carts-search.
+      operations:
+      - method: POST
+        name: search-for-multiple-carts
+        description: 'Search for Multiple Carts'
+        call: cart-cart.search-for-multiple-carts
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts/{cartId}
+      name: carts-cartid
+      description: REST surface for carts-cartid.
+      operations:
+      - method: GET
+        name: get-the-provided-cart
+        description: 'Get the Provided Cart'
+        call: cart-cart.get-the-provided-cart
+        with:
+          cartId: rest.path.cartId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-cart
+        description: 'Delete Cart'
+        call: cart-cart.delete-cart
+        with:
+          cartId: rest.path.cartId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: update-cart
+        description: 'Update Cart'
+        call: cart-cart.update-cart
+        with:
+          cartId: rest.path.cartId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/order-drafts/{orderDraftId}
+      name: order-drafts-orderdraftid
+      description: REST surface for order-drafts-orderdraftid.
+      operations:
+      - method: GET
+        name: get-the-order-draft-by-the-order-draft-id
+        description: 'Get the Order Draft by the Order Draft ID'
+        call: cart-cart.get-the-order-draft-by-the-order-draft-id
+        with:
+          orderDraftId: rest.path.orderDraftId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: cart-cart-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Cart — Cart. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-create-an-order-draft
+      description: 'Create an Order Draft'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-cart.create-an-order-draft
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-an-empty-cart
+      description: 'Create an Empty Cart'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-cart.create-an-empty-cart
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-sequence-calling
+      description: 'Sequence Calling'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-cart.sequence-calling
+      with:
+        cartId: tools.cartId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-search-for-multiple-carts
+      description: 'Search for Multiple Carts'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-cart.search-for-multiple-carts
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-the-provided-cart
+      description: 'Get the Provided Cart'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: cart-cart.get-the-provided-cart
+      with:
+        cartId: tools.cartId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-delete-cart
+      description: 'Delete Cart'
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: cart-cart.delete-cart
+      with:
+        cartId: tools.cartId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-cart
+      description: 'Update Cart'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-cart.update-cart
+      with:
+        cartId: tools.cartId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-the-order-draft-by-the-order-draft-id
+      description: 'Get the Order Draft by the Order Draft ID'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: cart-cart.get-the-order-draft-by-the-order-draft-id
+      with:
+        orderDraftId: tools.orderDraftId
+      outputParameters:
+      - type: object
+        mapping: $.

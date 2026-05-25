@@ -1,0 +1,251 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Catalog Connector — Files
+  description: 'fabric Catalog Connector — Files. 6 operations. Lead operation: Retrieve an Import Template. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Files
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: catalog-connector-files
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Catalog Connector — Files consumed operations from fabric-catalog-openapi.yml.
+    resources:
+    - name: catalog-connector-templates-actions-generate
+      path: /catalog-connector-templates/actions/generate
+      operations:
+      - name: retrieve-an-import-template
+        method: POST
+        description: 'Retrieve an Import Template'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: catalog-connector-files
+      path: /catalog-connector-files
+      operations:
+      - name: create-a-file-object-and-retrieve-the-file-upload-url
+        method: POST
+        description: 'Create a File Object and Retrieve the File Upload URL'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: retrieve-import-and-export-history
+        method: GET
+        description: 'Retrieve Import and Export History'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: catalog-connector-files-actions-download
+      path: /catalog-connector-files/actions/download
+      operations:
+      - name: download-a-file-by-id
+        method: GET
+        description: 'Download a File by ID'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: catalog-connector-jobs-actions-export
+      path: /catalog-connector-jobs/actions/export
+      operations:
+      - name: export-products
+        method: POST
+        description: 'Export Products'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: catalog-connector-jobs
+      path: /catalog-connector-jobs
+      operations:
+      - name: retrieve-jobs
+        method: GET
+        description: 'Retrieve Jobs'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: catalog-connector-files-rest
+    port: 8080
+    description: REST adapter for fabric Catalog Connector — Files. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/catalog-connector-templates/actions/generate
+      name: catalog-connector-templates-actions-generate
+      description: REST surface for catalog-connector-templates-actions-generate.
+      operations:
+      - method: POST
+        name: retrieve-an-import-template
+        description: 'Retrieve an Import Template'
+        call: catalog-connector-files.retrieve-an-import-template
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/catalog-connector-files
+      name: catalog-connector-files
+      description: REST surface for catalog-connector-files.
+      operations:
+      - method: POST
+        name: create-a-file-object-and-retrieve-the-file-upload-url
+        description: 'Create a File Object and Retrieve the File Upload URL'
+        call: catalog-connector-files.create-a-file-object-and-retrieve-the-file-upload-url
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: retrieve-import-and-export-history
+        description: 'Retrieve Import and Export History'
+        call: catalog-connector-files.retrieve-import-and-export-history
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/catalog-connector-files/actions/download
+      name: catalog-connector-files-actions-download
+      description: REST surface for catalog-connector-files-actions-download.
+      operations:
+      - method: GET
+        name: download-a-file-by-id
+        description: 'Download a File by ID'
+        call: catalog-connector-files.download-a-file-by-id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/catalog-connector-jobs/actions/export
+      name: catalog-connector-jobs-actions-export
+      description: REST surface for catalog-connector-jobs-actions-export.
+      operations:
+      - method: POST
+        name: export-products
+        description: 'Export Products'
+        call: catalog-connector-files.export-products
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/catalog-connector-jobs
+      name: catalog-connector-jobs
+      description: REST surface for catalog-connector-jobs.
+      operations:
+      - method: GET
+        name: retrieve-jobs
+        description: 'Retrieve Jobs'
+        call: catalog-connector-files.retrieve-jobs
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: catalog-connector-files-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Catalog Connector — Files. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-retrieve-an-import-template
+      description: 'Retrieve an Import Template'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: catalog-connector-files.retrieve-an-import-template
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-a-file-object-and-retrieve-the-file-upload-url
+      description: 'Create a File Object and Retrieve the File Upload URL'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: catalog-connector-files.create-a-file-object-and-retrieve-the-file-upload-url
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-retrieve-import-and-export-history
+      description: 'Retrieve Import and Export History'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: catalog-connector-files.retrieve-import-and-export-history
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-download-a-file-by-id
+      description: 'Download a File by ID'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: catalog-connector-files.download-a-file-by-id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-export-products
+      description: 'Export Products'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: catalog-connector-files.export-products
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-retrieve-jobs
+      description: 'Retrieve Jobs'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: catalog-connector-files.retrieve-jobs
+      outputParameters:
+      - type: object
+        mapping: $.

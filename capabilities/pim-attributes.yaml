@@ -1,0 +1,288 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric PIM — Attributes
+  description: 'fabric PIM — Attributes. 6 operations. Lead operation: Create, Update and Delete Category Attributes. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Attributes
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: pim-attributes
+    baseUri: https://live.copilot.fabric.inc
+    description: fabric PIM — Attributes consumed operations from fabric-pim-openapi.yml.
+    resources:
+    - name: api-category-v1-category-attribute-bulk
+      path: /api-category/v1/category/attribute/bulk
+      operations:
+      - name: create-update-and-delete-category-attributes
+        method: POST
+        description: 'Create, Update and Delete Category Attributes'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-product-v1-product-attribute-bulk
+      path: /api-product/v1/product/attribute/bulk
+      operations:
+      - name: create-update-and-delete-item-attributes
+        method: POST
+        description: 'Create Update and Delete Item Attributes'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-product-v1-product-attribute-group
+      path: /api-product/v1/product/attribute-group
+      operations:
+      - name: create-update-and-delete-attribute-groups
+        method: POST
+        description: 'Create, Update and Delete Attribute Groups'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-product-v1-product-attribute-group-search
+      path: /api-product/v1/product/attribute-group/search
+      operations:
+      - name: find-attribute-groups
+        method: POST
+        description: 'Find Attribute Groups'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-product-v1-product-attribute-mapping-search
+      path: /api-product/v1/product/attribute/mapping/search
+      operations:
+      - name: find-attribute-mapping
+        method: POST
+        description: 'Find Attribute Mapping'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: api-product-v1-product-attribute-mapping
+      path: /api-product/v1/product/attribute/mapping
+      operations:
+      - name: create-and-update-attribute-mappings
+        method: POST
+        description: 'Create and Update Attribute Mappings'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: pim-attributes-rest
+    port: 8080
+    description: REST adapter for fabric PIM — Attributes. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/api-category/v1/category/attribute/bulk
+      name: api-category-v1-category-attribute-bulk
+      description: REST surface for api-category-v1-category-attribute-bulk.
+      operations:
+      - method: POST
+        name: create-update-and-delete-category-attributes
+        description: 'Create, Update and Delete Category Attributes'
+        call: pim-attributes.create-update-and-delete-category-attributes
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api-product/v1/product/attribute/bulk
+      name: api-product-v1-product-attribute-bulk
+      description: REST surface for api-product-v1-product-attribute-bulk.
+      operations:
+      - method: POST
+        name: create-update-and-delete-item-attributes
+        description: 'Create Update and Delete Item Attributes'
+        call: pim-attributes.create-update-and-delete-item-attributes
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api-product/v1/product/attribute-group
+      name: api-product-v1-product-attribute-group
+      description: REST surface for api-product-v1-product-attribute-group.
+      operations:
+      - method: POST
+        name: create-update-and-delete-attribute-groups
+        description: 'Create, Update and Delete Attribute Groups'
+        call: pim-attributes.create-update-and-delete-attribute-groups
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api-product/v1/product/attribute-group/search
+      name: api-product-v1-product-attribute-group-search
+      description: REST surface for api-product-v1-product-attribute-group-search.
+      operations:
+      - method: POST
+        name: find-attribute-groups
+        description: 'Find Attribute Groups'
+        call: pim-attributes.find-attribute-groups
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api-product/v1/product/attribute/mapping/search
+      name: api-product-v1-product-attribute-mapping-search
+      description: REST surface for api-product-v1-product-attribute-mapping-search.
+      operations:
+      - method: POST
+        name: find-attribute-mapping
+        description: 'Find Attribute Mapping'
+        call: pim-attributes.find-attribute-mapping
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/api-product/v1/product/attribute/mapping
+      name: api-product-v1-product-attribute-mapping
+      description: REST surface for api-product-v1-product-attribute-mapping.
+      operations:
+      - method: POST
+        name: create-and-update-attribute-mappings
+        description: 'Create and Update Attribute Mappings'
+        call: pim-attributes.create-and-update-attribute-mappings
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: pim-attributes-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric PIM — Attributes. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-create-update-and-delete-category-attributes
+      description: 'Create, Update and Delete Category Attributes'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pim-attributes.create-update-and-delete-category-attributes
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-update-and-delete-item-attributes
+      description: 'Create Update and Delete Item Attributes'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pim-attributes.create-update-and-delete-item-attributes
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-update-and-delete-attribute-groups
+      description: 'Create, Update and Delete Attribute Groups'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pim-attributes.create-update-and-delete-attribute-groups
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-find-attribute-groups
+      description: 'Find Attribute Groups'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pim-attributes.find-attribute-groups
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-find-attribute-mapping
+      description: 'Find Attribute Mapping'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pim-attributes.find-attribute-mapping
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-and-update-attribute-mappings
+      description: 'Create and Update Attribute Mappings'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: pim-attributes.create-and-update-attribute-mappings
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

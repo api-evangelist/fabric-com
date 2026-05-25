@@ -1,0 +1,26 @@
+{
+  "$id": "https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/json-structure/fabric-product-structure.json",
+  "title": "fabric Product Structure",
+  "description": "Structural composition of a fabric product across PIM, Catalog Connector, and the storefront.",
+  "entity": "fabric:Product",
+  "lineage": [
+    {"system": "fabric Product Catalog (PIM)", "role": "system-of-record"},
+    {"system": "fabric Catalog Connector", "role": "alternate-ingest"},
+    {"system": "fabric Offers — Prices", "role": "pricing-overlay"},
+    {"system": "fabric Inventory", "role": "availability-overlay"},
+    {"system": "fabric Cart / ShopperXP", "role": "consumer"},
+    {"system": "fabric Experiences (XM)", "role": "presentation"}
+  ],
+  "composition": {
+    "core": ["id", "sku", "title", "description", "status"],
+    "merchandising": ["categories", "attributes", "variants", "media"],
+    "pricing": ["basePrice", "salePrice", "currency", "priceListId"],
+    "fulfillment": ["inventoryLocations", "shipsFromNetwork"],
+    "lifecycle": ["createdAt", "updatedAt", "publishedAt"]
+  },
+  "relations": [
+    {"from": "fabric:Product", "to": "fabric:Category", "kind": "many-to-many"},
+    {"from": "fabric:Product", "to": "fabric:Price", "kind": "one-to-many"},
+    {"from": "fabric:Product", "to": "fabric:InventoryRecord", "kind": "one-to-many"}
+  ]
+}

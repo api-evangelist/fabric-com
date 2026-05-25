@@ -1,0 +1,25 @@
+{
+  "$id": "https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/json-structure/fabric-order-structure.json",
+  "title": "fabric Order Structure",
+  "description": "Structural composition of a fabric order from cart to invoice.",
+  "entity": "fabric:Order",
+  "lineage": [
+    {"system": "fabric Cart / ShopperXP", "role": "producer-of-draft"},
+    {"system": "fabric Checkout", "role": "promoter"},
+    {"system": "fabric Orders (OMS)", "role": "system-of-record"},
+    {"system": "fabric Shipments", "role": "fulfillment-child"},
+    {"system": "fabric Invoices", "role": "financial-child"}
+  ],
+  "composition": {
+    "core": ["orderId", "orderNumber", "status", "customerId", "currency"],
+    "items": ["sku", "quantity", "unitPrice", "lineTotal", "adjustments"],
+    "addresses": ["shipTo", "billTo"],
+    "lifecycle": ["createdAt", "updatedAt", "authorizedAt", "shippedAt", "deliveredAt"],
+    "children": ["payments", "shipments", "invoices"]
+  },
+  "stateMachine": [
+    "CREATED -> AUTHORIZED -> RELEASED -> ALLOCATED -> PICKED -> PACKED -> SHIPPED -> DELIVERED",
+    "* -> CANCELLED",
+    "DELIVERED -> RETURNED"
+  ]
+}

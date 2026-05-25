@@ -1,0 +1,62 @@
+aid: fabric-com
+name: fabric Rate Limits
+description: >-
+  fabric does not publish per-endpoint rate limits on its public developer
+  portal. The values below capture observable platform behavior and the
+  conventions encoded in the v3 specs. Tenants requiring committed throughput
+  negotiate it as part of their enterprise contract.
+modified: '2026-05-25'
+specification: API Commons Rate Limits 0.1
+policies:
+  - id: tenant-scoped-throughput
+    scope: tenant
+    type: request-rate
+    description: >-
+      All fabric v3 services are tenant-scoped. Request budgets are enforced
+      per tenant access token rather than per-IP. fabric publicly reports
+      1B+ API calls/month served with sub-50ms latency, which sets the
+      platform performance envelope.
+  - id: bearer-token-burst
+    scope: access-token
+    type: burst
+    description: >-
+      Identity-issued bearer tokens enforce burst protection against
+      mis-configured integrations. Servers return HTTP 429 with the standard
+      `x-fabric-request-id` header for triage.
+  - id: cart-orchestrator-fan-out
+    scope: capability
+    capability: fabric-cart-orchestrator-api
+    type: composite
+    description: >-
+      Cart Orchestrator (ShopperXP) calls fan out to Cart, Offers, and
+      Inventory in a single shopper request. Clients SHOULD prefer the
+      orchestrator over direct multi-service calls to remain within tenant
+      throughput envelopes.
+  - id: experiences-cdn-cache
+    scope: capability
+    capability: fabric-experiences-api
+    type: cache
+    description: >-
+      Experiences is served from `cdn.xm.fabric.inc` with CDN cache TTLs.
+      Storefronts MUST treat reads as cached; cache-busting writes are not
+      supported on this surface.
+  - id: product-agent-concurrency
+    scope: capability
+    capability: fabric-product-agent-api
+    type: concurrency
+    description: >-
+      Product Agent runs are async with per-tenant concurrency caps. Clients
+      MUST poll the run/job resource and accept queued runs during peak
+      windows.
+backoff:
+  recommended: exponential
+  jitter: full
+  retryOn:
+    - 429
+    - 502
+    - 503
+    - 504
+status:
+  notes: >-
+    fabric does not currently publish a public status page URL via the
+    developer portal index.

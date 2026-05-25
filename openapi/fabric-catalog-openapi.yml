@@ -1,0 +1,3771 @@
+openapi: 3.0.0
+x-mint:
+  mcp:
+    enabled: true
+info:
+  description: >-
+    fabric's **Catalog Connector** API is a lightweight service that you can use
+    when you have your own Product Information Management (PIM) and only want to
+    integrate with other fabric services, such as Offers and OMS (excluding the
+    fabric Products API service). It supports CRUD operations to add and manage
+    products in the Catalog Connector based on SKU, product ID, and item ID.
+    Using Catalog Connector API, you can retrieve an import template, import
+    product data into the Catalog Connector, export data, and check the status
+    of previous imports and exports. Additionally, you can search for products
+    based on specified filter conditions and perform bulk operations to manage
+    products.
+  title: Catalog - Connector
+  version: 3.0.0
+  x-audience: external-public
+  contact:
+    email: support@fabric.inc
+    name: Product team
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+externalDocs:
+  description: Find out more about Catalog Connector (previously called PIM Connector)
+  url: https://developer.fabric.inc/docs/products-overview
+servers:
+  - url: https://api.fabric.inc/v3
+    description: Production URL
+tags:
+  - name: Catalog Connector Files
+    description: >-
+      Retrieve an import template, import a file to the Catalog Connector, view
+      import and export status, and download a previously processed file.
+  - name: Catalog Connector Jobs
+    description: >-
+      Export data from the Catalog Connector and retrieve the status of
+      previously processed files.
+  - name: General Catalog Connector Operations
+    description: Search for products based on the specified filter conditions.
+  - name: Catalog Connector Operations by SKU
+    description: Supports product operations based on SKU.
+  - name: Catalog Connector Operations by Product ID
+    description: Supports product operations based on Product ID.
+  - name: Catalog Connector Operations by Item ID
+    description: Supports product operations based on Item ID.
+paths:
+  /catalog-connector-templates/actions/generate:
+    post:
+      tags:
+        - Catalog Connector Files
+      summary: Retrieve an Import Template
+      description: >-
+        Use this endpoint to retrieve the product import template for Catalog
+        Connector in either CSV or JSONL format, based on your preferred data
+        handling method. You can open CSV template in applications, such as
+        Excel or Google Sheets and JSONL template in text editors compatible
+        with JSONL, such as Visual Studio Code. After filling in product data,
+        save the template file with a unique name on your local system.
+      operationId: generateTemplate
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/generateTemplateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/csv: {}
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-files:
+    post:
+      tags:
+        - Catalog Connector Files
+      summary: Create a File Object and Retrieve the File Upload URL
+      description: >-
+        Use this endpoint to retrieve the URL of the AWS S3 location to upload
+        the file that you want to import to the Catalog Connector.
+      operationId: createFile
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/createProductFileRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/file'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    get:
+      tags:
+        - Catalog Connector Files
+      summary: Retrieve Import and Export History
+      description: >
+        Use this endpoint to access files previously imported to or exported
+        from the Catalog Connector, sorted in chronological order. You can
+        refine the search results by using the following query parameters:
+
+        - `ids`: Provide a comma-separated list of file IDs to retrieve multiple
+        files by their IDs. Note that pagination isn't supported when using this
+        parameter.
+
+        - Format type (`formatType`) :  Specify the format of the file to filter
+        files by format. The options are **CSV** or **JSONL**.
+
+        - Operation type (`type`): Use this parameter to specify whether you
+        want imported or exported files.
+
+        - Pagination (`offset`, `limit`):  Use offset and limit parameters to
+        refine the number of results returned.
+
+        - `sort`:  Use this parameter to view results in ascending or descending
+        order.
+
+        If no query parameters are specified, the endpoint returns up to 10
+        records.
+      operationId: getFiles
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/ids'
+        - $ref: '#/components/parameters/fileName'
+        - $ref: '#/components/parameters/formatTypeQueryParam'
+        - $ref: '#/components/parameters/productFileType'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sortBy'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getFilesResponse'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-files/actions/download:
+    get:
+      tags:
+        - Catalog Connector Files
+      summary: Download a File by ID
+      description: >
+        Use this endpoint to retrieve the URL used to download a previously
+        processed file. You can then make a GET request with this URL to
+        retrieve the products data in CSV or JSONL format.
+
+        <Note> The download link is valid for five minutes. </Note>
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/fileId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/fileDownloadResponse'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-jobs/actions/export:
+    post:
+      tags:
+        - Catalog Connector Jobs
+      summary: Export Products
+      description: >
+        Use this endpoint to start an internal job to export products from
+        Catalog Connector. 
+
+        Specify the `formatType` query parameter to export data in either CSV or
+        JSONL format. In the request body, provide the `ids` of all products to
+        be exported, the product type, and the locale.
+      operationId: exportProductsJob
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/exportIDJobRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/jobIdResponse'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-jobs:
+    get:
+      tags:
+        - Catalog Connector Jobs
+      summary: Retrieve Jobs
+      description: >
+        Use this endpoint to retrieve a paginated list of import and export jobs
+        related to Catalog Connector.
+
+        The following constraints apply when using the query parameters:
+          - The query parameter job `ids` can't be combined with any other query parameters.
+          - The query parameter `inputFileIds` can only be combined with the query parameter `lastJobOnly`. 
+          - Pagination isn't supported when `ids` or `inputFileIds` is specified.
+      operationId: getJobs
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/ids'
+        - $ref: '#/components/parameters/productFileType'
+        - $ref: '#/components/parameters/inputFileIds'
+        - $ref: '#/components/parameters/lastJobOnly'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/productJob'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-jobs/search:
+    post:
+      tags:
+        - Catalog Connector Jobs
+      summary: Search Jobs
+      description: >-
+        Get a paginated list of jobs related to products and collections by
+        specifying the request body. You need to specify the criteria for the
+        search such as job `id`, `type`, `status`, `collectionId`, or
+        `inputFileId`.
+      operationId: getJobsBySearchCriteria
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/jobSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/productJob'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector/products/search:
+    post:
+      tags:
+        - General Catalog Connector Operations
+      summary: Find Products
+      description: >
+        Use this endpoint to search for products based on names, IDs, SKUs,
+        image URLs, and more. By specifying the appropriate query parameters,
+        you can exclude one or more types of data, such as collections,
+        categories, variants, attributes, and products within a bundle.
+
+        <Note> 
+          - Use the `CONTAINS` search operation to search for products based on keywords of SKU, name, and more. 
+          - Use the `IN` search operation to search for products based on one or more values, such as IDs, names, SKUs, image URLs, attributes, and types.
+          - Use the less than or equals to, `LTE`, greater than or equals to, `GTE`, less than, `LT`, greater than, `GT` and equals `EQ` operations to search for date-specific values, such as time of creation or modification.
+        </Note>
+      operationId: getCatalogsBySearchCriteria
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/excludeBundleProductsParameter'
+        - $ref: '#/components/parameters/excludeCollectionsParameter'
+        - $ref: '#/components/parameters/excludeCategoriesParameter'
+        - $ref: '#/components/parameters/excludeVariantsParameter'
+        - $ref: '#/components/parameters/excludeAttributesParameter'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/productSearchRequest'
+      responses:
+        '200':
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getProductsBySearchResponse'
+              examples:
+                Product:
+                  $ref: '#/components/examples/productSearchResultExample'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector/products/skus/{skuId}:
+    get:
+      tags:
+        - Catalog Connector Operations by SKU
+      summary: Retrieve a Product by SKU
+      description: >
+        Use this endpoint to retrieve a single product by its SKU. You must
+        specify the query parameters `sku` and `locale` to corresponding to the
+        product. Optionally, you can set the following query parameters to
+        `true` to refine the search results:
+          - `excludeBundleProducts`: Exclude bundled products from the response.
+          - `excludeCollections`: Exclude collections from the response.
+          - `excludeCategories`: Exclude categories from the response.
+          - `excludeAttributes`: Exclude attributes from the response. 
+          - `excludeVariants`: Exclude variants from the response. 
+
+        If you don't have the product SKU, use one of the endpoints to retrieve
+        the product: 
+            - [Retrieve a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/retrieve-by-product). 
+            - [Retrieve a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/retrieve-by-item).
+      operationId: getCatalogBySku
+      parameters:
+        - in: path
+          name: skuId
+          schema:
+            type: string
+          required: true
+          example: CAXCC1234
+          description: The Stock Keeping Unit (SKU) of a product provided by the merchant.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/excludeBundleProductsParameter'
+        - $ref: '#/components/parameters/excludeCollectionsParameter'
+        - $ref: '#/components/parameters/excludeCategoriesParameter'
+        - $ref: '#/components/parameters/excludeAttributesParameter'
+        - $ref: '#/components/parameters/excludeVariantsParameter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/product'
+              examples:
+                Product:
+                  $ref: '#/components/examples/ItemExample'
+                Variant:
+                  $ref: '#/components/examples/variantExample'
+                Bundle:
+                  $ref: '#/components/examples/bundleExample'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    put:
+      tags:
+        - Catalog Connector Operations by SKU
+      summary: Update a Product by SKU
+      description: >
+        Use this endpoint to update details of a product by its SKU. You can
+        update details of the product, such as the product name, category
+        details, product images, attributes, and collections. The new data
+        replaces the existing data. Note that you can't update the SKU.
+          
+        If you don't have the product SKU, use one of the endpoints update the
+        product details:
+          - [Update a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/update-by-product). 
+          - [Update a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/update-by-item).
+      operationId: updateCategoryBySku
+      parameters:
+        - in: path
+          name: skuId
+          schema:
+            type: string
+          required: true
+          example: CAXCC1234
+          description: The Stock Keeping Unit (SKU) of a product provided by the merchant.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/putCatalogRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/product'
+              examples:
+                Product:
+                  $ref: '#/components/examples/ItemExample'
+                Variant:
+                  $ref: '#/components/examples/variantExample'
+                Bundle:
+                  $ref: '#/components/examples/bundleExample'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    delete:
+      tags:
+        - Catalog Connector Operations by SKU
+      summary: Delete a Product by SKU
+      description: >
+        Use this endpoint to delete a single product by using its SKU. 
+
+
+        If you don't have the product SKU, use one of the endpoints to delete
+        the product: 
+         - [Delete a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/delete-by-product).
+         - [Delete a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/delete-by-item).
+      operationId: deleteCatalogsBySku
+      parameters:
+        - in: path
+          name: skuId
+          schema:
+            type: string
+          required: true
+          example: CAXCC1234AASXSSSS
+          description: The Stock Keeping Unit (SKU) of a product provided by the merchant.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '204':
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+          description: No Content
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector/products:
+    post:
+      tags:
+        - Catalog Connector Operations by Product ID
+      summary: Add a Product
+      description: >
+        Use this endpoint to add a single product to Catalog Connector. You must
+        specify the `locale` in the query parameter and the product data in the
+        request body. Only `sku` is mandatory for product data. Optionally, you
+        can specify the `type` as item, variant, or bundle. The default setting
+        for `type` is item.
+      operationId: createProduct
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/localeParameter'
+      requestBody:
+        $ref: '#/components/requestBodies/insertCatalogRequest'
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              examples:
+                Item:
+                  $ref: '#/components/examples/ItemExample'
+                Variant:
+                  $ref: '#/components/examples/variantExample'
+                Bundle:
+                  $ref: '#/components/examples/bundleExample'
+              schema:
+                $ref: '#/components/schemas/product'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector/products/itemIds/{itemId}:
+    get:
+      tags:
+        - Catalog Connector Operations by Item ID
+      summary: Retrieve a Product or a Variant by Item ID
+      description: >
+        Use this endpoint to retrieve a single product by its `itemId`. You must
+        specify the query parameters `itemId` and `locale`. Optionally, you can
+        set the following query parameters to `true` to refine the search
+        results:
+
+        You must specify the query parameters `itemId` and `locale`. 
+
+        Optionally, you can set the following query parameters to `true` to
+        refine the search results:
+          - `excludeBundleProducts`: Exclude bundled products from the response.
+          - `excludeCollections`: Exclude collections from the response.
+          - `excludeCategories`: Exclude categories from the response.
+          - `excludeAttributes`: Exclude attributes from the response. 
+          - `excludeVariants`: Exclude variants from the response. 
+
+        If you don't have the `itemId`, use one of the endpoints to retrieve the
+        product: 
+            - [Update a product by SKU](/v3/api-reference/catalog-connector/operations/sku-operations/update-with-sku). 
+            - [Update a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/update-by-product).
+      operationId: getCatalogByItemId
+      parameters:
+        - in: path
+          name: itemId
+          schema:
+            type: integer
+            format: int32
+          required: true
+          example: 123431
+          description: A sequential system-generated item ID.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/excludeBundleProductsParameter'
+        - $ref: '#/components/parameters/excludeCollectionsParameter'
+        - $ref: '#/components/parameters/excludeCategoriesParameter'
+        - $ref: '#/components/parameters/excludeAttributesParameter'
+        - $ref: '#/components/parameters/excludeVariantsParameter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/product'
+              examples:
+                Product:
+                  $ref: '#/components/examples/ItemExample'
+                Variant:
+                  $ref: '#/components/examples/variantExample'
+                Bundle:
+                  $ref: '#/components/examples/bundleExample'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    put:
+      tags:
+        - Catalog Connector Operations by Item ID
+      summary: Update a Product by the Item ID.
+      description: >
+        Use this endpoint to update a single product by using its `itemId`. You
+        can update the product's details, such as its name, category details,
+        product images, attributes, and collections. However, you can't update
+        the `itemId`. The new data completely replaces the existing data. 
+
+        You can update the product's details, such as its name, category
+        details, product images, attributes, and collections. However, you can't
+        update the itemId. The new data completely replaces the existing data. 
+
+
+        If you don't have the `itemId`, use the one of the endpoints to delete
+        the product:
+          - [Update a product by SKU](/v3/api-reference/catalog-connector/operations/sku-operations/update-with-sku).
+          - [Update a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/update-by-product).
+      operationId: updateCategoryByItemId
+      parameters:
+        - in: path
+          name: itemId
+          schema:
+            type: integer
+            format: int32
+          required: true
+          example: 123431
+          description: A sequential system-generated item ID.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/putCatalogRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/product'
+              examples:
+                Product:
+                  $ref: '#/components/examples/ItemExample'
+                Variant:
+                  $ref: '#/components/examples/variantExample'
+                Bundle:
+                  $ref: '#/components/examples/bundleExample'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    delete:
+      tags:
+        - Catalog Connector Operations by Item ID
+      summary: Delete a Product by Item ID
+      description: >
+        Use this endpoint to delete a single product by its `itemId`. 
+
+
+        If you don't have the `itemId`, use one of the endpoints to delete the
+        product: 
+          - [Delete a product by SKU](/v3/api-reference/catalog-connector/operations/sku-operations/delete-with-sku). 
+          - [Delete a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/delete-by-product).
+      operationId: deleteCatalogsByItem ID
+      parameters:
+        - in: path
+          name: itemId
+          schema:
+            type: integer
+            format: int32
+          required: true
+          example: 123431
+          description: A sequential system-generated item ID.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '204':
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+          description: No Content
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector/products/{productId}:
+    get:
+      tags:
+        - Catalog Connector Operations by Product ID
+      summary: Retrieve a Product by Product ID
+      description: >
+        Use this endpoint to retrieve a single product by its `productId`. 
+
+        You must specify the query parameters `productId` and `locale`. 
+
+        Optionally, you can set the following query parameters to `true` to
+        refine the search results:
+          - `excludeBundleProducts`: Exclude bundled products from the response.
+          - `excludeCollections`: Exclude collections from the response.
+          - `excludeCategories`: Exclude categories from the response.
+          - `excludeAttributes`: Exclude attributes from the response. 
+          - `excludeVariants`: Exclude variants from the response. 
+
+        If you don't have the `productId`, use one of the endpoints to retrieve
+        the product:
+          - [Retrieve a product by SKU](/v3/api-reference/catalog-connector/operations/sku-operations/update-with-sku). 
+          - [Retrieve a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/update-by-item).
+      operationId: getCatalogByProductId
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+          example: 6482b9524ffa4978fd9cbf5c
+          description: The UUID of the product.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/excludeBundleProductsParameter'
+        - $ref: '#/components/parameters/excludeCollectionsParameter'
+        - $ref: '#/components/parameters/excludeCategoriesParameter'
+        - $ref: '#/components/parameters/excludeAttributesParameter'
+        - $ref: '#/components/parameters/excludeVariantsParameter'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/product'
+              examples:
+                Item:
+                  $ref: '#/components/examples/ItemExample'
+                Variant:
+                  $ref: '#/components/examples/variantExample'
+                Bundle:
+                  $ref: '#/components/examples/bundleExample'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    put:
+      tags:
+        - Catalog Connector Operations by Product ID
+      summary: Update a Product by Product ID
+      description: >
+        Use this endpoint to update a single product by its `productId`. 
+
+        You can update the product's details, such as its name, category
+        details, product images, attributes, and collections. However, you can't
+        update the productId.
+
+        The new data completely replaces the existing data.
+
+
+        If you don't have the `productId`, use one of the corresponding
+        endpoints:
+          - [Update a product by SKU](/v3/api-reference/catalog-connector/operations/product-operations/update-by-product).
+          - [Update a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/update-by-item).
+      operationId: updateCatalogByProductId
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+          example: 6482b9524ffa4978fd9cbf5c
+          description: The UUID of the product.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/putCatalogRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/product'
+              examples:
+                Product:
+                  $ref: '#/components/examples/ItemExample'
+                Variant:
+                  $ref: '#/components/examples/variantExample'
+                Bundle:
+                  $ref: '#/components/examples/bundleExample'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    delete:
+      tags:
+        - Catalog Connector Operations by Product ID
+      summary: Delete a Product by Product ID
+      description: >
+        Use this endpoint to delete a single product by its `productId`. 
+
+        If you don't have the `productId`, use one of the endpoints to delete
+        the product:
+          - [Delete a product by SKU](/v3/api-reference/catalog-connector/operations/sku-operations/delete-with-sku).
+          - [Delete a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/delete-by-item).
+      operationId: deleteCatalogsByProductId
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: string
+          required: true
+          example: 6482b9524ffa4978fd9cbf5c
+          description: The UUID of the product.
+        - $ref: '#/components/parameters/localeParameter'
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '204':
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+          description: No Content
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+components:
+  examples:
+    productSearchResultExample:
+      value:
+        offset: 0
+        limit: 10
+        count: 1
+        data:
+          - sku: NIKE237765
+            productName: Nike runner shoes
+            id: 6482b9524ffa4978fd9cbf5c
+            itemId: 2700537
+            categoryName: Sport Shoes
+            categoryId: 648014741adc8a9de14e1a68
+            images:
+              - https://myawsomestore.com/is/image/nike/8801290_s7
+            attributes:
+              - name: Color
+                value: black
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: false
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            type: ITEM
+            variants:
+              - sku: NIKE237766
+                productName: Nike runner white shoes
+                id: 648aa9280d7b561b4663038c
+                itemId: 2700538
+                images:
+                  - https://myawsomestore.com/is/image/nike/8801291_s7
+                attributes:
+                  - name: Color
+                    value: White
+                    id: 6480216349256438cb7d53b5
+                    type: TEXT
+                  - name: Wide Fit
+                    value: true
+                    id: 640db94f9fc28b255d155a42
+                    type: BOOLEAN
+                  - name: Brand
+                    value:
+                      - Nike
+                    id: 640db94f9fc28b255d155a42
+                    type: LOV
+                createdAt: 2021-12-13T13:56:09.006Z
+                updatedAt: 2021-12-13T13:56:09.006Z
+            categories:
+              - name: Sport Shoes
+                id: 648014741adc8a9de14e1a68
+                isRoot: false
+                attributes:
+                  - name: Fit
+                    value: Relaxed Fit
+                    id: 648014741adc8a9de14e1a00
+                    type: TEXT
+              - name: Shoes
+                id: 648aa9258fdef29675dbce42
+                isRoot: true
+                attributes:
+                  - name: Material
+                    value: Mesh
+            collections:
+              - name: Flash sale
+                id: 648055dff4aa98d6c43e02da
+                hierarchy:
+                  - name: Flash Sale
+                    id: 648055dff4aa98d6c43e02da
+                    isRoot: false
+                    attributes:
+                      - name: Duration
+                        value: 600
+                        type: NUMBER
+                  - name: Sales
+                    id: 648055e0f4aa98d6c43e02f7
+                    isRoot: true
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+    paginatedVariantResultExample:
+      value:
+        offset: 0
+        limit: 10
+        count: 1
+        data:
+          - sku: NIKE237766
+            productName: Nike runner white shoes
+            id: 648aa9280d7b561b4663038c
+            itemId: 2700538
+            categoryName: Sport Shoes
+            categoryId: 648014741adc8a9de14e1a68
+            images:
+              - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+              - name: Color
+                value: White
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: true
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            type: VARIANT
+            parentSku: NIKE237765
+            parentId: 6482b9524ffa4978fd9cbf5c
+            categories:
+              - name: Sport Shoes
+                id: 648014741adc8a9de14e1a68
+                isRoot: false
+                attributes:
+                  - name: Fit
+                    value: Relaxed Fit
+                    id: 648014741adc8a9de14e1a00
+                    type: TEXT
+              - name: Shoes
+                id: 648aa9258fdef29675dbce42
+                isRoot: true
+                attributes:
+                  - name: Material
+                    value: Mesh
+            collections:
+              - name: Flash sale
+                id: 648055dff4aa98d6c43e02da
+                hierarchy:
+                  - name: Flash Sale
+                    id: 648055dff4aa98d6c43e02da
+                    isRoot: false
+                    attributes:
+                      - name: Duration
+                        value: 600
+                        type: NUMBER
+                  - name: Sales
+                    id: 648055e0f4aa98d6c43e02f7
+                    isRoot: true
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+    paginatedBundleResultExample:
+      value:
+        offset: 0
+        limit: 10
+        count: 1
+        data:
+          - sku: BUNDLE237765
+            productName: Nike runner shoes bundle
+            id: 60ad7e9d858eb50007abbb19#2700540
+            itemId: 2700540
+            categoryName: Sport Shoes
+            categoryId: 648014741adc8a9de14e1a68
+            images:
+              - https://myawsomestore.com/is/image/nike/8801290_s7
+              - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+              - name: Shoes Combo
+                value: true
+                type: BOOLEAN
+            type: BUNDLE
+            bundleProducts:
+              - sku: NIKE237766
+                quantity: 1
+                productName: Nike runner white shoes
+                id: 648aa9280d7b561b4663038c
+                itemId: 2700538
+                type: VARIANT
+                images:
+                  - https://myawsomestore.com/is/image/nike/8801291_s7
+                attributes:
+                  - name: Color
+                    value: White
+                    id: 6480216349256438cb7d53b5
+                    type: TEXT
+                  - name: Wide Fit
+                    value: true
+                    id: 640db94f9fc28b255d155a42
+                    type: BOOLEAN
+                createdAt: 2021-12-13T13:56:09.006Z
+                updatedAt: 2021-12-13T13:56:09.006Z
+              - sku: NIKE237765
+                quantity: 1
+                productName: Nike runner shoes
+                id: 6482b9524ffa4978fd9cbf5c
+                itemId: 2700537
+                type: ITEM
+                images:
+                  - https://myawsomestore.com/is/image/nike/8801290_s7
+                attributes:
+                  - name: Color
+                    value: black
+                    id: 6480216349256438cb7d53b5
+                    type: TEXT
+                  - name: Wide Fit
+                    value: false
+                    id: 640db94f9fc28b255d155a42
+                    type: BOOLEAN
+                createdAt: 2021-12-13T13:56:09.006Z
+                updatedAt: 2021-12-13T13:56:09.006Z
+            categories:
+              - name: Sport Shoes
+                id: 648014741adc8a9de14e1a68
+                isRoot: false
+                attributes:
+                  - name: Fit
+                    value: Relaxed Fit
+                    id: 648014741adc8a9de14e1a00
+                    type: TEXT
+              - name: Shoes
+                id: 648aa9258fdef29675dbce42
+                isRoot: true
+                attributes:
+                  - name: Material
+                    value: Mesh
+            collections:
+              - name: Flash sale
+                id: 648055dff4aa98d6c43e02da
+                hierarchy:
+                  - name: Flash Sale
+                    id: 648055dff4aa98d6c43e02da
+                    isRoot: false
+                    attributes:
+                      - name: Duration
+                        value: 600
+                        type: NUMBER
+                  - name: Sales
+                    id: 648055e0f4aa98d6c43e02f7
+                    isRoot: true
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+    ItemUpdateExample:
+      value:
+        productName: Nike runner shoes
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+        attributes:
+          - name: Color
+            value: black
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: false
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+        type: ITEM
+        variants:
+          - sku: NIKE237766
+            productName: Nike runner white shoes
+            id: 648aa9280d7b561b4663038c
+            itemId: 2700538
+            images:
+              - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+              - name: Color
+                value: White
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: true
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+    ItemCreateExample:
+      value:
+        sku: NIKE237765
+        productName: Nike runner shoes
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+        attributes:
+          - name: Color
+            value: black
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: false
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+        type: ITEM
+        variants:
+          - sku: NIKE237766
+            productName: Nike runner white shoes
+            id: 648aa9280d7b561b4663038c
+            itemId: 2700538
+            images:
+              - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+              - name: Color
+                value: White
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: true
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+    ItemExample:
+      value:
+        sku: NIKE237765
+        productName: Nike runner shoes
+        id: 6482b9524ffa4978fd9cbf5c
+        itemId: 2700537
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+        attributes:
+          - name: Color
+            value: black
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: false
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+        type: ITEM
+        variants:
+          - sku: NIKE237766
+            productName: Nike runner white shoes
+            id: 648aa9280d7b561b4663038c
+            itemId: 2700538
+            images:
+              - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+              - name: Color
+                value: White
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: true
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+        createdAt: 2021-12-13T13:56:09.006Z
+        updatedAt: 2021-12-13T13:56:09.006Z
+    variantUpdateExample:
+      value:
+        productName: Nike runner white shoes
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801291_s7
+        attributes:
+          - name: Color
+            value: White
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: true
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+        type: VARIANT
+        parentSku: NIKE237765
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+    variantCreateExample:
+      value:
+        sku: NIKE237766
+        productName: Nike runner white shoes
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801291_s7
+        attributes:
+          - name: Color
+            value: White
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: true
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+        type: VARIANT
+        parentSku: NIKE237765
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+    variantExample:
+      value:
+        sku: NIKE237766
+        productName: Nike runner white shoes
+        id: 648aa9280d7b561b4663038c
+        itemId: 2700538
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801291_s7
+        attributes:
+          - name: Color
+            value: White
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: true
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+        type: VARIANT
+        parentSku: NIKE237765
+        parentId: 6482b9524ffa4978fd9cbf5c
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+        createdAt: 2021-12-13T13:56:09.006Z
+        updatedAt: 2021-12-13T13:56:09.006Z
+    bundleUpdateExample:
+      value:
+        productName: Nike runner shoes bundle
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+          - https://myawsomestore.com/is/image/nike/8801291_s7
+        attributes:
+          - name: Shoes Combo
+            value: true
+            type: BOOLEAN
+        type: BUNDLE
+        bundleProducts:
+          - sku: NIKE237766
+            quantity: 1
+            productName: Nike runner white shoes
+            id: 648aa9280d7b561b4663038c
+            itemId: 2700538
+            type: VARIANT
+            images:
+              - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+              - name: Color
+                value: White
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: true
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+          - sku: NIKE237765
+            quantity: 1
+            productName: Nike runner shoes
+            id: 6482b9524ffa4978fd9cbf5c
+            itemId: 2700537
+            type: ITEM
+            images:
+              - https://myawsomestore.com/is/image/nike/8801290_s7
+            attributes:
+              - name: Color
+                value: black
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: false
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+    bundleCreateExample:
+      value:
+        sku: BUNDLE237765
+        productName: Nike runner shoes bundle
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+          - https://myawsomestore.com/is/image/nike/8801291_s7
+        attributes:
+          - name: Shoes Combo
+            value: true
+            type: BOOLEAN
+        type: BUNDLE
+        bundleProducts:
+          - sku: NIKE237766
+            quantity: 1
+            productName: Nike runner white shoes
+            id: 648aa9280d7b561b4663038c
+            itemId: 2700538
+            type: VARIANT
+            images:
+              - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+              - name: Color
+                value: White
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: true
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+          - sku: NIKE237765
+            quantity: 1
+            productName: Nike runner shoes
+            id: 6482b9524ffa4978fd9cbf5c
+            itemId: 2700537
+            type: ITEM
+            images:
+              - https://myawsomestore.com/is/image/nike/8801290_s7
+            attributes:
+              - name: Color
+                value: black
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: false
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+    bundleExample:
+      value:
+        sku: BUNDLE237765
+        productName: Nike runner shoes bundle
+        id: 60ad7e9d858eb50007abbb19#2700540
+        itemId: 2700540
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+          - https://myawsomestore.com/is/image/nike/8801291_s7
+        attributes:
+          - name: Shoes Combo
+            value: true
+            type: BOOLEAN
+        type: BUNDLE
+        bundleProducts:
+          - sku: NIKE237766
+            quantity: 1
+            productName: Nike runner white shoes
+            id: 648aa9280d7b561b4663038c
+            itemId: 2700538
+            type: VARIANT
+            images:
+              - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+              - name: Color
+                value: White
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: true
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+          - sku: NIKE237765
+            quantity: 1
+            productName: Nike runner shoes
+            id: 6482b9524ffa4978fd9cbf5c
+            itemId: 2700537
+            type: ITEM
+            images:
+              - https://myawsomestore.com/is/image/nike/8801290_s7
+            attributes:
+              - name: Color
+                value: black
+                id: 6480216349256438cb7d53b5
+                type: TEXT
+              - name: Wide Fit
+                value: false
+                id: 640db94f9fc28b255d155a42
+                type: BOOLEAN
+            createdAt: 2021-12-13T13:56:09.006Z
+            updatedAt: 2021-12-13T13:56:09.006Z
+        categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+              - name: Fit
+                value: Relaxed Fit
+                id: 648014741adc8a9de14e1a00
+                type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+              - name: Material
+                value: Mesh
+        collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+              - name: Flash Sale
+                id: 648055dff4aa98d6c43e02da
+                isRoot: false
+                attributes:
+                  - name: Duration
+                    value: 600
+                    type: NUMBER
+              - name: Sales
+                id: 648055e0f4aa98d6c43e02f7
+                isRoot: true
+        createdAt: 2021-12-13T13:56:09.006Z
+        updatedAt: 2021-12-13T13:56:09.006Z
+    BulkItemCreateExample:
+      value:
+        products:
+          sku: NIKE237765
+          productName: Nike runner shoes
+          categoryName: Sport Shoes
+          categoryId: 648014741adc8a9de14e1a68
+          images:
+            - https://myawsomestore.com/is/image/nike/8801290_s7
+          attributes:
+            - name: Color
+              value: black
+              id: 6480216349256438cb7d53b5
+              type: TEXT
+            - name: Wide Fit
+              value: false
+              id: 640db94f9fc28b255d155a42
+              type: BOOLEAN
+          type: ITEM
+          variants:
+            - sku: NIKE237766
+              productName: Nike runner white shoes
+              id: 648aa9280d7b561b4663038c
+              itemId: 2700538
+              images:
+                - https://myawsomestore.com/is/image/nike/8801291_s7
+              attributes:
+                - name: Color
+                  value: White
+                  id: 6480216349256438cb7d53b5
+                  type: TEXT
+                - name: Wide Fit
+                  value: true
+                  id: 640db94f9fc28b255d155a42
+                  type: BOOLEAN
+              createdAt: 2021-12-13T13:56:09.006Z
+              updatedAt: 2021-12-13T13:56:09.006Z
+          categories:
+            - name: Sport Shoes
+              id: 648014741adc8a9de14e1a68
+              isRoot: false
+              attributes:
+                - name: Fit
+                  value: Relaxed Fit
+                  id: 648014741adc8a9de14e1a00
+                  type: TEXT
+            - name: Shoes
+              id: 648aa9258fdef29675dbce42
+              isRoot: true
+              attributes:
+                - name: Material
+                  value: Mesh
+          collections:
+            - name: Flash sale
+              id: 648055dff4aa98d6c43e02da
+              hierarchy:
+                - name: Flash Sale
+                  id: 648055dff4aa98d6c43e02da
+                  isRoot: false
+                  attributes:
+                    - name: Duration
+                      value: 600
+                      type: NUMBER
+                - name: Sales
+                  id: 648055e0f4aa98d6c43e02f7
+                  isRoot: true
+    BulkVariantCreateExample:
+      value:
+        products:
+          sku: NIKE237766
+          productName: Nike runner white shoes
+          categoryName: Sport Shoes
+          categoryId: 648014741adc8a9de14e1a68
+          images:
+            - https://myawsomestore.com/is/image/nike/8801291_s7
+          attributes:
+            - name: Color
+              value: White
+              id: 6480216349256438cb7d53b5
+              type: TEXT
+            - name: Wide Fit
+              value: true
+              id: 640db94f9fc28b255d155a42
+              type: BOOLEAN
+          type: VARIANT
+          parentSku: NIKE237765
+          categories:
+            - name: Sport Shoes
+              id: 648014741adc8a9de14e1a68
+              isRoot: false
+              attributes:
+                - name: Fit
+                  value: Relaxed Fit
+                  id: 648014741adc8a9de14e1a00
+                  type: TEXT
+            - name: Shoes
+              id: 648aa9258fdef29675dbce42
+              isRoot: true
+              attributes:
+                - name: Material
+                  value: Mesh
+          collections:
+            - name: Flash sale
+              id: 648055dff4aa98d6c43e02da
+              hierarchy:
+                - name: Flash Sale
+                  id: 648055dff4aa98d6c43e02da
+                  isRoot: false
+                  attributes:
+                    - name: Duration
+                      value: 600
+                      type: NUMBER
+                - name: Sales
+                  id: 648055e0f4aa98d6c43e02f7
+                  isRoot: true
+    BulkBundleCreateExample:
+      value:
+        products:
+          sku: BUNDLE237765
+          productName: Nike runner shoes bundle
+          categoryName: Sport Shoes
+          categoryId: 648014741adc8a9de14e1a68
+          images:
+            - https://myawsomestore.com/is/image/nike/8801290_s7
+            - https://myawsomestore.com/is/image/nike/8801291_s7
+          attributes:
+            - name: Shoes Combo
+              value: true
+              type: BOOLEAN
+          type: BUNDLE
+          bundleProducts:
+            - sku: NIKE237766
+              quantity: 1
+              productName: Nike runner white shoes
+              id: 648aa9280d7b561b4663038c
+              itemId: 2700538
+              type: VARIANT
+              images:
+                - https://myawsomestore.com/is/image/nike/8801291_s7
+              attributes:
+                - name: Color
+                  value: White
+                  id: 6480216349256438cb7d53b5
+                  type: TEXT
+                - name: Wide Fit
+                  value: true
+                  id: 640db94f9fc28b255d155a42
+                  type: BOOLEAN
+              createdAt: 2021-12-13T13:56:09.006Z
+              updatedAt: 2021-12-13T13:56:09.006Z
+            - sku: NIKE237765
+              quantity: 1
+              productName: Nike runner shoes
+              id: 6482b9524ffa4978fd9cbf5c
+              itemId: 2700537
+              type: ITEM
+              images:
+                - https://myawsomestore.com/is/image/nike/8801290_s7
+              attributes:
+                - name: Color
+                  value: black
+                  id: 6480216349256438cb7d53b5
+                  type: TEXT
+                - name: Wide Fit
+                  value: false
+                  id: 640db94f9fc28b255d155a42
+                  type: BOOLEAN
+              createdAt: 2021-12-13T13:56:09.006Z
+              updatedAt: 2021-12-13T13:56:09.006Z
+          categories:
+            - name: Sport Shoes
+              id: 648014741adc8a9de14e1a68
+              isRoot: false
+              attributes:
+                - name: Fit
+                  value: Relaxed Fit
+                  id: 648014741adc8a9de14e1a00
+                  type: TEXT
+            - name: Shoes
+              id: 648aa9258fdef29675dbce42
+              isRoot: true
+              attributes:
+                - name: Material
+                  value: Mesh
+          collections:
+            - name: Flash sale
+              id: 648055dff4aa98d6c43e02da
+              hierarchy:
+                - name: Flash Sale
+                  id: 648055dff4aa98d6c43e02da
+                  isRoot: false
+                  attributes:
+                    - name: Duration
+                      value: 600
+                      type: NUMBER
+                - name: Sales
+                  id: 648055e0f4aa98d6c43e02f7
+                  isRoot: true
+  securitySchemes:
+    authorization:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: >-
+        This is the authorization token used to authenticate the request. You
+        must pass the access token generated from the system app. For more
+        information, see the [Making your first API
+        request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure)
+        section.
+  parameters:
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      schema:
+        type: string
+      required: true
+      example: 5f328bf0b5f328bf0b5f328b
+      description: >-
+        A header retrieved from your [Copilot Account
+        Details](/v3/platform/settings/account-details/getting-the-account-id)
+        that's used by the API to identify the tenant making the request. Tenant
+        ID must be included in the authentication header for API requests to
+        access any of fabric’s endpoints.
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: Unique request ID
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    formatTypeQueryParam:
+      in: query
+      name: formatType
+      description: >-
+        Depending on the context, it represents the format of the file or
+        template.
+      schema:
+        $ref: '#/components/schemas/formatTypes'
+      example: csv
+    typeQueryParam:
+      in: query
+      name: type
+      description: >-
+        The type of product, such as items or variants and bundles. Note that
+        the template is the same for both items and variants.
+      schema:
+        type: string
+        enum:
+          - ITEM
+          - BUNDLE
+        default: ITEM
+      example: ITEM
+    localeParameter:
+      name: locale
+      in: query
+      example: en-US
+      description: >
+        The language code, which is a combination of language (ISO 639 format)
+        and country (ISO 3166 format). 
+
+
+        The default value is en-US.
+      schema:
+        type: string
+      required: true
+    ids:
+      in: query
+      name: ids
+      description: >
+        The 24-character system-generated file ID created using the [Create a
+        File](/v3/api-reference/catalog-connector/files/create-file) endpoint.
+
+
+        Depending on the type of IDs, the array represents the file IDs or job
+        IDs. Specify up to 15 IDs separated by commas. Note the following
+        limitations of using this parameter:
+          - This parameter can't be combined with any other parameters. 
+          - Pagination isn't supported when this parameter is specified.
+      schema:
+        type: string
+      example: 5f328bf0b5f328bf0b5f328b, 1e328bf0b5f328bf0b5f3287
+    fileId:
+      in: query
+      name: fileId
+      description: A 24-character system-generated file ID.
+      schema:
+        type: string
+      example: 5f328bf0b5f328bf0b5f328b
+      required: true
+    productFileType:
+      in: query
+      name: type
+      schema:
+        $ref: '#/components/schemas/productFileJobTypes'
+      description: >-
+        Specify the type of operation or job performed when the file was
+        uploaded.
+    productTypeParameter:
+      in: query
+      name: type
+      schema:
+        $ref: '#/components/schemas/productType'
+      description: The supported product types.
+      required: false
+    fileName:
+      in: query
+      name: fileName
+      schema:
+        type: string
+      description: Use this endpoint to specify the name of the file you want to retrieve.
+      example: bulk_import_123345677788999.csv
+    inputFileIds:
+      in: query
+      name: inputFileIds
+      description: >-
+        The file IDs specified in the request. You can specify up to 15 file IDs
+        separated by commas. - This parameter can only be combined with the
+        query parameter `lastJobOnly`. - Pagination isn't supported when this is
+        specified.
+      schema:
+        type: string
+      example: 87328bf0b5f328bf0b5f328b, 9f328bf0b5f328bf0b5f3258
+    lastJobOnly:
+      in: query
+      name: lastJobOnly
+      description: >-
+        A flag indicating whether the response should be based only on the last
+        job. Set it to `true` to show response based on the last job and `false`
+        to include response based on all jobs that meet the criteria. This is
+        only applicable with `type` and `inputFileIds`.
+      schema:
+        type: boolean
+      example: true
+    limit:
+      in: query
+      name: limit
+      description: The maximum number of records per page.
+      schema:
+        type: integer
+        format: int32
+        default: 10
+        example: 20
+    offset:
+      in: query
+      name: offset
+      description: >-
+        The number of records to skip before returning records. For example,
+        with an offset of 20 and limit of 10, the system returns records from 21
+        to 30.
+      schema:
+        type: integer
+        format: int32
+        default: 0
+        example: 2
+      required: false
+    sortBy:
+      in: query
+      name: sort
+      description: >-
+        The sorting criteria. Currently, the supported values are `updatedAt`
+        and `name`. Use `-` for descending order and `+` for ascending.
+      schema:
+        type: string
+        example: +name,-updatedAt
+      required: false
+    excludeBundleProductsParameter:
+      name: excludeBundleProducts
+      in: query
+      example: false
+      description: >-
+        A flag indicating whether the products associated with a bundle should
+        be excluded from the response. Set it to `true` to exclude products of a
+        bundle and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeCollectionsParameter:
+      name: excludeCollections
+      in: query
+      example: false
+      description: >-
+        A flag indicating whether the collections should be excluded from the
+        response. Set it to `true` to exclude collections and `false` to include
+        them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeCategoriesParameter:
+      name: excludeCategories
+      in: query
+      example: false
+      description: >-
+        A flag indicating whether the categories should be excluded from the
+        response. Set it to `true` to exclude categories and `false` to include
+        them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeVariantsParameter:
+      name: excludeVariants
+      in: query
+      example: false
+      description: >-
+        A flag indicating whether item variants should be excluded from the
+        response. Set it to `true` to exclude variants and `false` to include
+        them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeAttributesParameter:
+      name: excludeAttributes
+      in: query
+      example: false
+      description: >-
+        A flag indicating whether attributes should be excluded from the
+        response. Set it to `true` to exclude attributes and `false` to include
+        them in the response.
+      schema:
+        type: boolean
+      required: false
+  responses:
+    notAuthorized:
+      description: The requester is unauthorized.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: UNAUTHORIZED_ERROR
+            message: Requester is unauthorized
+    forbidden:
+      description: The user isn't allowed to perform this action.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: REQUEST_DENIED
+            message: User does not have the required permission
+    notFoundError:
+      description: The requested entity isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: NOT_FOUND
+            message: Resource not found
+    badRequest:
+      description: Request is invalid or malformed
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+    internalServerError:
+      description: Internal server error
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: SERVER_ERROR
+            message: Internal Server Error
+    payloadLimitExceededError:
+      description: The payload limit is exceeded. It should be less than 10MB.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: PAYLOAD_LIMIT_EXCEEDED_ERROR
+            message: Payload exceeds maximum configured size
+  headers:
+    xFabricRequestId:
+      schema:
+        type: string
+      required: false
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      description: Unique request ID
+  requestBodies:
+    productSearchRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - search
+            properties:
+              sort:
+                type: string
+                description: >-
+                  The sorting criteria. Currently, the supported values are
+                  `sku`, `type`, `productName`, `itemId`, `categoryName`,  and
+                  `createdAt`. Use `-` to view the results in a descending order
+                  and `+` for ascending.
+                example: +sku,-productName
+              search:
+                $ref: '#/components/schemas/productSearchRequest'
+              offset:
+                description: >-
+                  The number of records to skip before returning records.
+
+                  For example, when the offset is 20 and limit is 10, the system
+                  returns records from 21 to 30.
+                type: integer
+                format: int32
+                default: 0
+                example: 2
+              limit:
+                description: The maximum number of records per page.
+                type: integer
+                format: int32
+                default: 10
+                example: 10
+    insertCatalogRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/insertCatalogRequestSchema'
+          examples:
+            Item:
+              $ref: '#/components/examples/ItemCreateExample'
+            Variant:
+              $ref: '#/components/examples/variantCreateExample'
+            Bundle:
+              $ref: '#/components/examples/bundleCreateExample'
+    bulkUpsertCatalogRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            required:
+              - products
+            description: A sample request to create multiple products.
+            properties:
+              products:
+                type: array
+                minItems: 1
+                items:
+                  $ref: '#/components/schemas/insertCatalogRequestSchema'
+          examples:
+            Items:
+              $ref: '#/components/examples/BulkItemCreateExample'
+            Variants:
+              $ref: '#/components/examples/BulkVariantCreateExample'
+            Bundles:
+              $ref: '#/components/examples/BulkBundleCreateExample'
+    putCatalogRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/putCatalogRequestSchema'
+          examples:
+            Item:
+              $ref: '#/components/examples/ItemUpdateExample'
+            Variant:
+              $ref: '#/components/examples/variantUpdateExample'
+            Bundle:
+              $ref: '#/components/examples/bundleUpdateExample'
+    exportIDJobRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            description: A sample request to export data.
+            required:
+              - ids
+              - locale
+              - type
+            properties:
+              ids:
+                type: array
+                minItems: 1
+                description: The product type IDs that must be exported.
+                items:
+                  type: string
+                  description: The product type IDs that must be exported.
+                example:
+                  - 5f328bf0b5f328bf0b5f328b
+                  - 22328bf0b5f328bf0b5f3287
+              formatType:
+                $ref: '#/components/schemas/formatTypes'
+              locale:
+                $ref: '#/components/schemas/locale'
+              type:
+                $ref: '#/components/schemas/productAsyncJobTypes'
+    generateTemplateRequest:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            description: Template request
+            required:
+              - type
+              - formatType
+            properties:
+              type:
+                $ref: '#/components/schemas/productsType'
+              formatType:
+                $ref: '#/components/schemas/formatTypes'
+    createProductFileRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            description: >-
+              A sample request to create a file object and retrieve the upload
+              URL to import products to the Catalog Connector.
+            required:
+              - type
+              - name
+              - locale
+              - formatType
+            properties:
+              type:
+                $ref: '#/components/schemas/productFileJobTypes'
+              name:
+                type: string
+                description: The name of the file to be imported.
+                example: bulk_import_123345677788999.csv
+              locale:
+                $ref: '#/components/schemas/locale'
+              formatType:
+                $ref: '#/components/schemas/formatTypes'
+    jobSearchRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - match
+            description: Request for a job search.
+            properties:
+              sort:
+                type: string
+                description: >-
+                  Sorting criteria. Sorting is supported on `id`, `type`,
+                  `status`, `completedAt`, and `createdAt`. `-` refers to
+                  descending while `+` refers to ascending order.
+                example: +id,-type
+              match:
+                $ref: '#/components/schemas/jobSearchRequestMatch'
+              offset:
+                description: |-
+                  Number of records to skip before returning records.
+                  For example, `offset=20, limit=10` returns records 21-30.
+                type: integer
+                format: int32
+                default: 0
+                example: 2
+              limit:
+                description: Maximum number of records per page.
+                type: integer
+                format: int32
+                default: 10
+                example: 10
+  schemas:
+    productJob:
+      description: The details of the job.
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/job'
+            type: object
+            properties:
+              type:
+                $ref: '#/components/schemas/productFileJobTypes'
+        offset:
+          description: >-
+            The number of records to skip before returning records.
+
+            For example, when the offset is 20 and limit is 10, the system
+            returns the records from 21 to 30.
+          type: integer
+          format: int32
+          default: 0
+          example: 5
+        limit:
+          description: The maximum number of records per page.
+          type: integer
+          format: int32
+          default: 10
+          example: 10
+        count:
+          description: The total number of records.
+          type: integer
+          format: int32
+          example: 100
+    fileDownloadResponse:
+      type: object
+      description: >-
+        The URL generated in the response of the `Download a file by ID`
+        request.
+      properties:
+        location:
+          type: string
+          description: The URL to download an imported file.
+          format: uri
+          example: >-
+            https://pim-v3-dev02-us-east-1-files.s3.us-east-1.amazonaws.com/local/PRODUCT_EXPORT/abc.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=EXAMPLEACCESSKEYID%252F20230317%252Fus-east-1%252Fs3%252Faws4_request&X-Amz-Date=20230317T171516Z&X-Amz-Expires=300&X-Amz-Signature=EXAMPLESIGNATURE&X-Amz-SignedHeaders=host&x-id=GetObject
+    getFilesResponse:
+      type: object
+      description: >-
+        The response of the `Retrieve import or export history` request, along
+        with pagination data.
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/commonFileSchema'
+        offset:
+          description: >-
+            The number of records to skip before returning records.
+
+            For example, when the offset is 20 and limit is 10, the system
+            returns the records from 21 to 30.
+          type: integer
+          format: int32
+          default: 0
+          example: 5
+        limit:
+          description: The maximum number of records per page.
+          type: integer
+          format: int32
+          default: 10
+          example: 10
+        count:
+          description: The total number of records.
+          type: integer
+          format: int32
+          example: 100
+    file:
+      allOf:
+        - $ref: '#/components/schemas/newCommonFileSchema'
+        - type: object
+          properties:
+            location:
+              type: string
+              description: >-
+                The AWS S3 file location of the imported file is provided as a
+                URL.
+              example: >-
+                https://s3.console.aws.amazon.com/s3/buckets/greatwall-stg01-bulk-import-pim/bulk_import_123345677788999.csv
+    newCommonFileSchema:
+      type: object
+      description: The details of the file.
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated file ID.
+          example: 857f1f77bcf86cd799439054
+        type:
+          $ref: '#/components/schemas/productFileJobTypes'
+        name:
+          type: string
+          description: The name of the file name to be uploaded to the AWS S3 location.
+          example: bulk_import_123345677788999.csv
+        locale:
+          $ref: '#/components/schemas/locale'
+        formatType:
+          $ref: '#/components/schemas/formatTypes'
+        createdAt:
+          type: string
+          description: The time of file creation, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+        updatedBy:
+          type: string
+          description: The email of the user who last updated the file.
+          example: test@email.com
+        updatedAt:
+          type: string
+          description: The time of last update to the file, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    commonFileSchema:
+      type: object
+      description: The details of the file.
+      properties:
+        id:
+          type: string
+          description: >-
+            The 24-character system-generated file ID created using the [Create
+            a File](/v3/api-reference/catalog-connector/files/create-file)
+            endpoint.
+          example: 857f1f77bcf86cd799439054
+        type:
+          $ref: '#/components/schemas/productFileJobTypes'
+        name:
+          type: string
+          description: The name of the file to be uploaded to the AWS S3 location.
+          example: bulk_import_123345677788999.csv
+        locale:
+          $ref: '#/components/schemas/locale'
+        formatType:
+          $ref: '#/components/schemas/formatTypes'
+        createdAt:
+          type: string
+          description: The time of file creation, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+        updatedBy:
+          type: string
+          description: The email of the user who last updated the file.
+          example: test@email.com
+        updatedAt:
+          type: string
+          description: The time of last update to the file, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    locale:
+      type: string
+      description: >
+        The language code, which is a combination of language (ISO 639 format)
+        and country (ISO 3166 format).
+
+
+        The default value is `en-US`.
+      example: en-US
+    productFileJobTypes:
+      type: string
+      enum:
+        - CATALOG_CONN_ITEM_VARIANT_IMPORT
+        - CATALOG_CONN_ITEM_VARIANT_EXPORT
+        - CATALOG_CONN_BUNDLE_IMPORT
+        - CATALOG_CONN_BUNDLE_EXPORT
+      description: Specify the type of operation or job performed by uploading the file.
+      example: CATALOG_CONN_ITEM_VARIANT_IMPORT
+    productsType:
+      type: string
+      enum:
+        - ITEM
+        - BUNDLE
+      description: >-
+        Specify the product type you want to import using the product import
+        template you will receive from a successful response.
+      example: ITEM
+    formatTypes:
+      type: string
+      enum:
+        - csv
+        - jsonl
+      description: Specify the file format used to upload to Catalog Connector.
+      example: jsonl
+    jobStatuses:
+      type: string
+      enum:
+        - SCHEDULED
+        - COMPLETED_PARTIALLY
+        - IN_PROGRESS
+        - COMPLETED
+        - FAILED
+        - UPDATING_SEARCH_INDEX
+        - CANCELLATION_IN_PROGRESS
+        - CANCELLED
+      description: Job status
+      example: COMPLETED
+    productAsyncJobTypes:
+      type: string
+      enum:
+        - CATALOG_CONN_ITEM_VARIANT_EXPORT
+        - CATALOG_CONN_BUNDLE_EXPORT
+      description: The supported job types.
+      example: CATALOG_CONN_ITEM_VARIANT_EXPORT
+    job:
+      type: object
+      description: The details of the import or export job.
+      properties:
+        id:
+          type: string
+          description: >-
+            The 24-character system-generated file ID created using the [Create
+            a File](/v3/api-reference/catalog-connector/files/create-file)
+            endpoint.
+          example: 877f1f77bcf86cd799439087
+        inputFileId:
+          type: string
+          example: 327f1f77bcf86cd799439045
+          description: The IDs of the files to be processed as part of the job.
+        outputFiles:
+          type: array
+          description: >-
+            The IDs of the processed files. The output files include success
+            files, error files, and more.
+          items:
+            type: string
+            description: >-
+              The IDs of the processed files. The output files include success
+              files, error files, and more.
+            example: 507f1f77bcf86cd7994390163, 967f1f77bcf86cd799439058
+        errorFiles:
+          type: array
+          description: >-
+            The IDs of the processed files. The output files include success
+            files, error files, and more.
+          items:
+            type: string
+            description: >-
+              A 24-character system-generated IDs of the error files. The error
+              files list products that couldn't be processed through the job.
+            example: 887f1f77bcf86cd799439011, 997f1f77bcf86cd799439074
+        progressTracker:
+          type: object
+          properties:
+            updatedAt:
+              type: string
+              description: The time when the tracker was last updated, in UTC format.
+              example: '2023-02-14T22:10:30.618Z'
+            totalCount:
+              type: integer
+              format: int32
+              description: The total number of records to be processed through the job.
+              example: 100000
+            processedCount:
+              type: integer
+              format: int32
+              description: The total number of records processed.
+              example: 40000
+            errorCount:
+              type: integer
+              format: int32
+              description: Total number of records with error.
+              example: 10
+        status:
+          type: string
+          description: The job status.
+          enum:
+            - IN_PROGRESS
+            - COMPLETED
+            - FAILED
+          example: COMPLETED
+        statusMessage:
+          description: A brief message corresponding to the job `status`.
+          type: string
+          example: 100% completed
+        additionalDetails:
+          type: object
+          properties:
+            itemsCreated:
+              type: integer
+              format: int32
+              description: >-
+                The number of items created during the import process. Only
+                applicable when job `type` is `PRODUCT_IMPORT`.
+              example: 10
+            itemsUpdated:
+              type: integer
+              format: int32
+              description: >-
+                The number of items updated during the import process. Only
+                applicable when job `type` is `PRODUCT_IMPORT`.
+              example: 10
+        createdAt:
+          type: string
+          description: The time of job creation, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+        completedAt:
+          type: string
+          description: The time of job completion, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+        updatedBy:
+          type: string
+          description: The email of the user who last updated the job.
+          example: test@email.com
+        updatedAt:
+          type: string
+          description: The time when the job was last updated, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    jobIdResponse:
+      type: object
+      description: The job ID.
+      properties:
+        jobId:
+          type: string
+          description: A 24-character system-generated job ID.
+          example: 877f1f77bcf86cd799439087
+    productSearchRequest:
+      minProperties: 1
+      additionalProperties: false
+      description: The search criteria to find products.
+      type: object
+      properties:
+        keyword:
+          type: object
+          description: >-
+            The search criteria based on keywords of product name, SKU, item ID,
+            more.
+          properties:
+            op:
+              type: string
+              description: The type of search operation.
+              example: CONTAINS
+              enum:
+                - CONTAINS
+            value:
+              $ref: '#/components/schemas/stringSchema'
+        id:
+          $ref: '#/components/schemas/stringSearchOperation'
+        sku:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        productName:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        image:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        itemId:
+          $ref: '#/components/schemas/integerSearchOperation'
+        type:
+          $ref: '#/components/schemas/productTypeSearchOperation'
+        parentSku:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        categoryId:
+          $ref: '#/components/schemas/stringSearchOperation'
+        categoryName:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        collectionId:
+          $ref: '#/components/schemas/stringSearchOperation'
+        collectionName:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        bundleProductName:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        bundleProductSku:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        bundleProductCount:
+          $ref: '#/components/schemas/integerSearchOperation'
+        variantProductName:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        variantProductSku:
+          anyOf:
+            - $ref: '#/components/schemas/stringSearchOperation'
+            - $ref: '#/components/schemas/containsSearchOperation'
+        attributes:
+          type: array
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/attributeSearchOperation'
+              - $ref: >-
+                  #/components/schemas/containsLessThanGreaterThanAttributeSearchOperation
+        createdAt:
+          anyOf:
+            - $ref: '#/components/schemas/datetimeInOperation'
+            - $ref: '#/components/schemas/datetimeRangeOperation'
+            - $ref: '#/components/schemas/datetimeOperation'
+        updatedAt:
+          anyOf:
+            - $ref: '#/components/schemas/datetimeInOperation'
+            - $ref: '#/components/schemas/datetimeRangeOperation'
+            - $ref: '#/components/schemas/datetimeOperation'
+      example:
+        keyword:
+          op: CONTAINS
+          value: NIKE237765
+        id:
+          op: IN
+          value:
+            - 6482b9524ffa4978fd9cbf5c
+        sku:
+          op: IN
+          value:
+            - NIKE237765
+        productName:
+          op: IN
+          value:
+            - Nike runner shoes
+        image:
+          op: IN
+          value:
+            - https://myawsomestore.com/is/image/nike/8801290_s7
+        itemId:
+          op: IN
+          value:
+            - 2700537
+        type:
+          op: IN
+          value:
+            - ITEM
+        parentSku:
+          op: CONTAINS
+          value: NIKE237765
+        parentId:
+          op: IN
+          value:
+            - 6482e47771609dfca2beb29f
+        categoryId:
+          op: IN
+          value:
+            - 648014741adc8a9de14e1a68
+        categoryName:
+          op: CONTAINS
+          value: Shoes
+        collectionName:
+          op: CONTAINS
+          value: Flash Sale
+        bundleProductSku:
+          op: CONTAINS
+          value: BUNDLE237765
+        bundleProductName:
+          op: CONTAINS
+          value: nike
+        bundleProductId:
+          op: IN
+          value:
+            - 60ad7e9d858eb50007abbb19#123124
+        bundleProductCount:
+          op: GTE
+          value: 10
+        attributes:
+          - name: Color
+            op: IN
+            value:
+              - black
+        attributeIds:
+          op: IN
+          value:
+            - 60ad7e9d858eb50007abbb19
+            - 4aqz7e9d858eb5000cdeas12
+        attributeTypes:
+          op: IN
+          value:
+            - TEXT
+            - BOOLEAN
+            - LOV
+            - NUMBER
+        createdAt:
+          op: LTE
+          value: 2021-12-13T13:56:09.006Z
+        updatedAt:
+          op: LTE
+          value: 2021-12-13T13:56:09.006Z
+    productTypeSearchOperation:
+      type: object
+      description: The search criteria based on product type.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/productType'
+    stringSearchOperation:
+      type: object
+      description: >-
+        The search operation based on a string value, such as ID, name, SKU,
+        image URL, attribute type, and more.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/stringSchema'
+    attributeSearchOperation:
+      type: object
+      description: The search criteria based on attributes.
+      properties:
+        name:
+          $ref: '#/components/schemas/attributeName'
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/attributeValue'
+    containsLessThanGreaterThanAttributeSearchOperation:
+      type: object
+      description: The search criteria based on the attributes.
+      properties:
+        name:
+          $ref: '#/components/schemas/attributeName'
+        op:
+          type: string
+          description: The type of search operation.
+          example: CONTAINS
+          enum:
+            - CONTAINS
+            - LTE
+            - GTE
+            - LT
+            - GT
+        value:
+          $ref: '#/components/schemas/attributeValue'
+    containsSearchOperation:
+      type: object
+      description: >-
+        The search criteria based on single-string search.
+
+        For example, by using the `CONTAINS` operation, you can search for
+        `parentSku`, `categoryName`, `collectionName`, `bundleProductSku`,
+        `bundleProductName`, and more.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: CONTAINS
+          enum:
+            - CONTAINS
+        value:
+          $ref: '#/components/schemas/stringSchema'
+    integerSearchOperation:
+      type: object
+      description: The search criteria based on integer values.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/integerSchema'
+    booleanSchema:
+      type: boolean
+      nullable: true
+      description: Represents a boolean schema.
+      example: true
+    stringSchema:
+      type: string
+      nullable: true
+      description: Represents a string schema.
+      example: blue
+    integerSchema:
+      type: integer
+      nullable: true
+      format: int32
+      description: Represents an integer schema.
+      example: 1
+    doubleSchema:
+      type: number
+      nullable: true
+      format: double
+      description: Represents a double schema.
+      example: 1
+    arrayOfStringsSchema:
+      type: array
+      description: Represents an array of string schema.
+      items:
+        type: string
+        nullable: true
+        description: Represents a string schema.
+    attributeName:
+      type: string
+      description: The name of the attribute.
+      example: isOnSale
+    attributeValue:
+      anyOf:
+        - $ref: '#/components/schemas/booleanSchema'
+        - $ref: '#/components/schemas/stringSchema'
+        - $ref: '#/components/schemas/integerSchema'
+        - $ref: '#/components/schemas/doubleSchema'
+        - $ref: '#/components/schemas/arrayOfStringsSchema'
+      example: false
+      description: The attribute value.
+    attributeId:
+      type: string
+      description: A 24-character system-generated attribute ID.
+      example: 6480216349256438cb7d53b5
+    attribute:
+      type: object
+      additionalProperties: false
+      description: The details of the attribute.
+      properties:
+        name:
+          $ref: '#/components/schemas/attributeName'
+        value:
+          $ref: '#/components/schemas/attributeValue'
+        id:
+          $ref: '#/components/schemas/attributeId'
+        type:
+          $ref: '#/components/schemas/attributeType'
+    commonProductSchema:
+      type: object
+      description: A common schema for product, variants, and bundles.
+      properties:
+        productName:
+          type: string
+          description: The name of the product.
+          example: Nike Men's Training Shoe
+        images:
+          type: array
+          description: The list of product images.
+          items:
+            type: string
+          example:
+            - https://myawsomestore.com/is/image/nike/8801290_s7
+        attributes:
+          type: array
+          description: The name of the attribute and its value.
+          items:
+            $ref: '#/components/schemas/attribute'
+        createdAt:
+          type: string
+          description: The time of product creation, in UTC format.
+          format: date-time
+          example: 2021-12-13T13:56:09.006Z
+        updatedAt:
+          type: string
+          description: The time of last update to product, in UTC format.
+          format: date-time
+          example: 2021-12-13T13:56:09.006Z
+    commonProductSchemaWithIdentifiers:
+      allOf:
+        - $ref: '#/components/schemas/commonProductSchema'
+      type: object
+      description: >-
+        A common schema for product, variants, and bundles along with their
+        identifiers.
+      properties:
+        sku:
+          $ref: '#/components/schemas/sku'
+        id:
+          $ref: '#/components/schemas/id'
+        itemId:
+          type: integer
+          format: int32
+          example: 1682313863
+          description: A unique identifier of an item, a variant or a bundle.
+    category:
+      type: object
+      additionalProperties: false
+      description: The details of a category.
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated category ID.
+          example: 648055dff4aa98d6c43e02da
+        name:
+          type: string
+          description: The name of the category.
+          example: Shoes
+        isRoot:
+          type: boolean
+          description: >-
+            A flag indicating whether the given category is a root category. Set
+            it to `true` if it's a root category and `false` if it isn't a root
+            category.
+          example: true
+        attributes:
+          type: array
+          description: The details of an attribute.
+          items:
+            $ref: '#/components/schemas/attribute'
+    bundleProductSchema:
+      description: The details of the bundle.
+      type: object
+      properties:
+        quantity:
+          type: integer
+          format: int32
+          description: The quantity of the bundle.
+          example: 2
+        type:
+          $ref: '#/components/schemas/productType'
+      allOf:
+        - $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+    extendedCommonProductSchema:
+      description: Additional details of a product.
+      allOf:
+        - $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+      type: object
+      properties:
+        categoryName:
+          type: string
+          description: The name of the category.
+          example: Shoes
+        categoryId:
+          type: string
+          description: A 24-character system-generated category ID.
+          example: 648055dff4aa98d6c43e02da
+        categories:
+          type: array
+          description: >-
+            The list of categories, including their paths from the leaf category
+            to the root category.
+          items:
+            $ref: '#/components/schemas/category'
+        collections:
+          type: array
+          description: >-
+            The details of the collection used to display products on the
+            storefront.
+          items:
+            type: object
+            additionalProperties: false
+            description: The collection details.
+            properties:
+              id:
+                type: string
+                description: A 24-character system-generated collection ID.
+                example: 648014741adc8a9de14e1a68
+              name:
+                type: string
+                description: The name of the collection.
+                example: Flash Sale
+              hierarchy:
+                type: array
+                description: >-
+                  The list of collections, including their paths from the leaf
+                  collection to the root collection.
+                items:
+                  $ref: '#/components/schemas/category'
+    itemCatalog:
+      description: The details of an item.
+      allOf:
+        - $ref: '#/components/schemas/extendedCommonProductSchema'
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/itemProductType'
+        variants:
+          type: array
+          description: The details of item variants.
+          items:
+            $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+    variantCatalog:
+      description: The details of an item variant.
+      allOf:
+        - $ref: '#/components/schemas/extendedCommonProductSchema'
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/variantProductType'
+        parentSku:
+          $ref: '#/components/schemas/sku'
+        parentId:
+          type: string
+          description: A 24-character system-generated ID of the parent item.
+          example: 648014741adc8a9de14e1a68
+    bundleCatalog:
+      description: The details of a bundle.
+      allOf:
+        - $ref: '#/components/schemas/extendedCommonProductSchema'
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/bundleProductType'
+        bundleProducts:
+          type: array
+          description: The details of a bundle.
+          items:
+            $ref: '#/components/schemas/bundleProductSchema'
+    product:
+      description: The details of a product based on the product type.
+      anyOf:
+        - $ref: '#/components/schemas/itemCatalog'
+        - $ref: '#/components/schemas/variantCatalog'
+        - $ref: '#/components/schemas/bundleCatalog'
+    productType:
+      type: string
+      description: The type of product.
+      enum:
+        - BUNDLE
+        - VARIANT
+        - ITEM
+      example: ITEM
+    bundleProductType:
+      type: string
+      description: Represents the `bundle` product type.
+      enum:
+        - BUNDLE
+      example: BUNDLE
+    variantProductType:
+      type: string
+      description: Represents the `variant` product type.
+      enum:
+        - VARIANT
+      example: VARIANT
+    itemProductType:
+      type: string
+      description: Represents the `item` product type.
+      enum:
+        - ITEM
+      example: ITEM
+    attributeType:
+      type: string
+      description: The type of attribute.
+      enum:
+        - NUMBER
+        - BOOLEAN
+        - TEXT
+        - LOV
+      example: TEXT
+    sku:
+      type: string
+      description: Product SKU
+      example: 24ggs67-e89b-12e3-a456-026614174119
+    id:
+      type: string
+      example: 5f7329dfd5288b0011332366
+      description: A 24-character system-generated ID.
+    getProductsBySearchResponse:
+      description: Product Search Result list by IDs
+      allOf:
+        - $ref: '#/components/schemas/paginatedResultMeta'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/product'
+    paginatedResultMeta:
+      description: The pagination data.
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int32
+          default: 0
+          example: 5
+          description: >-
+            The number of records to skip before returning records.
+
+            For example, with offset of 20 and limit of 10, the system returns
+            the records from 21-30.
+        limit:
+          type: integer
+          format: int32
+          default: 10
+          example: 10
+          description: The maximum number of records per page.
+        count:
+          type: integer
+          format: int32
+          example: 100
+          description: The total number of records.
+    datetimeInOperation:
+      type: object
+      description: The search criteria based on date-time using the IN condition.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            type: string
+          example:
+            - 2023-01-14T22:10:30.618Z
+            - 2023-05-14T22:10:30.618Z
+          description: The timestamp to search.
+    datetimeOperation:
+      type: object
+      description: The search criteria based on date-time.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: GTE
+          enum:
+            - EQUALS
+            - LTE
+            - GTE
+            - LT
+            - GT
+        value:
+          type: string
+          description: The timestamp to be searched, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    datetimeRangeOperation:
+      type: object
+      description: The search criteria based on date range.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: RANGE
+          enum:
+            - RANGE
+        fromValue:
+          type: string
+          description: The start date for searching, in UTC format.
+          example: '2022-09-14T22:10:30.618Z'
+        toValue:
+          type: string
+          description: The end date for searching, in UTC format.
+          example: '2023-04-14T22:10:30.618Z'
+    insertItemCatalogRequestSchema:
+      allOf:
+        - $ref: '#/components/schemas/putItemCatalogRequestSchema'
+      type: object
+      required:
+        - sku
+      description: A sample request to create a product of the type item.
+      properties:
+        sku:
+          $ref: '#/components/schemas/sku'
+    insertVariantCatalogRequestSchema:
+      allOf:
+        - $ref: '#/components/schemas/putVariantCatalogRequestSchema'
+      type: object
+      required:
+        - sku
+      description: A sample request to create a product of the type variant.
+      properties:
+        sku:
+          $ref: '#/components/schemas/sku'
+    insertBundleCatalogRequestSchema:
+      allOf:
+        - $ref: '#/components/schemas/putBundleCatalogRequestSchema'
+      type: object
+      required:
+        - sku
+      description: A sample request to create a product of the type bundle.
+      properties:
+        sku:
+          $ref: '#/components/schemas/sku'
+    insertCatalogRequestSchema:
+      description: A sample request to create a new product.
+      anyOf:
+        - $ref: '#/components/schemas/insertItemCatalogRequestSchema'
+        - $ref: '#/components/schemas/insertVariantCatalogRequestSchema'
+        - $ref: '#/components/schemas/insertBundleCatalogRequestSchema'
+    putCommonCatalogRequestSchema:
+      allOf:
+        - $ref: '#/components/schemas/commonProductSchema'
+      type: object
+      additionalProperties: false
+      description: A sample request to update a product with common properties.
+      properties:
+        categoryName:
+          type: string
+          description: >-
+            The name of the category. This value is overridden if the categories
+            are populated.
+          example: Sport Shoes
+        categoryId:
+          type: string
+          description: A 24-character system-generated ID of the category.
+          example: 648014741adc8a9de14e1a68
+        categories:
+          type: array
+          description: >-
+            The category details, including their paths from the leaf category
+            to the root category.
+          items:
+            $ref: '#/components/schemas/category'
+          example:
+            - name: Sport Shoes
+              id: 648014741adc8a9de14e1a68
+              isRoot: false
+              attributes:
+                - name: Fit
+                  value: Relaxed Fit
+                  id: 648014741adc8a9de14e1a00
+                  type: TEXT
+            - name: Shoes
+              id: 648aa9258fdef29675dbce42
+              isRoot: true
+              attributes:
+                - name: Material
+                  value: Mesh
+        collections:
+          type: array
+          description: The details of the collection.
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - name
+            properties:
+              name:
+                type: string
+                description: The name of the collection.
+                example: Flash Sale
+              id:
+                type: string
+                description: A 24-character system-generated collection ID.
+                example: 648055dff4aa98d6c43e02da
+              hierarchy:
+                type: array
+                description: >-
+                  The collections path from the leaf collection to the root
+                  collection.
+                items:
+                  $ref: '#/components/schemas/category'
+          example:
+            - name: Flash sale
+              id: 648055dff4aa98d6c43e02da
+              hierarchy:
+                - name: Flash sale
+                  id: 648055dff4aa98d6c43e02da
+                  isRoot: false
+                  attributes:
+                    - name: Duration
+                      value: 600
+                      type: NUMBER
+                - name: Sales
+                  id: 648055e0f4aa98d6c43e02f7
+                  isRoot: true
+    putItemCatalogRequestSchema:
+      allOf:
+        - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
+      type: object
+      additionalProperties: false
+      description: A sample request to update an item.
+      properties:
+        type:
+          $ref: '#/components/schemas/itemProductType'
+        variants:
+          type: array
+          description: The details of the item variants.
+          items:
+            $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+    putVariantCatalogRequestSchema:
+      allOf:
+        - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
+      type: object
+      additionalProperties: false
+      description: A sample request to update a variant.
+      properties:
+        type:
+          $ref: '#/components/schemas/variantProductType'
+        parentSku:
+          $ref: '#/components/schemas/sku'
+    putBundleCatalogRequestSchema:
+      allOf:
+        - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
+      type: object
+      additionalProperties: false
+      description: A sample request to update a bundle.
+      properties:
+        type:
+          $ref: '#/components/schemas/bundleProductType'
+        bundleProducts:
+          type: array
+          description: The details of a bundle.
+          items:
+            $ref: '#/components/schemas/bundleProductSchema'
+    putCatalogRequestSchema:
+      description: A sample request to update a product.
+      anyOf:
+        - $ref: '#/components/schemas/putItemCatalogRequestSchema'
+        - $ref: '#/components/schemas/putVariantCatalogRequestSchema'
+        - $ref: '#/components/schemas/putBundleCatalogRequestSchema'
+    bulkGetProductsResponse:
+      description: Product list
+      allOf:
+        - $ref: '#/components/schemas/paginatedResultMeta'
+        - type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/product'
+    bulkDeleteProductsResponse:
+      description: A sample response of the `Delete products` request.
+      allOf:
+        - $ref: '#/components/schemas/bulkOperationsResponse'
+      example:
+        success:
+          sku: NIKE237765
+        errors:
+          - sku: NIKE237766
+            message:
+              - SKU is assigned to BUNDLE237765
+    bulkUpsertProductsResponse:
+      description: A sample response of the `Add products` request.
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/bulkOperationsResponse'
+      example:
+        success:
+          sku: NIKE237765
+        errors:
+          - sku: PUMA237765
+            message:
+              - Duplicate SKU
+    bulkOperationsResponse:
+      description: A sample response of the bulk operation request.
+      type: object
+      properties:
+        success:
+          type: array
+          items:
+            type: object
+            properties:
+              sku:
+                $ref: '#/components/schemas/sku'
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              sku:
+                $ref: '#/components/schemas/sku'
+              message:
+                type: array
+                items:
+                  description: The details of the error.
+                  type: string
+                  example: Duplicate SKU.
+    genericError:
+      type: object
+      description: The details of the error.
+      properties:
+        message:
+          type: string
+          description: A placeholder error message for all the 4xx, 5xx errors
+          example: Request is invalid
+        type:
+          type: string
+          description: A placeholder error type for all the 4xx, 5xx errors
+          example: Bad request
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The error type.
+                example: CLIENT_ERROR
+              message:
+                type: string
+                description: The error message corresponding to the `type`.
+                example: Invalid request. Unable to find/create product
+    simpleMultiIdSearchOperation:
+      type: object
+      description: A simple multi-string search operation.
+      required:
+        - op
+        - value
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/id'
+    singleStringSearchOperation:
+      type: object
+      description: Single string search.
+      required:
+        - op
+        - value
+      properties:
+        op:
+          type: string
+          description: Search operations that can be performed on a `string` type.
+          example: EQUALS
+          enum:
+            - EQUALS
+            - CONTAINS
+        value:
+          $ref: '#/components/schemas/stringSchema'
+    containsStringSearchOperation:
+      type: object
+      description: An operation used to define string search.
+      required:
+        - op
+        - value
+      properties:
+        op:
+          type: string
+          description: Search operation that can be performed on a `string` type.
+          example: CONTAINS
+          enum:
+            - CONTAINS
+        value:
+          $ref: '#/components/schemas/stringSchema'
+    stringSearchWithNullableOperation:
+      type: object
+      description: String search
+      anyOf:
+        - $ref: '#/components/schemas/simpleMultiStringWithNullableSearchOperation'
+        - $ref: '#/components/schemas/containsStringSearchOperation'
+    simpleMultiStringWithNullableSearchOperation:
+      type: object
+      description: Simple multi-string search.
+      required:
+        - op
+        - value
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/stringSchema'
+    simpleMultiStringSearchOperation:
+      type: object
+      description: Simple multi-string search.
+      required:
+        - op
+        - value
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/stringSchema'
+    multiJobType:
+      type: object
+      description: |-
+        Search jobs using multiple job types.
+        For example, `ITEM_VARIANT_IMPORT, BUNDLE_EXPORT`.
+      required:
+        - op
+        - value
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/productFileJobTypes'
+    multiJobStatuses:
+      type: object
+      required:
+        - op
+        - value
+      description: |-
+        Search jobs using multiple job types.
+        For example, `COMPLETED' or 'SCHEDULED`.
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+            - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/jobStatuses'
+    datetimeSearchOperation:
+      type: object
+      description: Date-time search
+      anyOf:
+        - $ref: '#/components/schemas/datetimeRangeOperation'
+        - $ref: '#/components/schemas/datetimeInOperation'
+        - $ref: '#/components/schemas/datetimeOperation'
+    jobSearchRequestMatch:
+      minProperties: 1
+      additionalProperties: false
+      description: Search criteria to match jobs.
+      type: object
+      properties:
+        id:
+          description: job id search
+          $ref: '#/components/schemas/simpleMultiIdSearchOperation'
+        inputFileId:
+          description: Search based on input file ID
+          $ref: '#/components/schemas/simpleMultiIdSearchOperation'
+        name:
+          description: Search based on job name
+          $ref: '#/components/schemas/stringSearchWithNullableOperation'
+        keyword:
+          description: Search based on either job name or job ID
+          anyOf:
+            - $ref: '#/components/schemas/containsStringSearchOperation'
+            - $ref: '#/components/schemas/simpleMultiStringSearchOperation'
+        type:
+          description: Search based on job type
+          $ref: '#/components/schemas/multiJobType'
+        status:
+          description: Search based on job status
+          $ref: '#/components/schemas/multiJobStatuses'
+        createdAt:
+          description: Search based on job creation time
+          $ref: '#/components/schemas/datetimeSearchOperation'
+        completedAt:
+          description: Search based on job completion Time
+          $ref: '#/components/schemas/datetimeSearchOperation'
+security:
+  - authorization: []

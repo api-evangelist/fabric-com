@@ -1,0 +1,455 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Shipments
+  description: 'fabric Shipments. 10 operations. Lead operation: Create New Shipment. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Shipments
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: shipments-shipments
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Shipments consumed operations from fabric-shipments-openapi.yml.
+    resources:
+    - name: shipments
+      path: /shipments
+      operations:
+      - name: create-new-shipment
+        method: POST
+        description: 'Create New Shipment'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-create-order-shipment
+      path: /shipments/create-order-shipment
+      operations:
+      - name: create-shipment-for-an-existing-order
+        method: POST
+        description: 'Create Shipment for an Existing Order'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-actions-re-ship
+      path: /shipments/actions/re-ship
+      operations:
+      - name: create-re-shipment
+        method: POST
+        description: 'Create Re-shipment'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-actions-update-tracking
+      path: /shipments/actions/update-tracking
+      operations:
+      - name: update-shipment-tracking
+        method: POST
+        description: 'Update Shipment Tracking'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-inventory-transfer
+      path: /shipments/inventory-transfer
+      operations:
+      - name: post-shipments-inventory-transfer
+        method: POST
+        description: POST /shipments/inventory-transfer
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-inventory-transfer-actions-update-tracking
+      path: /shipments/inventory-transfer/actions/update-tracking
+      operations:
+      - name: post-shipments-inventory-transfer-actions-update-tracking
+        method: POST
+        description: POST /shipments/inventory-transfer/actions/update-tracking
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-inventory-transfer-pack-unpack
+      path: /shipments/inventory-transfer/pack-unpack
+      operations:
+      - name: post-shipments-inventory-transfer-pack-unpack
+        method: POST
+        description: POST /shipments/inventory-transfer/pack-unpack
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-inventory-transfer-query
+      path: /shipments/inventory-transfer/query
+      operations:
+      - name: post-shipments-inventory-transfer-query
+        method: POST
+        description: POST /shipments/inventory-transfer/query
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-inventory-transfer-search
+      path: /shipments/inventory-transfer/search
+      operations:
+      - name: post-shipments-inventory-transfer-search
+        method: POST
+        description: POST /shipments/inventory-transfer/search
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: shipments-inventory-transfer-transfershipmentid
+      path: /shipments/inventory-transfer/{transferShipmentId}
+      operations:
+      - name: get-shipments-inventory-transfer-transfershipmentid
+        method: GET
+        description: GET /shipments/inventory-transfer/{transferShipmentId}
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: transferShipmentId
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: shipments-shipments-rest
+    port: 8080
+    description: REST adapter for fabric Shipments. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/shipments
+      name: shipments
+      description: REST surface for shipments.
+      operations:
+      - method: POST
+        name: create-new-shipment
+        description: 'Create New Shipment'
+        call: shipments-shipments.create-new-shipment
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/create-order-shipment
+      name: shipments-create-order-shipment
+      description: REST surface for shipments-create-order-shipment.
+      operations:
+      - method: POST
+        name: create-shipment-for-an-existing-order
+        description: 'Create Shipment for an Existing Order'
+        call: shipments-shipments.create-shipment-for-an-existing-order
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/actions/re-ship
+      name: shipments-actions-re-ship
+      description: REST surface for shipments-actions-re-ship.
+      operations:
+      - method: POST
+        name: create-re-shipment
+        description: 'Create Re-shipment'
+        call: shipments-shipments.create-re-shipment
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/actions/update-tracking
+      name: shipments-actions-update-tracking
+      description: REST surface for shipments-actions-update-tracking.
+      operations:
+      - method: POST
+        name: update-shipment-tracking
+        description: 'Update Shipment Tracking'
+        call: shipments-shipments.update-shipment-tracking
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/inventory-transfer
+      name: shipments-inventory-transfer
+      description: REST surface for shipments-inventory-transfer.
+      operations:
+      - method: POST
+        name: post-shipments-inventory-transfer
+        description: 'POST /shipments/inventory-transfer'
+        call: shipments-shipments.post-shipments-inventory-transfer
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/inventory-transfer/actions/update-tracking
+      name: shipments-inventory-transfer-actions-update-tracking
+      description: REST surface for shipments-inventory-transfer-actions-update-tracking.
+      operations:
+      - method: POST
+        name: post-shipments-inventory-transfer-actions-update-tracking
+        description: 'POST /shipments/inventory-transfer/actions/update-tracking'
+        call: shipments-shipments.post-shipments-inventory-transfer-actions-update-tracking
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/inventory-transfer/pack-unpack
+      name: shipments-inventory-transfer-pack-unpack
+      description: REST surface for shipments-inventory-transfer-pack-unpack.
+      operations:
+      - method: POST
+        name: post-shipments-inventory-transfer-pack-unpack
+        description: 'POST /shipments/inventory-transfer/pack-unpack'
+        call: shipments-shipments.post-shipments-inventory-transfer-pack-unpack
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/inventory-transfer/query
+      name: shipments-inventory-transfer-query
+      description: REST surface for shipments-inventory-transfer-query.
+      operations:
+      - method: POST
+        name: post-shipments-inventory-transfer-query
+        description: 'POST /shipments/inventory-transfer/query'
+        call: shipments-shipments.post-shipments-inventory-transfer-query
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/inventory-transfer/search
+      name: shipments-inventory-transfer-search
+      description: REST surface for shipments-inventory-transfer-search.
+      operations:
+      - method: POST
+        name: post-shipments-inventory-transfer-search
+        description: 'POST /shipments/inventory-transfer/search'
+        call: shipments-shipments.post-shipments-inventory-transfer-search
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/shipments/inventory-transfer/{transferShipmentId}
+      name: shipments-inventory-transfer-transfershipmentid
+      description: REST surface for shipments-inventory-transfer-transfershipmentid.
+      operations:
+      - method: GET
+        name: get-shipments-inventory-transfer-transfershipmentid
+        description: 'GET /shipments/inventory-transfer/{transferShipmentId}'
+        call: shipments-shipments.get-shipments-inventory-transfer-transfershipmentid
+        with:
+          transferShipmentId: rest.path.transferShipmentId
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: shipments-shipments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Shipments. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-create-new-shipment
+      description: 'Create New Shipment'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.create-new-shipment
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-shipment-for-an-existing-order
+      description: 'Create Shipment for an Existing Order'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.create-shipment-for-an-existing-order
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-re-shipment
+      description: 'Create Re-shipment'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.create-re-shipment
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-shipment-tracking
+      description: 'Update Shipment Tracking'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.update-shipment-tracking
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-post-shipments-inventory-transfer
+      description: 'POST /shipments/inventory-transfer'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.post-shipments-inventory-transfer
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-post-shipments-inventory-transfer-actions-update-trac
+      description: 'POST /shipments/inventory-transfer/actions/update-tracking'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.post-shipments-inventory-transfer-actions-update-tracking
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-post-shipments-inventory-transfer-pack-unpack
+      description: 'POST /shipments/inventory-transfer/pack-unpack'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.post-shipments-inventory-transfer-pack-unpack
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-post-shipments-inventory-transfer-query
+      description: 'POST /shipments/inventory-transfer/query'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.post-shipments-inventory-transfer-query
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-post-shipments-inventory-transfer-search
+      description: 'POST /shipments/inventory-transfer/search'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shipments-shipments.post-shipments-inventory-transfer-search
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-shipments-inventory-transfer-transfershipmentid
+      description: 'GET /shipments/inventory-transfer/{transferShipmentId}'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: shipments-shipments.get-shipments-inventory-transfer-transfershipmentid
+      with:
+        transferShipmentId: tools.transferShipmentId
+      outputParameters:
+      - type: object
+        mapping: $.

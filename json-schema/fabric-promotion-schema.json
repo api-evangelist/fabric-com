@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/json-schema/fabric-promotion-schema.json",
+  "title": "fabric Promotion",
+  "description": "Promotion authored via fabric Offers — Promotions and applied by the Real-time Pricing Engine.",
+  "type": "object",
+  "required": ["promotionId", "name", "discountType", "status"],
+  "properties": {
+    "promotionId": {"type": "string"},
+    "name": {"type": "string"},
+    "description": {"type": "string"},
+    "discountType": {"type": "string", "enum": ["PERCENT", "AMOUNT", "FIXED_PRICE", "FREE_SHIPPING", "BUY_X_GET_Y"]},
+    "scope": {"type": "string", "enum": ["ITEM", "CART", "SHIPPING"]},
+    "value": {"type": "number"},
+    "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "couponCode": {"type": ["string", "null"]},
+    "status": {"type": "string", "enum": ["DRAFT", "ACTIVE", "PAUSED", "ENDED"]},
+    "startsAt": {"type": "string", "format": "date-time"},
+    "endsAt": {"type": "string", "format": "date-time"},
+    "conditions": {"type": "array", "items": {"type": "object"}}
+  },
+  "additionalProperties": true
+}

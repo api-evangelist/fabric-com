@@ -1,0 +1,295 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Offers — Prices
+  description: 'fabric Offers — Prices. 7 operations. Lead operation: Create Price. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Prices
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: offers-prices
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Offers — Prices consumed operations from fabric-offers-prices-openapi.yml.
+    resources:
+    - name: prices
+      path: /prices
+      operations:
+      - name: create-price
+        method: POST
+        description: 'Create Price'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: get-all-active-prices
+        method: GET
+        description: 'Get All Active Prices'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: prices-itemid
+      path: /prices/{itemId}
+      operations:
+      - name: get-price-by-itemid
+        method: GET
+        description: 'Get Price by Itemid'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: itemId
+          in: path
+          type: string
+          required: true
+      - name: delete-price-by-itemid
+        method: DELETE
+        description: 'Delete Price by Itemid'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: itemId
+          in: path
+          type: string
+          required: true
+    - name: prices-sku-sku
+      path: /prices/sku/{sku}
+      operations:
+      - name: get-price-by-sku
+        method: GET
+        description: 'Get Price by SKU'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: sku
+          in: path
+          type: string
+          required: true
+      - name: delete-price-by-sku
+        method: DELETE
+        description: 'Delete Price by SKU'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: sku
+          in: path
+          type: string
+          required: true
+    - name: prices-batch
+      path: /prices/batch
+      operations:
+      - name: create-batch-prices
+        method: POST
+        description: 'Create Batch Prices'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: offers-prices-rest
+    port: 8080
+    description: REST adapter for fabric Offers — Prices. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/prices
+      name: prices
+      description: REST surface for prices.
+      operations:
+      - method: POST
+        name: create-price
+        description: 'Create Price'
+        call: offers-prices.create-price
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: get-all-active-prices
+        description: 'Get All Active Prices'
+        call: offers-prices.get-all-active-prices
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/prices/{itemId}
+      name: prices-itemid
+      description: REST surface for prices-itemid.
+      operations:
+      - method: GET
+        name: get-price-by-itemid
+        description: 'Get Price by Itemid'
+        call: offers-prices.get-price-by-itemid
+        with:
+          itemId: rest.path.itemId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-price-by-itemid
+        description: 'Delete Price by Itemid'
+        call: offers-prices.delete-price-by-itemid
+        with:
+          itemId: rest.path.itemId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/prices/sku/{sku}
+      name: prices-sku-sku
+      description: REST surface for prices-sku-sku.
+      operations:
+      - method: GET
+        name: get-price-by-sku
+        description: 'Get Price by SKU'
+        call: offers-prices.get-price-by-sku
+        with:
+          sku: rest.path.sku
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-price-by-sku
+        description: 'Delete Price by SKU'
+        call: offers-prices.delete-price-by-sku
+        with:
+          sku: rest.path.sku
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/prices/batch
+      name: prices-batch
+      description: REST surface for prices-batch.
+      operations:
+      - method: POST
+        name: create-batch-prices
+        description: 'Create Batch Prices'
+        call: offers-prices.create-batch-prices
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: offers-prices-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Offers — Prices. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-create-price
+      description: 'Create Price'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: offers-prices.create-price
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-all-active-prices
+      description: 'Get All Active Prices'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: offers-prices.get-all-active-prices
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-price-by-itemid
+      description: 'Get Price by Itemid'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: offers-prices.get-price-by-itemid
+      with:
+        itemId: tools.itemId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-delete-price-by-itemid
+      description: 'Delete Price by Itemid'
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: offers-prices.delete-price-by-itemid
+      with:
+        itemId: tools.itemId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-price-by-sku
+      description: 'Get Price by SKU'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: offers-prices.get-price-by-sku
+      with:
+        sku: tools.sku
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-delete-price-by-sku
+      description: 'Delete Price by SKU'
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: offers-prices.delete-price-by-sku
+      with:
+        sku: tools.sku
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-batch-prices
+      description: 'Create Batch Prices'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: offers-prices.create-batch-prices
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

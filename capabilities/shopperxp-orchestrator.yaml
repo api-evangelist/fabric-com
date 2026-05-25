@@ -1,0 +1,478 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Cart Orchestrator (ShopperXP)
+  description: 'fabric Cart Orchestrator (ShopperXP). 10 operations. Lead operation: Get the Cart. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Cart Orchestrator
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: shopperxp-orchestrator
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Cart Orchestrator (ShopperXP) consumed operations from fabric-shopperxp-openapi.yml.
+    resources:
+    - name: orchestrator-carts-cartid
+      path: /orchestrator/carts/{cartId}
+      operations:
+      - name: get-the-cart
+        method: GET
+        description: 'Get the Cart'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+      - name: delete-cart
+        method: DELETE
+        description: 'Delete Cart'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+    - name: orchestrator-carts-cartid-coupons-couponcode
+      path: /orchestrator/carts/{cartId}/coupons/{couponCode}
+      operations:
+      - name: apply-coupon
+        method: POST
+        description: 'Apply Coupon'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: couponCode
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: removes-coupon
+        method: DELETE
+        description: 'Removes Coupon'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: couponCode
+          in: path
+          type: string
+          required: true
+    - name: orchestrator-carts-cartid-items
+      path: /orchestrator/carts/{cartId}/items
+      operations:
+      - name: add-items
+        method: POST
+        description: 'Add Items'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: update-items
+        method: PATCH
+        description: 'Update Items'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: delete-items
+        method: DELETE
+        description: 'Delete Items'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+    - name: orchestrator-carts-cartid-items-itemid-actions-split
+      path: /orchestrator/carts/{cartId}/items/{itemId}/actions/split
+      operations:
+      - name: split-line-items
+        method: POST
+        description: 'Split Line Items'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: itemId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: orchestrator-carts-cartid-payments-actions-authorize
+      path: /orchestrator/carts/{cartId}/payments/actions/authorize
+      operations:
+      - name: authorize-payments
+        method: POST
+        description: 'Authorize Payments'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: orchestrator-carts-cartid-payments-actions-void
+      path: /orchestrator/carts/{cartId}/payments/actions/void
+      operations:
+      - name: void-payments
+        method: POST
+        description: 'Void Payments'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: shopperxp-orchestrator-rest
+    port: 8080
+    description: REST adapter for fabric Cart Orchestrator (ShopperXP). One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/orchestrator/carts/{cartId}
+      name: orchestrator-carts-cartid
+      description: REST surface for orchestrator-carts-cartid.
+      operations:
+      - method: GET
+        name: get-the-cart
+        description: 'Get the Cart'
+        call: shopperxp-orchestrator.get-the-cart
+        with:
+          cartId: rest.path.cartId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-cart
+        description: 'Delete Cart'
+        call: shopperxp-orchestrator.delete-cart
+        with:
+          cartId: rest.path.cartId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/orchestrator/carts/{cartId}/coupons/{couponCode}
+      name: orchestrator-carts-cartid-coupons-couponcode
+      description: REST surface for orchestrator-carts-cartid-coupons-couponcode.
+      operations:
+      - method: POST
+        name: apply-coupon
+        description: 'Apply Coupon'
+        call: shopperxp-orchestrator.apply-coupon
+        with:
+          cartId: rest.path.cartId
+          couponCode: rest.path.couponCode
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: removes-coupon
+        description: 'Removes Coupon'
+        call: shopperxp-orchestrator.removes-coupon
+        with:
+          cartId: rest.path.cartId
+          couponCode: rest.path.couponCode
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/orchestrator/carts/{cartId}/items
+      name: orchestrator-carts-cartid-items
+      description: REST surface for orchestrator-carts-cartid-items.
+      operations:
+      - method: POST
+        name: add-items
+        description: 'Add Items'
+        call: shopperxp-orchestrator.add-items
+        with:
+          cartId: rest.path.cartId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: update-items
+        description: 'Update Items'
+        call: shopperxp-orchestrator.update-items
+        with:
+          cartId: rest.path.cartId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-items
+        description: 'Delete Items'
+        call: shopperxp-orchestrator.delete-items
+        with:
+          cartId: rest.path.cartId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/orchestrator/carts/{cartId}/items/{itemId}/actions/split
+      name: orchestrator-carts-cartid-items-itemid-actions-split
+      description: REST surface for orchestrator-carts-cartid-items-itemid-actions-split.
+      operations:
+      - method: POST
+        name: split-line-items
+        description: 'Split Line Items'
+        call: shopperxp-orchestrator.split-line-items
+        with:
+          cartId: rest.path.cartId
+          itemId: rest.path.itemId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/orchestrator/carts/{cartId}/payments/actions/authorize
+      name: orchestrator-carts-cartid-payments-actions-authorize
+      description: REST surface for orchestrator-carts-cartid-payments-actions-authorize.
+      operations:
+      - method: POST
+        name: authorize-payments
+        description: 'Authorize Payments'
+        call: shopperxp-orchestrator.authorize-payments
+        with:
+          cartId: rest.path.cartId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/orchestrator/carts/{cartId}/payments/actions/void
+      name: orchestrator-carts-cartid-payments-actions-void
+      description: REST surface for orchestrator-carts-cartid-payments-actions-void.
+      operations:
+      - method: POST
+        name: void-payments
+        description: 'Void Payments'
+        call: shopperxp-orchestrator.void-payments
+        with:
+          cartId: rest.path.cartId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: shopperxp-orchestrator-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Cart Orchestrator (ShopperXP). One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-get-the-cart
+      description: 'Get the Cart'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: shopperxp-orchestrator.get-the-cart
+      with:
+        cartId: tools.cartId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-delete-cart
+      description: 'Delete Cart'
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: shopperxp-orchestrator.delete-cart
+      with:
+        cartId: tools.cartId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-apply-coupon
+      description: 'Apply Coupon'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shopperxp-orchestrator.apply-coupon
+      with:
+        cartId: tools.cartId
+        couponCode: tools.couponCode
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-removes-coupon
+      description: 'Removes Coupon'
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: shopperxp-orchestrator.removes-coupon
+      with:
+        cartId: tools.cartId
+        couponCode: tools.couponCode
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-add-items
+      description: 'Add Items'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shopperxp-orchestrator.add-items
+      with:
+        cartId: tools.cartId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-items
+      description: 'Update Items'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shopperxp-orchestrator.update-items
+      with:
+        cartId: tools.cartId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-delete-items
+      description: 'Delete Items'
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: shopperxp-orchestrator.delete-items
+      with:
+        cartId: tools.cartId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-split-line-items
+      description: 'Split Line Items'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shopperxp-orchestrator.split-line-items
+      with:
+        cartId: tools.cartId
+        itemId: tools.itemId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-authorize-payments
+      description: 'Authorize Payments'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shopperxp-orchestrator.authorize-payments
+      with:
+        cartId: tools.cartId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-void-payments
+      description: 'Void Payments'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: shopperxp-orchestrator.void-payments
+      with:
+        cartId: tools.cartId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

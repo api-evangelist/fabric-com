@@ -1,0 +1,2440 @@
+openapi: 3.0.0
+info:
+  title: Customers
+  description: >-
+    The fabric **Customers** API is used to create and manage details of
+    storefront customers, also referred to as shoppers. The `Customers` or
+    `Customer Address` APIs provide features for store admins to manage their
+    customers' details and addresses. The `Customer Self' API provide features
+    for customers or shoppers to independently manage their own details.
+  version: 3.0.0
+  x-audience: external-public
+  contact:
+    name: fabric Support
+    email: support@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+servers:
+  - url: https://api.fabric.inc/v3
+    description: Production
+tags:
+  - name: Customer Profile
+    description: >-
+      These endpoints provide the features for store admins to create and manage
+      customers' details.
+  - name: Customer Address
+    description: >-
+      These endpoints provide the features for store admins to create and manage
+      customers' addresses.
+  - name: Customer Self
+    description: >-
+      These endpoints provide the feature for customers or shoppers to
+      independently manage their details in the storefront.
+paths:
+  /Customers:
+    post:
+      tags:
+        - Customer Profile
+      summary: Add a New Customer
+      description: >-
+        Using this endpoint, you can add a new customer to the system. The
+        response includes an `id` which is required in subsequent calls, such as
+        `GET /customers/{customerId}`, `PUT /customers/{customerId}`, `PATCH
+        /customers/{customerId}`, and more. <br /> When `externalId` is
+        specified, the customers have the ability to manage their own details
+        through the storefront UI.
+      operationId: createCustomer
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        description: A sample request to add a new customer.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createCustomerRequest'
+        required: true
+      responses:
+        '201':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createCustomerResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    get:
+      tags:
+        - Customer Profile
+      summary: Get Customers
+      description: >-
+        Use this endpoint to get a paginated list of customers. <br /> By
+        specifying the query parameters `offset` and `limit`, you can narrow
+        down the search results. You can also `sort` the results in an ascending
+        or descending order. Additionally, with the `isDeleted` query parameter,
+        you can filter for either deleted or non-deleted customers. When no
+        query parameter is specified, by default, you get up to 10 records.
+      operationId: listCustomers
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - name: offset
+          in: query
+          description: >-
+            The number of records to skip before returning records. For example,
+            when offset is 20 and limit's 10, this endpoint returns records from
+            21 to 30.
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 0
+            default: 0
+        - name: limit
+          in: query
+          required: false
+          description: The maximum number of records in a single page.
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 2
+            default: 10
+        - name: sort
+          in: query
+          description: >-
+            The criteria to sort results, where `-` indicates a descending order
+            and `+` indicates an ascending order. You can apply sorting to the
+            following fields - `createdAt`, `updatedAt`, `firstName`,
+            `lastName`, `emailAddress` and `status`.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: '-updatedAt'
+        - name: isDeleted
+          in: query
+          required: false
+          description: >-
+            A flag indicating whether only the deleted customers need to be
+            included. Set to `true` to include only the deleted customers and
+            `false` to exclude deleted customers.
+          style: form
+          explode: true
+          schema:
+            type: boolean
+            example: false
+            enum:
+              - false
+              - true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listCustomerResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/{customerId}:
+    parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/customerIdPathParam'
+    get:
+      tags:
+        - Customer Profile
+      summary: Get Customer Details
+      description: >-
+        Using this endpoint, you can get details of a single customer by
+        `customerId`.
+      operationId: getCustomer
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    put:
+      tags:
+        - Customer Profile
+      summary: Update Customer Details
+      description: >-
+        Using this endpoint, you can update details of an existing customer by
+        `customerId`. <br /> This endpoint replaces the existing details of the
+        customer. If you want to make only a partial update, without replacing
+        the entire details, use the `PATCH /customers/{customerId}` endpoint.
+      operationId: updateCustomer
+      requestBody:
+        description: body request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomerRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    patch:
+      tags:
+        - Customer Profile
+      summary: Partially Update Customer Details
+      description: >-
+        Using this endpoint, you can partially update details of a customer by
+        `customerId`. To fully replace the details of an existing customer, use
+        the `PUT /customers/{customerId}` endpoint.
+      operationId: updateSpecifcDetailsOfCustomer
+      requestBody:
+        description: A sample request to partially update customer details.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomerRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    delete:
+      tags:
+        - Customer Profile
+      summary: Delete Customer
+      description: >-
+        With this endpoint, you can delete an existing customer data by
+        `customerId`.
+      operationId: deleteCustomer
+      responses:
+        '200':
+          $ref: '#/components/responses/deleteCustomerResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/{customerId}/actions/update-status:
+    parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/customerIdPathParam'
+    post:
+      tags:
+        - Customer Profile
+      summary: Update Customer Status
+      description: >-
+        With this endpoint, you can update the account status of an existing
+        customer by `customerId`.
+      operationId: updateCustomerStatus
+      requestBody:
+        description: A sample request to update customer's account status.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomerStatusRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/customerStatusUpdateResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/search:
+    parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+    post:
+      tags:
+        - Customer Profile
+      summary: Search for Customer
+      description: >-
+        Using this endpoint, you can search for customers based on filter
+        conditions. By specifying `offset` and `limit`, you can narrow down your
+        search results. In addition, using the `isDelete` property in the
+        request body, you can filter for either deleted or non-deleted
+        customers.
+      operationId: searchCustomer
+      requestBody:
+        description: A sample request to search for customers.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customerSearchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listCustomerResponse'
+        '400':
+          $ref: '#/components/responses/searchBadRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/{customerId}/customer-address:
+    parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/customerIdPathParam'
+    post:
+      tags:
+        - Customer Address
+      summary: Add a New Address
+      description: >-
+        Using this endpoint, you can add a new address for the customer by
+        `customerId`.
+      operationId: createCustomerAddress
+      requestBody:
+        description: A sample request to add customer's address.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customerAddressRequest'
+      responses:
+        '201':
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    get:
+      tags:
+        - Customer Address
+      summary: Get Customer's Addresses
+      description: >-
+        Using this endpoint, you can get all addresses of a customer. <br /> By
+        specifying the query parameters `offset` and `limit`, you can narrow
+        down the search results. You can also `sort` the results in an ascending
+        or descending order. Additionally, with the `isDeleted` query parameter,
+        you can filter for either deleted or non-deleted customers. When no
+        query parameter is specified, by default, you get up to 10 records.
+      operationId: listCustomersAddresses
+      parameters:
+        - name: offset
+          in: query
+          description: >-
+            The number of records to skip before returning records. For example,
+            when offset is 20 and limit's 10, this endpoint returns records from
+            21 to 30.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 0
+            default: 0
+        - name: limit
+          in: query
+          description: The maximum number of records per page.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+            default: 10
+        - name: sort
+          in: query
+          description: >-
+            The criteria to sort results, where `-` indicates a descending order
+            and `+` indicates an ascending order. You can sort the following
+            fields - `updatedAt`, `country`, `city`, and `region`.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: '-updatedAt'
+        - name: isDeleted
+          in: query
+          description: >-
+            A flag indicating whether only the deleted addresses must be
+            included in the response. Set to `true` to include only the deleted
+            addresses of the customers and `false` to exclude the deleted
+            addresses.
+          style: form
+          explode: true
+          schema:
+            type: boolean
+            example: false
+            enum:
+              - false
+              - true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listCustomerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/{customerId}/customer-address/{addressId}:
+    parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/customerIdPathParam'
+      - $ref: '#/components/parameters/addressIdPathParam'
+    get:
+      tags:
+        - Customer Address
+      summary: Get Customer's Address
+      description: >-
+        Using this endpoint, you can get a single address of a customer based on
+        the `customerId` and `addressId`.
+      operationId: getCustomersAddress
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerAddressNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    put:
+      tags:
+        - Customer Address
+      summary: Update Customer's Address
+      description: >-
+        Using this endpoint, you can update a customer's address based on the
+        `customerId` and `addressId`. This replaces the existing address with
+        the new one. If you want to make only a partial update, use the `PATCH
+        /customers/{customerId}/customer-address/{addressId}` endpoint.
+      operationId: updateAddressForCustomer
+      requestBody:
+        description: A sample request to update an address of a customer.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomerAddressRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerAddressNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    patch:
+      tags:
+        - Customer Address
+      summary: Partially Update Customer's Address
+      description: >-
+        Using this endpoint, you can partially update a customer's address based
+        on the `customerId` and `addressId`. To fully replace an existing
+        address, use the `PUT
+        /customers/{customerId}/customer-address/{addressId}` endpoint.
+      operationId: updateSpecificDetailsOfAddressForCustomer
+      requestBody:
+        description: A sample request to partially update the customer's address.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomerAddressRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerAddressNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    delete:
+      tags:
+        - Customer Address
+      summary: Delete Customer's Address
+      description: >-
+        Using this endpoint, you can delete an existing address of a customer
+        based on the `customerId` and `addressId`.
+      operationId: deleteCustomersAddress
+      responses:
+        '200':
+          $ref: '#/components/responses/deleteCustomerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerAddressNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/{customerId}/customer-address/search:
+    parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/customerIdPathParam'
+    post:
+      tags:
+        - Customer Address
+      summary: Search for Customer's Addresses
+      description: >-
+        With this endpoint, you can search for customer's addresses based on the
+        specified filter conditions. In addition, you can tailor the search
+        results by including or excluding the deleted addresses and the default
+        addresses.<br />**Note**:A customer can have a default address for both
+        billing and shipping.
+      operationId: searchCustomerAddress
+      requestBody:
+        description: A sample request to search for the customer's addresses.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customerAddressSearchRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listCustomerAddressResponse'
+        '400':
+          $ref: '#/components/responses/searchBadRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/self:
+    parameters:
+      - name: x-fabric-tenant-id
+        in: header
+        description: >-
+          A header used by fabric to identify the tenant making the request. You
+          must include tenant id in the authentication header for an API request
+          to access any of fabric’s endpoints. You can retrieve the tenant id ,
+          which is also called account id, from
+          [Copilot](/v3/platform/settings/account-details/getting-the-account-id).
+          This header is required.
+        schema:
+          type: string
+          example: 517fa9dfd42d8b00g1o3k312
+      - name: x-fabric-request-id
+        in: header
+        description: Unique request ID
+        schema:
+          type: string
+        example: 263e731c-45c8-11ed-b878-0242ac120002
+        required: false
+    get:
+      tags:
+        - Customer Self
+      summary: Get Customer Details - Customer Context
+      description: >-
+        Using this endpoint, a customer can view their details through the
+        storefront UI.
+      operationId: getCustomerSelf
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    put:
+      tags:
+        - Customer Self
+      summary: Update Customer Details - Customer Context
+      description: >-
+        Using this endpoint, customers can update their own details through the
+        storefront UI.
+      operationId: updateCustomerSelf
+      requestBody:
+        description: A sample request to update customer's details.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomerSelfRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customer'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/self/customer-address:
+    parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+    get:
+      tags:
+        - Customer Self
+      summary: View Addresses - Customer Context
+      description: >-
+        Using this endpoint, a customer can view their own addresses through the
+        storefront UI.
+      operationId: listCustomersAddressSelf
+      parameters:
+        - name: offset
+          in: query
+          description: >-
+            The number of records to skip before returning records. For example,
+            when offset is 20 and limit's 10, this endpoint returns records from
+            21 to 30.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 0
+        - name: limit
+          in: query
+          description: The maximum number of records in a single page.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 10
+        - name: sort
+          in: query
+          description: >-
+            The criteria to sort results, where `-` indicates a descending order
+            and `+` indicates an ascending order. You can sort the following
+            fields - `updatedAt`, `country`, `city`, and `region`.
+          required: false
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: '-updatedAt'
+            default: '-updatedAt'
+        - name: isDeleted
+          in: query
+          description: >-
+            A flag indicating whether only the deleted addresses are returned in
+            the response. Specify `true` to get only the deleted addresses and
+            `false` to get only the non-deleted ones.
+          style: form
+          explode: true
+          schema:
+            type: boolean
+            default: false
+            example: false
+            enum:
+              - false
+              - true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listCustomerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    post:
+      tags:
+        - Customer Self
+      summary: Add Address - Customer Context.
+      description: >-
+        Using this endpoint, a customer can add their address through a
+        storefront UI.
+      operationId: createCustomerAddressSelf
+      requestBody:
+        description: A sample request body to add address.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customerAddressRequest'
+        required: true
+      responses:
+        '201':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /customers/self/customer-address/{addressId}:
+    parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/addressIdPathParam'
+    get:
+      tags:
+        - Customer Self
+      summary: View Address - Customer Context
+      description: >-
+        Using this endpoint, a customer can view their own address through the
+        storefront UI based on the `addressId`.
+      operationId: getAddressForCustomerSelf
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerAddressNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    put:
+      tags:
+        - Customer Self
+      summary: Update Address - Customer Context
+      description: >-
+        Using this endpoint, a customer can update their own address through the
+        storefront UI based on `addressId`.
+      operationId: updateAddressForCustomerSelf
+      requestBody:
+        description: A sample request for update address.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/customerAddressRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerAddressNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    delete:
+      tags:
+        - Customer Self
+      summary: Delete Address - Customer Context
+      description: >-
+        Using this endpoint, a customer can delete their own address through the
+        storefront UI based on `addressId`.
+      operationId: deleteCustomersAddressSelf
+      responses:
+        '200':
+          $ref: '#/components/responses/deleteCustomerAddressResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/customerAddressNotFound'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+components:
+  securitySchemes:
+    bearerAuth:
+      description: The access token.
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    xFabricTenantId:
+      name: x-fabric-tenant-id
+      in: header
+      description: >-
+        A header used by fabric to identify the tenant making the request. You
+        must include tenant id in the authentication header for an API request
+        to access any of fabric’s endpoints. You can retrieve the tenant id ,
+        which is also called account id, from
+        [Copilot](/v3/platform/settings/account-details/getting-the-account-id).
+        This header is required.
+      schema:
+        type: string
+        example: 517fa9dfd42d8b00g1o3k312
+    xFabricRequestId:
+      name: x-fabric-request-id
+      in: header
+      description: A UUID of the request.
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    customerIdPathParam:
+      in: path
+      name: customerId
+      description: >-
+        A 24-character system-generated ID of the customer. This is returned in
+        the response of the `POST /customers` endpoint.
+      required: true
+      style: simple
+      schema:
+        type: string
+        example: 61a558b1b155125f02be7fb1
+    addressIdPathParam:
+      in: path
+      name: addressId
+      description: A 24-character system-generated ID of the customer's address.
+      required: true
+      style: simple
+      schema:
+        type: string
+        example: 61a558b1b155125f02be7fb2
+  headers:
+    xFabricRequestId:
+      description: A unique request ID.
+      schema:
+        type: string
+        example: 263e731c-45c8-11ed-b878-0242ac120002
+  schemas:
+    message:
+      description: The response message.
+      type: object
+      properties:
+        type:
+          description: A machine-readable code.
+          type: string
+          example: SUCCESS
+        message:
+          description: A human-friendly message corresponding to the `type`.
+          type: string
+          example: Success message
+      required:
+        - type
+        - message
+    customerAddressRequest:
+      required:
+        - address
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/commonAddress'
+        isDefault:
+          description: >-
+            A flag indicating whether the address is the default one. `true`
+            indicates the address is the default address and `false` indicates
+            otherwise.
+          type: boolean
+          example: false
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            landmark: Beach
+    commonAddress:
+      type: object
+      description: The address details.
+      required:
+        - type
+      properties:
+        addressLine1:
+          description: The first line of the address.
+          type: string
+          example: 123 Main St.
+        addressLine2:
+          description: The second line of the address.
+          type: string
+          example: Suite 100
+        addressLine3:
+          description: The third line of the address.
+          type: string
+          example: Seventh floor
+        addressLine4:
+          description: The fourth line of the address.
+          type: string
+          example: 'Attention: Pat E. Doe'
+        city:
+          description: The city name in the address.
+          type: string
+          example: Seattle
+        region:
+          description: The region or state name in the address.
+          type: string
+          example: WA
+        postalCode:
+          description: The postal or ZIP code of the address.
+          type: string
+          example: 98121
+        county:
+          description: The administrative division or county within a country or state.
+          type: string
+          example: King County
+        country:
+          description: >-
+            The country code, which can be a full name, or an ISO 3166-1 alpha-2
+            or alpha-3 code.
+          type: string
+          example: US
+        type:
+          description: The address type.
+          type: string
+          enum:
+            - BILLING
+            - SHIPPING
+          example: BILLING
+        latitude:
+          description: >-
+            The geographical `latitude` used with `longitude` to locate the
+            exact address. The coordinates are provided in decimal degrees
+            format, with negative values indicating locations to the west.
+          type: number
+          format: double
+          example: 47.6205
+        longitude:
+          description: >-
+            The geographical `longitude` used with `latitude` to locate the
+            exact address. The coordinates are provided in decimal degrees
+            format, with negative values indicating locations to the west.
+          type: number
+          format: double
+          example: -122.3493
+    updateCommonAddressRequest:
+      type: object
+      description: The address details.
+      properties:
+        addressLine1:
+          description: The first line of the address.
+          type: string
+          example: 123 Main St.
+        addressLine2:
+          description: The second line of the address.
+          type: string
+          example: Suite 100
+        addressLine3:
+          description: The third line of the address.
+          type: string
+          example: Seventh floor
+        addressLine4:
+          description: The fourth line of the address, for additional information.
+          type: string
+          example: 'Attention: Pat E. Doe'
+        city:
+          description: The city name in the address.
+          type: string
+          example: Seattle
+        region:
+          description: The region or state name in the address.
+          type: string
+          example: WA
+        postalCode:
+          description: The postal or ZIP code of the address.
+          type: string
+          example: 98121
+        country:
+          description: >-
+            The country code, which can be a full name, an ISO 3166-1 alpha-2,
+            or alpha-3 code.
+          type: string
+          example: US
+        latitude:
+          description: >-
+            The geographical `latitude` used with `longitude` to locate an exact
+            address. The coordinates are provided in decimal degrees format,
+            with negative values indicating locations to the west.
+          type: number
+          format: double
+          example: 47.6205
+        longitude:
+          description: >-
+            The geographical `longitude` used with `latitude` to locate an
+            address. The coordinates are provided in decimal degrees format,
+            with negative values indicating locations to the west.
+          type: number
+          format: double
+          example: -122.3493
+    customerAddressResponse:
+      required:
+        - id
+        - address
+        - isDeleted
+        - createdAt
+        - updatedAt
+      type: object
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated ID of the address.
+          example: 61604a30fdfacd0009816e44
+          uniqueItems: true
+        address:
+          $ref: '#/components/schemas/commonAddress'
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            landmark: Beach
+        isDeleted:
+          type: boolean
+          description: >-
+            A flag indicating whether the address is deleted. `true` indicates
+            the address is deleted and `false` indicates otherwise.
+          example: false
+        isDefault:
+          description: >-
+            A flag indicating whether the address is the default one.`true`
+            indicates the given address is the default address and `false`
+            indicates otherwise.
+          type: boolean
+          example: false
+        deletedAt:
+          description: The time when the address was deleted, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+          nullable: true
+        createdAt:
+          description: The time when the address was created, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+        updatedAt:
+          description: The time when the address was the last updated, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+          nullable: true
+    createCustomerRequest:
+      type: object
+      required:
+        - name
+        - emailAddress
+      properties:
+        name:
+          $ref: '#/components/schemas/commonName'
+        emailAddress:
+          type: string
+          description: The customer's email.
+          format: email
+          example: test@example.com
+        phone:
+          $ref: '#/components/schemas/phone'
+        externalId:
+          type: string
+          description: A UUID of the customer.
+          example: 1231012312-312-31231asda
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            type: shopper
+    phone:
+      type: object
+      properties:
+        number:
+          type: string
+          description: The customer's phone number.
+          example: 15555551234
+        type:
+          type: string
+          description: The type of phone number.
+          example: MOBILE
+          nullable: true
+          enum:
+            - MOBILE
+            - HOME
+            - BUSINESS
+    commonName:
+      type: object
+      description: The full name of the customer.
+      required:
+        - firstName
+        - lastName
+      properties:
+        title:
+          description: The customer's title, such as Mr., Mrs, and Dr.
+          type: string
+          example: Dr.
+        firstName:
+          description: The customer's first name.
+          type: string
+          example: Pat
+        middleName:
+          description: The customer's middle name.
+          type: string
+          example: E
+        lastName:
+          description: The customer's last name.
+          type: string
+          example: Doe
+        suffix:
+          description: The suffix for the customer's name, such as Jr., PhD, and more.
+          type: string
+          example: Jr.
+    updateCommonNameRequest:
+      type: object
+      description: The customer's full name.
+      properties:
+        title:
+          description: The customer's title, such as Mr., Mrs, Dr, and more.
+          type: string
+          example: Dr.
+        firstName:
+          description: The customer's first name.
+          type: string
+          example: Pat
+        middleName:
+          description: The customer's middle name or initial.
+          type: string
+          example: E
+        lastName:
+          description: The customer's last name.
+          type: string
+          example: Kake
+        suffix:
+          description: The suffix for the customer's name, such as Jr., PhD, and more.
+          type: string
+          example: Jr.
+    createCustomerResponse:
+      required:
+        - id
+        - isDeleted
+        - createdAt
+        - updatedAt
+        - name
+        - emailAddress
+      type: object
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated customer ID.
+          uniqueItems: true
+          example: 61df41892bf06d00092d0d8a
+        name:
+          $ref: '#/components/schemas/commonName'
+        status:
+          description: The status of the customer.
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - BLOCKED
+          example: ACTIVE
+        emailAddress:
+          type: string
+          description: The customer's email.
+          format: email
+          example: test@example.com
+        phone:
+          $ref: '#/components/schemas/phone'
+        externalId:
+          type: string
+          description: A UUID of the customer.
+          example: 1231012312-312-31231asda
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            middleName: user
+        isDeleted:
+          type: boolean
+          description: >-
+            A flag indicating whether the customer data is deleted. `true`
+            indicates the customer data is deleted and `false` indicates
+            otherwise.
+          example: false
+        deletedAt:
+          description: The time when the customer data was deleted, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+          nullable: true
+        createdAt:
+          description: The time when the customer was added, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+        updatedAt:
+          description: The time when the customer details were last updated, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+          nullable: true
+    customer:
+      required:
+        - id
+        - isDeleted
+        - createdAt
+        - updatedAt
+        - name
+        - emailAddress
+      type: object
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated ID of the customer.
+          uniqueItems: true
+          example: 61df41892bf06d00092d0d8a
+        name:
+          $ref: '#/components/schemas/commonName'
+        status:
+          description: The account status of the customer.
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - BLOCKED
+          example: ACTIVE
+        emailAddress:
+          type: string
+          description: The customer's email.
+          format: email
+          example: test@example.com
+        phone:
+          $ref: '#/components/schemas/phone'
+        externalId:
+          type: string
+          description: A UUID of the customer.
+          example: 1231012312-312-31231asda
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            middleName: user
+        isDeleted:
+          type: boolean
+          description: >-
+            A flag indicating whether the customer's record is deleted. `true`
+            indicates, the customer's record is deleted and false indicates
+            otherwise.
+          example: false
+        deletedAt:
+          description: The time when the customer's record was deleted, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+          nullable: true
+        createdAt:
+          description: The time when the customer was added to the system, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+        updatedAt:
+          description: The time when the customer data was last updated, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+          nullable: true
+        defaultAddress:
+          description: The default addresses of the customer.
+          type: array
+          items:
+            $ref: '#/components/schemas/customerAddressResponse'
+    customerSearchRequest:
+      type: object
+      description: The criteria to search for customers.
+      required:
+        - match
+      properties:
+        sort:
+          type: string
+          description: >-
+            The criteria to sort results, where `-` indicates a descending order
+            and `+` indicates an ascending order. You can sort the following
+            fields - `createdAt`, `updatedAt`, `firstName`, `lastName`,
+            `status`, and `emailAddress`.
+          example: +firstName,-createdAt
+        match:
+          description: match
+          allOf:
+            - $ref: '#/components/schemas/customerMatch'
+        offset:
+          type: number
+          description: >-
+            The number of records to skip before returning records. For example,
+            when offset is 20 and limit's 10, this endpoint returns records from
+            21 to 30.
+          default: 0
+          example: 0
+        limit:
+          type: number
+          description: The maximum number of records in a single page.
+          example: 10
+          default: 20
+    customerAddressSearchRequest:
+      type: object
+      description: The criteria to search for customer's addresses.
+      required:
+        - match
+      properties:
+        sort:
+          type: string
+          description: >-
+            The criteria to sort results, where `-` indicates a descending order
+            and `+` indicates an ascending order. You can sort the following
+            fields - `createdAt`, `updatedAt`, `type`, and `country`.
+          example: '-createdAt'
+        match:
+          description: match
+          allOf:
+            - $ref: '#/components/schemas/customerAddressMatch'
+        offset:
+          type: number
+          description: >-
+            The number of records to skip before returning records. For example,
+            when offset is 20 and limit's 10, this endpoint returns records from
+            21 to 30.
+          default: 0
+          example: 0
+        limit:
+          type: number
+          description: The maximum number of records in a single page.
+          example: 10
+          default: 20
+    updateCustomerStatusRequest:
+      type: object
+      properties:
+        status:
+          description: The status of the customer's account.
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - BLOCKED
+          example: ACTIVE
+    updateCustomerRequest:
+      type: object
+      required:
+        - name
+        - emailAddress
+      properties:
+        name:
+          $ref: '#/components/schemas/updateCommonNameRequest'
+        emailAddress:
+          type: string
+          description: The customer's email.
+          format: email
+          example: test@example.com
+        phone:
+          $ref: '#/components/schemas/phone'
+        externalId:
+          type: string
+          description: A UUID of the customer.
+          example: 1231012312-312-31231asda
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            middleName: user
+    updateCustomerAddressRequest:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/updateCommonAddressRequest'
+        isDefault:
+          description: >-
+            A flag indicating whether the address is the default one. `true`
+            indicates the address is the default address and `false` indicates
+            otherwise.
+          type: boolean
+          example: false
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            landmark: Beach
+    updateCustomerSelfRequest:
+      type: object
+      required:
+        - name
+        - emailAddress
+      properties:
+        name:
+          $ref: '#/components/schemas/updateCommonNameRequest'
+        emailAddress:
+          type: string
+          description: The customer's email.
+          format: email
+          example: test@example.com
+        phone:
+          $ref: '#/components/schemas/phone'
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            middleName: user
+    customerMatch:
+      type: object
+      description: The criteria to search for customers.
+      properties:
+        id:
+          $ref: '#/components/schemas/searchId'
+        firstName:
+          $ref: '#/components/schemas/searchFirstName'
+        lastName:
+          $ref: '#/components/schemas/searchLastName'
+        emailAddress:
+          $ref: '#/components/schemas/searchEmailAddress'
+        externalId:
+          $ref: '#/components/schemas/searchExternalId'
+        createdAt:
+          $ref: '#/components/schemas/searchCreatedAt'
+        updatedAt:
+          $ref: '#/components/schemas/searchUpdatedAt'
+        deletedAt:
+          $ref: '#/components/schemas/searchDeletedAt'
+        status:
+          $ref: '#/components/schemas/searchStatus'
+        additionalAttributes:
+          $ref: '#/components/schemas/searchAdditionalAttribute'
+        isDeleted:
+          $ref: '#/components/schemas/searchIsDeleted'
+    customerAddressMatch:
+      type: object
+      description: The criteria to search for customer's address.
+      properties:
+        id:
+          $ref: '#/components/schemas/searchId'
+        type:
+          $ref: '#/components/schemas/searchType'
+        addressLine1:
+          $ref: '#/components/schemas/searchAddressLine'
+        city:
+          $ref: '#/components/schemas/searchCity'
+        region:
+          $ref: '#/components/schemas/searchRegion'
+        postalCode:
+          $ref: '#/components/schemas/searchPostalCode'
+        county:
+          $ref: '#/components/schemas/searchCounty'
+        country:
+          $ref: '#/components/schemas/searchCountry'
+        latitude:
+          $ref: '#/components/schemas/searchLatitude'
+        longitude:
+          $ref: '#/components/schemas/searchLongitude'
+        createdAt:
+          $ref: '#/components/schemas/searchCreatedAt'
+        updatedAt:
+          $ref: '#/components/schemas/searchUpdatedAt'
+        deletedAt:
+          $ref: '#/components/schemas/searchDeletedAt'
+        additionalAttributes:
+          $ref: '#/components/schemas/searchAdditionalAttribute'
+        isDeleted:
+          $ref: '#/components/schemas/searchIsDeleted'
+        isDefault:
+          $ref: '#/components/schemas/searchIsDefault'
+    searchId:
+      type: object
+      description: A unique identifier of the search criteria.
+      properties:
+        op:
+          type: string
+          enum:
+            - IN
+            - EQUALS
+          description: The type of search operation.
+          example: IN
+        value:
+          type: string
+          description: A 24-character system-generated ID of the given search criteria.
+          example: 61df41892bf06d00092d0d8a
+      required:
+        - op
+        - value
+    searchFirstName:
+      type: object
+      description: The criteria to search for customers based on their first name.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The customer's first name.
+          example: Pat
+      required:
+        - op
+        - value
+    searchLastName:
+      type: object
+      description: The criteria to search for customers based on their last name.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The customer's last name.
+          example: Kake
+      required:
+        - op
+        - value
+    searchEmailAddress:
+      type: object
+      description: The criteria to search for customers based on their email.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The customer's email address.
+          example: pat.kake@example.com
+      required:
+        - op
+        - value
+    searchExternalId:
+      type: object
+      description: The criteria to search for customers based on their `externalId`.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          enum:
+            - IN
+            - EQUALS
+          example: IN
+        value:
+          type: string
+          description: The value of the `externalId`.
+          example: 1231012312-312-31231asda
+      required:
+        - op
+        - value
+    searchStatus:
+      type: object
+      description: The criteria to search for customers based on their account status.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The customer's account status.
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - BLOCKED
+          example: ACTIVE
+      required:
+        - op
+        - value
+    searchCreatedAt:
+      type: object
+      description: >-
+        The criteria to search for customers or their addresses based on a
+        specific creation date or within a creation date range.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation, such as equals, less than (LT),
+            greater than (GT), less than or equal to (LTE), greater than or
+            equal to (GTE), or within a specified range.
+          enum:
+            - EQUALS
+            - LTE
+            - GTE
+            - GT
+            - LT
+            - RANGE
+          example: LTE
+        value:
+          type: string
+          description: The time of creation, in UTC format.
+          example: '2023-08-30T23:20:42.822Z'
+        startCreatedAt:
+          type: string
+          description: >-
+            The starting value of the creation date range. This is used with the
+            `endCreatedAt` property.
+          example: '2023-08-30T23:20:42.822Z'
+        endCreatedAt:
+          type: string
+          description: >-
+            The ending value of the creation date range. This is used with the
+            `startCreatedAt` property.
+          example: '2023-08-31T23:20:42.822Z'
+      example:
+        op: LTE
+        value: '2023-08-30T23:20:42.822Z'
+      required:
+        - op
+    searchUpdatedAt:
+      type: object
+      description: >-
+        The criteria to search for customers or their addresses based on a
+        specific date or date range in which the record was updated.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation, such as equals, less than (LT),
+            greater than (GT), less than or equal to (LTE), greater than or
+            equal to (GTE), or within a specified range.
+          enum:
+            - EQUALS
+            - LTE
+            - GTE
+            - GT
+            - LT
+            - RANGE
+          example: LTE
+        value:
+          type: string
+          description: The time of last update, in UTC format.
+          example: '2023-08-30T23:20:42.822Z'
+        startUpdatedAt:
+          type: string
+          description: >-
+            The starting value of the `updatedAt` date range. This is used with
+            the `endUpdatedAt` property.
+          example: '2023-08-30T23:20:42.822Z'
+        endUpdatedAt:
+          type: string
+          description: >-
+            The ending value of the `updatedAt` date range. This is used with
+            the `startUpdatedAt` property.
+          example: '2023-08-31T23:20:42.822Z'
+      example:
+        op: LTE
+        value: '2023-08-30T23:20:42.822Z'
+      required:
+        - op
+    searchDeletedAt:
+      type: object
+      description: >-
+        The criteria to search for customers or their addresses based on a
+        specific deletion date or within a deletion date range.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation, such as equals, less than (LT),
+            greater than (GT), less than or equal to (LTE), greater than or
+            equal to (GTE), or within a specified range.
+          enum:
+            - EQUALS
+            - LTE
+            - GTE
+            - GT
+            - LT
+            - RANGE
+          example: LTE
+        value:
+          type: string
+          description: The time of deletion, in UTC format.
+          example: '2023-08-30T23:20:42.822Z'
+        startDeletedAt:
+          type: string
+          description: >-
+            The starting value of the `deletedAt` date range. This is used with
+            the `endDeletedAt` property.
+          example: '2023-08-30T23:20:42.822Z'
+        endDeletedAt:
+          type: string
+          description: >-
+            The ending value of the `deletedAt` date range. This is used with
+            the `startDeletedAt` property.
+          example: '2023-08-31T23:20:42.822Z'
+      example:
+        op: LTE
+        value: '2023-08-30T23:20:42.822Z'
+      required:
+        - op
+    searchAdditionalAttribute:
+      type: object
+      description: >-
+        The criteria to search for customers or their addresses based on
+        additional attributes.
+      properties:
+        key:
+          type: string
+          description: >-
+            The key for the additional attribute. This should be the field name
+            given in the `additionalAttributes` schema.
+          example: gps
+      anyOf:
+        - $ref: '#/components/schemas/searchStringOperation'
+        - $ref: '#/components/schemas/searchNumberOrDateOperation'
+      required:
+        - key
+        - op
+    searchStringOperation:
+      type: object
+      description: The criteria to search by a string value.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The value of the string.
+          example: beach
+    searchNumberOrDateOperation:
+      type: object
+      description: >-
+        The criteria to search for records by number, date, range of numbers, or
+        range of dates.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation, such as equals, less than (LT),
+            greater than (GT), less than or equal to (LTE), greater than or
+            equal to (GTE), or within a specified range.
+          enum:
+            - EQUALS
+            - LTE
+            - GTE
+            - GT
+            - LT
+            - RANGE
+          example: LTE
+        value:
+          type: string
+          description: The value of the number or the date.
+          example: '2023-08-30T23:20:42.822Z'
+        fromValue:
+          type: string
+          description: >-
+            The starting value of the number or date range. This is used with
+            the `toValue` property.
+          example: '2023-08-30T23:20:42.822Z'
+        toValue:
+          type: string
+          description: >-
+            The ending value of the number or date range. This is used with the
+            `fromValue` property.
+          example: '2023-08-31T23:20:42.822Z'
+      example:
+        op: LTE
+        value: '2023-08-30T23:20:42.822Z'
+    searchType:
+      type: object
+      description: The criteria to search based on the type of address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The type of address.
+          enum:
+            - BILLING
+            - SHIPPING
+          example: BILLING
+      required:
+        - op
+        - value
+    searchAddressLine:
+      type: object
+      description: >-
+        The criteria to search by the first, second, or third line of the
+        customer's address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The first, second, or third line of the customer's address.
+          example: 123 Main St.
+      required:
+        - op
+        - value
+    searchCity:
+      type: object
+      description: >-
+        The criteria to search for customer's addresses based on the `city`
+        given in the address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations. - IN - NOT_IN - EQUALS - CONTAINS - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The city name.
+          example: Seattle
+      required:
+        - op
+        - value
+    searchRegion:
+      type: object
+      description: >-
+        The criteria to search for customer's addresses based on the `region`
+        given in the address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The region name.
+          example: WA
+      required:
+        - op
+        - value
+    searchPostalCode:
+      type: object
+      description: >-
+        The criteria to search for customer's addresses based on `postalCode`
+        given in the address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The postal or ZIP code of the address.
+          example: 98121
+      required:
+        - op
+        - value
+    searchCounty:
+      type: object
+      description: >-
+        The criteria to search for customer's address based on the `county`
+        given in the address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations. - IN - NOT_IN - EQUALS - CONTAINS - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The county name.
+          example: King County
+    searchCountry:
+      type: object
+      description: >-
+        The criteria to search for the customer's address based on the `country`
+        given in the address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation. Multiple values, separated by commas,
+            can be used for the IN and NOT_IN operations, while only a single
+            value can be used for the EQUALS, CONTAINS, and NOT_EQUALS
+            operations.
+          enum:
+            - IN
+            - NOT_IN
+            - EQUALS
+            - CONTAINS
+            - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: >-
+            The country code, which can be a full name, ISO 3166-1 alpha-2, or
+            an alpha-3 code.
+          example: US
+      required:
+        - op
+        - value
+    searchLatitude:
+      type: object
+      description: >-
+        The criteria to search for customer's address based on latitude or a
+        range of latitudes given in the address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation, such as equals, less than (LT),
+            greater than (GT), less than or equal to (LTE), greater than or
+            equal to (GTE), or within a specified range.
+          enum:
+            - EQUALS
+            - LTE
+            - GTE
+            - GT
+            - LT
+            - RANGE
+          example: LTE
+        value:
+          type: number
+          description: >-
+            The latitude value in decimal degrees format; negative is degrees
+            West.
+          format: double
+          example: 47.6205
+        startLatitude:
+          type: number
+          description: >-
+            The starting value of the latitude range. This is used with the
+            `endLatitude` property. The coordinates are provided in decimal
+            degrees format, with negative values indicating locations to the
+            west.
+          format: double
+          example: 47.6205
+        endLatitude:
+          type: number
+          format: double
+          description: >-
+            The ending value of the latitude range. This is used with the
+            `startLatitude` property. The coordinates are provided in decimal
+            degrees format, with negative values indicating locations to the
+            west.
+          example: 47.6205
+      example:
+        op: LTE
+        value: 47.6205
+      required:
+        - op
+    searchLongitude:
+      type: object
+      description: >-
+        The criteria to search for customer's address based on longitude or a
+        range of longitude given in the address.
+      properties:
+        op:
+          type: string
+          description: >-
+            The type of search operation, such as equals, less than (LT),
+            greater than (GT), less than or equal to (LTE), greater than or
+            equal to (GTE), or within a specified range.
+          enum:
+            - EQUALS
+            - LTE
+            - GTE
+            - GT
+            - LT
+            - RANGE
+          example: LTE
+        value:
+          type: number
+          description: >-
+            The longitude value in decimal degrees format; negative is degrees
+            West.
+          format: double
+          example: -77.0364
+        startLongitude:
+          type: number
+          description: >-
+            The starting value of the longitude range. This is used with the
+            `endLongitude` property and formatted to decimal degrees; negative
+            is degrees West.
+          format: double
+          example: -77.0364
+        endLongitude:
+          type: number
+          format: double
+          description: >-
+            The ending value of the longitude range. This is used with the
+            `startLongitude` property and formatted to decimal degrees; negative
+            is degrees West.
+          example: -77.0364
+      example:
+        op: LTE
+        value: -77.0364
+      required:
+        - op
+    searchIsDeleted:
+      type: boolean
+      description: >-
+        A flag indicating whether the search results should include only deleted
+        addresses. Set to `true` to include only deleted addresses and `false`
+        to exclude deleted addresses.
+      enum:
+        - false
+        - true
+      example: false
+    searchIsDefault:
+      type: boolean
+      description: >-
+        A flag indicating whether the search results should include only default
+        addresses. Set to 'true' to include only default addresses and 'false'
+        to exclude default addresses.
+      enum:
+        - false
+        - true
+      example: true
+    customerStatusUpdate:
+      description: The details of customer's status.
+      type: object
+      properties:
+        type:
+          description: A machine-readable code.
+          type: string
+          example: SUCCESS
+        message:
+          description: A human-readable message corresponding to `type`.
+          type: string
+          example: Success message
+        status:
+          description: The customer's account status.
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+            - BLOCKED
+          example: ACTIVE
+      required:
+        - type
+        - message
+    Query:
+      type: object
+      description: The pagination criteria.
+      properties:
+        offset:
+          type: number
+          description: >-
+            The number of records to skip before returning records. For example,
+            when offset is 20 and limit's 10, you get records from 21 to 30.
+            When they're not specified, you get up to 10 records.
+          example: 0
+        limit:
+          type: number
+          description: The maximum number of records per page.
+          example: 20
+        count:
+          type: number
+          description: The total number of records in the response.
+          example: 100
+    listCustomerAddressResponse:
+      description: The list of customer addresses for the customerId.
+      type: object
+      properties:
+        query:
+          $ref: '#/components/schemas/Query'
+        data:
+          description: addresses of the sent customer
+          type: array
+          items:
+            $ref: '#/components/schemas/customerAddressResponse'
+    listCustomerResponse:
+      description: The list of customers.
+      type: object
+      properties:
+        query:
+          $ref: '#/components/schemas/Query'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/createCustomerResponse'
+  responses:
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
+    forbidden:
+      description: Forbidden Request
+      headers:
+        x-fabric-request-id:
+          description: Unique request ID
+          schema:
+            type: string
+            example: 263e731c-45c8-11ed-b878-0242ac120002
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          example:
+            type: REQUEST_DENIED
+            message: Forbidden
+    internalServerError:
+      description: The request is received but an internal error occurred
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          example:
+            type: INTERNAL_SERVER_ERROR
+            message: Internal server error
+    customerNotFound:
+      description: The resource isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          example:
+            type: CUSTOMER_NOT_FOUND
+            message: Data with the given identifier isn't found
+    customerAddressNotFound:
+      description: The specified resource isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            CustomerNotFound:
+              value:
+                type: CUSTOMER_NOT_FOUND
+                message: Data with the given identifier isn't found.
+            CustomerAddressNotFound:
+              value:
+                type: CUSTOMER_ADDRESS_NOT_FOUND
+                message: Data with the given identifier isn't found.
+    searchBadRequest:
+      description: Bad request
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            invalidAccountProvided:
+              value:
+                type: INVALID_ACCOUNT_PROVIDED
+                message: Invalid account provided for the request.
+            invalidSearchOperation:
+              value:
+                type: INVALID_SEARCH_OPERATION
+    badRequest:
+      description: Bad request
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            invalidAccountProvided:
+              value:
+                type: INVALID_ACCOUNT_PROVIDED
+                message: Invalid account provided for the request.
+    deleteCustomerResponse:
+      description: Delete customer response
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            customerDeletionSuccess:
+              value:
+                type: CUSTOMER_DELETED_SUCCESSFULLY
+                message: Customer deleted successfully
+            customerDeletedAlready:
+              value:
+                type: CUSTOMER_DELETED_SUCCESSFULLY
+                message: Customer already deleted
+    deleteCustomerAddressResponse:
+      description: Delete customer address response
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            customerAddressDeletionSuccess:
+              value:
+                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
+                message: Customer address deleted successfully
+            customerAddressDeletedAlready:
+              value:
+                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
+                message: Customer address already deleted
+    customerStatusUpdateResponse:
+      description: Customer status update response
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/customerStatusUpdate'
+          examples:
+            customerStatusUpdateSuccess:
+              value:
+                type: CUSTOMER_STATUS_UPDATE_SUCCESS
+                message: Customer status updated successfully
+                status: ACTIVE
+            customerStatusAlreadyUpdated:
+              value:
+                type: CUSTOMER_STATUS_ALREADY_UPDATED
+                message: Customer already has the target status
+                status: ACTIVE
+security:
+  - bearerAuth: []

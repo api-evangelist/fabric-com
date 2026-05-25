@@ -1,0 +1,347 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Customers — Addresses
+  description: 'fabric Customers — Addresses. 7 operations. Lead operation: Add a New Address. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Addresses
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: customers-addresses
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Customers — Addresses consumed operations from fabric-customers-openapi.yml.
+    resources:
+    - name: customers-customerid-customer-address
+      path: /customers/{customerId}/customer-address
+      operations:
+      - name: add-a-new-address
+        method: POST
+        description: 'Add a New Address'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: customerId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: get-customer-s-addresses
+        method: GET
+        description: "Get Customer's Addresses"
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: customerId
+          in: path
+          type: string
+          required: true
+    - name: customers-customerid-customer-address-addressid
+      path: /customers/{customerId}/customer-address/{addressId}
+      operations:
+      - name: get-customer-s-address
+        method: GET
+        description: "Get Customer's Address"
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: customerId
+          in: path
+          type: string
+          required: true
+        - name: addressId
+          in: path
+          type: string
+          required: true
+      - name: update-customer-s-address
+        method: PUT
+        description: "Update Customer's Address"
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: customerId
+          in: path
+          type: string
+          required: true
+        - name: addressId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: partially-update-customer-s-address
+        method: PATCH
+        description: "Partially Update Customer's Address"
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: customerId
+          in: path
+          type: string
+          required: true
+        - name: addressId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: delete-customer-s-address
+        method: DELETE
+        description: "Delete Customer's Address"
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: customerId
+          in: path
+          type: string
+          required: true
+        - name: addressId
+          in: path
+          type: string
+          required: true
+    - name: customers-customerid-customer-address-search
+      path: /customers/{customerId}/customer-address/search
+      operations:
+      - name: search-for-customer-s-addresses
+        method: POST
+        description: "Search for Customer's Addresses"
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: customerId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: customers-addresses-rest
+    port: 8080
+    description: REST adapter for fabric Customers — Addresses. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/customers/{customerId}/customer-address
+      name: customers-customerid-customer-address
+      description: REST surface for customers-customerid-customer-address.
+      operations:
+      - method: POST
+        name: add-a-new-address
+        description: 'Add a New Address'
+        call: customers-addresses.add-a-new-address
+        with:
+          customerId: rest.path.customerId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: GET
+        name: get-customer-s-addresses
+        description: "Get Customer's Addresses"
+        call: customers-addresses.get-customer-s-addresses
+        with:
+          customerId: rest.path.customerId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/customers/{customerId}/customer-address/{addressId}
+      name: customers-customerid-customer-address-addressid
+      description: REST surface for customers-customerid-customer-address-addressid.
+      operations:
+      - method: GET
+        name: get-customer-s-address
+        description: "Get Customer's Address"
+        call: customers-addresses.get-customer-s-address
+        with:
+          customerId: rest.path.customerId
+          addressId: rest.path.addressId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: update-customer-s-address
+        description: "Update Customer's Address"
+        call: customers-addresses.update-customer-s-address
+        with:
+          customerId: rest.path.customerId
+          addressId: rest.path.addressId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: partially-update-customer-s-address
+        description: "Partially Update Customer's Address"
+        call: customers-addresses.partially-update-customer-s-address
+        with:
+          customerId: rest.path.customerId
+          addressId: rest.path.addressId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-customer-s-address
+        description: "Delete Customer's Address"
+        call: customers-addresses.delete-customer-s-address
+        with:
+          customerId: rest.path.customerId
+          addressId: rest.path.addressId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/customers/{customerId}/customer-address/search
+      name: customers-customerid-customer-address-search
+      description: REST surface for customers-customerid-customer-address-search.
+      operations:
+      - method: POST
+        name: search-for-customer-s-addresses
+        description: "Search for Customer's Addresses"
+        call: customers-addresses.search-for-customer-s-addresses
+        with:
+          customerId: rest.path.customerId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: customers-addresses-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Customers — Addresses. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-add-a-new-address
+      description: 'Add a New Address'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: customers-addresses.add-a-new-address
+      with:
+        customerId: tools.customerId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-customer-s-addresses
+      description: "Get Customer's Addresses"
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: customers-addresses.get-customer-s-addresses
+      with:
+        customerId: tools.customerId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-customer-s-address
+      description: "Get Customer's Address"
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: customers-addresses.get-customer-s-address
+      with:
+        customerId: tools.customerId
+        addressId: tools.addressId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-customer-s-address
+      description: "Update Customer's Address"
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: customers-addresses.update-customer-s-address
+      with:
+        customerId: tools.customerId
+        addressId: tools.addressId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-partially-update-customer-s-address
+      description: "Partially Update Customer's Address"
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: customers-addresses.partially-update-customer-s-address
+      with:
+        customerId: tools.customerId
+        addressId: tools.addressId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-delete-customer-s-address
+      description: "Delete Customer's Address"
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: customers-addresses.delete-customer-s-address
+      with:
+        customerId: tools.customerId
+        addressId: tools.addressId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-search-for-customer-s-addresses
+      description: "Search for Customer's Addresses"
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: customers-addresses.search-for-customer-s-addresses
+      with:
+        customerId: tools.customerId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

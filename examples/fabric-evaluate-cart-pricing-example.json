@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "https://api.fabric.inc/v3/price-engine/actions/evaluate-cart",
+    "headers": {
+      "Authorization": "Bearer {{FABRIC_ACCESS_TOKEN}}",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "currency": "USD",
+      "cart": {
+        "items": [
+          {"sku": "SKU-1001", "quantity": 2},
+          {"sku": "SKU-2042", "quantity": 1}
+        ]
+      },
+      "context": {"customerSegment": "VIP", "channel": "WEB"}
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "items": [
+        {"sku": "SKU-1001", "basePrice": 24.99, "effectivePrice": 19.99, "appliedPromotions": ["promo_vip20"]},
+        {"sku": "SKU-2042", "basePrice": 89.00, "effectivePrice": 89.00, "appliedPromotions": []}
+      ],
+      "cart": {"subtotal": 128.98, "discount": 10.00, "grandTotal": 118.98}
+    }
+  }
+}

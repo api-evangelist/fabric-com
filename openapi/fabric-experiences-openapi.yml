@@ -1,0 +1,1221 @@
+openapi: 3.0.0
+info:
+  version: 2.0.0
+  description: >-
+    fabric's Experiences (formerly known as XM) enables you to design,
+    implement, and optimize omnichannel e-commerce experiences, without having
+    to code. With XM, you can easily add parent and child categories through our
+    intuitive UI to create your website navigation, and seamlessly integrate
+    with our APIs    for dynamic navigation rendering on your store front. In
+    addition, developers can implement agile design by creating reusable design
+    components and use one set of data and APIs for every channel.
+  title: Experiences v2 (XM v2)
+  contact:
+    email: support@fabric.inc
+  license:
+    name: fabric Inc
+    url: https://fabric.inc/api-license
+servers:
+  - url: https://cdn.xm.fabric.inc/api
+tags:
+  - name: Pages
+    description: >-
+      XM Pages API allows you to fetch all the live pages, or a live page by a
+      specific URL
+  - name: Global Components
+    description: >-
+      XM Global Components API allows you to fetch all the live global component
+      data
+  - name: Menu
+    description: XM Menu API allows you to fetch menus and their items
+paths:
+  /v2/pages/live:
+    get:
+      summary: Get Live Pages for Specified Channels
+      description: Get a list of all the live pages for the specified channels
+      operationId: getLivePagesV2
+      tags:
+        - Pages
+      parameters:
+        - in: query
+          name: offset
+          description: Number of items to omit before collecting the resulting set
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          description: Total number of results
+          schema:
+            type: integer
+            default: 20
+        - in: query
+          name: channels
+          description: Comma-separated list of channel IDs
+          schema:
+            type: string
+            default: '12'
+        - $ref: '#/components/parameters/XSiteContent'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 200 response object
+                properties:
+                  message:
+                    type: string
+                    description: Status message
+                  data:
+                    type: object
+                    description: >-
+                      Object holding the query information and the list of live
+                      page versions
+                    properties:
+                      query:
+                        type: object
+                        description: Query information
+                        properties:
+                          limit:
+                            type: integer
+                            description: Maximum number of records
+                          offset:
+                            type: integer
+                            description: >-
+                              Number of items omitted before collecting the
+                              resulting set
+                          count:
+                            type: integer
+                            description: Total number of records
+                          channels:
+                            type: array
+                            description: Channel IDs to filter live pages
+                            items:
+                              type: string
+                              description: Channel ID
+                      livePages:
+                        type: array
+                        description: Array of live page versions
+                        items:
+                          type: object
+                          description: Version details of the live page
+                          allOf:
+                            - $ref: '#/components/schemas/PageVersion'
+                            - type: object
+                              properties:
+                                page:
+                                  allOf:
+                                    - $ref: '#/components/schemas/Page'
+                                    - type: object
+                                      properties:
+                                        typeId:
+                                          type: string
+                                          description: >-
+                                            Database ID for the page type linked to
+                                            the page
+                                        typeName:
+                                          type: string
+                                          description: Name of the page type
+                                        typeUrl:
+                                          type: string
+                                          description: URL associated with page type
+              examples:
+                LivePagesExist:
+                  summary: Live Pages Exist
+                  value:
+                    message: >-
+                      List of pages with queryParams
+                      {"channels":"02SZCA,00SZAU","offset":0,"limit":20}
+                    data:
+                      query:
+                        limit: 20
+                        offset: 0
+                        count: 1
+                        channels:
+                          - 02SZCA
+                          - 00SZAU
+                      livePages:
+                        - _id: 613a76a1fa9449000f6c36c3
+                          isArchived: false
+                          name: Default
+                          channel:
+                            - 12
+                          channels:
+                            - 00SZAU
+                            - 02SZCA
+                          createdAt: '2021-09-09T21:03:29.712Z'
+                          updatedAt: '2021-10-14T20:31:47.369Z'
+                          components:
+                            - _id: 61689237068cae000f12ef90
+                              id: AboutUs
+                              params:
+                                desktopHeroImage:
+                                  url: https://imgurl.com/path/myPhoto.jpg
+                                  altText: Custom image
+                                aboutUsContent:
+                                  - text: About us
+                                    firstText: Our Company
+                                    secondText: Our mission
+                                    thirdText: Our values
+                                    paragraph: false
+                                    dialog: false
+                                    components: []
+                                components: []
+                                additionalProp1: {}
+                              order: 1
+                              additionalProp1: {}
+                          endDate: '2099-12-31T00:00:00.000Z'
+                          pageId: 613a76a15363f9e9575dc953
+                          status: SCHEDULED
+                          versionId: 2446
+                          page:
+                            _id: 613a76a15363f9e9575dc953
+                            name: Components
+                            pageUrl: /components
+                            __v: 0
+                            channels:
+                              - 00SZAU
+                              - 02SZCA
+                            createdAt: '2021-09-09T21:03:29.617Z'
+                            isActive: true
+                            isArchived: false
+                            pageId: 1377
+                            seoFields:
+                              title: SEO
+                              description: SEO description
+                              _id: 612e4756c4b3c60010fff859
+                              metadata:
+                                - _id: 612e4756c4b3c60010fff85a
+                                  name: summary
+                                  content: Types of components
+                                  createdAt: '2021-08-31T15:14:30.973Z'
+                                  updatedAt: '2021-08-31T15:14:30.973Z'
+                              createdAt: '2021-08-31T15:14:30.973Z'
+                              updatedAt: '2021-08-31T15:14:30.973Z'
+                            typeId: 61325fd059cbdbe62e888bc0
+                            updatedAt: '2021-10-14T20:31:46.794Z'
+                            typeName: Product category page
+                            typeUrl: /category
+                NoLivePages:
+                  summary: No Live Pages
+                  value:
+                    message: >-
+                      No live pages found with queryParams
+                      {"channels":"01SZUS","offset":0,"limit":20}
+                    query:
+                      limit: 20
+                      offset: 0
+                      count: 0
+                      channels:
+                        - 01SZUS
+                    livePages: []
+        '404':
+          description: Request was received but no data matches the request parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 404 response object
+                properties:
+                  status:
+                    type: string
+                    description: Status description
+                  message:
+                    type: string
+                    description: String message to inform client of error
+                  statusCode:
+                    type: integer
+                    description: Status code of response
+                example:
+                  status: PAGE_NOT_FOUND
+                  message: No Page Entry Found.
+                  statusCode: 404
+        '500':
+          description: Request was received but an internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: >-
+                  An internal error occurred. If the issue persists please
+                  contact support@fabric.inc.
+  /v2/pages/metadata:
+    get:
+      summary: Get Meta Information About Live Pages
+      description: >-
+        Get all the meta information such as name, url, channels, and SEO
+        fields.
+      operationId: getLivePagesMetaV2
+      tags:
+        - Pages
+      parameters:
+        - in: query
+          name: channels
+          description: Comma-separated list of channel IDs
+          schema:
+            type: string
+            default: '12'
+        - in: query
+          name: size
+          description: Number of records to be returned
+          required: false
+          schema:
+            type: integer
+            format: int32
+            minimum: 1
+            default: 10
+            maximum: 100
+        - in: query
+          name: startCursor
+          description: Record pointer to get items after the specified record
+          required: false
+          schema:
+            type: string
+            minLength: 15
+            maxLength: 15
+            example: H796HJHGANLSADS
+        - $ref: '#/components/parameters/XSiteContent'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 200 response object
+                properties:
+                  size:
+                    description: Number of records to be returned
+                    type: integer
+                    format: int32
+                    minimum: 1
+                    default: 10
+                    maximum: 100
+                    example: 10
+                  nextCursor:
+                    description: Record pointer to get items in the next data set
+                    type: string
+                    minLength: 15
+                    maxLength: 15
+                    example: H796HJHGANLSADS
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PageMetaData'
+                example:
+                  size: 10
+                  nextCursor: H796HJHGANLSADS
+                  data:
+                    - id: 5f328bf0b7c15700071233b9
+                      name: HomePage
+                      updatedAt: '2021-09-09T21:03:29.617Z'
+                      publishedAt: '2021-09-09T21:03:29.617Z'
+                      metadata:
+                        url: /home
+                        channels:
+                          - 00SZAU
+                          - 02SZCA
+                        seoFields:
+                          title: SEO
+                          description: SEO description
+                          metadata:
+                            - name: background-color
+                              content: white
+        '204':
+          description: No live pages exist
+        '500':
+          description: Request was received but an internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: >-
+                  An internal error occurred. If the issue persists please
+                  contact support@fabric.inc.
+  /v2/page/live:
+    get:
+      summary: Get Live Page for a Channel by URL
+      description: Gets live page for the specified page URL and channel
+      operationId: getLivePageV2
+      tags:
+        - Pages
+      parameters:
+        - in: query
+          name: url
+          description: Relative page url for which to retrieve the live page version
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: channels
+          description: Comma-separated list of channel IDs
+          schema:
+            type: string
+            default: '12'
+        - name: x-site-context
+          in: header
+          description: >-
+            The `x-site-context` header is a JSON object that contains
+            information about the source you wish to pull from. The mandatory
+            `account` is the 24 character identifier found in Copilot. The
+            `channel` (Sales channel ID), `stage` (environment name), and `date`
+            attributes can be used to further narrow the scope of your data
+            source.
+          required: true
+          schema:
+            type: string
+            example: >-
+              {"date": "2023-01-01T00:00:00.000Z", "channel": 12, "account":
+              "1234abcd5678efgh9ijklmno","stage":"production"}
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 200 response object
+                properties:
+                  status_code:
+                    type: integer
+                    description: Response status code
+                  message:
+                    type: string
+                    description: Status message
+                  data:
+                    type: object
+                    description: Data object holding the live page and version details
+                    properties:
+                      page:
+                        type: object
+                        description: Page details
+                        allOf:
+                          - $ref: '#/components/schemas/Page'
+                          - type: object
+                            properties:
+                              pageType:
+                                type: object
+                                description: Details of page type
+                                properties:
+                                  isDefault:
+                                    type: boolean
+                                    description: >-
+                                      True = page type is default <br /> false =
+                                      page type is not default
+                                  name:
+                                    type: string
+                                    description: Name of page type
+                                  urlPrefix:
+                                    type: string
+                                    description: URL prefix associated with page type
+                      version:
+                        type: array
+                        description: Array holding live page version
+                        items:
+                          type: object
+                          description: Version details of the live page
+                          allOf:
+                            - $ref: '#/components/schemas/PageVersion'
+                            - type: object
+                              properties:
+                                __v:
+                                  type: integer
+                                  description: versionKey associated with the version
+                                startDate:
+                                  type: string
+                                  format: date-time
+                                  description: Timestamp of when version was published
+              example:
+                status_code: 200
+                message: 'Live version: 2446 for page: /components'
+                data:
+                  page:
+                    _id: 613a76a15363f9e9575dc953
+                    name: Components
+                    pageUrl: /components
+                    __v: 0
+                    channels:
+                      - 00SZAU
+                      - 02SZCA
+                    createdAt: '2021-09-09T21:03:29.617Z'
+                    isActive: true
+                    isArchived: false
+                    pageId: 1377
+                    seoFields:
+                      title: SEO
+                      description: SEO description
+                      _id: 612e4756c4b3c60010fff859
+                      metadata:
+                        - _id: 612e4756c4b3c60010fff85a
+                          name: summary
+                          content: Types of components
+                          createdAt: '2021-08-31T15:14:30.973Z'
+                          updatedAt: '2021-08-31T15:14:30.973Z'
+                      createdAt: '2021-08-31T15:14:30.973Z'
+                      updatedAt: '2021-08-31T15:14:30.973Z'
+                    updatedAt: '2021-10-14T20:31:46.794Z'
+                    pageType:
+                      isDefault: false
+                      name: Product category page
+                      urlPrefix: /category
+                  version:
+                    - _id: 613a76a1fa9449000f6c36c3
+                      isArchived: false
+                      name: Default
+                      channel:
+                        - 12
+                      channels:
+                        - 00SZAU
+                        - 02SZCA
+                      createdAt: '2021-09-09T21:03:29.712Z'
+                      updatedAt: '2021-10-14T20:31:47.369Z'
+                      components:
+                        _id: 61689237068cae000f12ef90
+                        id: AboutUs
+                        params:
+                          desktopHeroImage:
+                            url: https://imgurl.com/path/myPhoto.jpg
+                            altText: Custom image
+                          aboutUsContent:
+                            - text: About us
+                              firstText: Our Company
+                              secondText: Our mission
+                              thirdText: Our values
+                              paragraph: false
+                              dialog: false
+                              components: []
+                          components: []
+                          additionalProp1: {}
+                        order: 1
+                        additionalProp1: {}
+                      endDate: '2099-12-31T00:00:00.000Z'
+                      pageId: 613a76a15363f9e9575dc953
+                      status: SCHEDULED
+                      versionId: 2446
+                      __v: 0
+                      startDate: '2021-10-14T20:31:44.052Z'
+        '204':
+          description: Page is not live or is inactive
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 204 response object
+                properties:
+                  status_code:
+                    type: integer
+                    description: Response status code
+                  status:
+                    type: string
+                    description: Message describing the request
+                  message:
+                    type: string
+                    description: Message describing the result of the response
+              examples:
+                NoLiveVersion:
+                  summary: No Live Versions
+                  value:
+                    status_code: 204
+                    status: 'Live Page: /someUrl'
+                    message: >-
+                      No live version available for page: /someUrl, status:
+                      SCHEDULED, Date: Tue Oct 19 2021 16:18:21 GMT-0400
+                      (Eastern Daylight Time), Channel: 02SZCA.
+                InactivePage:
+                  summary: Inactive Page
+                  value:
+                    status_code: 204
+                    status: 'Live Page: /someUrl'
+                    message: >-
+                      page: /someUrl is inactive or archived, so there will be
+                      no live versions of page.
+        '400':
+          description: Page url not specified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: REQUEST_VALIDATION
+                message: 'Invalid data in query: must have required property URL'
+        '404':
+          description: Page not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: PAGE_NOT_FOUND
+                message: No page entry found
+        '500':
+          description: Request was received but an internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: >-
+                  An internal error occurred. If the issue persists please
+                  contact support@fabric.inc.
+  /v2/global-component/live:
+    get:
+      summary: Get Live Global Components for a Channel
+      description: >-
+        Gets a list of all the live global component data for a specified
+        channel
+      operationId: getLiveGlobalComponentsV2
+      tags:
+        - Global Components
+      parameters:
+        - in: query
+          name: channels
+          description: Comma-separated list of channel IDs
+          schema:
+            type: string
+            default: '12'
+        - $ref: '#/components/parameters/XSiteContent'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Components'
+              examples:
+                LiveComponents:
+                  $ref: '#/components/examples/globalComponentsExample'
+                NoLiveComponents:
+                  summary: No Live Components
+                  value: []
+        '500':
+          description: Request was received but an internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: >-
+                  An internal error occurred. Contact support@fabric.inc. if
+                  issue persists
+  /v2/menu/live:
+    get:
+      summary: Get Live Menu for a Channel
+      description: Gets live menu of the specified channel along with all its menu items
+      operationId: getLiveMenuV2
+      tags:
+        - Menu
+      parameters:
+        - in: query
+          name: nodeId
+          description: ID of a specific menu item, associated with a live menu
+          schema:
+            type: string
+        - in: query
+          name: parentId
+          description: >-
+            ID of parent menu item, associated with a live menu, to retrieve its
+            sub-menu items
+          schema:
+            type: string
+        - in: query
+          name: depth
+          description: Depth to traverse when returning menu items
+          schema:
+            type: integer
+        - in: query
+          name: channels
+          description: Comma-separated list of channel IDs
+          schema:
+            type: string
+            default: '12'
+        - in: query
+          name: name
+          description: Name of a specific menu item, associated with a live menu
+          schema:
+            type: string
+        - $ref: '#/components/parameters/XSiteContent'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 200 response object
+                properties:
+                  query:
+                    type: object
+                    description: Details of request query
+                    properties:
+                      channelId:
+                        type: string
+                        description: Channel ID specified in the request
+                      nodeId:
+                        type: string
+                        description: Node ID specified in the request
+                      parentId:
+                        type: string
+                        description: Menu parent ID specified in the request
+                      depth:
+                        type: integer
+                        description: Search depth specified in the request
+                  menu:
+                    type: array
+                    description: List of menu items and their details
+                    items:
+                      type: object
+                      description: Menu and/or its menu item details
+                      oneOf:
+                        - type: object
+                          description: Menu and its menu item details
+                          properties:
+                            name:
+                              type: string
+                              description: Menu name
+                            channels:
+                              type: array
+                              description: Channel IDs associated with the menu
+                              items:
+                                type: string
+                                description: Channel ID associated with the menu
+                            children:
+                              $ref: '#/components/schemas/BrowseMenuItem'
+                            menuId:
+                              type: string
+                              description: Database ID for menu
+                        - $ref: '#/components/schemas/BrowseMenuItem'
+              examples:
+                queryByChannelId:
+                  summary: Query by Channel ID
+                  value:
+                    query:
+                      channelId: 02SZCA
+                    menu:
+                      name: Default
+                      channels:
+                        - 02SZCA
+                      children:
+                        - url: /books
+                          name: Books
+                          order: 0
+                          images: []
+                          nodeId: 6171d995bfdcf11c02a6177f
+                          parentId: 6171d977bfdcf11c02a61771
+                          children:
+                            - url: /books/mystery
+                              name: Mystery
+                              order: 0
+                              nodeId: 6171d9ecbfdcf11c02a617a7
+                              parentId: 6171d995bfdcf11c02a6177f
+                            - url: /books/sci-fi
+                              name: Sci-fi
+                              order: 1
+                              nodeId: 6171d9f2bfdcf11c02a617ac
+                              parentId: 6171d995bfdcf11c02a6177f
+                            - url: /books/education
+                              name: Education
+                              order: 2
+                              nodeId: 6171da2fbfdcf11c02a617ba
+                              parentId: 6171d995bfdcf11c02a6177f
+                        - url: /health-household
+                          name: Health & Household
+                          order: 1
+                          images:
+                            - _id: 6171db97bfdcf11c02a6181c
+                              order: 1
+                              url: https://imageUrl.com/myImage.jpg
+                              meta: Custom image
+                          params:
+                            - _id: 6171db97bfdcf11c02a6181d
+                              kind: Category
+                              value: Health & Household
+                          nodeId: 6171d9b9bfdcf11c02a61791
+                          parentId: 6171d977bfdcf11c02a61771
+                          children:
+                            - url: /health-household/household-supplies
+                              name: Household Supplies
+                              order: 0
+                              nodeId: 6171da4fbfdcf11c02a617ca
+                              parentId: 6171d9b9bfdcf11c02a61791
+                            - url: /health-household/vision-care
+                              name: Vision Care
+                              order: 1
+                              nodeId: 6171da5bbfdcf11c02a617cf
+                              parentId: 6171d9b9bfdcf11c02a61791
+                              children:
+                                - url: /health-household/vision-care/glasses
+                                  name: Reading Glasses
+                                  order: 0
+                                  nodeId: 6171da7ebfdcf11c02a617e0
+                                  parentId: 6171da5bbfdcf11c02a617cf
+                                - url: /health-household/vision-care/contacts
+                                  name: Contact Lenses
+                                  order: 1
+                                  nodeId: 6171da8abfdcf11c02a617e5
+                                  parentId: 6171da5bbfdcf11c02a617cf
+                                - url: /health-household/vision-care/contacts-care
+                                  name: Contact Lens Care
+                                  order: 2
+                                  nodeId: 6171da90bfdcf11c02a617ea
+                                  parentId: 6171da5bbfdcf11c02a617cf
+                            - url: /health-household/medical
+                              name: Medical Supplies & Equipment
+                              order: 2
+                              nodeId: 6171da67bfdcf11c02a617d4
+                              parentId: 6171d9b9bfdcf11c02a61791
+                      menuId: 6171d977bfdcf11c02a61771
+                queryByNodeId:
+                  summary: Query by Nodeid
+                  value:
+                    query:
+                      channelId: 02SZCA
+                      nodeId: 6171da5bbfdcf11c02a617cf
+                    menu:
+                      - url: /health-household/vision-care
+                        name: Vision Care
+                        order: 1
+                        nodeId: 6171da5bbfdcf11c02a617cf
+                        parentId: 6171d9b9bfdcf11c02a61791
+                        children:
+                          - url: /health-household/vision-care/glasses
+                            name: Reading Glasses
+                            order: 0
+                            nodeId: 6171da7ebfdcf11c02a617e0
+                            parentId: 6171da5bbfdcf11c02a617cf
+                          - url: /health-household/vision-care/contacts
+                            name: Contact Lenses
+                            order: 1
+                            nodeId: 6171da8abfdcf11c02a617e5
+                            parentId: 6171da5bbfdcf11c02a617cf
+                          - url: /health-household/vision-care/contacts-care
+                            name: Contact Lens Care
+                            order: 2
+                            nodeId: 6171da90bfdcf11c02a617ea
+                            parentId: 6171da5bbfdcf11c02a617cf
+                queryByNodeIdAndDepth:
+                  summary: Query by Nodeid and Depth
+                  value:
+                    query:
+                      channelId: 02SZCA
+                      nodeId: 6171da5bbfdcf11c02a617cf
+                      depth: 1
+                    menu:
+                      - url: /health-household/vision-care
+                        name: Vision Care
+                        order: 1
+                        nodeId: 6171da5bbfdcf11c02a617cf
+                        parentId: 6171d9b9bfdcf11c02a61791
+                queryByParentId:
+                  summary: Query by Parent ID
+                  value:
+                    query:
+                      channelId: 02SZCA
+                      parentId: 6171da5bbfdcf11c02a617cf
+                    menu:
+                      - url: /health-household/vision-care/glasses
+                        name: Reading Glasses
+                        order: 0
+                        nodeId: 6171da7ebfdcf11c02a617e0
+                        parentId: 6171da5bbfdcf11c02a617cf
+                      - url: /health-household/vision-care/contacts
+                        name: Contact Lenses
+                        order: 1
+                        nodeId: 6171da8abfdcf11c02a617e5
+                        parentId: 6171da5bbfdcf11c02a617cf
+                      - url: /health-household/vision-care/contacts-care
+                        name: Contact Lens Care
+                        order: 2
+                        nodeId: 6171da90bfdcf11c02a617ea
+                        parentId: 6171da5bbfdcf11c02a617cf
+        '404':
+          description: Menu not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: NOT_FOUND
+                message: Menu specified is not a live menu.
+        '500':
+          description: Request was received but an internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: >-
+                  An internal error occurred. If the issue persists please
+                  contact support@fabric.inc.
+components:
+  parameters:
+    xSiteContent:
+      name: x-site-context
+      in: header
+      description: >-
+        The `x-site-context` header is a JSON object that contains information
+        about the source you wish to pull from. The mandatory `account` is the
+        24 character identifier found in Copilot. The `channel` (Sales channel
+        ID), `stage` (environment name), and `date` attributes can be used to
+        further narrow the scope of your data source.
+      required: true
+      schema:
+        type: string
+        example: >-
+          {"date": "2023-01-01T00:00:00.000Z", "channel": 12, "account":
+          "1234abcd5678efgh9ijklmno","stage":"production"}
+  examples:
+    globalComponentsExample:
+      summary: Live Components Exist
+      value:
+        - _id: 60896f629aa7f1000744030b
+          id: RailNavigation
+          params:
+            homeLinkText: Home
+            sections:
+              - sectionTitle: Get Started
+                sectionLink: /start
+                subsections:
+                  - subSectionTitle: What is fabric?
+                    subSectionLink: /what-is-fabric
+                    components: []
+                components: []
+            title: Title
+          order: 1
+        - _id: 608ad8760536ac00074bec45
+          id: CustomHeader
+          params:
+            developerSectionText: developerSectionText
+            developerSectionLinks:
+              - title: Knowledge Base
+                description: Get started
+                link: https://fabric.inc/knowledgebase
+                components: []
+              - title: API documentation
+                description: Customize without limits
+                link: https://api.fabric.inc/
+                components: []
+          order: 1
+  schemas:
+    Page:
+      type: object
+      description: Page details
+      properties:
+        name:
+          type: string
+          description: Page name
+        pageUrl:
+          type: string
+          description: Relative page URL
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of page creation
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when page was last updated
+        isActive:
+          type: boolean
+          description: True = page is active <br /> false = page is not active
+        isArchived:
+          type: boolean
+          description: True = page is archived <br /> false = page is not archived
+        pageId:
+          type: integer
+          description: Page ID
+        channels:
+          type: array
+          description: Channel IDs associated with the page
+          items:
+            type: string
+            description: Channel ID associated with the page
+        seoFields:
+          $ref: '#/components/schemas/SeoFields'
+        typeName:
+          type: string
+          description: Name of the page type of page (optional)
+        typeUrl:
+          type: string
+          description: URL of the page type of page (optional)
+        _id:
+          type: string
+          description: Database ID associated with the page
+        __v:
+          type: integer
+          description: VersionKey associated with the page
+        channel:
+          type: array
+          description: deprecated field holding channel information
+          items:
+            type: integer
+            description: Channel identifier
+    PageMetaData:
+      type: object
+      description: Page metadata
+      properties:
+        id:
+          type: string
+          description: Page ID
+        name:
+          type: string
+          description: Page name
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the page was last updated
+        publishedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when page was last published
+        metadata:
+          type: object
+          description: Page metadata
+          properties:
+            url:
+              type: string
+              description: Page URL
+            channels:
+              type: array
+              description: Page channels
+              items:
+                type: string
+                description: Channel identifier
+            seoFields:
+              $ref: '#/components/schemas/SeoFields'
+    PageVersion:
+      type: object
+      description: Version details
+      properties:
+        _id:
+          type: string
+          description: Database ID associated with the version
+        isArchived:
+          type: boolean
+          description: True = version is archived <br /> false = version is not archived
+        channel:
+          type: array
+          description: Deprecated field holding channel information
+          items:
+            type: integer
+            description: Channel identifier
+        channels:
+          type: array
+          description: Channel IDs associated with the version
+          items:
+            type: string
+            description: Channel ID associated with the version
+        status:
+          type: string
+          description: Current status of the version
+        endDate:
+          type: string
+          description: >-
+            Ending timestamp of page. That is Date and time when the version
+            will no longer be live
+          format: date-time
+        pageId:
+          type: string
+          description: Database ID of the page associated with the version
+        name:
+          type: string
+          description: Version name
+        description:
+          type: string
+          description: Version description
+        components:
+          $ref: '#/components/schemas/Components'
+        versionId:
+          type: integer
+          description: Version ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of version creation
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp on when version was last updated
+    SeoFields:
+      type: object
+      description: SEO fields
+      properties:
+        title:
+          type: string
+          description: SEO field name
+        description:
+          type: string
+          description: SEO field description
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of SEO field creation
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when SEO field was last updated
+        metadata:
+          type: array
+          description: list of metadata associated with the SEO field
+          items:
+            type: object
+            description: Metadata associated with the SEO field
+            properties:
+              name:
+                type: string
+                description: Metadata name
+              content:
+                type: string
+                description: Metadata content
+              _id:
+                type: string
+                description: Virutal ID associated with the SEO field metadata
+              createdAt:
+                type: string
+                format: date-time
+                description: Timestamp of metadata creation
+              updatedAt:
+                type: string
+                format: date-time
+                description: Timestamp of when metadata was last updated
+        _id:
+          type: string
+          description: Virtual ID associated with the SEO field
+    Components:
+      type: array
+      description: List of components
+      items:
+        type: object
+        description: Component data
+        properties:
+          _id:
+            type: string
+            description: Virtual ID associated with the component
+          id:
+            type: string
+            description: Identifier used in the UI by the component
+          params:
+            type: object
+            description: Attached fields and values of the component
+            additionalProperties: true
+        additionalProperties: true
+    MenuItem:
+      type: object
+      description: Details of menu item
+      properties:
+        id:
+          type: string
+          description: Database ID associated with the menu item
+        label:
+          type: string
+          description: Menu item label
+        order:
+          type: integer
+          description: Order of appearance of menu item in the UI
+        isActive:
+          type: boolean
+          description: True = menu item is active <br /> false = menu item is inactive
+        channel:
+          type: array
+          description: Deprecated field holding channel information
+          items:
+            type: integer
+            description: Channel identifier
+        path:
+          type: string
+          description: Relative menu item URL path
+        params:
+          type: array
+          description: List of additional data associated with the menu item
+          items:
+            type: object
+            description: Additional data associated with the menu item
+            properties:
+              kind:
+                type: string
+                description: Description for the parameter
+              value:
+                type: string
+                description: Value for the parameter
+        children:
+          type: array
+          description: List of child menu items
+          items:
+            $ref: '#/components/schemas/MenuItem'
+    BrowseMenuItem:
+      type: object
+      description: Browse menu item object
+      properties:
+        url:
+          type: string
+          description: Relative menu item url path
+        name:
+          type: string
+          description: Menu item name
+        order:
+          type: integer
+          description: Order of appearance of the menu item in the UI
+        images:
+          type: array
+          description: List of image resources
+          items:
+            type: object
+            description: Details of image resource
+            properties:
+              _id:
+                type: string
+                description: Virtual ID for the image resource
+              order:
+                type: integer
+                description: Order in which the image was added or appears
+              url:
+                type: string
+                description: URL of image resource
+              meta:
+                type: string
+                description: Information about the image
+        params:
+          type: array
+          description: List of additional data associated with the menu item
+          items:
+            type: object
+            description: Additional data associated with the menu item
+            properties:
+              _id:
+                type: string
+                description: Parameter virtual ID
+              kind:
+                type: string
+                description: Parameter description
+              value:
+                type: string
+                description: Value of parameter
+        nodeId:
+          type: string
+          description: Database ID for menu item
+        parentId:
+          type: string
+          description: Database ID for menu item parent
+        children:
+          $ref: '#/components/schemas/BrowseMenuItem'
+    Error:
+      type: object
+      description: Server error response object
+      properties:
+        code:
+          type: string
+          description: Code associated with the type of server error
+        message:
+          type: string
+          description: Message associated with the server error
+      required:
+        - code
+        - message

@@ -1,0 +1,64 @@
+aid: fabric-com
+name: fabric FinOps
+description: >-
+  Mapping of fabric's billing surface to the FinOps Framework and FOCUS data
+  spec. fabric is sold via enterprise contracts, so a customer's FinOps
+  posture relies on internal allocation rather than a public meter API.
+modified: '2026-05-25'
+specification: API Commons FinOps 0.1
+provider:
+  name: fabric
+  vendor: fabric, Inc.
+  hq: Seattle, WA
+focusMapping:
+  BillingAccountId: "fabric tenant id"
+  ChargeCategory:
+    - Usage
+    - Subscription
+  ChargeClass: Standard
+  ServiceCategory: Commerce
+  ServiceName:
+    - fabric Commerce Platform
+    - fabric NEON
+  ResourceType:
+    - fabric:PIM
+    - fabric:Catalog Connector
+    - fabric:Cart
+    - fabric:Checkout
+    - fabric:Cart Orchestrator
+    - fabric:Offers — Prices
+    - fabric:Offers — Pricing Engine
+    - fabric:Offers — Promotions
+    - fabric:Inventory
+    - fabric:Orders
+    - fabric:Shipments
+    - fabric:Invoices
+    - fabric:Customers
+    - fabric:Identity
+    - fabric:Experiences
+    - fabric:Product Agent
+  PricingUnit:
+    - GMV
+    - Order
+    - API Call
+    - Product Activation
+  ChargePeriodStart: monthly
+  ChargePeriodEnd: monthly
+practices:
+  inform:
+    - Tag fabric platform spend against the commerce business unit.
+    - Reconcile fabric invoices against tenant-reported GMV and order counts.
+  optimize:
+    - Route storefront traffic through Cart Orchestrator (ShopperXP) to avoid
+      multiplicative API-call costs.
+    - Use Catalog Connector instead of full PIM when an external system of
+      record already exists, to reduce platform footprint.
+  operate:
+    - Push fabric Orders, Shipments, and Invoices events into the customer
+      data warehouse for unit-economics tracking.
+    - Monitor per-tenant `x-fabric-request-id` traces to identify hotspots
+      that drive API-call growth.
+notes:
+  - fabric does not currently expose a programmatic billing/usage API. FinOps
+    integrations rely on the invoice cycle plus customer-side metering of
+    orders, GMV, and API calls.

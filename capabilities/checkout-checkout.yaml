@@ -1,0 +1,78 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Checkout
+  description: 'fabric Checkout. 1 operations. Lead operation: Create and Complete a Checkout Session. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Checkout
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: checkout-checkout
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Checkout consumed operations from fabric-checkout-openapi.yml.
+    resources:
+    - name: checkout-sessions
+      path: /checkout/sessions
+      operations:
+      - name: create-and-complete-a-checkout-session
+        method: POST
+        description: 'Create and Complete a Checkout Session'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: checkout-checkout-rest
+    port: 8080
+    description: REST adapter for fabric Checkout. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/checkout/sessions
+      name: checkout-sessions
+      description: REST surface for checkout-sessions.
+      operations:
+      - method: POST
+        name: create-and-complete-a-checkout-session
+        description: 'Create and Complete a Checkout Session'
+        call: checkout-checkout.create-and-complete-a-checkout-session
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: checkout-checkout-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Checkout. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-create-and-complete-a-checkout-session
+      description: 'Create and Complete a Checkout Session'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: checkout-checkout.create-and-complete-a-checkout-session
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

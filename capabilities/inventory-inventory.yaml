@@ -1,0 +1,438 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Inventory
+  description: 'fabric Inventory. 10 operations. Lead operation: Create Inventory. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Inventory
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: inventory-inventory
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Inventory consumed operations from fabric-inventory-openapi.yml.
+    resources:
+    - name: inventories
+      path: /inventories
+      operations:
+      - name: create-inventory
+        method: POST
+        description: 'Create Inventory'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: inventories-actions-find
+      path: /inventories/actions/find
+      operations:
+      - name: find-inventories-of-specific-items
+        method: POST
+        description: 'Find Inventories of Specific Items'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: inventories-actions-find-and-adjust-inventory-counters
+      path: /inventories/actions/find-and-adjust-inventory-counters
+      operations:
+      - name: adjust-inventory-counters
+        method: POST
+        description: 'Adjust Inventory Counters'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: inventories-actions-find-and-update
+      path: /inventories/actions/find-and-update
+      operations:
+      - name: update-inventory-by-adding-new-property
+        method: POST
+        description: 'Update Inventory by Adding New Property'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: inventories-actions-find-by-geography
+      path: /inventories/actions/find-by-geography
+      operations:
+      - name: find-inventory-of-specific-items-in-a-specific-region
+        method: POST
+        description: 'Find Inventory of Specific Items in a Specific Region'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: inventories-actions-hard-reserve-search
+      path: /inventories/actions/hard-reserve-search
+      operations:
+      - name: search-for-inventory-hard-reservations
+        method: POST
+        description: 'Search for Inventory Hard Reservations'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: inventories-search
+      path: /inventories/search
+      operations:
+      - name: search-for-inventories
+        method: POST
+        description: 'Search for Inventories'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: inventory-counters
+      path: /inventory-counters
+      operations:
+      - name: get-all-counters
+        method: GET
+        description: 'Get All Counters'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: create-counter
+        method: POST
+        description: 'Create Counter'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: inventory-counters-countercode
+      path: /inventory-counters/{counterCode}
+      operations:
+      - name: get-counter-by-code
+        method: GET
+        description: 'Get Counter by Code'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: counterCode
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: inventory-inventory-rest
+    port: 8080
+    description: REST adapter for fabric Inventory. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/inventories
+      name: inventories
+      description: REST surface for inventories.
+      operations:
+      - method: POST
+        name: create-inventory
+        description: 'Create Inventory'
+        call: inventory-inventory.create-inventory
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/inventories/actions/find
+      name: inventories-actions-find
+      description: REST surface for inventories-actions-find.
+      operations:
+      - method: POST
+        name: find-inventories-of-specific-items
+        description: 'Find Inventories of Specific Items'
+        call: inventory-inventory.find-inventories-of-specific-items
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/inventories/actions/find-and-adjust-inventory-counters
+      name: inventories-actions-find-and-adjust-inventory-counters
+      description: REST surface for inventories-actions-find-and-adjust-inventory-counters.
+      operations:
+      - method: POST
+        name: adjust-inventory-counters
+        description: 'Adjust Inventory Counters'
+        call: inventory-inventory.adjust-inventory-counters
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/inventories/actions/find-and-update
+      name: inventories-actions-find-and-update
+      description: REST surface for inventories-actions-find-and-update.
+      operations:
+      - method: POST
+        name: update-inventory-by-adding-new-property
+        description: 'Update Inventory by Adding New Property'
+        call: inventory-inventory.update-inventory-by-adding-new-property
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/inventories/actions/find-by-geography
+      name: inventories-actions-find-by-geography
+      description: REST surface for inventories-actions-find-by-geography.
+      operations:
+      - method: POST
+        name: find-inventory-of-specific-items-in-a-specific-region
+        description: 'Find Inventory of Specific Items in a Specific Region'
+        call: inventory-inventory.find-inventory-of-specific-items-in-a-specific-region
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/inventories/actions/hard-reserve-search
+      name: inventories-actions-hard-reserve-search
+      description: REST surface for inventories-actions-hard-reserve-search.
+      operations:
+      - method: POST
+        name: search-for-inventory-hard-reservations
+        description: 'Search for Inventory Hard Reservations'
+        call: inventory-inventory.search-for-inventory-hard-reservations
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/inventories/search
+      name: inventories-search
+      description: REST surface for inventories-search.
+      operations:
+      - method: POST
+        name: search-for-inventories
+        description: 'Search for Inventories'
+        call: inventory-inventory.search-for-inventories
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/inventory-counters
+      name: inventory-counters
+      description: REST surface for inventory-counters.
+      operations:
+      - method: GET
+        name: get-all-counters
+        description: 'Get All Counters'
+        call: inventory-inventory.get-all-counters
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: create-counter
+        description: 'Create Counter'
+        call: inventory-inventory.create-counter
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/inventory-counters/{counterCode}
+      name: inventory-counters-countercode
+      description: REST surface for inventory-counters-countercode.
+      operations:
+      - method: GET
+        name: get-counter-by-code
+        description: 'Get Counter by Code'
+        call: inventory-inventory.get-counter-by-code
+        with:
+          counterCode: rest.path.counterCode
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: inventory-inventory-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Inventory. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-create-inventory
+      description: 'Create Inventory'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: inventory-inventory.create-inventory
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-find-inventories-of-specific-items
+      description: 'Find Inventories of Specific Items'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: inventory-inventory.find-inventories-of-specific-items
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-adjust-inventory-counters
+      description: 'Adjust Inventory Counters'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: inventory-inventory.adjust-inventory-counters
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-inventory-by-adding-new-property
+      description: 'Update Inventory by Adding New Property'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: inventory-inventory.update-inventory-by-adding-new-property
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-find-inventory-of-specific-items-in-a-specific-region
+      description: 'Find Inventory of Specific Items in a Specific Region'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: inventory-inventory.find-inventory-of-specific-items-in-a-specific-region
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-search-for-inventory-hard-reservations
+      description: 'Search for Inventory Hard Reservations'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: inventory-inventory.search-for-inventory-hard-reservations
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-search-for-inventories
+      description: 'Search for Inventories'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: inventory-inventory.search-for-inventories
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-all-counters
+      description: 'Get All Counters'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: inventory-inventory.get-all-counters
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-counter
+      description: 'Create Counter'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: inventory-inventory.create-counter
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-counter-by-code
+      description: 'Get Counter by Code'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: inventory-inventory.get-counter-by-code
+      with:
+        counterCode: tools.counterCode
+      outputParameters:
+      - type: object
+        mapping: $.

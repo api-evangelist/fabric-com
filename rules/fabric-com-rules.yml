@@ -1,0 +1,106 @@
+aid: fabric-com
+name: fabric Composable Commerce Rules
+description: >-
+  Operational rules and conventions governing the fabric v3 commerce APIs across
+  Identity, Cart, Catalog, PIM, Offers, Orders, Inventory, Experiences, and the
+  Product Agent. Encodes the conventions observed across fabric's published v3
+  OpenAPI specifications and developer documentation.
+rules:
+  - id: authentication-oauth2
+    name: OAuth2 Bearer Tokens via Identity API
+    description: >-
+      Every call to a fabric v3 service MUST present a Bearer access token
+      issued by the fabric Identity API (`{customer_name}.login.fabric.inc`,
+      `/oauth2/{authServerId}/v1/token`). Tokens are scoped to a specific
+      tenant; identity-issued tokens cross-validate against every downstream
+      domain (Cart, Orders, PIM, Offers, Inventory, Experiences, Product Agent).
+  - id: versioned-base-url
+    name: Versioned Base URLs
+    description: >-
+      Production commerce APIs are served under `https://api.fabric.inc/v3`.
+      The Product Catalog (PIM) is served under `https://live.copilot.fabric.inc`
+      and Experiences from `https://cdn.xm.fabric.inc/api`. The Product Agent
+      is served from `https://commerceos.aiagents.fabric.inc/api`. Clients MUST
+      target the documented base URL per service, not assume a single
+      gateway.
+  - id: request-id-header
+    name: Request ID Tracing
+    description: >-
+      All v3 responses include `x-fabric-request-id` (UUID v4). Clients SHOULD
+      log this header per call and include it in any support request — fabric
+      Support uses it to trace the request across cart, OMS, and offers
+      services.
+  - id: action-suffix-resource-style
+    name: Action-Suffix Resource Style
+    description: >-
+      State transitions are modeled as POSTs to `/{resource}/actions/{verb}` —
+      e.g. `/orders/actions/authorize-payments`, `/promotions/{id}/actions/toggle`,
+      `/price-engine/actions/evaluate-cart`, `/catalog-connector-jobs/actions/export`.
+      Clients MUST use action endpoints for state changes; they MUST NOT
+      mutate the parent resource representation directly.
+  - id: composite-order-identifiers
+    name: Composite Order Identifiers
+    description: >-
+      Orders endpoints accept a composite identifier consisting of
+      `{orderIdentifierType}/{orderIdentifierValue}` (e.g.
+      `orderNumber/SO-1001`). Integrators MUST honor both forms — `orderId`
+      (fabric internal) and `orderNumber` (merchant facing) — and not assume a
+      single shape.
+  - id: title-case-summaries
+    name: Title Case Operation Summaries
+    description: >-
+      All OpenAPI `summary` fields across fabric specs are normalized to Title
+      Case for downstream catalog rendering. Generated documentation, SDKs,
+      and capability descriptions MUST preserve Title Case.
+  - id: tags-domain-driven
+    name: Domain-Driven Tagging
+    description: >-
+      Operations are grouped by business resource (Cart, Items, Fulfillments,
+      Payments, Coupons, Promotions, Category, Product, Attributes, Pages,
+      etc.), not by HTTP shape. Catalog tooling MUST treat tags as the primary
+      grouping axis when generating navigation.
+  - id: pim-vs-catalog-connector
+    name: PIM vs Catalog Connector Boundary
+    description: >-
+      Customers managing their catalog inside fabric MUST use the Product
+      Catalog (PIM) API. Customers retaining an external system of record MUST
+      use Catalog Connector to ingest products and SKUs. The two surfaces are
+      complementary; integrations should choose one and route product writes
+      consistently.
+  - id: offers-engine-separation
+    name: Offers Authoring vs Evaluation Separation
+    description: >-
+      Promotion authoring (`/promotions`) and price authoring (`/prices`) are
+      separate from real-time evaluation (`/price-engine/actions/evaluate-*`).
+      Storefronts MUST call the Pricing Engine for display prices, never
+      compute prices client-side from the Prices and Promotions APIs.
+  - id: cart-orchestrator-preferred-for-storefronts
+    name: ShopperXP Preferred for Storefronts
+    description: >-
+      Storefront clients SHOULD call the Cart Orchestrator
+      (`/orchestrator/carts/...`) which composes Cart, Offers, and Inventory
+      into a single shopper-facing call. Direct Cart, Offers, and Inventory
+      access is reserved for back-of-house workflows.
+  - id: idempotent-action-endpoints
+    name: Action Endpoint Idempotency
+    description: >-
+      Action endpoints that update lifecycle state (e.g. `toggle`, `end`,
+      `update-status`) SHOULD be invoked idempotently. Clients MUST tolerate
+      replay; servers will surface a no-op response when the target state
+      already matches.
+  - id: experiences-cdn-read-model
+    name: Experiences is a CDN Read Model
+    description: >-
+      The Experiences (XM) API is read-only at `https://cdn.xm.fabric.inc/api`.
+      Authoring happens in the merchandiser Copilot UI. Storefronts MUST treat
+      Experiences as a cached read surface and respect long cache TTLs.
+  - id: product-agent-async
+    name: Product Agent Async Execution
+    description: >-
+      Product Agent monitoring and activation operations are long-running.
+      Clients MUST poll the job/run resource rather than block on the
+      submission response, and MUST tolerate per-tenant concurrency limits.
+maintainer:
+  name: Kin Lane
+  email: info@apievangelist.com
+modified: '2026-05-25'

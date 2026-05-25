@@ -1,0 +1,423 @@
+aid: fabric-com
+url: https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/apis.yml
+apis:
+- aid: fabric-com:fabric-identity-api
+  name: fabric Identity API
+  tags:
+  - Authentication
+  - Authorization
+  - Identity
+  - OAuth2
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/identity
+    type: Documentation
+  - url: openapi/fabric-identity-openapi.yml
+    type: OpenAPI
+  - url: capabilities/identity-authentication.yaml
+    type: NaftikoCapability
+  description: fabric's Identity API issues OAuth2 access tokens used by every other fabric service. Implements
+    the standard authorization-code and client-credentials flows on a per-tenant Okta-backed auth server, returning
+    bearer tokens scoped to the calling account. Used to authenticate both first-party storefronts and third-party
+    integrations against the v3 commerce APIs.
+- aid: fabric-com:fabric-customers-api
+  name: fabric Customers API
+  tags:
+  - Customers
+  - Profiles
+  - Addresses
+  - Shoppers
+  humanURL: https://developer.fabric.inc/v3/api-reference/customers
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/customers
+    type: Documentation
+  - url: openapi/fabric-customers-openapi.yml
+    type: OpenAPI
+  - url: capabilities/customers-customers.yaml
+    type: NaftikoCapability
+  - url: capabilities/customers-addresses.yaml
+    type: NaftikoCapability
+  description: Create and manage storefront customers (shoppers), their profiles, addresses, and self-service
+    operations. The Customers API is the system of record for shopper identity inside fabric and feeds Cart, Orders,
+    and Experiences with the customer object referenced across the platform.
+- aid: fabric-com:fabric-pim-api
+  name: fabric Product Catalog (PIM) API
+  tags:
+  - Catalog
+  - Products
+  - PIM
+  - Attributes
+  - Categories
+  humanURL: https://developer.fabric.inc/v3/api-reference/product-catalog
+  baseURL: https://live.copilot.fabric.inc
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/product-catalog
+    type: Documentation
+  - url: openapi/fabric-pim-openapi.yml
+    type: OpenAPI
+  - url: https://github.com/FabricCommerce/fabric-pim-samples
+    type: GitHub
+  - url: capabilities/pim-products.yaml
+    type: NaftikoCapability
+  - url: capabilities/pim-categories.yaml
+    type: NaftikoCapability
+  - url: capabilities/pim-attributes.yaml
+    type: NaftikoCapability
+  description: fabric's Product Information Management (PIM) service for modeling products, variants, categories,
+    attribute schemas, and bulk imports. Powers the merchandiser-facing Copilot UI and exposes the canonical
+    product catalog that downstream services (Catalog Connector, Cart, Offers, Experiences) consume.
+- aid: fabric-com:fabric-catalog-connector-api
+  name: fabric Catalog Connector API
+  tags:
+  - Catalog
+  - Connector
+  - Import
+  - Export
+  humanURL: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+    type: Documentation
+  - url: openapi/fabric-catalog-openapi.yml
+    type: OpenAPI
+  - url: capabilities/catalog-connector-files.yaml
+    type: NaftikoCapability
+  - url: capabilities/catalog-connector-jobs.yaml
+    type: NaftikoCapability
+  description: Catalog Connector (formerly PIM Connector) is a lightweight ingestion service for customers who
+    already own their PIM. It accepts CSV/JSON template files, runs async import/export jobs, and pushes the
+    resulting products and SKUs into fabric's downstream commerce surface without forcing migration off the
+    existing system of record.
+- aid: fabric-com:fabric-offers-prices-api
+  name: fabric Offers - Prices API
+  tags:
+  - Pricing
+  - Offers
+  - SKU
+  humanURL: https://developer.fabric.inc/v3/api-reference/offers
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/offers
+    type: Documentation
+  - url: openapi/fabric-offers-prices-openapi.yml
+    type: OpenAPI
+  - url: capabilities/offers-prices.yaml
+    type: NaftikoCapability
+  description: Create, update, and look up base and sale prices for SKUs across price lists. The Prices API is
+    the system of record for fabric's pricing data and is the source the Real-time Pricing Engine evaluates
+    against at cart time.
+- aid: fabric-com:fabric-offers-pricing-engine-api
+  name: fabric Offers - Real-time Pricing Engine API
+  tags:
+  - Pricing
+  - Engine
+  - Offers
+  - Cart
+  humanURL: https://developer.fabric.inc/v3/api-reference/offers
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/offers
+    type: Documentation
+  - url: openapi/fabric-offers-pricing-openapi.yml
+    type: OpenAPI
+  - url: capabilities/offers-pricing-engine.yaml
+    type: NaftikoCapability
+  description: The Real-time Pricing Engine (RTPE) evaluates list prices, sale prices, and active promotions for
+    a set of products, SKUs, or an entire cart in a single call. Returns the calculated effective price and the
+    promotion attribution chain used to surface live prices on storefronts.
+- aid: fabric-com:fabric-offers-promotions-api
+  name: fabric Offers - Promotions API
+  tags:
+  - Promotions
+  - Discounts
+  - Coupons
+  - Offers
+  humanURL: https://developer.fabric.inc/v3/api-reference/offers
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/offers
+    type: Documentation
+  - url: openapi/fabric-offers-promotions-openapi.yml
+    type: OpenAPI
+  - url: capabilities/offers-promotions.yaml
+    type: NaftikoCapability
+  description: Create, search, toggle, and end promotions — discounts on items, carts, or shipping methods. The
+    Promotions API is the authoring surface; the Pricing Engine applies the active promotions returned by these
+    endpoints to live cart and pricing calculations.
+- aid: fabric-com:fabric-inventory-api
+  name: fabric Inventory API
+  tags:
+  - Inventory
+  - Stock
+  - Locations
+  - Networks
+  humanURL: https://developer.fabric.inc/v3/api-reference/inventory
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/inventory
+    type: Documentation
+  - url: openapi/fabric-inventory-openapi.yml
+    type: OpenAPI
+  - url: capabilities/inventory-inventory.yaml
+    type: NaftikoCapability
+  description: Manage stock counts, locations, and inventory networks across stores, warehouses, and dropship
+    partners. Inventory feeds the cart, OMS, and storefront product detail pages with the available-to-promise
+    figures that drive fulfillment decisions.
+- aid: fabric-com:fabric-cart-api
+  name: fabric Cart API
+  tags:
+  - Cart
+  - Checkout
+  - Commerce
+  - Storefront
+  humanURL: https://developer.fabric.inc/v3/api-reference/cart
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/cart
+    type: Documentation
+  - url: openapi/fabric-cart-openapi.yml
+    type: OpenAPI
+  - url: capabilities/cart-cart.yaml
+    type: NaftikoCapability
+  - url: capabilities/cart-items.yaml
+    type: NaftikoCapability
+  - url: capabilities/cart-fulfillments.yaml
+    type: NaftikoCapability
+  - url: capabilities/cart-payments.yaml
+    type: NaftikoCapability
+  description: The v3 Cart API is fabric's modular cart service for adding, updating, and removing items;
+    managing fulfillments, addresses, fees, taxes, coupons, and payments; and producing the order draft that
+    Checkout consumes. Supports both guest and authenticated shopper carts.
+- aid: fabric-com:fabric-checkout-api
+  name: fabric Checkout API
+  tags:
+  - Checkout
+  - Cart
+  - Order Drafts
+  - Commerce
+  humanURL: https://developer.fabric.inc/v3/api-reference/checkout
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/checkout
+    type: Documentation
+  - url: openapi/fabric-checkout-openapi.yml
+    type: OpenAPI
+  - url: capabilities/checkout-checkout.yaml
+    type: NaftikoCapability
+  description: Completes the checkout process and places an order for the items in a cart. Takes the
+    cart-produced order draft, validates payments, and hands the resulting order off to OMS for fulfillment.
+- aid: fabric-com:fabric-cart-orchestrator-api
+  name: fabric Cart Orchestrator (ShopperXP) API
+  tags:
+  - Cart
+  - Orchestrator
+  - ShopperXP
+  - Storefront
+  humanURL: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+    type: Documentation
+  - url: openapi/fabric-shopperxp-openapi.yml
+    type: OpenAPI
+  - url: capabilities/shopperxp-orchestrator.yaml
+    type: NaftikoCapability
+  description: The Cart Orchestrator (ShopperXP) wraps Cart, Offers, Inventory, and Identity into a single
+    storefront-facing surface. Storefront clients call one orchestrator endpoint per shopper action and the
+    service fans out to the underlying commerce APIs in the correct sequence.
+- aid: fabric-com:fabric-orders-api
+  name: fabric Orders (OMS) API
+  tags:
+  - Orders
+  - OMS
+  - Fulfillment
+  - Returns
+  humanURL: https://developer.fabric.inc/v3/api-reference/orders
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/orders
+    type: Documentation
+  - url: openapi/fabric-orders-openapi.yml
+    type: OpenAPI
+  - url: capabilities/orders-orders.yaml
+    type: NaftikoCapability
+  - url: capabilities/orders-payments.yaml
+    type: NaftikoCapability
+  - url: capabilities/orders-addresses.yaml
+    type: NaftikoCapability
+  description: fabric's Order Management System (OMS) — order creation, lookup, status transitions, payment
+    authorization, address and fee updates, and the operational surface used by customer service, fulfillment
+    teams, and downstream finance systems.
+- aid: fabric-com:fabric-shipments-api
+  name: fabric Shipments API
+  tags:
+  - Shipments
+  - Fulfillment
+  - OMS
+  - Tracking
+  humanURL: https://developer.fabric.inc/v3/api-reference/orders
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/orders
+    type: Documentation
+  - url: openapi/fabric-shipments-openapi.yml
+    type: OpenAPI
+  - url: capabilities/shipments-shipments.yaml
+    type: NaftikoCapability
+  description: Manage the shipment lifecycle inside OMS — create, look up, update, and cancel shipments;
+    associate carrier and tracking information; and notify downstream systems as packages move from the warehouse
+    to the customer.
+- aid: fabric-com:fabric-invoices-api
+  name: fabric Invoices API
+  tags:
+  - Invoices
+  - Billing
+  - OMS
+  - Finance
+  humanURL: https://developer.fabric.inc/v3/api-reference/orders
+  baseURL: https://api.fabric.inc/v3
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/orders
+    type: Documentation
+  - url: openapi/fabric-invoices-openapi.yml
+    type: OpenAPI
+  - url: capabilities/invoices-invoices.yaml
+    type: NaftikoCapability
+  description: Issue and manage invoices generated from shipped or fulfilled orders. The Invoices API captures
+    the financial event tied to an order's fulfillment and is the integration point for ERP, tax, and finance
+    systems consuming fabric order data.
+- aid: fabric-com:fabric-experiences-api
+  name: fabric Experiences (XM) API
+  tags:
+  - Experiences
+  - XM
+  - Content
+  - Storefront
+  - Pages
+  humanURL: https://developer.fabric.inc/v3/api-reference/experiences
+  baseURL: https://cdn.xm.fabric.inc/api
+  properties:
+  - url: https://developer.fabric.inc/v3/api-reference/experiences
+    type: Documentation
+  - url: openapi/fabric-experiences-openapi.yml
+    type: OpenAPI
+  - url: https://github.com/FabricCommerce/Fabric-React-Components
+    type: GitHub
+  - url: capabilities/experiences-pages.yaml
+    type: NaftikoCapability
+  - url: capabilities/experiences-components.yaml
+    type: NaftikoCapability
+  description: fabric Experiences (formerly XM) is the headless storefront content service — pages, global
+    components, and menus served from a CDN-backed read API. Powers the merchandiser-authored, shopper-facing
+    surfaces of fabric storefronts.
+- aid: fabric-com:fabric-product-agent-api
+  name: fabric Product Agent API
+  tags:
+  - AI
+  - Agentic Commerce
+  - NEON
+  - Product Agent
+  - Agents
+  humanURL: https://developer.fabric.inc/product-agent/overview
+  baseURL: https://commerceos.aiagents.fabric.inc/api
+  properties:
+  - url: https://developer.fabric.inc/product-agent/overview
+    type: Documentation
+  - url: openapi/fabric-product-agent-openapi.yml
+    type: OpenAPI
+  - url: capabilities/product-agent-monitor.yaml
+    type: NaftikoCapability
+  - url: capabilities/product-agent-activate.yaml
+    type: NaftikoCapability
+  description: fabric NEON's Product Agent — the agentic commerce control plane that monitors product
+    visibility across AI search surfaces, benchmarks against custom prompts, and enriches product data with
+    intent signals for downstream channel activation. fabric's headline 2026 capability.
+name: fabric
+tags:
+- Commerce
+- Composable Commerce
+- Headless Commerce
+- E-commerce
+- Retail
+- Cart
+- Catalog
+- PIM
+- OMS
+- Inventory
+- Offers
+- Pricing
+- Promotions
+- Checkout
+- Identity
+- Experiences
+- Agentic Commerce
+kind: contract
+image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+access: 3rd-Party
+common:
+- type: SignUp
+  url: https://fabric.inc/request-demo
+- type: Portal
+  url: https://developer.fabric.inc/home
+  name: fabric Developer Knowledge Base
+- type: Documentation
+  url: https://developer.fabric.inc/v3/api-reference
+  name: fabric v3 API Reference
+- type: Documentation
+  url: https://developer.fabric.inc/llms.txt
+  name: fabric Developer Docs (llms.txt index)
+- type: Authentication
+  url: https://developer.fabric.inc/v3/api-reference/identity
+  name: fabric Identity / OAuth2
+- type: ChangeLog
+  url: https://developer.fabric.inc/release-notes
+  name: fabric Release Notes
+- type: Blog
+  url: https://fabric.inc/blog
+  name: fabric Blog
+- type: About
+  url: https://fabric.inc/company/about
+  name: About fabric
+- type: ContactUs
+  url: https://fabric.inc/contact-us
+  name: Contact fabric
+- type: GitHub
+  url: https://github.com/FabricCommerce
+  name: FabricCommerce on GitHub
+- type: Postman
+  url: https://github.com/FabricCommerce/public-fabric-api-postman-collections
+  name: Public Postman Collections
+- type: LinkedIn
+  url: https://www.linkedin.com/company/fabricinc
+- type: Twitter
+  url: https://twitter.com/fabriccommerce
+- type: PressRoom
+  url: https://fabric.inc/news
+  name: fabric News
+- type: Plans
+  url: plans/fabric-com-plans-pricing.yml
+  name: API Commons Plans
+- type: RateLimits
+  url: rate-limits/fabric-com-rate-limits.yml
+  name: API Commons Rate Limits
+- type: FinOps
+  url: finops/fabric-com-finops.yml
+  name: API Commons FinOps
+- type: Vocabulary
+  url: vocabulary/fabric-com-vocabulary.yml
+  name: fabric Vocabulary
+- type: JSONLD
+  url: json-ld/fabric-com-context.jsonld
+  name: fabric JSON-LD Context
+- type: SpectralRules
+  url: rules/fabric-com-rules.yml
+  name: fabric Spectral Ruleset
+maintainers:
+- FN: Kin Lane
+  email: info@apievangelist.com
+  url: https://apievangelist.com
+created: '2026-05-25'
+modified: '2026-05-25'
+specificationVersion: '0.16'

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/json-schema/fabric-product-schema.json",
+  "title": "fabric Product",
+  "description": "Core product representation managed by fabric Product Catalog (PIM) and consumed across Catalog Connector, Cart, Offers, and Experiences.",
+  "type": "object",
+  "required": ["id", "sku", "title", "status"],
+  "properties": {
+    "id": {"type": "string", "description": "fabric-assigned product identifier."},
+    "sku": {"type": "string", "description": "Stock keeping unit, unique per tenant."},
+    "title": {"type": "string"},
+    "description": {"type": "string"},
+    "status": {"type": "string", "enum": ["DRAFT", "ACTIVE", "INACTIVE", "ARCHIVED"]},
+    "categories": {
+      "type": "array",
+      "items": {"type": "string", "description": "Category node id."}
+    },
+    "attributes": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Tenant-defined attribute map."
+    },
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["sku"],
+        "properties": {
+          "sku": {"type": "string"},
+          "attributes": {"type": "object", "additionalProperties": true},
+          "barcode": {"type": "string"}
+        }
+      }
+    },
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": true
+}

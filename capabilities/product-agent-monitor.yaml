@@ -1,0 +1,244 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Product Agent — Monitor
+  description: 'fabric Product Agent — Monitor. 5 operations. Lead operation: Create Access Token. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Monitor
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: product-agent-monitor
+    baseUri: https://commerceos.aiagents.fabric.inc/api
+    description: fabric Product Agent — Monitor consumed operations from fabric-product-agent-openapi.yml.
+    resources:
+    - name: platform-v1-auth-token
+      path: /platform/v1/auth/token
+      operations:
+      - name: create-access-token
+        method: POST
+        description: 'Create Access Token'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v2-categories-import
+      path: /v2/categories/import
+      operations:
+      - name: bulk-import-categories
+        method: POST
+        description: 'Bulk Import Categories'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v2-categories-import-import-id
+      path: /v2/categories/import/{import_id}
+      operations:
+      - name: get-category-import-status
+        method: GET
+        description: 'Get Category Import Status'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: import_id
+          in: path
+          type: string
+          required: true
+    - name: v2-attributes-import
+      path: /v2/attributes/import
+      operations:
+      - name: import-attributes-from-csv
+        method: POST
+        description: 'Import Attributes from CSV'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: v2-attributes-import-import-id
+      path: /v2/attributes/import/{import_id}
+      operations:
+      - name: get-attribute-import-status
+        method: GET
+        description: 'Get Attribute Import Status'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: import_id
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: product-agent-monitor-rest
+    port: 8080
+    description: REST adapter for fabric Product Agent — Monitor. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/platform/v1/auth/token
+      name: platform-v1-auth-token
+      description: REST surface for platform-v1-auth-token.
+      operations:
+      - method: POST
+        name: create-access-token
+        description: 'Create Access Token'
+        call: product-agent-monitor.create-access-token
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/categories/import
+      name: v2-categories-import
+      description: REST surface for v2-categories-import.
+      operations:
+      - method: POST
+        name: bulk-import-categories
+        description: 'Bulk Import Categories'
+        call: product-agent-monitor.bulk-import-categories
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/categories/import/{import_id}
+      name: v2-categories-import-import-id
+      description: REST surface for v2-categories-import-import-id.
+      operations:
+      - method: GET
+        name: get-category-import-status
+        description: 'Get Category Import Status'
+        call: product-agent-monitor.get-category-import-status
+        with:
+          import_id: rest.path.import_id
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/attributes/import
+      name: v2-attributes-import
+      description: REST surface for v2-attributes-import.
+      operations:
+      - method: POST
+        name: import-attributes-from-csv
+        description: 'Import Attributes from CSV'
+        call: product-agent-monitor.import-attributes-from-csv
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/v2/attributes/import/{import_id}
+      name: v2-attributes-import-import-id
+      description: REST surface for v2-attributes-import-import-id.
+      operations:
+      - method: GET
+        name: get-attribute-import-status
+        description: 'Get Attribute Import Status'
+        call: product-agent-monitor.get-attribute-import-status
+        with:
+          import_id: rest.path.import_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: product-agent-monitor-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Product Agent — Monitor. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-create-access-token
+      description: 'Create Access Token'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: product-agent-monitor.create-access-token
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-bulk-import-categories
+      description: 'Bulk Import Categories'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: product-agent-monitor.bulk-import-categories
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-category-import-status
+      description: 'Get Category Import Status'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: product-agent-monitor.get-category-import-status
+      with:
+        import_id: tools.import_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-import-attributes-from-csv
+      description: 'Import Attributes from CSV'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: product-agent-monitor.import-attributes-from-csv
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-attribute-import-status
+      description: 'Get Attribute Import Status'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: product-agent-monitor.get-attribute-import-status
+      with:
+        import_id: tools.import_id
+      outputParameters:
+      - type: object
+        mapping: $.

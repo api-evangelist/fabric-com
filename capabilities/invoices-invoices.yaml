@@ -1,0 +1,398 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Invoices
+  description: 'fabric Invoices. 8 operations. Lead operation: Get Invoice by Identifier Type and Value. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Invoices
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: invoices-invoices
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Invoices consumed operations from fabric-invoices-openapi.yml.
+    resources:
+    - name: invoices-invoiceidtype-invoiceidvalue
+      path: /invoices/{invoiceIdType}/{invoiceIdValue}
+      operations:
+      - name: get-invoice-by-identifier-type-and-value
+        method: GET
+        description: 'Get Invoice by Identifier Type and Value'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceIdType
+          in: path
+          type: string
+          required: true
+        - name: invoiceIdValue
+          in: path
+          type: string
+          required: true
+      - name: update-invoice-by-identifier-type-and-value
+        method: PUT
+        description: 'Update Invoice by Identifier Type and Value'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceIdType
+          in: path
+          type: string
+          required: true
+        - name: invoiceIdValue
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: invoices
+      path: /invoices
+      operations:
+      - name: create-invoice
+        method: POST
+        description: 'Create Invoice'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: invoices-search
+      path: /invoices/search
+      operations:
+      - name: search-for-invoices
+        method: POST
+        description: 'Search for Invoices'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: invoices-invoiceid
+      path: /invoices/{invoiceId}
+      operations:
+      - name: get-invoice-by-id
+        method: GET
+        description: 'Get Invoice by ID'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceId
+          in: path
+          type: string
+          required: true
+      - name: update-invoice-by-id
+        method: PUT
+        description: 'Update Invoice by ID'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: invoices-invoiceid-acknowledge
+      path: /invoices/{invoiceId}/acknowledge
+      operations:
+      - name: acknowledge-financial-transaction
+        method: POST
+        description: 'Acknowledge Financial Transaction'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: invoices-invoiceidtype-invoiceidvalue-actions-update-attribu
+      path: /invoices/{invoiceIdType}/{invoiceIdValue}/actions/update-attributes
+      operations:
+      - name: update-invoice-attributes
+        method: POST
+        description: 'Update Invoice Attributes'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: invoiceIdType
+          in: path
+          type: string
+          required: true
+        - name: invoiceIdValue
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: invoices-invoices-rest
+    port: 8080
+    description: REST adapter for fabric Invoices. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/invoices/{invoiceIdType}/{invoiceIdValue}
+      name: invoices-invoiceidtype-invoiceidvalue
+      description: REST surface for invoices-invoiceidtype-invoiceidvalue.
+      operations:
+      - method: GET
+        name: get-invoice-by-identifier-type-and-value
+        description: 'Get Invoice by Identifier Type and Value'
+        call: invoices-invoices.get-invoice-by-identifier-type-and-value
+        with:
+          invoiceIdType: rest.path.invoiceIdType
+          invoiceIdValue: rest.path.invoiceIdValue
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: update-invoice-by-identifier-type-and-value
+        description: 'Update Invoice by Identifier Type and Value'
+        call: invoices-invoices.update-invoice-by-identifier-type-and-value
+        with:
+          invoiceIdType: rest.path.invoiceIdType
+          invoiceIdValue: rest.path.invoiceIdValue
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/invoices
+      name: invoices
+      description: REST surface for invoices.
+      operations:
+      - method: POST
+        name: create-invoice
+        description: 'Create Invoice'
+        call: invoices-invoices.create-invoice
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/invoices/search
+      name: invoices-search
+      description: REST surface for invoices-search.
+      operations:
+      - method: POST
+        name: search-for-invoices
+        description: 'Search for Invoices'
+        call: invoices-invoices.search-for-invoices
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/invoices/{invoiceId}
+      name: invoices-invoiceid
+      description: REST surface for invoices-invoiceid.
+      operations:
+      - method: GET
+        name: get-invoice-by-id
+        description: 'Get Invoice by ID'
+        call: invoices-invoices.get-invoice-by-id
+        with:
+          invoiceId: rest.path.invoiceId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: update-invoice-by-id
+        description: 'Update Invoice by ID'
+        call: invoices-invoices.update-invoice-by-id
+        with:
+          invoiceId: rest.path.invoiceId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/invoices/{invoiceId}/acknowledge
+      name: invoices-invoiceid-acknowledge
+      description: REST surface for invoices-invoiceid-acknowledge.
+      operations:
+      - method: POST
+        name: acknowledge-financial-transaction
+        description: 'Acknowledge Financial Transaction'
+        call: invoices-invoices.acknowledge-financial-transaction
+        with:
+          invoiceId: rest.path.invoiceId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/invoices/{invoiceIdType}/{invoiceIdValue}/actions/update-attributes
+      name: invoices-invoiceidtype-invoiceidvalue-actions-update-attribu
+      description: REST surface for invoices-invoiceidtype-invoiceidvalue-actions-update-attribu.
+      operations:
+      - method: POST
+        name: update-invoice-attributes
+        description: 'Update Invoice Attributes'
+        call: invoices-invoices.update-invoice-attributes
+        with:
+          invoiceIdType: rest.path.invoiceIdType
+          invoiceIdValue: rest.path.invoiceIdValue
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: invoices-invoices-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Invoices. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-get-invoice-by-identifier-type-and-value
+      description: 'Get Invoice by Identifier Type and Value'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: invoices-invoices.get-invoice-by-identifier-type-and-value
+      with:
+        invoiceIdType: tools.invoiceIdType
+        invoiceIdValue: tools.invoiceIdValue
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-invoice-by-identifier-type-and-value
+      description: 'Update Invoice by Identifier Type and Value'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: invoices-invoices.update-invoice-by-identifier-type-and-value
+      with:
+        invoiceIdType: tools.invoiceIdType
+        invoiceIdValue: tools.invoiceIdValue
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-invoice
+      description: 'Create Invoice'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: invoices-invoices.create-invoice
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-search-for-invoices
+      description: 'Search for Invoices'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: invoices-invoices.search-for-invoices
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-get-invoice-by-id
+      description: 'Get Invoice by ID'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: invoices-invoices.get-invoice-by-id
+      with:
+        invoiceId: tools.invoiceId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-invoice-by-id
+      description: 'Update Invoice by ID'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: invoices-invoices.update-invoice-by-id
+      with:
+        invoiceId: tools.invoiceId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-acknowledge-financial-transaction
+      description: 'Acknowledge Financial Transaction'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: invoices-invoices.acknowledge-financial-transaction
+      with:
+        invoiceId: tools.invoiceId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-invoice-attributes
+      description: 'Update Invoice Attributes'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: invoices-invoices.update-invoice-attributes
+      with:
+        invoiceIdType: tools.invoiceIdType
+        invoiceIdValue: tools.invoiceIdValue
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

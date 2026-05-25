@@ -1,0 +1,434 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: fabric Cart — Fulfillments
+  description: 'fabric Cart — Fulfillments. 8 operations. Lead operation: Get Fulfillment. Self-contained Naftiko capability covering one fabric business surface.'
+  tags:
+  - Fabric
+  - Fulfillments
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+- namespace: env
+  keys:
+    FABRIC_ACCESS_TOKEN: FABRIC_ACCESS_TOKEN
+capability:
+  consumes:
+  - type: http
+    namespace: cart-fulfillments
+    baseUri: https://api.fabric.inc/v3
+    description: fabric Cart — Fulfillments consumed operations from fabric-cart-openapi.yml.
+    resources:
+    - name: carts-cartid-fulfillments-fulfillmentid
+      path: /carts/{cartId}/fulfillments/{fulfillmentId}
+      operations:
+      - name: get-fulfillment
+        method: GET
+        description: 'Get Fulfillment'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: fulfillmentId
+          in: path
+          type: string
+          required: true
+      - name: update-fulfillment
+        method: PUT
+        description: 'Update Fulfillment'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: fulfillmentId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+      - name: delete-fulfillment
+        method: DELETE
+        description: 'Delete Fulfillment'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: fulfillmentId
+          in: path
+          type: string
+          required: true
+    - name: carts-cartid-fulfillments
+      path: /carts/{cartId}/fulfillments
+      operations:
+      - name: create-fulfillment
+        method: POST
+        description: 'Create Fulfillment'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: carts-cartid-fulfillments-fulfillmentid-fees
+      path: /carts/{cartId}/fulfillments/{fulfillmentId}/fees
+      operations:
+      - name: create-fulfillment-fee
+        method: POST
+        description: 'Create Fulfillment Fee'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: fulfillmentId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: carts-cartid-fulfillments-fulfillmentid-adjustments
+      path: /carts/{cartId}/fulfillments/{fulfillmentId}/adjustments
+      operations:
+      - name: create-fulfillment-adjustment
+        method: POST
+        description: 'Create Fulfillment Adjustment'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: fulfillmentId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: carts-cartid-fulfillments-fulfillmentid-actions-delete-attri
+      path: /carts/{cartId}/fulfillments/{fulfillmentId}/actions/delete-attributes
+      operations:
+      - name: delete-fulfillment-attributes
+        method: POST
+        description: 'Delete Fulfillment Attributes'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: fulfillmentId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: carts-cartid-fulfillments-fulfillmentid-actions-add-attribut
+      path: /carts/{cartId}/fulfillments/{fulfillmentId}/actions/add-attributes
+      operations:
+      - name: add-fulfillment-attributes
+        method: POST
+        description: 'Add Fulfillment Attributes'
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cartId
+          in: path
+          type: string
+          required: true
+        - name: fulfillmentId
+          in: path
+          type: string
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      value: '{{env.FABRIC_ACCESS_TOKEN}}'
+      placement: header
+  exposes:
+  - type: rest
+    namespace: cart-fulfillments-rest
+    port: 8080
+    description: REST adapter for fabric Cart — Fulfillments. One Spectral-compliant resource per consumed operation, prefixed with /v1.
+    resources:
+    - path: /v1/carts/{cartId}/fulfillments/{fulfillmentId}
+      name: carts-cartid-fulfillments-fulfillmentid
+      description: REST surface for carts-cartid-fulfillments-fulfillmentid.
+      operations:
+      - method: GET
+        name: get-fulfillment
+        description: 'Get Fulfillment'
+        call: cart-fulfillments.get-fulfillment
+        with:
+          cartId: rest.path.cartId
+          fulfillmentId: rest.path.fulfillmentId
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PUT
+        name: update-fulfillment
+        description: 'Update Fulfillment'
+        call: cart-fulfillments.update-fulfillment
+        with:
+          cartId: rest.path.cartId
+          fulfillmentId: rest.path.fulfillmentId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: delete-fulfillment
+        description: 'Delete Fulfillment'
+        call: cart-fulfillments.delete-fulfillment
+        with:
+          cartId: rest.path.cartId
+          fulfillmentId: rest.path.fulfillmentId
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts/{cartId}/fulfillments
+      name: carts-cartid-fulfillments
+      description: REST surface for carts-cartid-fulfillments.
+      operations:
+      - method: POST
+        name: create-fulfillment
+        description: 'Create Fulfillment'
+        call: cart-fulfillments.create-fulfillment
+        with:
+          cartId: rest.path.cartId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts/{cartId}/fulfillments/{fulfillmentId}/fees
+      name: carts-cartid-fulfillments-fulfillmentid-fees
+      description: REST surface for carts-cartid-fulfillments-fulfillmentid-fees.
+      operations:
+      - method: POST
+        name: create-fulfillment-fee
+        description: 'Create Fulfillment Fee'
+        call: cart-fulfillments.create-fulfillment-fee
+        with:
+          cartId: rest.path.cartId
+          fulfillmentId: rest.path.fulfillmentId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts/{cartId}/fulfillments/{fulfillmentId}/adjustments
+      name: carts-cartid-fulfillments-fulfillmentid-adjustments
+      description: REST surface for carts-cartid-fulfillments-fulfillmentid-adjustments.
+      operations:
+      - method: POST
+        name: create-fulfillment-adjustment
+        description: 'Create Fulfillment Adjustment'
+        call: cart-fulfillments.create-fulfillment-adjustment
+        with:
+          cartId: rest.path.cartId
+          fulfillmentId: rest.path.fulfillmentId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts/{cartId}/fulfillments/{fulfillmentId}/actions/delete-attributes
+      name: carts-cartid-fulfillments-fulfillmentid-actions-delete-attri
+      description: REST surface for carts-cartid-fulfillments-fulfillmentid-actions-delete-attri.
+      operations:
+      - method: POST
+        name: delete-fulfillment-attributes
+        description: 'Delete Fulfillment Attributes'
+        call: cart-fulfillments.delete-fulfillment-attributes
+        with:
+          cartId: rest.path.cartId
+          fulfillmentId: rest.path.fulfillmentId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/carts/{cartId}/fulfillments/{fulfillmentId}/actions/add-attributes
+      name: carts-cartid-fulfillments-fulfillmentid-actions-add-attribut
+      description: REST surface for carts-cartid-fulfillments-fulfillmentid-actions-add-attribut.
+      operations:
+      - method: POST
+        name: add-fulfillment-attributes
+        description: 'Add Fulfillment Attributes'
+        call: cart-fulfillments.add-fulfillment-attributes
+        with:
+          cartId: rest.path.cartId
+          fulfillmentId: rest.path.fulfillmentId
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: cart-fulfillments-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for fabric Cart — Fulfillments. One tool per consumed operation, routed inline through this capability's consumes block.
+    tools:
+    - name: fabric-get-fulfillment
+      description: 'Get Fulfillment'
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: cart-fulfillments.get-fulfillment
+      with:
+        cartId: tools.cartId
+        fulfillmentId: tools.fulfillmentId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-update-fulfillment
+      description: 'Update Fulfillment'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: cart-fulfillments.update-fulfillment
+      with:
+        cartId: tools.cartId
+        fulfillmentId: tools.fulfillmentId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-delete-fulfillment
+      description: 'Delete Fulfillment'
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: cart-fulfillments.delete-fulfillment
+      with:
+        cartId: tools.cartId
+        fulfillmentId: tools.fulfillmentId
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-fulfillment
+      description: 'Create Fulfillment'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-fulfillments.create-fulfillment
+      with:
+        cartId: tools.cartId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-fulfillment-fee
+      description: 'Create Fulfillment Fee'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-fulfillments.create-fulfillment-fee
+      with:
+        cartId: tools.cartId
+        fulfillmentId: tools.fulfillmentId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-create-fulfillment-adjustment
+      description: 'Create Fulfillment Adjustment'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-fulfillments.create-fulfillment-adjustment
+      with:
+        cartId: tools.cartId
+        fulfillmentId: tools.fulfillmentId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-delete-fulfillment-attributes
+      description: 'Delete Fulfillment Attributes'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-fulfillments.delete-fulfillment-attributes
+      with:
+        cartId: tools.cartId
+        fulfillmentId: tools.fulfillmentId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: fabric-add-fulfillment-attributes
+      description: 'Add Fulfillment Attributes'
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: cart-fulfillments.add-fulfillment-attributes
+      with:
+        cartId: tools.cartId
+        fulfillmentId: tools.fulfillmentId
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
