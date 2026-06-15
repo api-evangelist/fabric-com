@@ -1,0 +1,419 @@
+{
+  "item": [
+    {
+      "id": "f968750d-885a-4c67-9b3e-66d75720b794",
+      "name": "Authentication Endpoints",
+      "description": {
+        "content": "These endpoints allow apps to authenticate themselves or their end users using fabric Identity. The main objective of these endpoints is to provide access tokens to applications, allowing them to invoke other fabric services such as Orders, Product Catalog, and more.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "83104935-08ab-4ede-8ee0-d83e1a55d81c",
+          "name": "Authorize User App with and Without PKCE",
+          "request": {
+            "name": "Authorize User App with and Without PKCE",
+            "description": {
+              "content": "Use this endpoint to authenticate a user app using fabric Identity. When calling this endpoint, the immediate response will be a browser redirect to the hosted Login page configured in fabric Identity. After successful authentication of the user on the hosted Login page, fabric Identity will redirect back to the user app using the provided `redirect_uri`. This endpoint supports both authorization code flow with and without Proof of Code Exchange (PKCE). <p> **Note**: This endpoint isn't required for system app authentication (refer to `/token` endpoint instead).</p>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "oauth2",
+                "default",
+                "v1",
+                "authorize"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "client_id",
+                  "value": "<string>",
+                  "description": "(Required) Client ID of the user app"
+                },
+                {
+                  "disabled": false,
+                  "key": "response_type",
+                  "value": "<string>",
+                  "description": "(Required) Type of the response expected. This should always be set to `code` (as per OAuth 2.0 grant type, refer to https://datatracker.ietf.org/doc/html/rfc6749#page-19) for additional info."
+                },
+                {
+                  "disabled": false,
+                  "key": "scope",
+                  "value": "<string>",
+                  "description": "(Required) Scope of the endpoint call. This should always be set to `openid` (as per OpenID Connect standard. Refer to https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest for additional info)"
+                },
+                {
+                  "disabled": false,
+                  "key": "redirect_uri",
+                  "value": "<string>",
+                  "description": "(Required) Redirect URI of the user app is where fabric Identity will redirect the user upon successful login. This URI should be hosted by the user app. As part of the redirect, you will receive the auth code (as `code` query parameter) which can then be exchanged for the access token (refer to `/token`)."
+                },
+                {
+                  "disabled": false,
+                  "key": "state",
+                  "value": "<string>",
+                  "description": "(Required) Random string created by the user app. It's used to maintain state between the request and the callback. The `state` helps mitigate Cross-Site Request Forgery (CSRF) when it's cryptographically derived from a browser cookie that signifies the user or session."
+                },
+                {
+                  "disabled": false,
+                  "key": "code_challenge_method",
+                  "value": "<string>",
+                  "description": "Required only when using authorization code flow with PKCE. A code challenge method supported by PKCE specification. fabric Identity only supports the value of `S256` (Refer to https://datatracker.ietf.org/doc/html/rfc7636#section-4.2 for additional info). This parameter is mandatory for authorization code flow with PKCE and isn't required for the regular authorization code flow."
+                },
+                {
+                  "disabled": false,
+                  "key": "code_challenge",
+                  "value": "<string>",
+                  "description": "(Required) Required only when using authorization code flow with PKCE. The code challenge created by the user app as per the specification on PKCE - https://datatracker.ietf.org/doc/html/rfc7636#section-4.2."
+                }
+              ],
+              "variable": [
+                {
+                  "description": "The customer name as provided by the Support team",
+                  "type": "any",
+                  "value": "{{customer_name}}",
+                  "key": "customer_name"
+                }
+              ]
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8ecf73db-24bc-4695-9a5e-f5e8726122ac",
+              "name": "Found. A successful response to this endpoint will re-direct the user to the hosted Login page provided by the fabric Identity. Once the user successfully logs in, fabric Identity would re-direct the client back to the `redirect_uri` hosted on the user app with the authorization code (as query parameter `code`) and the state (as query parameter `state`). The `state` parameter in the callback would be the same value as sent in the request.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "oauth2",
+                    "default",
+                    "v1",
+                    "authorize"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "client_id",
+                      "value": "0oa3asajdykUunEjL697"
+                    },
+                    {
+                      "key": "response_type",
+                      "value": "code"
+                    },
+                    {
+                      "key": "scope",
+                      "value": "openid"
+                    },
+                    {
+                      "key": "redirect_uri",
+                      "value": "http://localhost:8080"
+                    },
+                    {
+                      "key": "state",
+                      "value": "Jvpg3kcl6LL5irKlFZJWSwVTEuV1IB9aOfRdgAkDo0rcE8M5NFFS8Y4f6z6OSTXY"
+                    },
+                    {
+                      "key": "code_challenge_method",
+                      "value": "S256"
+                    },
+                    {
+                      "key": "code_challenge",
+                      "value": "xwVkMxyOHaY7f0yXb8pajRSMa2D1wMTrPuuIohH2PyA"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "description": "The customer name as provided by the Support team",
+                      "type": "any",
+                      "value": "{{customer_name}}",
+                      "key": "customer_name"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Found",
+              "code": 302,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "204f870d-2b14-4bb6-8e0c-35d33827b7c5",
+          "name": "Fetch Access Token",
+          "request": {
+            "name": "Fetch Access Token",
+            "description": {
+              "content": "This endpoint allows user apps and system apps to fetch access tokens. For user apps, use this endpoint after the `/authorize` endpoint and the subsequent callback. For user apps this endpoint supports generation of access token from authorization code or from refresh token, sent in the previous `authorize` endpoint's callback. For system apps this endpoint can directly be used to get an access token, no prior `/authorize` end point call is needed.<p> <b><span style={{color: 'red'}}>NOTE: Fetching a token for a system app via the browser on our developer portal WILL NOT WORK as browser requests to the token endpoint must use PKCE.</span></b> Instead, send the request through a server side/native method and ensure the 'Origin' header isn't present. </p>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "oauth2",
+                ":authServerId",
+                "v1",
+                "token"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "authServerId",
+                  "description": "(Required) Use `default` for user app flows. For system apps, use the tenant-specific server ID provided by fabric Identity (see Getting Started)."
+                },
+                {
+                  "description": "The customer name as provided by the Support team",
+                  "type": "any",
+                  "value": "{{customer_name}}",
+                  "key": "customer_name"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "disabled": false,
+                  "key": "grant_type",
+                  "value": "<string>",
+                  "description": "(Required) Required for all authentication flows and app types. Set to `authorization_code` for user apps (for both authorization code flow with and without PKCE). Set to `client_credentials` when using for system apps."
+                },
+                {
+                  "disabled": false,
+                  "key": "client_id",
+                  "value": "<string>",
+                  "description": "Required only for user apps and authorization code flow with PKCE."
+                },
+                {
+                  "disabled": false,
+                  "key": "client_secret",
+                  "value": "<password>",
+                  "description": "Required only for user apps and authorization code flow with PKCE."
+                },
+                {
+                  "disabled": false,
+                  "key": "redirect_uri",
+                  "value": "<string>",
+                  "description": "Required for user apps with both authorization code flow with and without PKCE. URL encoded `redirect_uri` sent by the user app in the previous `/authorize` call."
+                },
+                {
+                  "disabled": false,
+                  "key": "code_verifier",
+                  "value": "<string>",
+                  "description": "Required only for user apps and authorization code flow with PKCE. Code verifier using for deriving the `code_challenge` sent in the `/authorize` call. Refer to https://datatracker.ietf.org/doc/html/rfc7636#section-4.2 for more details"
+                },
+                {
+                  "disabled": false,
+                  "key": "code",
+                  "value": "<string>",
+                  "description": "Required for user apps with both authorization code flow with and without PKCE. Authorization code received as part of the callback response to the `/authorize` call."
+                },
+                {
+                  "disabled": false,
+                  "key": "scope",
+                  "value": "s2s",
+                  "description": "Required only for system apps. Value should always be set to `s2s`."
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "63228742-8bbd-4c49-906b-d50787583f48",
+              "name": "Access token response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "oauth2",
+                    ":authServerId",
+                    "v1",
+                    "token"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "authServerId",
+                      "description": "(Required) Use `default` for user app flows. For system apps, use the tenant-specific server ID provided by fabric Identity (see Getting Started)."
+                    },
+                    {
+                      "description": "The customer name as provided by the Support team",
+                      "type": "any",
+                      "value": "{{customer_name}}",
+                      "key": "customer_name"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "Required for user apps with authorization code flow without PKCE and for system apps. Basic authorization header should be created using the client ID and client secret of the app. The value should be derived as `Basic base64encode(client_id:client_secret)`. Refer to https://datatracker.ietf.org/doc/html/rfc2617#section-2 for additional info.",
+                    "key": "Authorization",
+                    "value": "J88GlXYuhrStpCHNC22hSqGRFe_kQuESkteFTJPJ"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) Required for all authentication flows and app types. Set to `authorization_code` for user apps (for both authorization code flow with and without PKCE). Set to `client_credentials` when using for system apps.",
+                        "type": "text/plain"
+                      },
+                      "key": "grant_type",
+                      "value": "client_credentials"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Required only for user apps and authorization code flow with PKCE.",
+                        "type": "text/plain"
+                      },
+                      "key": "client_id",
+                      "value": "0oa3asajdykUunEjL697"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Required only for user apps and authorization code flow with PKCE.",
+                        "type": "text/plain"
+                      },
+                      "key": "client_secret",
+                      "value": "J88GlXYuhrStpCHNC22hSqGRFe_kQuESkteFTJPJ"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Required for user apps with both authorization code flow with and without PKCE. URL encoded `redirect_uri` sent by the user app in the previous `/authorize` call.",
+                        "type": "text/plain"
+                      },
+                      "key": "redirect_uri",
+                      "value": "http://localhost:8080"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Required only for user apps and authorization code flow with PKCE. Code verifier using for deriving the `code_challenge` sent in the `/authorize` call. Refer to https://datatracker.ietf.org/doc/html/rfc7636#section-4.2 for more details",
+                        "type": "text/plain"
+                      },
+                      "key": "code_verifier",
+                      "value": "3bc9ba27fbd3eea9a3a6223edd2a7b5c2d30e183361"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Required for user apps with both authorization code flow with and without PKCE. Authorization code received as part of the callback response to the `/authorize` call.",
+                        "type": "text/plain"
+                      },
+                      "key": "code",
+                      "value": "of5rhPdL5xAyp9fCvB4KaMSv_4RveYP5R9RugT0j7Eo"
+                    },
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "Required only for system apps. Value should always be set to `s2s`.",
+                        "type": "text/plain"
+                      },
+                      "key": "scope",
+                      "value": "s2s"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 600,\n  \"access_token\": \"eyJraWQiOiJGRkYtaDJDdDlTXzFqTTFlQUpfdlc1WkJFZmJYRkRBbUlDdGJsTEdMMjBnIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULm54M05TR1FrWDhhVHpQU29xUC1BU0pYTTBjYmJQUVVQdzRrNV96VE5ITk0ub2FycXdpNGEyN3pYSFhHT1UxZDYiLCJpc3MiOiJodHRwczovL3Rlc3Q2LmxvZ2luLWRldi5mYWJyaWMuaW5jL29hdXRoMi9kZWZhdWx0IiwiYXVkIjoiYXBpOi8vZGVmYXVsdCIsImlhdCI6MTY4NDQwOTk2OSwiZXhwIjoxNjg0NDEzNTY5LCJjaWQiOiIwb2E3OXg1MjNlVjNvN1hRSjFkNyIsInVpZCI6IjAwdTdtN3ZvbDc3clE5MlNCMWQ3Iiwic2NwIjpbIm9mZmxpbmVfYWNjZXNzIiwiZW1haWwiLCJvcGVuaWQiXSwiYXV0aF90aW1lIjoxNjg0NDA5OTY5LCJzdWIiOiJwYXQudGVzdDIyMjNAZXhhbXBsZS5jb20iLCJmYWJyaWNVc2VySWQiOiIxMWIzNTIyZC0xMDk5LTQyNGMtYWFlOS0xZTg2MTAxYTIyMmEiLCJ1c2VyUG9vbFR5cGUiOiJjdXN0b21lciIsImFjY291bnRzIjoie1wiNjBjOTE3NTBmYThkM2UwMDA4NTRlOGVhXCI6e1wicm9sZXNcIjpbXCJkZGQwN2UwNS1iZTdhLTQ2MTAtYjhjNC0yMGRmZDJmODhkMzhcIl0sXCJpZFwiOlwiNjBjOTE3NTBmYThkM2UwMDA4NTRlOGVhXCIsXCJuYW1lXCI6XCJ0ZXN0NlwiLFwidGVuYW50SWRcIjpcIjYwYzkxNzUwZmE4ZDNlMDAwODU0ZThlYVwiLFwibG9nb1VybFwiOm51bGx9fSIsImlkZW50aXR5VmVyc2lvbiI6InYyIn0.NxElKcQ-VzYUgn10x8wMgV1CgpF3FRMiCGpvD7W3s2G2wKesFYkhLo6F9HHl4Y0M-u4mObGZR83CV58bO1GvcBh7DIW-lV8S-_k64qAK4WfFWtpQSETMZfmcZ6ouD9fOGGu-RajQe_QbDAoAN1MxdQPpR7R7ZWCX5XCdnrQOJq_j_7HKV_g9HrqEq7yi5fwKENsqirYUQDRa0uLeXu9_-VMBkP-10HmlWqE0e21X8gVMsGpaZ6ppm2oLP6y8idQXA-h9sUygFyXyDk04OGPK3C0Haysuc8w5Fb9KSQ-YzkCwInC0VVLjougKL5P_NSBZEqluBHEHIdkyk6aR8ZX3iA\",\n  \"id_token\": \"eyJraWQiOiJGRkYtaDJDdDlTXzFqTTFlQUpfdlc1WkJFZmJYRkRBbUlDdGJsTEdMMjBnIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIwMHU3bTd2b2w3N3JROTJTQjFkNyIsImVtYWlsIjoicGF0LnRlc3QyMjIzQGV4YW1wbGUuY29tIiwidmVyIjoxLCJpc3MiOiJodHRwczovL3Rlc3Q2LmxvZ2luLWRldi5mYWJyaWMuaW5jL29hdXRoMi9kZWZhdWx0IiwiYXVkIjoiMG9hNzl4NTIzZVYzbzdYUUoxZDciLCJpYXQiOjE2ODQ0MDk5NjksImV4cCI6MTY4NDQxMzU2OSwianRpIjoiSUQuRHNuMkhjUl83Z29GLVlOV3h5RW80TXZRcFRGQjYtNkJuYzRjX3h2SlE4OCIsImFtciI6WyJwd2QiXSwiaWRwIjoiMDBvNXlia2Fmb3U4N3lsTDMxZDciLCJhdXRoX3RpbWUiOjE2ODQ0MDk5NjksImF0X2hhc2giOiJGWktvRG5ZQmFfZnBraEgybzd5bXF3In0.CFNMcmVu9-PAlI3XkqdWXaxIDoZlFkzEFz1dtUdsMbVs47VmOCNAyngAXoPm0a9JFbFkPtw2zQt-nbrIq4Wb8v_MwmIW8s1OO87DXzvPYfW5zGZ7-tJDv0LfbSHp9epnRU7kiZSh5Dg9Uj4LQK6D1sfAIk9NRqPYl2TFapva_0hNTyRGVXlp0hWrZkdBplL1R8aX18dzrbMOuiniLOnfff5KyW7tS7dB9RYLN1uuQYB6dX9QpR5Lxf8I8Hjv3IjC_JXfltzi5hni4i-t36my6d20P-P45H9LYbN1u8T6hTkYA017FJBVWOsFYSh4vZxLlS-3nyMr3rnVpTewRVsTOw\",\n  \"scope\": \"openid profile email\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "description": {
+        "content": "The customer name as provided by the Support team",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "yourcompany",
+      "key": "customer_name"
+    },
+    {
+      "type": "string",
+      "value": "https://{{customer_name}}.login.fabric.inc",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "00b7534b-2c92-4cfe-88f6-1f27b160f607",
+    "name": "Authentication v3",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric **Identity** API is designed to be used by all third-party developers for the purpose of authenticating and obtaining access tokens. These tokens are essential for building e-commerce solutions that seamlessly integrate with fabric services such as Orders, Offers, among others.\n\nContact Support:\n Email: support@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,656 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Orders - Shipments API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Shipments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create New Shipment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "To use this endpoint an “allocation” must exist for the order that's being shipped. When an order is placed, fabric sends allocation details to external merchant system to create order fulfillment requirement details in an external system. With reference to the allocation that's being shipped, users of this POST API can create  shipment details for allocations. <p> **Note**: Shipment ID generated as part of the response is required for subsequent calls such as Acknowledge shipment (`POST /shipme"
+        },
+        {
+          "info": {
+            "name": "Create Shipment for an Existing Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/create-order-shipment",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates shipment details for an existing order.\n\nThis endpoint can only be used for orders that already exist. When an order is placed, \nfabric sends allocation details to external merchant systems to define fulfillment \nrequirements. Using the provided allocation reference, this endpoint (POST) creates \nshipment records associated with that order.\n\nNote:\n- The Shipment ID returned in the response is required for subsequent calls:\n  - Acknowledge shipment: `POST /shipments/{shipmentId}/acknowled"
+        },
+        {
+          "info": {
+            "name": "Create Re-shipment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/actions/re-ship",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Orders may go missing before they're delivered to customers for reasons such as incorrect address, theft, labelling issues, or other reasons. This endpoint triggers reshipment in such cases for the existing location. <p> **Note**: Shipment ID generated as part of the response is required for subsequent calls such as Acknowledge shipment (POST /shipments/{shipmentId}/acknowledge) and Get shipment (GET /shipments/{shipmentId}).</p>"
+        },
+        {
+          "info": {
+            "name": "Update Shipment Tracking",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/actions/update-tracking",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The update tracking endpoint creates a new tracking log that can be used to update the order status. The most common application of this endpoint is to connect to external web services or 'adapters' that have been integrated with carrier tracking applications. With this endpoint, fabric Shipment service gets information from carrier tracking applications, and in turn, updates customers about their shipment status."
+        },
+        {
+          "info": {
+            "name": "Find Shipments",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "fetchOnlyIds",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "0",
+                "type": "query",
+                "description": "The number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30."
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "Maximum number of records per page."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "As merchants, you may want to view shipments of specific statuses, monitor progress of deliveries, and proactively manage situations to ensure timely deliveries. <p> This endpoint enables you to easily search for shipments based on the specified criteria in the request body. You can refine your search by specifying `limit` and `offset`. When they're not specified, by default you will get up to 10 records. In addition, you can `sort` results.</p>"
+        },
+        {
+          "info": {
+            "name": "Get Shipment by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/shipments/:shipmentId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "shipmentId",
+                "value": "627963716b19511e8a3a631b",
+                "type": "path",
+                "description": "24-character system-generated shipment ID. It's generated in the response of Create Shipment - `POST /shipments` endpoint."
+              }
+            ]
+          },
+          "docs": "As merchants, you may want to resolve customer queries related to shipment or track a specific shipment to manage customer expectations with timely communication. <p> This endpoint gets details of a single shipment by ID. You will get `shipmentId` by using the search endpoint, or by referencing a `shipmentId` on a file such as the Invoice.</p>"
+        },
+        {
+          "info": {
+            "name": "Get Shipment by Shipmentidtype and Shipmentidvalue",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/shipments/:shipmentIdType/:shipmentIdValue",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "shipmentIdType",
+                "value": "shipment-external-id",
+                "type": "path",
+                "description": "This field specifies the type of shipment identifier used in the request.\nValid values:\n  - shipment-number — The merchant-defined shipment number.\n  - shipment-external-id — The merchant-assigned external identifier for the shipment."
+              },
+              {
+                "name": "shipmentIdValue",
+                "value": "",
+                "type": "path",
+                "description": "This field specifies the identifier value that corresponds to the type in `shipmentIdType`.\nFor example, if `shipmentIdType` is `shipment-number`, then this value must be the merchant-defined shipment number."
+              }
+            ]
+          },
+          "docs": "Retrieves shipment details by `shipmentIdType` and `shipmentIdValue`.\n\nAs a merchant, you may need to review or monitor a shipment to address customer\ninquiries, resolve complaints, or support analytics and reporting. This endpoint\nallows you to access shipment information using the shipment identifiers.\n"
+        },
+        {
+          "info": {
+            "name": "Acknowledge Shipment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/:shipmentId/acknowledge",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "shipmentId",
+                "value": "627963716b19511e8a3a631b",
+                "type": "path",
+                "description": "24-character system-generated shipment ID. It's generated in the response of Create Shipment - `POST /shipments` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "For users of fabric Webhook Service, Shipment related events can trigger HTTP callbacks to notify web clients through a merchant-defined URL/URI, typically an API Gateway for a middleware. While the response to fabric Webhook service HTTP call-back may occur, a secondary call-back can use this Acknowledge Shipment endpoint to indicate that a secondary external system has acknowledged this shipment event. Middleware receives the event, transforms it in a suitable format, and sends a success respo"
+        },
+        {
+          "info": {
+            "name": "Update Gift Card Activation Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/:shipmentId/actions/update-gift-cards-status",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "shipmentId",
+                "value": "627963716b19511e8a3a631b",
+                "type": "path",
+                "description": "24-character system-generated shipment ID. It's generated in the response of Create Shipment - `POST /shipments` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint is used to activate gift cards before they're delivered to the customer. Typically used by “adapters” or external web services integrated with gift card applications, so that gift cards can be activated as part of the fabric fulfillment workflow."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "transfer-shipment-controller",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "createShipment_1",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "updateTracking",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/actions/update-tracking",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "packTransferShipment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/pack-unpack",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "getTransferShipmentByQuery",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/query",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "search",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "fetchOnlyIds",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "get",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/:transferShipmentId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "transferShipmentId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "update",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/:transferShipmentId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "transferShipmentId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "cancel",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/:transferShipmentId/action/cancel",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "transferShipmentId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          }
+        },
+        {
+          "info": {
+            "name": "receiving",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/:transferShipmentId/action/receiving",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "transferShipmentId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        },
+        {
+          "info": {
+            "name": "acknowledgeTransferShipmentById",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/shipments/inventory-transfer/:transferShipmentId/actions/package-tracking-acknowledge",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "transferShipmentId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,979 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "fabric Inventory API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Inventory",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Inventory",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventories",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create inventory based on the combination of location number, channel ID, and item ID or SKU."
+        },
+        {
+          "info": {
+            "name": "Find Inventories of Specific Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventories/actions/find",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-channel-ids",
+                "value": "12, 13, 16"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "0",
+                "type": "query",
+                "description": "Number of records to be skipped before returning all records. Default is `0` when no value is specified."
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "Maximum number of records to be returned on a single page. For example, when offset=20 and limit=10, it returns records 21-30 on a single page. Default is `10` when no value is specified."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search for inventories of specific items by SKUs, itemIds, location numbers, and other parameters as specified in the request body. This endpoint retrieves the exact available quantity of the searched inventory."
+        },
+        {
+          "info": {
+            "name": "Adjust Inventory Counters",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventories/actions/find-and-adjust-inventory-counters",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "With this endpoint, you can modify inventory counters (also known as inventory positions) to maintain accurate inventory records. These counters are adjusted when new inventory is received or when an item is shipped. If the inventory does not exist, an error message will be displayed. An inventory can have multiple counters, and all counters will be updated when this endpoint is used."
+        },
+        {
+          "info": {
+            "name": "Update Inventory by Adding New Property",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventories/actions/find-and-update",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add a new property to existing inventory. <p> **Note:** This endpoint does not override all the existing properties; rather it updates inventory by adding new properties or by updating the existing inventory properties that are specified in the request body. Inventory is identified based on the combination of location number, channel ID, and item ID or SKU. </p>"
+        },
+        {
+          "info": {
+            "name": "Find Inventory of Specific Items in a Specific Region",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventories/actions/find-by-geography",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-channel-ids",
+                "value": "12, 13, 16"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search for list of inventories of specific items  in a specific region based on SKUs, postal code, latitude, longitude, and other details of the location as specified in the request body."
+        },
+        {
+          "info": {
+            "name": "Search for Inventories",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventories/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "fetchOnlyIds",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search for inventories based on filter criteria."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Actions Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Search for Inventory Hard Reservations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventories/actions/hard-reserve-search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search for hard reservations based on filter criteria."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Counters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get All Counters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/inventory-counters",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "0",
+                "type": "query",
+                "description": "Number of records to skip before returning all records. Default is `0` if no value is provided."
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "Maximum number of records returned per page. Default is `10` if no value is provided."
+              }
+            ]
+          },
+          "docs": "Get all configured counters."
+        },
+        {
+          "info": {
+            "name": "Create Counter",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-counters",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create counter (also known as inventory position) for better tracking of inventories."
+        },
+        {
+          "info": {
+            "name": "Get Counter by Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/inventory-counters/:counterCode",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "counterCode",
+                "value": "onHand",
+                "type": "path",
+                "description": "Counter code"
+              }
+            ]
+          },
+          "docs": "Get details of a specific counter by specified counter code."
+        },
+        {
+          "info": {
+            "name": "Update Counter by Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/inventory-counters/:counterCode",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "counterCode",
+                "value": "onHand",
+                "type": "path",
+                "description": "Counter code"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update a specific counter based on specified counter code."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Inventory Import Configs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get All File Configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/inventory-import-configs",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "0",
+                "type": "query",
+                "description": "Omit a specified number of rows before the beginning of the result set"
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "The maximum number of results to show on a page"
+              }
+            ]
+          },
+          "docs": "Get all file configurations for matching filter criteria"
+        },
+        {
+          "info": {
+            "name": "Create an Inventory Import File Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-import-configs",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create inventory import file configuration containing rules for queried file prefix"
+        },
+        {
+          "info": {
+            "name": "Get Inventory Import Upload File Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/inventory-import-configs/:id",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "oms_",
+                "type": "path",
+                "description": "File prefix"
+              }
+            ]
+          },
+          "docs": "Get inventory import file configurations containing rules for queried file prefix"
+        },
+        {
+          "info": {
+            "name": "Update Inventory Import File Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/inventory-import-configs/:id",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "oms_",
+                "type": "path",
+                "description": "File prefix"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update inventory import file configuration"
+        },
+        {
+          "info": {
+            "name": "Delete Inventory Import File Config",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/inventory-import-configs/:id",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "params": [
+              {
+                "name": "id",
+                "value": "oms_",
+                "type": "path",
+                "description": "File prefix"
+              }
+            ]
+          },
+          "docs": "Delete inventory import file config containing rules for queried file prefix"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Inventory Imports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Import Inventory Data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-imports",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Import inventory data by specifying file name. Successfully uploading the file triggers the import process, which is an event-driven extraction of the file's data to update the respective resource's system."
+        },
+        {
+          "info": {
+            "name": "Get Uploaded Files That Match Specified Criteria",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-imports/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "20",
+                "type": "query",
+                "description": "Number of records to skip before returning records. For example, `offset=20, limit=10` returns records 21-30."
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "Maximum number of records per page"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get uploaded files that match specified criteria. Returned as paginated records."
+        },
+        {
+          "info": {
+            "name": "Get Uploaded File Status and Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/inventory-imports/:importId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "params": [
+              {
+                "name": "importId",
+                "value": "62ff5c0bec0aed3c86202c32",
+                "type": "path",
+                "description": "Upload file document's unique ID"
+              }
+            ]
+          },
+          "docs": "Get uploaded file status and details by specifying `importId`."
+        },
+        {
+          "info": {
+            "name": "Force Import Halt",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-imports/:importId/actions/force-trigger",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "importId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Force import halted due to zeroed out Inventories more than threshold"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Networks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get All Networks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/inventory-networks",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "0",
+                "type": "query",
+                "description": "Number of records to skip before returning all records. Default is `0` when no value is specified."
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "Maximum number of results per page. Default is `10` when no value is specified."
+              }
+            ]
+          },
+          "docs": "Get a paginated list of all the created networks."
+        },
+        {
+          "info": {
+            "name": "Create Inventory Network",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-networks",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a network using conditional rules to add locations and SKU to the network."
+        },
+        {
+          "info": {
+            "name": "Get Network by Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/inventory-networks/:networkCode",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "networkCode",
+                "value": "DC",
+                "type": "path",
+                "description": "Merchant-specified network code"
+              }
+            ]
+          },
+          "docs": "Get details of a specific network by code."
+        },
+        {
+          "info": {
+            "name": "Update Network by Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/inventory-networks/:networkCode",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "networkCode",
+                "value": "DC",
+                "type": "path",
+                "description": "Network code"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update details of a specific inventory network by specified network code."
+        },
+        {
+          "info": {
+            "name": "Delete Network by Code",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/inventory-networks/:networkCode",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "networkCode",
+                "value": "DC",
+                "type": "path",
+                "description": "Network code"
+              }
+            ]
+          },
+          "docs": "Delete a specific network, with all its details, by specified network code. Once deleted, it can't be undone."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "ReservedNetwork Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Release Soft Reservation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-networks/actions/soft-release",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Release soft reservation."
+        },
+        {
+          "info": {
+            "name": "Soft Reservation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-networks/actions/soft-reserve",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Soft reserve quantity."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

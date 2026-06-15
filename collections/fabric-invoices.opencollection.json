@@ -1,0 +1,370 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Orders - Invoices API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Invoices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Invoice by Identifier Type and Value",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/invoices/:invoiceIdType/:invoiceIdValue",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "invoiceIdType",
+                "value": "invoice-id",
+                "type": "path",
+                "description": "This field specifies the type of invoice identifier used in the request.\nValid values:\n  - invoice-id — The system-generated unique invoice ID.\n  - invoice-number — The merchant-defined invoice number.\n  - invoice-externalId — The merchant-assigned external identifier."
+              },
+              {
+                "name": "invoiceIdValue",
+                "value": "",
+                "type": "path",
+                "description": "This field specifies the identifier value that corresponds to the type in `invoiceIdType`.\nFor example, if `invoiceIdType` is `invoice-id`, pass the system-generated invoice ID."
+              }
+            ]
+          },
+          "docs": "Get details of an invoice by invoice ID."
+        },
+        {
+          "info": {
+            "name": "Update Invoice by Identifier Type and Value",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/invoices/:invoiceIdType/:invoiceIdValue",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "invoiceIdType",
+                "value": "invoice-id",
+                "type": "path",
+                "description": "This field specifies the type of invoice identifier used in the request.\nValid values:\n  - invoice-id — The system-generated unique invoice ID.\n  - invoice-number — The merchant-defined invoice number.\n  - invoice-externalId — The merchant-assigned external identifier."
+              },
+              {
+                "name": "invoiceIdValue",
+                "value": "",
+                "type": "path",
+                "description": "This field specifies the identifier value that corresponds to the type in `invoiceIdType`.\nFor example, if `invoiceIdType` is `invoice-id`, pass the system-generated invoice ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update details of an invoice by invoice Id type and value."
+        },
+        {
+          "info": {
+            "name": "Create Invoice",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/invoices",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an invoice from the details provided in the request body. Use this endpoint to generate a new invoice record for billing and payment tracking. On success, the response includes the created invoice, including its system-generated identifiers and current status."
+        },
+        {
+          "info": {
+            "name": "Search for Invoices",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/invoices/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "fetchOnlyIds",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "0",
+                "type": "query",
+                "description": "Number of records to skip before returning all records. Default is `0` if no value is specified."
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "Maximum number of records returned per page. Default is `10` if no value is specified."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search for invoices by matching filter criteria."
+        },
+        {
+          "info": {
+            "name": "Get Invoice by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/invoices/:invoiceId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "invoiceId",
+                "value": "63bec1244258060b3d027617",
+                "type": "path",
+                "description": "System-generated invoice ID"
+              }
+            ]
+          },
+          "docs": "Get details of an invoice by invoice ID."
+        },
+        {
+          "info": {
+            "name": "Update Invoice by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/invoices/:invoiceId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "invoiceId",
+                "value": "63bec1244258060b3d027617",
+                "type": "path",
+                "description": "System-generated invoice ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update details of an invoice by invoice ID."
+        },
+        {
+          "info": {
+            "name": "Acknowledge Financial Transaction",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/invoices/:invoiceId/acknowledge",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "invoiceId",
+                "value": "63bec1244258060b3d027617",
+                "type": "path",
+                "description": "24 character system-generated invoice ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "When an order is created or processed, fabric generates invoice and sends it to merchants or third-party systems for further financial processing of the order. This endpoint lets merchants acknowledge that they have received the invoice with payment information."
+        },
+        {
+          "info": {
+            "name": "Update Invoice Attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/invoices/:invoiceIdType/:invoiceIdValue/actions/update-attributes",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "invoiceIdType",
+                "value": "invoice-id",
+                "type": "path",
+                "description": "The type of invoice identifier to use. Supported values: `invoice-id`, `invoice-number`, `invoice-externalId`."
+              },
+              {
+                "name": "invoiceIdValue",
+                "value": "63bec1244258060b3d027617",
+                "type": "path",
+                "description": "The invoice identifier value that corresponds to `invoiceIdType`."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates merchant-defined attributes for an invoice identified by `invoiceIdType` and `invoiceIdValue`. Only the attributes provided in the request payload are updated; existing attributes not included in the payload remain unchanged."
+        },
+        {
+          "info": {
+            "name": "Update Invoice Attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/invoices/:invoiceId/actions/update-attributes",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "invoiceId",
+                "value": "63bec1244258060b3d027617",
+                "type": "path",
+                "description": "The system-generated unique identifier of the invoice."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates merchant-defined attributes for an invoice, identified by `invoiceId`. Only the attributes provided in the request payload are updated; existing attributes not included in the payload remain unchanged."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

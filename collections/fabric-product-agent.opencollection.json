@@ -1,0 +1,248 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "fabric Orders API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Create Access Token",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://commerceos.aiagents.fabric.inc/api/platform/v1/auth/token",
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Generates an access token using the client credentials flow. Tokens expire every 60 minutes.\n\nTo authenticate, provide your `client_id`, `client_secret`, and set `grant_type` to `client_credentials`.\n\nIf you do not have a `client_id` and `client_secret`, contact fabric support to request API access credentials.\n"
+    },
+    {
+      "info": {
+        "name": "Bulk Import Categories",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://commerceos.aiagents.fabric.inc/api/v2/categories/import",
+        "headers": [
+          {
+            "name": "domain",
+            "value": ""
+          }
+        ],
+        "body": {
+          "type": "multipart-form",
+          "data": [
+            {
+              "name": "file",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "name": "name",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "name": "notify_email",
+              "type": "text",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "docs": "Upload a CSV file to import category data for the specified brand/domain. The import is processed asynchronously.\n\n**Expected CSV columns**\n- **name** or **category_name** (required): Category name\n- **parent_id** or **parent_category_id** (optional): Parent category ID\n- **breadcrumb** (optional): Full breadcrumb path\n- **inferred_category** (optional): AI-inferred category\n"
+    },
+    {
+      "info": {
+        "name": "Get Category Import Status",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://commerceos.aiagents.fabric.inc/api/v2/categories/import/:import_id",
+        "headers": [
+          {
+            "name": "domain",
+            "value": ""
+          }
+        ],
+        "params": [
+          {
+            "name": "import_id",
+            "value": "",
+            "type": "path",
+            "description": "Import ID returned from `POST /api/v2/categories/import`."
+          }
+        ]
+      },
+      "docs": "Retrieve the current status and results of a category import created using `POST /api/v2/categories/import`."
+    },
+    {
+      "info": {
+        "name": "Import Attributes from CSV",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://commerceos.aiagents.fabric.inc/api/v2/attributes/import",
+        "headers": [
+          {
+            "name": "domain",
+            "value": ""
+          }
+        ],
+        "body": {
+          "type": "multipart-form",
+          "data": [
+            {
+              "name": "file",
+              "type": "text",
+              "value": ""
+            },
+            {
+              "name": "name",
+              "type": "text",
+              "value": ""
+            }
+          ]
+        }
+      },
+      "docs": "Upload a CSV file to import attribute definitions for the specified brand/domain. The import is processed asynchronously.\n\n**Expected CSV columns**\n- **attribute_name** (required): Attribute display name\n- **attribute_key** (optional): Machine-readable key\n- **description** (optional): Attribute description\n- **data_type** (optional): Data type\n- **scope** (optional): Attribute scope\n- **enum_values** (optional): Allowed values, pipe-delimited (e.g. `S|M|L`)\n- **allow_ai_content** (optional): Al"
+    },
+    {
+      "info": {
+        "name": "Get Attribute Import Status",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://commerceos.aiagents.fabric.inc/api/v2/attributes/import/:import_id",
+        "headers": [
+          {
+            "name": "domain",
+            "value": ""
+          }
+        ],
+        "params": [
+          {
+            "name": "import_id",
+            "value": "",
+            "type": "path",
+            "description": "Import ID returned from `POST /v2/attributes/import`."
+          }
+        ]
+      },
+      "docs": "Retrieve the current status and results of an attribute import created using `POST /v2/attributes/import`."
+    },
+    {
+      "info": {
+        "name": "Upload a Catalog Artifact",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://commerceos.aiagents.fabric.inc/api/v2/optimize/artifacts",
+        "headers": [
+          {
+            "name": "domain",
+            "value": ""
+          }
+        ],
+        "body": {
+          "type": "multipart-form",
+          "data": []
+        }
+      },
+      "docs": "Uploads a catalog CSV as multipart form data and returns an `artifact_id` for use when starting an optimization workflow.\n\nThe HTTP client must set the `Content-Type: multipart/form-data` header with the appropriate boundary; the header should not be set manually. The `domain` header is required and must be a brand domain (for example, `vessel.com`) that the authenticated principal is authorized to access.\n\nEach request creates a new artifact, even when the file content is identical to a previou"
+    },
+    {
+      "info": {
+        "name": "Retrieve Artifact Metadata and Download URL",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://commerceos.aiagents.fabric.inc/api/v2/optimize/artifacts/:artifact_id",
+        "headers": [
+          {
+            "name": "domain",
+            "value": ""
+          }
+        ],
+        "params": [
+          {
+            "name": "artifact_id",
+            "value": "",
+            "type": "path",
+            "description": "Artifact identifier returned by `POST /v2/optimize/artifacts`."
+          },
+          {
+            "name": "expires_seconds",
+            "value": "",
+            "type": "query",
+            "description": "Lifetime of the signed `download_url` in seconds. Minimum 60, maximum 3600, default 900."
+          }
+        ]
+      },
+      "docs": "Returns metadata for a previously uploaded artifact along with a short-lived signed `download_url` for retrieving the original file contents. This endpoint supports inspection, auditing, and re-download of an artifact prior to starting a workflow.\n\nThe `download_url` is a presigned URL that remains valid until `download_url_expires_at`. After expiry, call this endpoint again to obtain a new URL.\n"
+    },
+    {
+      "info": {
+        "name": "Create an Optimization Workflow",
+        "type": "http"
+      },
+      "http": {
+        "method": "POST",
+        "url": "https://commerceos.aiagents.fabric.inc/api/v2/optimize/workflows",
+        "headers": [
+          {
+            "name": "domain",
+            "value": ""
+          }
+        ],
+        "body": {
+          "type": "json",
+          "data": "{}"
+        }
+      },
+      "docs": "Creates an optimization workflow that processes a previously uploaded artifact. Provide the `artifact_id` returned by `POST /v2/optimize/artifacts` as `input.artifact.artifact_id`.\n\nWorkflows run in supervised mode by default. The workflow pauses at human-in-the-loop review gates that allow reviewers to approve taxonomy mappings, sample enrichments, and the final publish step.\n\n**Review gates are approved in the CommerceOS web application, not through the API.** When a workflow reaches `status: "
+    },
+    {
+      "info": {
+        "name": "Retrieve Optimization Workflow Status",
+        "type": "http"
+      },
+      "http": {
+        "method": "GET",
+        "url": "https://commerceos.aiagents.fabric.inc/api/v2/optimize/workflows/:workflow_id",
+        "headers": [
+          {
+            "name": "domain",
+            "value": ""
+          }
+        ],
+        "params": [
+          {
+            "name": "workflow_id",
+            "value": "",
+            "type": "path",
+            "description": "Workflow identifier returned by `POST /v2/optimize/workflows`."
+          }
+        ]
+      },
+      "docs": "Returns the current state of an optimization workflow, including `status`, `current_step`, `current_hitl_gate` (when the workflow is paused at a review gate), per-phase progress, and aggregated review and reviewer summaries.\n\nPoll this endpoint to track a workflow through its lifecycle. A `401` response indicates that the access token has expired; re-authenticate and retry the request.\n\nThe `status` value progresses through `PENDING`, then `RUNNING` or `IN_PROGRESS`, then `REVIEW_PENDING` when p"
+    }
+  ],
+  "bundled": true
+}

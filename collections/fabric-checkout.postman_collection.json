@@ -1,0 +1,564 @@
+{
+  "item": [
+    {
+      "id": "444aeced-30e6-4e4a-89d0-c83e421fa26d",
+      "name": "Checkout Session",
+      "description": {
+        "content": "The Checkout Session endpoint lets you create and complete a checkout session, and place an order for the cart items.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "933de170-d352-44e7-a03b-9263480d52bd",
+          "name": "Create and Complete a Checkout Session",
+          "request": {
+            "name": "Create and Complete a Checkout Session",
+            "description": {
+              "content": "Create and complete checkout session on all the items in a specific cart, identified by a `cartId`. Along with `cartId`, the checkout operation includes merchant account ID, amount to be paid, tax to be imposed on cart items, shipping address, and other details.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "checkout",
+                "sessions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cartId\": \"<string>\",\n  \"payments\": [\n    {\n      \"paymentProvider\": \"<string>\",\n      \"paymentMethod\": \"<string>\",\n      \"paymentToken\": {\n        \"token\": \"<string>\",\n        \"paymentType\": \"<string>\"\n      },\n      \"amount\": \"<double>\",\n      \"currency\": \"<string>\",\n      \"billingAddress\": {\n        \"addressLine1\": \"<string>\",\n        \"addressLine2\": \"<string>\",\n        \"addressLine3\": \"<string>\",\n        \"addressLine4\": \"<string>\",\n        \"city\": \"<string>\",\n        \"region\": \"<string>\",\n        \"postalCode\": \"<string>\",\n        \"country\": \"<string>\",\n        \"name\": {\n          \"firstName\": \"<string>\",\n          \"middleName\": \"<string>\",\n          \"lastName\": \"<string>\"\n        },\n        \"phone\": {\n          \"number\": \"<string>\",\n          \"type\": \"<string>\"\n        },\n        \"email\": \"<string>\",\n        \"customerId\": \"<string>\",\n        \"type\": \"<string>\",\n        \"latitude\": \"<double>\",\n        \"longitude\": \"<double>\"\n      },\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": false\n      }\n    },\n    {\n      \"paymentProvider\": \"<string>\",\n      \"paymentMethod\": \"<string>\",\n      \"paymentToken\": {\n        \"token\": \"<string>\",\n        \"paymentType\": \"<string>\"\n      },\n      \"amount\": \"<double>\",\n      \"currency\": \"<string>\",\n      \"billingAddress\": {\n        \"addressLine1\": \"<string>\",\n        \"addressLine2\": \"<string>\",\n        \"addressLine3\": \"<string>\",\n        \"addressLine4\": \"<string>\",\n        \"city\": \"<string>\",\n        \"region\": \"<string>\",\n        \"postalCode\": \"<string>\",\n        \"country\": \"<string>\",\n        \"name\": {\n          \"firstName\": \"<string>\",\n          \"middleName\": \"<string>\",\n          \"lastName\": \"<string>\"\n        },\n        \"phone\": {\n          \"number\": \"<string>\",\n          \"type\": \"<string>\"\n        },\n        \"email\": \"<string>\",\n        \"customerId\": \"<string>\",\n        \"type\": \"<string>\",\n        \"latitude\": \"<double>\",\n        \"longitude\": \"<double>\"\n      },\n      \"attributes\": {\n        \"key_0\": \"string\"\n      }\n    }\n  ],\n  \"tax\": {\n    \"itemTaxes\": [\n      {\n        \"lineItemId\": \"<string>\",\n        \"position\": \"<integer>\",\n        \"amount\": \"<double>\",\n        \"currency\": \"<string>\",\n        \"name\": \"<string>\",\n        \"rateType\": \"<string>\",\n        \"rate\": \"<double>\"\n      },\n      {\n        \"lineItemId\": \"<string>\",\n        \"position\": \"<integer>\",\n        \"amount\": \"<double>\",\n        \"currency\": \"<string>\",\n        \"name\": \"<string>\",\n        \"rateType\": \"<string>\",\n        \"rate\": \"<double>\"\n      }\n    ],\n    \"shippingTaxes\": [\n      {\n        \"shippingDetailsId\": \"<string>\",\n        \"amount\": \"<double>\",\n        \"currency\": \"<string>\",\n        \"name\": \"<string>\"\n      },\n      {\n        \"shippingDetailsId\": \"<string>\",\n        \"amount\": \"<double>\",\n        \"currency\": \"<string>\",\n        \"name\": \"<string>\"\n      }\n    ],\n    \"feeTaxes\": [\n      {\n        \"feeId\": \"<string>\",\n        \"name\": \"<string>\",\n        \"amount\": \"<double>\",\n        \"currency\": \"<string>\"\n      },\n      {\n        \"feeId\": \"<string>\",\n        \"name\": \"<string>\",\n        \"amount\": \"<double>\",\n        \"currency\": \"<string>\"\n      }\n    ]\n  },\n  \"customer\": {\n    \"name\": {\n      \"firstName\": \"<string>\",\n      \"middleName\": \"<string>\",\n      \"lastName\": \"<string>\"\n    },\n    \"email\": \"<string>\",\n    \"phone\": {\n      \"number\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    \"userId\": \"<string>\",\n    \"accountId\": \"<string>\",\n    \"employeeId\": \"<string>\",\n    \"company\": \"<string>\"\n  },\n  \"orderMetadata\": {\n    \"orderType\": \"<string>\",\n    \"orderSubtype\": \"<string>\",\n    \"notes\": [\n      {\n        \"notedAt\": \"<dateTime>\",\n        \"user\": \"<string>\",\n        \"notes\": \"<string>\"\n      },\n      {\n        \"notedAt\": \"<dateTime>\",\n        \"user\": \"<string>\",\n        \"notes\": \"<string>\"\n      }\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "38650bda-2d35-4391-95b7-9e3b8274b5a1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkout",
+                    "sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cartId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n  \"payments\": [\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    },\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    }\n  ],\n  \"tax\": {\n    \"itemTaxes\": [\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      },\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      }\n    ],\n    \"shippingTaxes\": [\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      },\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      }\n    ],\n    \"feeTaxes\": [\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      },\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      }\n    ]\n  },\n  \"customer\": {\n    \"name\": {\n      \"firstName\": \"Pat\",\n      \"middleName\": \"E\",\n      \"lastName\": \"Kake\"\n    },\n    \"email\": \"test@example.com\",\n    \"phone\": {\n      \"number\": \"5555555555\",\n      \"type\": \"MOBILE\"\n    },\n    \"userId\": \"62272e917b12209e68751d94\",\n    \"accountId\": \"62272e917b12209e68751d94\",\n    \"employeeId\": \"62272e917b12209e68751d94\",\n    \"company\": \"fabric\"\n  },\n  \"orderMetadata\": {\n    \"orderType\": \"MOBILE_APP\",\n    \"orderSubtype\": \"Android\",\n    \"notes\": [\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      },\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"state\": \"COMPLETED\",\n  \"orderId\": \"111-121-1234\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "06b93fa3-d691-49f7-969e-28d21325a7b2",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkout",
+                    "sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cartId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n  \"payments\": [\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    },\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    }\n  ],\n  \"tax\": {\n    \"itemTaxes\": [\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      },\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      }\n    ],\n    \"shippingTaxes\": [\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      },\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      }\n    ],\n    \"feeTaxes\": [\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      },\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      }\n    ]\n  },\n  \"customer\": {\n    \"name\": {\n      \"firstName\": \"Pat\",\n      \"middleName\": \"E\",\n      \"lastName\": \"Kake\"\n    },\n    \"email\": \"test@example.com\",\n    \"phone\": {\n      \"number\": \"5555555555\",\n      \"type\": \"MOBILE\"\n    },\n    \"userId\": \"62272e917b12209e68751d94\",\n    \"accountId\": \"62272e917b12209e68751d94\",\n    \"employeeId\": \"62272e917b12209e68751d94\",\n    \"company\": \"fabric\"\n  },\n  \"orderMetadata\": {\n    \"orderType\": \"MOBILE_APP\",\n    \"orderSubtype\": \"Android\",\n    \"notes\": [\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      },\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"BAD_REQUEST\",\n  \"message\": \"Bad Request\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5cd39ccf-8669-4d89-b5b7-4317830b367a",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkout",
+                    "sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cartId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n  \"payments\": [\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    },\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    }\n  ],\n  \"tax\": {\n    \"itemTaxes\": [\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      },\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      }\n    ],\n    \"shippingTaxes\": [\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      },\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      }\n    ],\n    \"feeTaxes\": [\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      },\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      }\n    ]\n  },\n  \"customer\": {\n    \"name\": {\n      \"firstName\": \"Pat\",\n      \"middleName\": \"E\",\n      \"lastName\": \"Kake\"\n    },\n    \"email\": \"test@example.com\",\n    \"phone\": {\n      \"number\": \"5555555555\",\n      \"type\": \"MOBILE\"\n    },\n    \"userId\": \"62272e917b12209e68751d94\",\n    \"accountId\": \"62272e917b12209e68751d94\",\n    \"employeeId\": \"62272e917b12209e68751d94\",\n    \"company\": \"fabric\"\n  },\n  \"orderMetadata\": {\n    \"orderType\": \"MOBILE_APP\",\n    \"orderSubtype\": \"Android\",\n    \"notes\": [\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      },\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"UNAUTHORIZED\",\n  \"message\": \"Unauthorized user\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9aa0d986-c1ca-4e85-9ae1-a7cbe3b9ee79",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkout",
+                    "sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cartId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n  \"payments\": [\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    },\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    }\n  ],\n  \"tax\": {\n    \"itemTaxes\": [\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      },\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      }\n    ],\n    \"shippingTaxes\": [\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      },\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      }\n    ],\n    \"feeTaxes\": [\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      },\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      }\n    ]\n  },\n  \"customer\": {\n    \"name\": {\n      \"firstName\": \"Pat\",\n      \"middleName\": \"E\",\n      \"lastName\": \"Kake\"\n    },\n    \"email\": \"test@example.com\",\n    \"phone\": {\n      \"number\": \"5555555555\",\n      \"type\": \"MOBILE\"\n    },\n    \"userId\": \"62272e917b12209e68751d94\",\n    \"accountId\": \"62272e917b12209e68751d94\",\n    \"employeeId\": \"62272e917b12209e68751d94\",\n    \"company\": \"fabric\"\n  },\n  \"orderMetadata\": {\n    \"orderType\": \"MOBILE_APP\",\n    \"orderSubtype\": \"Android\",\n    \"notes\": [\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      },\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"NOT_FOUND\",\n  \"message\": \"Cart not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e5927cdf-4a59-4b55-948a-bd751987af23",
+              "name": "Dependency failure",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkout",
+                    "sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cartId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n  \"payments\": [\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    },\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    }\n  ],\n  \"tax\": {\n    \"itemTaxes\": [\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      },\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      }\n    ],\n    \"shippingTaxes\": [\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      },\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      }\n    ],\n    \"feeTaxes\": [\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      },\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      }\n    ]\n  },\n  \"customer\": {\n    \"name\": {\n      \"firstName\": \"Pat\",\n      \"middleName\": \"E\",\n      \"lastName\": \"Kake\"\n    },\n    \"email\": \"test@example.com\",\n    \"phone\": {\n      \"number\": \"5555555555\",\n      \"type\": \"MOBILE\"\n    },\n    \"userId\": \"62272e917b12209e68751d94\",\n    \"accountId\": \"62272e917b12209e68751d94\",\n    \"employeeId\": \"62272e917b12209e68751d94\",\n    \"company\": \"fabric\"\n  },\n  \"orderMetadata\": {\n    \"orderType\": \"MOBILE_APP\",\n    \"orderSubtype\": \"Android\",\n    \"notes\": [\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      },\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Failed Dependency (WebDAV) (RFC 4918)",
+              "code": 424,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"PAYMENT_FAILURE\",\n  \"message\": \"Payment authorization failed due to payment mismatch\",\n  \"pointOfFailure\": \"PAYMENT\",\n  \"details\": {\n    \"paymentError\": {\n      \"totalAmount\": {\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      },\n      \"orderTotal\": {\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9efde6e6-6290-45a3-9e55-27f876404f79",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "checkout",
+                    "sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"cartId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n  \"payments\": [\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    },\n    {\n      \"paymentProvider\": \"authorize.net\",\n      \"paymentMethod\": \"card\",\n      \"paymentToken\": {\n        \"token\": \"pi_34tr6787rt\",\n        \"paymentType\": \"VISA\"\n      },\n      \"amount\": 150.25,\n      \"currency\": \"USD\",\n      \"billingAddress\": {\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Kake\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"98121\",\n        \"country\": \"US\",\n        \"name\": {\n          \"firstName\": \"Pat\",\n          \"middleName\": \"E\",\n          \"lastName\": \"Kake\"\n        },\n        \"phone\": {\n          \"number\": \"123-456-7890\",\n          \"type\": \"office\"\n        },\n        \"email\": \"user@example.com\",\n        \"customerId\": \"62cffd65e8d7eb868c6a29d6\",\n        \"type\": \"residence\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"attributes\": {\n        \"paymentId\": \"620d8896058edb0009385311\"\n      }\n    }\n  ],\n  \"tax\": {\n    \"itemTaxes\": [\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      },\n      {\n        \"lineItemId\": \"d7e78a21-bee3-4448-bf1c-d5b5461dbda2\",\n        \"position\": 1,\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\",\n        \"rateType\": \"PERCENTAGE\",\n        \"rate\": 10\n      }\n    ],\n    \"shippingTaxes\": [\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      },\n      {\n        \"shippingDetailsId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\",\n        \"name\": \"state tax\"\n      }\n    ],\n    \"feeTaxes\": [\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      },\n      {\n        \"feeId\": \"fef78121-bee3-4448-bf1c-d5b5461dbda2\",\n        \"name\": \"State tax\",\n        \"amount\": 150.25,\n        \"currency\": \"USD\"\n      }\n    ]\n  },\n  \"customer\": {\n    \"name\": {\n      \"firstName\": \"Pat\",\n      \"middleName\": \"E\",\n      \"lastName\": \"Kake\"\n    },\n    \"email\": \"test@example.com\",\n    \"phone\": {\n      \"number\": \"5555555555\",\n      \"type\": \"MOBILE\"\n    },\n    \"userId\": \"62272e917b12209e68751d94\",\n    \"accountId\": \"62272e917b12209e68751d94\",\n    \"employeeId\": \"62272e917b12209e68751d94\",\n    \"company\": \"fabric\"\n  },\n  \"orderMetadata\": {\n    \"orderType\": \"MOBILE_APP\",\n    \"orderSubtype\": \"Android\",\n    \"notes\": [\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      },\n      {\n        \"notedAt\": \"2022-09-06T14:07:17.000Z\",\n        \"user\": \"261AF48\",\n        \"notes\": \"Additional notes...\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "65da64fa-7f0d-439b-b98c-b74569d70e88",
+    "name": "Checkout",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Checkout API** lets you complete the checkout process and place an order for cart items. This process includes specifying a customer's shipping and payment details, and calculating taxes and shipping rates.\n\nContact Support:\n Name: Checkout Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,770 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Customers",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Customer Profile",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/Customers",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip before returning records. For example, when offset is 20 and limit's 10, this endpoint returns records from 21 to 30."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records in a single page."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "The criteria to sort results, where `-` indicates a descending order and `+` indicates an ascending order. You can apply sorting to the following fields - `createdAt`, `updatedAt`, `firstName`, `lastName`, `emailAddress` and `status`."
+              },
+              {
+                "name": "isDeleted",
+                "value": "",
+                "type": "query",
+                "description": "A flag indicating whether only the deleted customers need to be included. Set to `true` to include only the deleted customers and `false` to exclude deleted customers."
+              }
+            ]
+          },
+          "docs": "Use this endpoint to get a paginated list of customers. <br /> By specifying the query parameters `offset` and `limit`, you can narrow down the search results. You can also `sort` the results in an ascending or descending order. Additionally, with the `isDeleted` query parameter, you can filter for either deleted or non-deleted customers. When no query parameter is specified, by default, you get up to 10 records."
+        },
+        {
+          "info": {
+            "name": "Add a New Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/Customers",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, you can add a new customer to the system. The response includes an `id` which is required in subsequent calls, such as `GET /customers/{customerId}`, `PUT /customers/{customerId}`, `PATCH /customers/{customerId}`, and more. <br /> When `externalId` is specified, the customers have the ability to manage their own details through the storefront UI."
+        },
+        {
+          "info": {
+            "name": "Get Customer Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/customers/:customerId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              }
+            ]
+          },
+          "docs": "Using this endpoint, you can get details of a single customer by `customerId`."
+        },
+        {
+          "info": {
+            "name": "Update Customer Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/customers/:customerId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, you can update details of an existing customer by `customerId`. <br /> This endpoint replaces the existing details of the customer. If you want to make only a partial update, without replacing the entire details, use the `PATCH /customers/{customerId}` endpoint."
+        },
+        {
+          "info": {
+            "name": "Partially Update Customer Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.fabric.inc/v3/customers/:customerId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, you can partially update details of a customer by `customerId`. To fully replace the details of an existing customer, use the `PUT /customers/{customerId}` endpoint."
+        },
+        {
+          "info": {
+            "name": "Delete Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/customers/:customerId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              }
+            ]
+          },
+          "docs": "With this endpoint, you can delete an existing customer data by `customerId`."
+        },
+        {
+          "info": {
+            "name": "Update Customer Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/customers/:customerId/actions/update-status",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "With this endpoint, you can update the account status of an existing customer by `customerId`."
+        },
+        {
+          "info": {
+            "name": "Search for Customer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/customers/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, you can search for customers based on filter conditions. By specifying `offset` and `limit`, you can narrow down your search results. In addition, using the `isDelete` property in the request body, you can filter for either deleted or non-deleted customers."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Customer Address",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Customer's Addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/customers/:customerId/customer-address",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip before returning records. For example, when offset is 20 and limit's 10, this endpoint returns records from 21 to 30."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records per page."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "The criteria to sort results, where `-` indicates a descending order and `+` indicates an ascending order. You can sort the following fields - `updatedAt`, `country`, `city`, and `region`."
+              },
+              {
+                "name": "isDeleted",
+                "value": "",
+                "type": "query",
+                "description": "A flag indicating whether only the deleted addresses must be included in the response. Set to `true` to include only the deleted addresses of the customers and `false` to exclude the deleted addresses."
+              }
+            ]
+          },
+          "docs": "Using this endpoint, you can get all addresses of a customer. <br /> By specifying the query parameters `offset` and `limit`, you can narrow down the search results. You can also `sort` the results in an ascending or descending order. Additionally, with the `isDeleted` query parameter, you can filter for either deleted or non-deleted customers. When no query parameter is specified, by default, you get up to 10 records."
+        },
+        {
+          "info": {
+            "name": "Add a New Address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/customers/:customerId/customer-address",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, you can add a new address for the customer by `customerId`."
+        },
+        {
+          "info": {
+            "name": "Get Customer's Address",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/customers/:customerId/customer-address/:addressId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              },
+              {
+                "name": "addressId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer's address."
+              }
+            ]
+          },
+          "docs": "Using this endpoint, you can get a single address of a customer based on the `customerId` and `addressId`."
+        },
+        {
+          "info": {
+            "name": "Update Customer's Address",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/customers/:customerId/customer-address/:addressId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              },
+              {
+                "name": "addressId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer's address."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, you can update a customer's address based on the `customerId` and `addressId`. This replaces the existing address with the new one. If you want to make only a partial update, use the `PATCH /customers/{customerId}/customer-address/{addressId}` endpoint."
+        },
+        {
+          "info": {
+            "name": "Partially Update Customer's Address",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.fabric.inc/v3/customers/:customerId/customer-address/:addressId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              },
+              {
+                "name": "addressId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer's address."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, you can partially update a customer's address based on the `customerId` and `addressId`. To fully replace an existing address, use the `PUT /customers/{customerId}/customer-address/{addressId}` endpoint."
+        },
+        {
+          "info": {
+            "name": "Delete Customer's Address",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/customers/:customerId/customer-address/:addressId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              },
+              {
+                "name": "addressId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer's address."
+              }
+            ]
+          },
+          "docs": "Using this endpoint, you can delete an existing address of a customer based on the `customerId` and `addressId`."
+        },
+        {
+          "info": {
+            "name": "Search for Customer's Addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/customers/:customerId/customer-address/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "With this endpoint, you can search for customer's addresses based on the specified filter conditions. In addition, you can tailor the search results by including or excluding the deleted addresses and the default addresses.<br />**Note**:A customer can have a default address for both billing and shipping."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Customer Self",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Customer Details - Customer Context",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/customers/self",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ]
+          },
+          "docs": "Using this endpoint, a customer can view their details through the storefront UI."
+        },
+        {
+          "info": {
+            "name": "Update Customer Details - Customer Context",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/customers/self",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, customers can update their own details through the storefront UI."
+        },
+        {
+          "info": {
+            "name": "View Addresses - Customer Context",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/customers/self/customer-address",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip before returning records. For example, when offset is 20 and limit's 10, this endpoint returns records from 21 to 30."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records in a single page."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "The criteria to sort results, where `-` indicates a descending order and `+` indicates an ascending order. You can sort the following fields - `updatedAt`, `country`, `city`, and `region`."
+              },
+              {
+                "name": "isDeleted",
+                "value": "",
+                "type": "query",
+                "description": "A flag indicating whether only the deleted addresses are returned in the response. Specify `true` to get only the deleted addresses and `false` to get only the non-deleted ones."
+              }
+            ]
+          },
+          "docs": "Using this endpoint, a customer can view their own addresses through the storefront UI."
+        },
+        {
+          "info": {
+            "name": "Add Address - Customer Context.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/customers/self/customer-address",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, a customer can add their address through a storefront UI."
+        },
+        {
+          "info": {
+            "name": "View Address - Customer Context",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/customers/self/customer-address/:addressId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "addressId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer's address."
+              }
+            ]
+          },
+          "docs": "Using this endpoint, a customer can view their own address through the storefront UI based on the `addressId`."
+        },
+        {
+          "info": {
+            "name": "Update Address - Customer Context",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/customers/self/customer-address/:addressId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "addressId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer's address."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using this endpoint, a customer can update their own address through the storefront UI based on `addressId`."
+        },
+        {
+          "info": {
+            "name": "Delete Address - Customer Context",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/customers/self/customer-address/:addressId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "addressId",
+                "value": "",
+                "type": "path",
+                "description": "A 24-character system-generated ID of the customer's address."
+              }
+            ]
+          },
+          "docs": "Using this endpoint, a customer can delete their own address through the storefront UI based on `addressId`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

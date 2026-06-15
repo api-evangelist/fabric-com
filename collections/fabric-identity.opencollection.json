@@ -1,0 +1,131 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Authentication v3",
+    "version": "2.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Authentication Endpoints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Authorize User App with and Without PKCE",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://{customer_name}.login.fabric.inc/oauth2/default/v1/authorize",
+            "params": [
+              {
+                "name": "client_id",
+                "value": "0oa3asajdykUunEjL697",
+                "type": "query",
+                "description": "Client ID of the user app"
+              },
+              {
+                "name": "response_type",
+                "value": "code",
+                "type": "query",
+                "description": "Type of the response expected. This should always be set to `code` (as per OAuth 2.0 grant type, refer to https://datatracker.ietf.org/doc/html/rfc6749#page-19) for additional info."
+              },
+              {
+                "name": "scope",
+                "value": "openid",
+                "type": "query",
+                "description": "Scope of the endpoint call. This should always be set to `openid` (as per OpenID Connect standard. Refer to https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest for additional info)"
+              },
+              {
+                "name": "redirect_uri",
+                "value": "http://localhost:8080",
+                "type": "query",
+                "description": "Redirect URI of the user app is where fabric Identity will redirect the user upon successful login. This URI should be hosted by the user app. As part of the redirect, you will receive the auth code (as `code` query parameter) which can then be exchanged for the access token (refer to `/token`)."
+              },
+              {
+                "name": "state",
+                "value": "Jvpg3kcl6LL5irKlFZJWSwVTEuV1IB9aOfRdgAkDo0rcE8M5NFFS8Y4f6z6OSTXY",
+                "type": "query",
+                "description": "Random string created by the user app. It's used to maintain state between the request and the callback. The `state` helps mitigate Cross-Site Request Forgery (CSRF) when it's cryptographically derived from a browser cookie that signifies the user or session."
+              },
+              {
+                "name": "code_challenge_method",
+                "value": "S256",
+                "type": "query",
+                "description": "Required only when using authorization code flow with PKCE. A code challenge method supported by PKCE specification. fabric Identity only supports the value of `S256` (Refer to https://datatracker.ietf.org/doc/html/rfc7636#section-4.2 for additional info). This parameter is mandatory for authorization code flow with PKCE and isn't required for the regular authorization code flow."
+              },
+              {
+                "name": "code_challenge",
+                "value": "xwVkMxyOHaY7f0yXb8pajRSMa2D1wMTrPuuIohH2PyA",
+                "type": "query",
+                "description": "Required only when using authorization code flow with PKCE. The code challenge created by the user app as per the specification on PKCE - https://datatracker.ietf.org/doc/html/rfc7636#section-4.2."
+              }
+            ]
+          },
+          "docs": "Use this endpoint to authenticate a user app using fabric Identity. When calling this endpoint, the immediate response will be a browser redirect to the hosted Login page configured in fabric Identity. After successful authentication of the user on the hosted Login page, fabric Identity will redirect back to the user app using the provided `redirect_uri`. This endpoint supports both authorization code flow with and without Proof of Code Exchange (PKCE). <p> **Note**: This endpoint isn't required"
+        },
+        {
+          "info": {
+            "name": "Fetch Access Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://{customer_name}.login.fabric.inc/oauth2/:authServerId/v1/token",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "J88GlXYuhrStpCHNC22hSqGRFe_kQuESkteFTJPJ"
+              }
+            ],
+            "params": [
+              {
+                "name": "authServerId",
+                "value": "ausovnzzrWlSV68uR696",
+                "type": "path",
+                "description": "Use `default` for user app flows. For system apps, use the tenant-specific server ID provided by fabric Identity (see Getting Started)."
+              }
+            ],
+            "body": {
+              "type": "form-urlencoded",
+              "data": [
+                {
+                  "name": "client_id",
+                  "value": ""
+                },
+                {
+                  "name": "client_secret",
+                  "value": ""
+                },
+                {
+                  "name": "redirect_uri",
+                  "value": ""
+                },
+                {
+                  "name": "grant_type",
+                  "value": ""
+                },
+                {
+                  "name": "code_verifier",
+                  "value": ""
+                },
+                {
+                  "name": "code",
+                  "value": ""
+                },
+                {
+                  "name": "scope",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "This endpoint allows user apps and system apps to fetch access tokens. For user apps, use this endpoint after the `/authorize` endpoint and the subsequent callback. For user apps this endpoint supports generation of access token from authorization code or from refresh token, sent in the previous `authorize` endpoint's callback. For system apps this endpoint can directly be used to get an access token, no prior `/authorize` end point call is needed.<p> <b><span style={{color: 'red'}}>NOTE: Fetchi"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

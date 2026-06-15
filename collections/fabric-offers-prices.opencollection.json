@@ -1,0 +1,369 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Offers - Prices",
+    "version": "3.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Prices",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get All Active Prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/prices",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              },
+              {
+                "name": "x-client-id",
+                "value": "copilot"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, you will get records from 21 to 30."
+              },
+              {
+                "name": "priceListId",
+                "value": "",
+                "type": "query",
+                "description": "The price list ID to which the item belongs. If not provided, the default price list is used."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a paginated list of active and scheduled prices. Active prices have start date greater than the current date and end date is in the future."
+        },
+        {
+          "info": {
+            "name": "Create Price",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/prices",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              },
+              {
+                "name": "x-client-id",
+                "value": "copilot"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or update price of an item based on given `itemId` and `itemSku`"
+        },
+        {
+          "info": {
+            "name": "Get Price by Itemid",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/prices/:itemId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              },
+              {
+                "name": "x-client-id",
+                "value": "copilot"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, you will get records from 21 to 30."
+              },
+              {
+                "name": "priceListId",
+                "value": "",
+                "type": "query",
+                "description": "The price list ID to which the item belongs. If not provided, the default price list is used."
+              },
+              {
+                "name": "itemId",
+                "value": "",
+                "type": "path",
+                "description": "The item ID from which prices are retrieved."
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "The status used to filter prices. The following statuses are available:\n- `ACTIVE`: Displays current prices or regular prices. These are the prices that are actively displayed and applied to products on an ongoing basis.\n- `SCHEDULED`: Displays prices that will be applied to products in the future. Retailers often use scheduled prices for marketing campaigns to attract customers, generate sales, clear inventory, or create a sense of urgency.\n- `ALL`: Displays both `ACTIVE` and `SCHEDULED` prices.\n"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a paginated list of price details for the given `itemId` and `priceListId`. If `priceListId` isn't specified, prices are retrieved for the `itemId` that belongs to the default price list."
+        },
+        {
+          "info": {
+            "name": "Delete Price by Itemid",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/prices/:itemId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              },
+              {
+                "name": "x-client-id",
+                "value": "copilot"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "priceListId",
+                "value": "",
+                "type": "query",
+                "description": "The price list ID to which the item belongs. If not provided, the default price list is used."
+              },
+              {
+                "name": "itemId",
+                "value": "",
+                "type": "path",
+                "description": "The item ID of the price record that's being deleted."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete price details by `itemId`. If `priceListId` isn't specified, price is deleted for the `itemId` that belongs to the default price list."
+        },
+        {
+          "info": {
+            "name": "Get Price by SKU",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/prices/sku/:sku",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              },
+              {
+                "name": "x-client-id",
+                "value": "copilot"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records per page."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, you will get records from 21 to 30."
+              },
+              {
+                "name": "priceListId",
+                "value": "",
+                "type": "query",
+                "description": "The price list ID to which the item belongs. If not provided, the default price list is used."
+              },
+              {
+                "name": "sku",
+                "value": "",
+                "type": "path",
+                "description": "Product SKU to get the price record for"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "The status used to filter prices. The following statuses are available:\n- `ACTIVE`: Displays current prices or regular prices. These are the prices that are actively displayed and applied to products on an ongoing basis.\n- `SCHEDULED`: Displays prices that will be applied to products in the future. Retailers often use scheduled prices for marketing campaigns to attract customers, generate sales, clear inventory, or create a sense of urgency.\n- `ALL`: Displays both `ACTIVE` and `SCHEDULED` prices.\n"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get price details for the `sku` and `priceListId`. If `priceListId` isn't specified, price is retrieved for the `sku` that belongs to the default price list."
+        },
+        {
+          "info": {
+            "name": "Delete Price by SKU",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/prices/sku/:sku",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              },
+              {
+                "name": "x-client-id",
+                "value": "copilot"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "priceListId",
+                "value": "",
+                "type": "query",
+                "description": "The price list ID to which the item belongs. If not provided, the default price list is used."
+              },
+              {
+                "name": "sku",
+                "value": "",
+                "type": "path",
+                "description": "The product SKU of the price details that are being deleted."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete price record for the given `sku` and `priceListId`."
+        },
+        {
+          "info": {
+            "name": "Create Batch Prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/prices/batch",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              },
+              {
+                "name": "x-client-id",
+                "value": "copilot"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create one or more prices for items based on `itemId` and `itemSku`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
