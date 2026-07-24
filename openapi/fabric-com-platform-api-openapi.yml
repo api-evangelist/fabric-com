@@ -1,0 +1,145 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Platform API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- name: Platform
+paths:
+  /platform/v1/auth/token:
+    post:
+      servers:
+      - url: https://commerceos.aiagents.fabric.inc
+        description: Auth Server
+      security: []
+      summary: Create Access Token
+      description: 'Generates an access token using the client credentials flow. Tokens expire every 60 minutes.
+
+
+        To authenticate, provide your `client_id`, `client_secret`, and set `grant_type` to `client_credentials`.
+
+
+        If you do not have a `client_id` and `client_secret`, contact fabric support to request API access credentials.
+
+        '
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - client_id
+              - client_secret
+              - grant_type
+              properties:
+                grant_type:
+                  type: string
+                  example: client_credentials
+                client_id:
+                  type: string
+                  example: ser_zUe74HYT98d6ItDhIQWYYur0k
+                client_secret:
+                  type: string
+                  example: bv_1s9uWC_7324598gjdsh_ijSUVmm6YCt-6Ahd8Nt3GsTb8w8
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+      tags:
+      - Platform
+components:
+  schemas:
+    AuthResponse:
+      type: object
+      required:
+      - access_token
+      - token_type
+      - expires_in
+      - scope
+      properties:
+        access_token:
+          type: string
+          description: Access token used for authenticated requests. Tokens expire every 60 minutes.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        token_type:
+          type: string
+          description: Type of token returned.
+          example: bearer
+        expires_in:
+          type: integer
+          description: Time in seconds until the token expires.
+          example: 3600
+        scope:
+          type: string
+          description: Scope of the access token.
+          example: ''
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

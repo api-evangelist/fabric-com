@@ -1,0 +1,674 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Inventory Import Configs API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- description: These endpoints help in performing inventory import file config operations
+  name: Inventory Import Configs
+paths:
+  /inventory-import-configs:
+    get:
+      description: Get all file configurations for matching filter criteria
+      operationId: searchInventoryImportFileConfigs
+      parameters:
+      - description: Omit a specified number of rows before the beginning of the result set
+        example: 0
+        in: query
+        name: offset
+        schema:
+          default: 0
+          example: 0
+          format: int32
+          type: integer
+      - description: The maximum number of results to show on a page
+        example: 10
+        in: query
+        name: limit
+        schema:
+          default: 10
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/xFabricChannelIdOptional'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventoryImportFileConfigSearchResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get All File Configurations
+      tags:
+      - Inventory Import Configs
+    post:
+      description: Create inventory import file configuration containing rules for queried file prefix
+      operationId: createInventoryImportFileConfig
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/inventoryImportFileConfigRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventoryImportFileConfigResponse'
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create an Inventory Import File Configuration
+      tags:
+      - Inventory Import Configs
+  /inventory-import-configs/{id}:
+    delete:
+      description: Delete inventory import file config containing rules for queried file prefix
+      operationId: deleteInventoryImportFileConfig
+      parameters:
+      - description: File prefix
+        example: oms_
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/xFabricChannelIdOptional'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/apiResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Inventory import file config not found for file prefix
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Delete Inventory Import File Config
+      tags:
+      - Inventory Import Configs
+    get:
+      description: Get inventory import file configurations containing rules for queried file prefix
+      operationId: getInventoryImportFileConfig
+      parameters:
+      - description: File prefix
+        example: oms_
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/xFabricChannelIdOptional'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventoryImportFileConfigResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Inventory import file config not found for file prefix
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get Inventory Import Upload File Configuration
+      tags:
+      - Inventory Import Configs
+    put:
+      description: Update inventory import file configuration
+      operationId: updateInventoryImportFileConfig
+      parameters:
+      - description: File prefix
+        example: oms_
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/inventoryImportFileConfigRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventoryImportFileConfigResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Resource not found. If the issue persists please contact support@fabric.inc
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Inventory Import File Configuration
+      tags:
+      - Inventory Import Configs
+components:
+  parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelIdOptional:
+      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: false
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+  schemas:
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    valuesSearchFilterForRules:
+      allOf:
+      - properties:
+          values:
+            items:
+              description: Multiple values for `field` using which locations are searched
+              example: ORDER_CREATE
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+              type: object
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find locations using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    inventoryImportFileConfigResponse:
+      description: BulkUploadFileConfigResponse info
+      properties:
+        filePrefix:
+          description: ID
+          example: oms_
+          type: string
+        groupName:
+          description: Group name
+          example: Location0or2
+          type: string
+        id:
+          description: ID
+          example: '821018391'
+          type: string
+        rules:
+          $ref: '#/components/schemas/rulesResource'
+      required:
+      - filePrefix
+      - groupName
+      - rules
+      type: object
+    valueSearchFilterForRules:
+      allOf:
+      - properties:
+          value:
+            description: A single value for `field` using which data is searched
+            example: ORDER_CREATE
+            oneOf:
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+            type: object
+        type: object
+      description: Criteria to find location using a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    apiResponse:
+      description: Response message
+      properties:
+        message:
+          description: Response message
+          example: OK
+          type: string
+      type: object
+    inventoryImportFileConfigRequest:
+      description: InventoryImportFileConfigRequest info
+      properties:
+        filePrefix:
+          description: ID
+          example: oms_
+          type: string
+        groupName:
+          description: Group name
+          example: Location0or2
+          type: string
+        id:
+          description: ID
+          example: '821018391'
+          type: string
+        rules:
+          $ref: '#/components/schemas/rulesResource'
+      required:
+      - filePrefix
+      - groupName
+      - rules
+      type: object
+    inventoryImportFileConfigSearchResponse:
+      description: An object containing the inventory import file configuration search response details.
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/inventoryImportFileConfigResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    rulesLocationFilter:
+      description: Criteria to search locations. To search using a single value, `valueSearchFilter` is used. To search using multiple values, `valuesSearchFilter` is used.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilterForRules'
+          GT: '#/components/schemas/valueSearchFilterForRules'
+          GTE: '#/components/schemas/valueSearchFilterForRules'
+          IN: '#/components/schemas/valuesSearchFilterForRules'
+          LT: '#/components/schemas/valueSearchFilterForRules'
+          LTE: '#/components/schemas/valueSearchFilterForRules'
+          NEQ: '#/components/schemas/valueSearchFilterForRules'
+          NIN: '#/components/schemas/valuesSearchFilterForRules'
+        propertyName: condition
+      oneOf:
+      - $ref: '#/components/schemas/valueSearchFilterForRules'
+      - $ref: '#/components/schemas/valuesSearchFilterForRules'
+      properties:
+        condition:
+          default: EQ
+          description: 'Filter conditions. EQ (Equal to): Searches for exact match. NEQ (Not equal to): Searches by excluding the specified value. IN: Search for multiple values. NIN (Not IN): Excludes the specified values in the search. LT (Less than): Searches for values that are less than the specified value. GT (Greater than):  Search for values that are greater than the specified value. LTE (Less than or equal to): Searches for values that are less than or equal to the specified value. GTE (Greater than or equal to): Searches for values that are greater than or equal to the specified value.'
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: location.locationNum
+          pattern: ^location\.[a-zA-Z.\-_]*
+          type: string
+      required:
+      - condition
+      - field
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    rulesResource:
+      description: Rules model
+      example:
+        locationFilters:
+        - condition: EQ
+          field: locationNum
+          value: '11245'
+        - condition: IN
+          field: type
+          values:
+          - DC
+          - STORE
+      properties:
+        locationFilters:
+          items:
+            $ref: '#/components/schemas/rulesLocationFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+      required:
+      - locationFilters
+      type: object
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

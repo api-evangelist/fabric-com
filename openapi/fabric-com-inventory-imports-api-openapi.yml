@@ -1,0 +1,692 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Inventory Imports API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- description: Inventory Imports endpoints let you upload and download inventory details, in bulk, using a CSV file to and from AWS (Amazon Web Service) server presigned S3 URL that is generated from the Order service
+  name: Inventory Imports
+paths:
+  /inventory-imports:
+    post:
+      description: Import inventory data by specifying file name. Successfully uploading the file triggers the import process, which is an event-driven extraction of the file's data to update the respective resource's system.
+      operationId: createInventoryImport
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/xFabricChannelIdOptional'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/inventoryImportRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/inventoryImportResponse'
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            '*/*':
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Import Inventory Data
+      tags:
+      - Inventory Imports
+  /inventory-imports/search:
+    post:
+      description: Get uploaded files that match specified criteria. Returned as paginated records.
+      operationId: searchInventoryImports
+      parameters:
+      - description: Number of records to skip before returning records. For example, `offset=20, limit=10` returns records 21-30.
+        example: 20
+        in: query
+        name: offset
+        schema:
+          default: 0
+          example: 20
+          type: number
+      - description: Maximum number of records per page
+        example: 10
+        in: query
+        name: limit
+        schema:
+          default: 10
+          example: 10
+          type: number
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/xFabricChannelIdOptional'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/inventoryImportSearchRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get Uploaded Files That Match Specified Criteria
+      tags:
+      - Inventory Imports
+  /inventory-imports/{importId}:
+    get:
+      description: Get uploaded file status and details by specifying `importId`.
+      operationId: getInventoryImportStatus
+      parameters:
+      - description: Upload file document's unique ID
+        example: 62ff5c0bec0aed3c86202c32
+        in: path
+        name: importId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/xFabricChannelIdOptional'
+      responses:
+        '200':
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/inventoryImportStatusResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            '*/*':
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get Uploaded File Status and Details
+      tags:
+      - Inventory Imports
+  /inventory-imports/{importId}/actions/force-trigger:
+    post:
+      description: Force import halted due to zeroed out Inventories more than threshold
+      operationId: forceTriggerBulkUpload
+      parameters:
+      - in: path
+        name: importId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json: {}
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Force Import Halt
+      tags:
+      - Inventory Imports
+components:
+  schemas:
+    multipleValuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventoryImportsSearchFilter'
+      - properties:
+          values:
+            items:
+              description: A single value is used in combination with `field` (the singleValueSearchFilter), except when the condition is IN or NIN. When the condition is IN or NIN, multiple values are used (the multipleValuesSearchFilter).
+              example: ORDER_CREATE
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+              type: object
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Multiple value search filter
+      required:
+      - condition
+      - field
+      type: object
+    singleValueSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventoryImportsSearchFilter'
+      - properties:
+          value:
+            description: A single value is used in combination with `field` (the singleValueSearchFilter), except when the condition is IN or NIN. When the condition is IN or NIN, multiple values are used (the multipleValuesSearchFilter).
+            example: ORDER_CREATE
+            oneOf:
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+            type: object
+        type: object
+      description: Single-value search filter
+      required:
+      - condition
+      - field
+      type: object
+    inventoryImportRequest:
+      description: An object containing the inventory import request details.
+      properties:
+        fileName:
+          description: Uploaded file name
+          example: import-file.csv
+          type: string
+        type:
+          enum:
+          - INVENTORY
+          - INVENTORY_COUNTERS
+          example: INVENTORY
+          type: string
+      required:
+      - fileName
+      - type
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    inventoryImportResponse:
+      description: An object containing the inventory import response details.
+      properties:
+        attributes:
+          description: A custom attribute placeholder.
+          example:
+            attribute: '12345'
+          type: object
+        createdAt:
+          description: Time of import request
+          example: '2022-08-01T18:03:28.483Z'
+          format: date-time
+          type: string
+        fileName:
+          description: Uploaded file name
+          example: orderUpload.csv
+          type: string
+        importId:
+          description: Imported file's unique ID
+          example: 62ff5c0bec0aed3c86202c32
+          type: string
+        statusCode:
+          description: Uploaded file's current status
+          enum:
+          - INITIATED
+          - PROCESSING
+          - COMPLETED
+          - SYSTEM_ERROR
+          example: INITIATED
+          type: string
+        type:
+          description: Import file type
+          enum:
+          - INVENTORY
+          - INVENTORY_COUNTERS
+          example: INVENTORY
+          type: string
+        updatedAt:
+          description: Date and time record was last modified
+          example: '2022-08-01T20:03:28.483Z'
+          format: date-time
+          type: string
+        uploadFileUrl:
+          description: Uploaded file's path (including security token) generated by the system and returned in the response of the `Create import request` endpoint.
+          example: https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2
+          type: string
+      required:
+      - createdAt
+      - importId
+      - uploadFileUrl
+      type: object
+    inventoryImportsSearchFilter:
+      description: An object containing the inventory import search filter that was.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/singleValueSearchFilter'
+          GT: '#/components/schemas/singleValueSearchFilter'
+          GTE: '#/components/schemas/singleValueSearchFilter'
+          IN: '#/components/schemas/multipleValuesSearchFilter'
+          LT: '#/components/schemas/singleValueSearchFilter'
+          LTE: '#/components/schemas/singleValueSearchFilter'
+          NEQ: '#/components/schemas/singleValueSearchFilter'
+          NIN: '#/components/schemas/multipleValuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: Search condition to apply filter
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: import.events
+          pattern: ^import\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: Group name
+          example: GroupA
+          type: string
+      required:
+      - condition
+      - field
+      type: object
+    importCount:
+      description: Import count object
+      properties:
+        error:
+          description: Total rows with errors in the file
+          example: 2000
+          format: int32
+          type: integer
+        processed:
+          description: Total rows processed in the file. `processed` = `uploaded` - `error` **Note:** Rows that are not formatted according to system requirements will not be imported.
+          example: 8000
+          format: int32
+          type: integer
+        uploaded:
+          description: Total rows in the file
+          example: 10000
+          format: int32
+          type: integer
+      type: object
+    searchResponse:
+      description: Search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/inventoryImportStatusResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    inventoryImportStatusResponse:
+      description: An object containing the inventory import status response details.
+      properties:
+        attributes:
+          description: 'Custom attributes. This is a placeholder for additional info in key: value pairs'
+          example:
+            attribute: '12345'
+          type: object
+        createdAt:
+          description: Time of import request
+          example: '2022-08-01T18:03:28.483Z'
+          format: date-time
+          type: string
+        errorFileUrl:
+          description: 'Directory path where file uploaded '
+          example: https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2
+          type: string
+        fileName:
+          description: Uploaded file name
+          example: orderUpload.csv
+          type: string
+        finishedAt:
+          description: Date and time file import was completed
+          example: '2022-08-01T18:03:28.483Z'
+          format: date-time
+          type: string
+        importCount:
+          $ref: '#/components/schemas/importCount'
+        importId:
+          description: Imported file's unique ID
+          example: 62ff5c0bec0aed3c86202c32
+          type: string
+        originalFileUrl:
+          description: Path to download the uploaded file
+          example: https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2
+          type: string
+        statusCode:
+          description: Uploaded file's current status
+          enum:
+          - INITIATED
+          - PROCESSING
+          - COMPLETED
+          - SYSTEM_ERROR
+          example: INITIATED
+          type: string
+        type:
+          enum:
+          - INVENTORY
+          - INVENTORY_COUNTERS
+          example: INVENTORY
+          type: string
+        updatedAt:
+          description: Date and time record was last modified
+          example: '2022-08-01T20:03:28.483Z'
+          format: date-time
+          type: string
+      required:
+      - createdAt
+      - importId
+      type: object
+    inventoryImportSearchRequest:
+      description: An object containing the inventory import search request details.
+      example:
+        filters:
+        - field: import.statusCode
+          value: INITIATED
+        sort: -import.finishedAt
+      properties:
+        filters:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/multipleValuesSearchFilter'
+            - $ref: '#/components/schemas/singleValueSearchFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+        sort:
+          default: -import.createdAt
+          description: Property on which data is to be sorted. Prefix with `+` to sort ascending, and `-` to sort descending.
+          example: +import.createdAt
+          pattern: (^[+-]import\.[a-zA-Z.\-_]*)(,([+-]import\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+      - filters
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+  parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelIdOptional:
+      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: false
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

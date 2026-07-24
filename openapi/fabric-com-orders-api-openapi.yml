@@ -1,0 +1,4624 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Orders API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- description: These endpoints create orders, update pickup details (for BOPIS scenarios) and get order details.
+  name: Orders
+paths:
+  /orders:
+    post:
+      description: This endpoint creates a new order in the fabric Orders (OMS) system, regardless of whether it originates from fabric CnC service or an external system. The response includes an order ID, which is required for subsequent calls such as updating pickup information, getting order details, verifying eligibility for order cancellations, returns, exchanges, as well as creating appeasements, and processing order returns, cancellations, and exchanges.
+      operationId: createOrder
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createOrderRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create New Order
+      tags:
+      - Orders
+  /orders/{orderIdentifierType}/{orderIdentifierValue}/actions/update-status:
+    post:
+      tags:
+      - Orders
+      summary: Update an Order’s Status with State Transition
+      description: Performs a state transition on an order using the order state machine. The provided status code must correspond to a valid action available from the order’s current state. Orders that are already in or beyond the **ORDER_ALLOCATED** state cannot be updated using this endpoint.
+      operationId: updateOrderStatus
+      parameters:
+      - name: orderIdentifierType
+        in: path
+        description: The type of identifier used to locate the order. Supported values are `order-id`, `order-number`, and `order-external-id`.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - name: orderIdentifierValue
+        in: path
+        description: The value of the order identifier corresponding to the specified `orderIdentifierType`.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderStatusUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                message: Order not found
+                type: CLIENT_ERROR
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/{orderIdentifierType}/{orderIdentifierValue}/actions/update-fees-and-taxes:
+    post:
+      tags:
+      - Orders
+      summary: Update Order Fees and Taxes
+      description: Recalculates and updates fee and tax totals for an existing order. The request payload allows you to provide updated fee and tax values at the order, item, and ship-to levels. Only fields included in the payload are applied. Use `overrideAllArrayFields` to control whether array fields in the payload replace the existing arrays or are merged.
+      operationId: updateFeesAndTaxes_1
+      parameters:
+      - name: orderIdentifierType
+        in: path
+        description: 'The type of identifier used to locate the order. Supported values: `order-id`, `order-number`, `order-external-id`.'
+        required: true
+        schema:
+          type: string
+        example: order-id
+      - name: orderIdentifierValue
+        in: path
+        description: The value of the order identifier that corresponds to `orderIdentifierType`.
+        required: true
+        schema:
+          type: string
+        example: 5349b4ddd2781d08c09890f4
+      - name: overrideAllArrayFields
+        in: query
+        description: Controls how array fields in the request body are applied. When true, arrays provided in the payload replace the existing arrays on the order. When false, array updates are merged/partially applied based on the service's update behavior.
+        required: false
+        schema:
+          type: boolean
+          default: true
+        example: true
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateOrderFeesAndTaxesRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/{orderIdentifierType}/{orderIdentifierValue}/ship-info/{shipToId}/ship-to-address:
+    put:
+      tags:
+      - Orders
+      summary: Update a Ship-to Address for a Specific Shiptoid
+      description: Updates the ship-to address for a specific `shipToId` on an order. Only the address fields present in the payload are updated. If address enrichment (for example Google Maps) is configured, address validation and automatic latitude/longitude enrichment may run. If you are using Geography and Zones, the fulfillment zone is updated and a soft reservation is triggered to move inventory to the correct network.
+      operationId: updateShipToAddress
+      parameters:
+      - name: orderIdentifierType
+        in: path
+        description: 'The type of identifier used to locate the order. Supported values: `order-id`, `order-number`, `order-external-id`.'
+        required: true
+        schema:
+          type: string
+        example: order-id
+      - name: orderIdentifierValue
+        in: path
+        description: The value of the order identifier that corresponds to the `orderIdentifierType`.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - name: shipToId
+        in: path
+        description: Unique identifier (UUID) of the ship-to location within the order (`shipInfo`).
+        required: true
+        schema:
+          type: string
+        example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateShipToAddressRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                message: Order or shipToId not found
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/{orderIdentifierType}/{orderIdentifierValue}/payments/{paymentCounter}/bill-to-address:
+    put:
+      tags:
+      - Orders
+      summary: Update Bill-to Address for a Specific Payment
+      description: Updates the bill-to address for a specific payment on an order, identified by `paymentCounter`. Only address fields included in the payload are updated.
+      operationId: updatePaymentBillToAddress
+      parameters:
+      - name: orderIdentifierType
+        in: path
+        description: 'The type of identifier used to locate the order. Supported values: `order-id`, `order-number`, `order-external-id`.'
+        required: true
+        schema:
+          type: string
+        example: order-id
+      - name: orderIdentifierValue
+        in: path
+        description: The value of the order identifier that corresponds to `orderIdentifierType`.
+        required: true
+        schema:
+          type: string
+        example: 5349b4ddd2781d08c09890f4
+      - name: paymentCounter
+        in: path
+        description: The sequential counter identifying the specific payment within the order (used to select which payment's bill-to address to update).
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 1
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updatePaymentBillToAddressRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                message: Order or payment not found
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/{orderIdentifierType}/{orderIdentifierValue}/payments/{paymentCounter}/payment-logs:
+    put:
+      tags:
+      - Orders
+      summary: Add a Payment Log Entry for a Specific Payment
+      description: Adds a new payment log entry to the logs for a specific payment on an order, identified by `paymentCounter`. Payment logs capture when a payment is charged or credited, and include provider response details and metadata. Only fields present in the payload are applied.
+      operationId: addPaymentLog
+      parameters:
+      - name: orderIdentifierType
+        in: path
+        description: 'The type of identifier used to locate the order. Supported values: `order-id`, `order-number`, `order-external-id`.'
+        required: true
+        schema:
+          type: string
+        example: order-id
+      - name: orderIdentifierValue
+        in: path
+        description: The value of the order identifier that corresponds to `orderIdentifierType`.
+        required: true
+        schema:
+          type: string
+        example: 5349b4ddd2781d08c09890f4
+      - name: paymentCounter
+        in: path
+        description: The sequential counter identifying the specific payment within the order (used to select which payment to attach the log to).
+        required: true
+        schema:
+          type: integer
+          format: int32
+        example: 1
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addPaymentLogRequest'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                message: Order or payment not found
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/{orderIdType}/{orderIdValue}/actions/update-attributes:
+    post:
+      tags:
+      - Orders
+      summary: Update Order Attributes by Order Identifier
+      description: "Updates order attributes, typically used by the integration layer to modify \nor synchronize external system–related information.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      operationId: updateOrderAttributesByOrderIdentifier
+      parameters:
+      - name: orderIdType
+        in: path
+        description: "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+        required: true
+        schema:
+          type: string
+          enum:
+          - order-id
+          - order-number
+          - order-external-id
+        example: order-id
+      - name: orderIdValue
+        in: path
+        description: The value of the specified order identifier.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderAttributesUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/actions/update-customer:
+    post:
+      description: In many scenarios, customer details may change over time. For example, a customer might change their email, phone, or company affiliation. <p> By providing the order IDs and the updated customer details, this endpoint facilitates updating customer info for the given order IDs. This ensures order-related communication reaches the customer and they get timely customer service. </p>
+      operationId: updateCustomerInfoInOrderList
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateCustomerRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/customerResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Customer Details for Given Order Ids
+      tags:
+      - Orders
+  /orders/order-number/{orderNumber}:
+    get:
+      description: 'As a merchant, you may need to review or monitor an order to answer customer inquiries, resolve a complaint or for analytics and reporting. With this endpoint, you can get order details by order number. <p> **Note**: If you do not have the order number, use the corresponding order ID-based endpoint - `GET /orders/{orderId}`. </p>'
+      operationId: getOrderByNumber
+      parameters:
+      - description: Merchant-defined order identifier
+        example: Order-320000001
+        in: path
+        name: orderNumber
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Order with orderNumber is not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get Order by Order Number
+      tags:
+      - Orders
+  /orders/order-number/{orderNumber}/actions/update-attributes:
+    post:
+      description: The following endpoint is used to update attributes by order number.
+      operationId: updateOrderAttributesByOrderNumber
+      parameters:
+      - description: The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint.
+        example: Order-320000001
+        in: path
+        name: orderNumber
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderAttributesUpdateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Shipping Information for an Existing Order by Order Number
+      tags:
+      - Orders
+  /orders/search:
+    post:
+      description: Search and retrieve orders using filter parameters such as order `type`, status, date range, and more. This endpoint allows customers and merchants to query past orders for review, analysis, or support. <p> Filters must be provided in the request body. You can paginate results using `offset` and `limit`. If pagination parameters are not specified, the default response returns up to 10 orders. </p>
+      operationId: getOrdersByQuery
+      parameters:
+      - description: Number of records to skip before returning records. For example, When `offset=20`, `limit=10` returns records 21-30.
+        example: 0
+        in: query
+        name: offset
+        schema:
+          default: 0
+          type: number
+      - description: Maximum number of records per page
+        example: 10
+        in: query
+        name: limit
+        schema:
+          default: 10
+          example: 10
+          type: number
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderSearchRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Search for Orders
+      tags:
+      - Orders
+  /orders/{orderId}:
+    get:
+      description: 'As a merchant, you may need to review or monitor an order to answer customer inquiries, resolve a complaint, or for analytics and reporting. With this endpoint, you can get order details by order ID. <p> **Note**: If you do not have the order ID, use the corresponding order number-based endpoint - `GET /orders/order-number/{orderNumber}`.</p>'
+      operationId: getOrder
+      parameters:
+      - description: 24-character system-generated order ID returned in the response of Create Order endpoint - `POST /orders`.
+        example: 5349b4ddd2781d08c09890f4
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Order with orderId is not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get Order by Order ID
+      tags:
+      - Orders
+  /orders/{orderId}/actions/update-attributes:
+    post:
+      description: The update attributes endpoint is used to update order attributes using the order ID. Attributes can be updated in the integration layer to modify external system related information.
+      operationId: updateOrderAttributesByOrderId
+      parameters:
+      - description: The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint.
+        example: 123k4h123k
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderAttributesUpdateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Order Attributes
+      tags:
+      - Orders
+  /orders/{orderId}/ship-info/{shipToId}/pickup:
+    put:
+      description: Customers can choose to either have their order delivered to them or opt to pick up from a store or warehouse. In a Buy Online Pickup in Store (BOPIS) scenario, there may be situations when the primary pickup person has changed. <p> This endpoint allows for the updating pickup person details in BOPIS, ensuring that the most up-to-date information is available.</p>
+      operationId: updatePickInfo
+      parameters:
+      - description: 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint.
+        example: 5349b4ddd2781d08c09890f4
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      - description: Unique ID for the given `shipInfo`
+        example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+        in: path
+        name: shipToId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/pickupRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Order not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Updates Order Pick-up Details
+      tags:
+      - Orders
+components:
+  parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+  schemas:
+    amountInCurrency:
+      description: Amount in currency object details.
+      properties:
+        amount:
+          description: The amount displayed in the primary currency.
+          example: 123.45
+          format: double
+          type: number
+        currency:
+          description: Currency in ISO-4217
+          example: USD
+          type: string
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
+          type: string
+      required:
+      - currency
+      - group
+      type: object
+    quantityInStatus:
+      description: Item quantity for each status
+      properties:
+        cancelled:
+          description: Cancelled quantity of given item
+          example: 10
+          format: int32
+          type: integer
+        created:
+          description: Ordered quantity of given item
+          example: 10
+          format: int32
+          type: integer
+        delivered:
+          description: Delivered quantity of given item
+          example: 10
+          format: int32
+          type: integer
+        hold:
+          description: Held quantity of given item
+          example: 10
+          format: int32
+          type: integer
+        pendingShipped:
+          description: Pending quantity of given item
+          example: 10
+          format: int32
+          type: integer
+        returned:
+          description: Returned quantity of given item
+          example: 10
+          format: int32
+          type: integer
+        shipped:
+          description: Shipped quantity of given item
+          example: 10
+          format: int32
+          type: integer
+      type: object
+    valueSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/orderSearchFilter'
+      - properties:
+          value:
+            description: Search criteria using a single value
+            example: ORDER_CREATE
+            oneOf:
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+        type: object
+      description: Criteria to find orders by a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    trackingDetailsResource:
+      type: object
+      description: Tracking details
+      properties:
+        trackingNumber:
+          type: string
+          description: Tracking number
+          example: 1ZH4E331YW37690225
+        trackingURL:
+          type: string
+          description: Tracking URL
+          example: https://www.ups.com/track?tracknum=1ZH4E331YW37690225
+    orderDiscount:
+      description: An object containing all the discount details for an order.
+      properties:
+        amount:
+          description: Discounted amount for the given `quantity` within an order.
+          example: 2.99
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: Discounted amount for the given `quantity`, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        invoiceQuantity:
+          description: Total quantity invoiced. If customer placed order for 10 quantity of an item and only 2 got shipped, then 2 is the `invoiceQuantity`.
+          example: 10
+          format: int32
+          type: integer
+        promotionCode:
+          description: Promotion code used by shoppers to take advantage of an ongoing promotion.
+          example: HNY2022
+          type: string
+        promotionId:
+          description: Unique promotion ID either from fabric Offers service or external Offers service. When fabric Offers service is used, this is the 24-character system-generated promotion ID returned in the response of create promotion endpoint.
+          example: HNY2022
+          type: string
+        promotionName:
+          description: Promotion name
+          example: New Year
+          type: string
+        quantity:
+          description: Number of discounted items in an order such as buy 2 get 1 free. In this case 1 is the discounted quantity.
+          example: 1
+          format: int32
+          type: integer
+        unit:
+          description: Indicates whether the discount is in amount or percentage
+          example: AMOUNT_OFF
+          type: string
+        value:
+          description: Value corresponding to `unit`
+          example: 10
+          format: int32
+          type: integer
+      type: object
+    refundDetailResource:
+      description: Used for credit rules. This resource captures the split of fees and tax refunds at the item and order level.
+      properties:
+        amount:
+          description: Refund Amount
+          example: '-10.'
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The total refund amount, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        name:
+          description: The name of the fee or tax.
+          example: Name
+          type: string
+        type:
+          description: Type of refund
+          example: ITEM
+          type: string
+      type: object
+    searchResponse:
+      description: Search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/orderResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    orderItemRequest:
+      description: Order item model
+      properties:
+        adjustments:
+          description: Price adjustments are made to modify product prices during order creation, aiming to incentivize shoppers by offering discounts and promotions based on specified criteria. Price adjustments are also made to apply coupons that the shopper has used.
+          items:
+            $ref: '#/components/schemas/adjustmentDetail'
+          type: array
+        attributes:
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info in key: value pairs'
+          example:
+            colorCode: '001'
+            isDonation: 'false'
+            style: '570223020'
+          type: object
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        discounts:
+          items:
+            $ref: '#/components/schemas/orderDiscountRequest'
+          type: array
+        employeeId:
+          description: Employee (ID or name) who initiated the request
+          example: 62272e917b12209e68751d94
+          type: string
+        fees:
+          items:
+            $ref: '#/components/schemas/taxDetail'
+          type: array
+        fulfillment:
+          $ref: '#/components/schemas/itemFulfillmentResource'
+        isBackorder:
+          description: '**true:** Backordered item. **false:** Ordered item.'
+          example: true
+          type: boolean
+        isDonation:
+          description: 'true: Item is a donation <br> false: Item is not a donation'
+          example: true
+          type: boolean
+        isPreorder:
+          description: '**true:** Preordered item. **false:** Ordered item.'
+          example: true
+          type: boolean
+        itemAdjustmentTotalInCurrencies:
+          items:
+            description: The total value of item adjustments, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemDiscountsTotal:
+          description: Item's total discount = `summationOfAll(discounts[].amount)'. Refer to `amount` in `orderDiscount`.
+          example: 10
+          format: double
+          type: number
+        itemDiscountsTotalInCurrencies:
+          items:
+            description: The total discount applied to items, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemFeeTotal:
+          description: Recalculated item's fee = `summationOfAll(fees[].amount)`. Refer to `amount` in `itemFeeDetails`.
+          example: 10
+          format: double
+          type: number
+        itemFeeTotalInCurrencies:
+          items:
+            description: The updated fee for an item, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemId:
+          description: Unique identifier of item from fabric Products (PIM) service.
+          example: 1234
+          format: int32
+          type: integer
+        itemName:
+          description: Item name
+          example: Item
+          type: string
+        itemSubtotal:
+          description: Recalculated item's subtotal - `Item unit price x (orderedQuantity - cancelledQuantity)`
+          example: 600
+          format: double
+          type: number
+        itemSubtotalInCurrencies:
+          items:
+            description: The updated subtotal for an item, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemSubtype:
+          description: Subtype of `type`, for another layer of classification.
+          example: Borderfree
+          type: string
+        itemTaxTotal:
+          description: Recalculated total tax on item = `summationOfAll(itemTaxTotal)`
+          example: 10
+          format: double
+          type: number
+        itemTaxTotalInCurrencies:
+          items:
+            description: The updated total tax applied to an item, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemTotal:
+          description: Recalculated item's total cost = `itemSubTotal - itemDiscountTotal  + itemTaxTotal + itemFeeTotal`.
+          example: 10
+          format: double
+          type: number
+        itemTotalInCurrencies:
+          items:
+            description: The updated total cost of an item, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemUnitPrice:
+          description: Item's unit price
+          example: 10
+          format: double
+          type: number
+        itemUnitPriceInCurrencies:
+          items:
+            description: The price of a single unit of an item, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        lineItemId:
+          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric auto-generates this value during order creation, in UUID format.
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        lineItemNumber:
+          description: Merchant-defined line item number to identify each item in an order.
+          example: 1
+          format: int32
+          type: integer
+        notes:
+          description: Notes section to be used by customer service representative (CSR) only
+          items:
+            $ref: '#/components/schemas/orderNote'
+          type: array
+        orderedQuantity:
+          description: Ordered quantity of given item
+          example: 60
+          format: int32
+          type: integer
+        segment:
+          description: Segment
+          example: P1234
+          type: string
+        shipToId:
+          description: 'System-generated UUID associated with `shipInfo`, generated from CnC service. **Note**: An order can have multiple ship-to (delivery) locations and items going to the same location have one `shipToId`.'
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        sku:
+          description: Stock keeping unit (SKU), unique identifier of item.
+          example: P1234
+          type: string
+        taxCode:
+          description: Applicable tax code, varies from state to state
+          example: FR01
+          type: string
+        taxDetails:
+          items:
+            $ref: '#/components/schemas/taxDetail'
+          type: array
+        type:
+          description: Identify order type whether it's a pickup, web ship, or international order.
+          example: WEB_SHIP
+          type: string
+        uom:
+          description: Unit in which a product is sold or measured. It is important for accurately fulfilling orders and ensuring customers receive the correct quantity of products they have ordered. The possible values are EA (Each) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+        vendorId:
+          description: Vendor ID
+          example: P1234
+          type: string
+      required:
+      - itemId
+      - lineItemId
+      - lineItemNumber
+      - shipToId
+      - sku
+      type: object
+    orderFeeDetail:
+      description: An object containing an orders fee details.
+      properties:
+        amount:
+          description: Tax amount
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The total tax amount, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        attributes:
+          additionalProperties:
+            description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+            type: object
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          type: object
+        currency:
+          default: USD
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        invoicedAmount:
+          description: System-generated amount from Invoice service based on requested `amount`
+          example: 34.56
+          format: double
+          type: number
+        invoicedAmountInCurrencies:
+          items:
+            description: A System-generated amount returned from the Invoice service based on requested `amount` in all currencies used by an order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        name:
+          description: Applied tax name
+          example: STATE
+          type: string
+        rate:
+          description: Rate
+          example: 10
+          format: double
+          type: number
+        rateType:
+          description: Rate type
+          example: PERCENTAGE
+          type: string
+        taxCode:
+          description: Tax code applied
+          example: FR01
+          type: string
+      type: object
+    orderContactName:
+      description: Contact person's name
+      properties:
+        firstName:
+          description: Contact person's first name
+          example: Alex
+          type: string
+        lastName:
+          description: Contact person's last name
+          example: Doe
+          type: string
+        middleName:
+          description: Contact person's middle name or initial
+          example: E
+          type: string
+      type: object
+    itemFeeDetails:
+      description: Item fees object containing item fee details.
+      properties:
+        amount:
+          description: Tax amount
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The total tax amount, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        attributes:
+          additionalProperties:
+            description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+            type: object
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          type: object
+        currency:
+          default: USD
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        invoiceQuantity:
+          description: Total quantity invoiced. If customer placed order for 10 quantity of an item and only 2 got shipped then 2 is the `invoiceQuantity`
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Applied tax name
+          example: STATE
+          type: string
+        quantity:
+          description: Total number of items in the order
+          example: 12
+          format: int32
+          type: integer
+        refundAmount:
+          description: Total refund amount
+          example: 21.5
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        taxCode:
+          description: Tax code applied
+          example: FR01
+          type: string
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    address:
+      description: Address details
+      properties:
+        addressLine1:
+          description: Address line 1
+          example: 123 Main St.
+          type: string
+        addressLine2:
+          description: Address line 2
+          example: Suite 100
+          type: string
+        addressLine3:
+          description: Address line 3
+          example: Seventh floor
+          type: string
+        addressLine4:
+          description: Address line 4
+          example: 'Attention: Pat E. Kake'
+          type: string
+        city:
+          description: City name
+          example: Seattle
+          type: string
+        countryCode:
+          description: ISO 3166-1 alpha-2 based country code
+          example: US
+          type: string
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        latitude:
+          description: Address latitude, used with `longitude` to specify the address location. Decimal degrees format; negative is degrees South.**Note:**Value must be between -90 and 90, both inclusive.
+          example: 47.6205
+          format: double
+          type: number
+        longitude:
+          description: Address longitude, used with `latitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -180 and 180, both inclusive.
+          example: -122.3493
+          format: double
+          type: number
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        postalCode:
+          description: Postal or ZIP code
+          example: '98121'
+          type: string
+        region:
+          description: Region or state
+          example: WA
+          type: string
+        type:
+          description: Address type
+          example: Home
+          type: string
+      required:
+      - addressLine1
+      - city
+      - countryCode
+      - latitude
+      - longitude
+      - postalCode
+      - region
+      - type
+      type: object
+    orderShipInfo:
+      description: An object containing an orders shipment details.
+      properties:
+        attributes:
+          description: User defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            giftMessage: '[]'
+          type: object
+        discounts:
+          items:
+            $ref: '#/components/schemas/shippingDiscount'
+          type: array
+        estimatedDeliveryDate:
+          description: Estimated delivery time (UTC) provided by carrier
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        estimatedShipDate:
+          description: Estimated shipping time (UTC) provided by merchant
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        isInvoiced:
+          default: false
+          description: '**true:** At least one captured invoice is created by Invoice service. **false:** Captured invoice is not created.'
+          example: true
+          type: boolean
+        locationNumber:
+          description: Unique value to identify ship-from or Buy Online Pickup from Store location. This must be the locationNumber stored in the fabric Location service.
+          example: WH334
+          type: string
+        pickups:
+          description: Order pickup details
+          items:
+            $ref: '#/components/schemas/orderPickup'
+          type: array
+        shipMethod:
+          description: Shipping method
+          example: Parcel post delivery
+          type: string
+        shipToAddress:
+          $ref: '#/components/schemas/address'
+        shipToDiscount:
+          description: Merchant-defined shipping discount amount
+          example: 12.6
+          format: double
+          type: number
+        shipToDiscountInCurrencies:
+          items:
+            description: The shipping discount applied to an order, itemized by each currency used within that order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        shipToId:
+          description: 'System-generated UUID associated with `shipInfo`, generated from CnC service. **Note**: An order can have multiple ship-to (delivery) locations and items going to the same location have one `shipToId`.'
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        shipToPrice:
+          description: Merchant-defined shipping cost
+          example: 20
+          format: double
+          type: number
+        shipToPriceInCurrencies:
+          items:
+            description: The total shipping cost, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        shipToTaxTotal:
+          description: Total shipping tax
+          example: 12.6
+          format: double
+          type: number
+        shipToTaxTotalInCurrencies:
+          items:
+            description: The total tax applied to shipping costs, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        shipToType:
+          description: Type of shipping address. There are no pre-defined values; the possible values are SDD (same day delivery), point-of-sale (POS), etc.
+          example: SHIP_TO_ADDRESS
+          type: string
+        shipToUnitPrice:
+          description: A number indicating the ship to unit price.
+          example: 20
+          format: double
+          type: number
+        shipToUnitPriceInCurrencies:
+          items:
+            description: The unit price for shipping, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        shipmentInstructions:
+          description: Shipment instructions
+          example: Handle with care
+          type: string
+        taxCode:
+          description: Applicable tax code, varies from state to state
+          example: FR01
+          type: string
+        taxDetails:
+          items:
+            $ref: '#/components/schemas/taxDetail'
+          type: array
+      required:
+      - shipToId
+      type: object
+    orderAppeasementPaymentInfo:
+      description: Order appeasement payment info
+      properties:
+        paymentCounter:
+          description: Payment counter to identify which payment to refund.
+          example: 1
+          format: int32
+          type: integer
+        refundAmount:
+          description: Refund amount for appeasements.
+          example: 34.56
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          items:
+            description: The refund amount specifically for appeasements, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+      type: object
+    returnFeeDetail:
+      description: An object containing return fee details.
+      properties:
+        amount:
+          description: Merchant-defined return amount
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        name:
+          description: Fee name
+          example: RETURN_FEE
+          type: string
+        reason:
+          description: Merchant-defined return reason
+          example: Return fee
+          type: string
+        type:
+          description: Return fee type
+          enum:
+          - TAX
+          - DISCOUNT
+          - FEE
+          - ITEM
+          - ADJUSTMENT
+          example: FEE
+          type: string
+      type: object
+    adjustmentDetail:
+      description: Price adjustment details object.
+      properties:
+        adjustmentCounter:
+          description: Sequential or incremental counter for price adjustment
+          example: 1
+          format: int32
+          type: integer
+        amount:
+          description: Adjustment amount
+          example: 2.4
+          format: double
+          type: number
+        amountInCurrencies:
+          description: The adjustment amount, itemized by each currency used within the order.
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
+          example:
+            number: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        cancelQuantity:
+          description: Cancel quantity
+          example: 2
+          format: int32
+          type: integer
+        invoiceQuantity:
+          description: Total quantity invoiced
+          example: 10
+          format: int32
+          type: integer
+        notes:
+          description: Placeholder for additional info, if any.
+          example: Any additional info
+          type: string
+        quantity:
+          description: Adjustment quantity
+          example: 2
+          format: int32
+          type: integer
+        reasonCode:
+          description: Reason code
+          example: RFC
+          type: string
+        returnQuantity:
+          default: 0
+          description: Returned quantity of given item
+          example: 1
+          format: int32
+          type: integer
+        subReasonCode:
+          description: Subreason code
+          example: Late shipping
+          type: string
+      type: object
+    orderReturns:
+      description: An object containing the order return details.
+      properties:
+        attributes:
+          additionalProperties:
+            description: Attributes
+            example:
+              transactionId: 0R12TQ46
+            type: object
+          description: Attributes
+          example:
+            transactionId: 0R12TQ46
+          type: object
+        exchangeLineItemId:
+          description: Exchange line item ID
+          example: 62f3dfc438bcab1951be0a19
+          type: string
+        fees:
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        invoicedAmount:
+          description: System-generated amount from Invoice service based on requested `amount`
+          example: 11.29
+          format: double
+          type: number
+        isExchangeItemReturned:
+          default: false
+          description: '**true:** Item received for exchange is returned. **false:** Item received for exchange is not returned.'
+          example: true
+          type: boolean
+        reasonCode:
+          description: Merchant-defined reason code for return
+          example: Incorrect item
+          type: string
+        refundAmount:
+          description: Refund amount
+          example: 11.29
+          format: double
+          type: number
+        refunds:
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        returnRequestCounter:
+          description: Unique, sequential, or incremental counter for return request
+          example: 1
+          format: int32
+          type: integer
+        returnsReceivedAt:
+          description: System-generated time of returned item that has come back to the facility (UTC)
+          example: '2022-09-14T14:07:36.861Z'
+          format: date-time
+          type: string
+        shipmentId:
+          description: 24-character system-generated shipment ID
+          example: 62b37697c67b204dd18a7465
+          type: string
+        shipmentInvoice:
+          $ref: '#/components/schemas/shipmentInvoiceResource'
+        shipmentLineItemId:
+          description: Unique identifier for each item in the shipment
+          example: '234'
+          type: string
+        shipmentQuantity:
+          default: 0
+          description: Shipped quantity of given item
+          example: 1
+          format: int32
+          type: integer
+        source:
+          description: An optional field used to determine the source that initiated the API request.
+          example: CSR
+          type: string
+      type: object
+    updateOrderFeesAndTaxesRequestUpdateItemFeesAndTaxesResource:
+      type: object
+      properties:
+        lineItemId:
+          type: string
+        itemTaxTotal:
+          type: number
+        itemTaxTotalInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        taxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/taxDetail'
+        itemFeeTotal:
+          type: number
+        itemFeeTotalInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/itemFeeDetails'
+    customerResponse:
+      description: Response for customer update request
+      properties:
+        failedCount:
+          description: Failed count
+          example: 2
+          format: int32
+          type: integer
+        failedOrderIds:
+          description: OrderIds of orders for which update failed
+          example:
+          - 123k4h123k
+          - 123k4h124k
+          items:
+            description: OrderIds of orders for which update failed
+            example: '["123k4h123k","123k4h124k"]'
+            type: string
+          type: array
+        successCount:
+          description: Success count
+          example: 18
+          format: int32
+          type: integer
+        totalRecordCount:
+          description: Total record count
+          example: 10
+          format: int32
+          type: integer
+      type: object
+    auditLog:
+      description: Audit log to capture change history
+      properties:
+        amount:
+          description: Amount for which audit is done
+          example: 2.4
+          format: double
+          type: number
+        attributes:
+          description: Custom attributes
+          example:
+            key: value
+          type: object
+        auditId:
+          description: System-generated audit ID (UUID format)
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+          type: string
+        auditType:
+          description: Audit type such as cancel, return, etc.
+          example: CANCEL
+          type: string
+        auditedAt:
+          description: Audit time (UTC)
+          example: '2023-03-12T09:24:54.804Z'
+          format: date-time
+          type: string
+        employeeId:
+          description: Employee (ID or name) who made the last update
+          example: '6227'
+          type: string
+        isSuccess:
+          default: false
+          description: 'true: Update operation (any update to the service) is successful  false: Update operation has failed'
+          example: true
+          type: boolean
+        lineItemId:
+          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it during order creation, in UUID format.
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        lineItemNumber:
+          description: Item identifier
+          example: 1
+          format: int32
+          type: integer
+        note:
+          description: Additional info, if any
+          example: Note
+          type: string
+        paymentToken:
+          $ref: '#/components/schemas/orderPaymentToken'
+        policyCode:
+          description: Configurable in Copilot as per requirement. If omitted, default policy is used.
+          example: POS
+          type: string
+        quantity:
+          description: Ordered quantity of given item
+          example: 1
+          format: int32
+          type: integer
+        reasonCode:
+          description: Merchant-defined reason code, varies from merchant to merchant
+          example: Scratched item
+          type: string
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU0023
+          type: string
+        source:
+          description: Merchant-defined source from where the update was initiated. There are no predefined values; possible values could be Customer Service Representative (CSR), Point-of-Sale (POS), etc.
+          example: POS
+          type: string
+        subReasonCode:
+          description: Merchant-defined sub reason code; provides more clarity to audit reason
+          example: Scratched item
+          type: string
+        updatedFields:
+          description: Audit log for change history
+          items:
+            $ref: '#/components/schemas/orderAuditLogUpdatedField'
+          type: array
+      type: object
+    shipmentInvoiceResource:
+      description: Shipment Invoice resource
+      properties:
+        invoiceId:
+          description: Unique Id of the invoice
+          example: 62ff5c0bec0aed3c86202c32
+          type: string
+        invoiceNumber:
+          description: Unique number of the invoice
+          example: '23940791'
+          type: string
+        invoicedAt:
+          description: Date when order invoiced
+          example: '2022-08-01T20:03:28.483971941Z'
+          format: date-time
+          type: string
+      required:
+      - invoiceId
+      type: object
+    orderAttributesUpdateRequest:
+      description: An object containing order attributes update request details.
+      properties:
+        attributes:
+          additionalProperties:
+            description: An object containing your custom attributes.
+            example:
+              fraudCheckStatus: UPDATED
+              loyaltyStatus: N
+            type: object
+          description: An object containing your custom attributes.
+          example:
+            fraudCheckStatus: UPDATED
+            loyaltyStatus: N
+          type: object
+        keysToRemove:
+          description: A list of keys to be removed.
+          items:
+            type: string
+          type: array
+      required:
+      - attributes
+      type: object
+    updateShipToAddressRequest:
+      type: object
+      description: Request to update ship-to address for a specific shipToId
+      properties:
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        email:
+          type: string
+          description: Contact person's email
+          example: test@example.com
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        type:
+          type: string
+          description: Address type
+          example: Home
+        addressLine1:
+          type: string
+          description: Address line 1
+          example: 123
+        addressLine2:
+          type: string
+          description: Address line 2
+          example: Suite 100
+        addressLine3:
+          type: string
+          description: Address line 3
+          example: Seventh floor
+        addressLine4:
+          type: string
+          description: Address line 4
+          example: 'Attention: Pat E. Kake'
+        city:
+          type: string
+          description: City name
+          example: Seattle
+        region:
+          type: string
+          description: Region or state
+          example: WA
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 based country code
+          example: US
+        postalCode:
+          type: string
+          description: Postal or ZIP code
+          example: 98121
+        latitude:
+          type: number
+          format: double
+          description: Address latitude, used with `longitude` to specify the address location. Decimal degrees format; negative is degrees South.<br>**Note:**Value must be between -90 and 90, both inclusive.
+          example: 47.6205
+        longitude:
+          type: number
+          format: double
+          description: Address longitude, used with `latitude` to specify the address location. Decimal degrees format; negative is degrees South.<br>**Note:**Value must be between -180 and 180, both inclusive.
+          example: -122.3493
+        attributes:
+          type: object
+          description: 'User defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
+          example:
+            giftMessage: '[]'
+      required:
+      - addressLine1
+      - city
+      - countryCode
+      - latitude
+      - longitude
+      - postalCode
+      - region
+      - type
+    orderAuditLogUpdatedField:
+      description: Audit log for change history
+      properties:
+        fieldName:
+          description: Field or property name that was updated
+          example: UOM
+          type: string
+        fieldOriginalValue:
+          description: Original value of `fieldName` before it was updated
+          example: PK
+          type: string
+      type: object
+    orderReturnsInfo:
+      description: Order returns info
+      properties:
+        attributes:
+          additionalProperties:
+            description: Attributes
+            example:
+              transactionId: 0R12TQ46
+            type: object
+          description: Attributes
+          example:
+            transactionId: 0R12TQ46
+          type: object
+        fees:
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        invoicedAmount:
+          description: System-generated invoiced amount for the return request
+          example: 11.29
+          format: double
+          type: number
+        invoicedAmountInCurrencies:
+          items:
+            description: The invoiced amount is displayed in all currencies used for the order. If only a single currency was used, then only that currency will be shown.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        paymentCounterRefundDetails:
+          items:
+            $ref: '#/components/schemas/paymentCounterRefundInfo'
+          type: array
+        refunds:
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        returnCounter:
+          description: Unique, sequential or incremental counter for return request
+          example: 1
+          format: int32
+          type: integer
+        totalRefundAmount:
+          description: Merchant-defined total refund amount for the return request
+          example: 11.29
+          format: double
+          type: number
+        totalRefundAmountInCurrencies:
+          items:
+            description: The total amount refunded, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+      type: object
+    paymentDetails:
+      description: An object containing payment details.
+      properties:
+        body:
+          $ref: '#/components/schemas/paymentDetailsResponseBody'
+        paymentStatusCode:
+          description: Status code for payment. There are no pre-defined values; possible values are 200, 400, 402, etc.
+          example: '200'
+          type: string
+      type: object
+    currencyGroup:
+      description: CurrencyGroup object details.
+      properties:
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            fxId: ID123
+          type: object
+        conversionRate:
+          description: conversion rate
+          example: 1
+          format: double
+          type: number
+        currency:
+          description: Currency in ISO-4217
+          example: USD
+          type: string
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
+          type: string
+      required:
+      - currency
+      - group
+      type: object
+    orderSearchFilter:
+      description: Search filter
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilter'
+          GT: '#/components/schemas/valueSearchFilter'
+          GTE: '#/components/schemas/valueSearchFilter'
+          IN: '#/components/schemas/valuesSearchFilter'
+          LT: '#/components/schemas/valueSearchFilter'
+          LTE: '#/components/schemas/valueSearchFilter'
+          NEQ: '#/components/schemas/valueSearchFilter'
+          NIN: '#/components/schemas/valuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: SearchCondition to apply filter
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: order.orderId
+          pattern: ^order\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: The group name.
+          example: GroupA
+          type: string
+      required:
+      - condition
+      - field
+      type: object
+    shippingDiscount:
+      description: An object containing shipping discount details.
+      properties:
+        amount:
+          description: Discounted amount for the given `quantity`
+          example: 2.99
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The discounted amount for the specified quantity, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        promotionCode:
+          description: Promotion code used by shoppers to take advantage of an ongoing promotion.
+          example: SHIPFREE
+          type: string
+        promotionId:
+          description: Unique promotion ID either from fabric Offers service or an external Offers service. When fabric Offers service is used, this is the 24-character system-generated promotion ID returned in the response of the create promotion endpoint.
+          example: SHIPFREE
+          type: string
+        promotionName:
+          description: Promotion name
+          example: Free Shipping
+          type: string
+        quantity:
+          description: Number of discounted items in an order such as `buy 2 get 1 free`. In this case `1` is the discounted quantity.
+          example: 1
+          format: int32
+          type: integer
+        unit:
+          description: Indicates whether the discount is in amount or percentage
+          example: AMOUNT_OFF
+          type: string
+        value:
+          description: Value corresponding to `unit`
+          example: 10
+          format: int32
+          type: integer
+      type: object
+    erroredField:
+      description: An object containing information on error fields, error messages, and the amended status.
+      properties:
+        amended:
+          description: A boolean that signifies if the error has been amended.
+          example: false
+          type: boolean
+        errorMessage:
+          description: The reason the error occurred.
+          example: Invalid email address
+          type: string
+        fieldName:
+          description: The name of the field where the error occurred.
+          example: shipInfo.shipToAddress.email
+          type: string
+      required:
+      - amended
+      - errorMessage
+      - fieldName
+      type: object
+    requestReferenceContextResource:
+      type: object
+      description: Request reference context information
+      properties:
+        id:
+          type: string
+          description: System-generated unique identifier (UUID format)
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+        type:
+          type: string
+        requestId:
+          type: string
+          description: request id
+          readOnly: true
+        requestTime:
+          type: string
+          format: date-time
+          description: System-generated order creation time
+          example: '2022-04-12T09:30:31.198Z'
+        attributes:
+          type: object
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
+          example:
+            attribute: N
+            someFlag: true
+    orderPaymentToken:
+      description: An object containing the order payment token details.
+      properties:
+        paymentType:
+          description: Payment type, for example, credit card payment providers can be Visa, Mastercard, American express, etc.
+          example: VISA
+          type: string
+        token:
+          description: Payment token provided by payment provider
+          example: pi_34tr6787rt
+          type: string
+      type: object
+    orderAppeasementDetail:
+      description: The order appeasement details object containing appeasement details.
+      properties:
+        amount:
+          description: Merchant-defined appeasement amount, which should not exceed (`charged amount` - `already refunded amount`).
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The appeasement amount specified by the merchant, which must not be greater than the difference between the charged amount and any amounts already refunded, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        appeasementCounter:
+          description: Sequential or incremental counter for appeasement. Used for keeping track of duplicates in the request. If omitted in the request, it is automatically generated and will not be used to check duplicates. Multiple appeasement calls for the same order can cause repetition of appeasement counter and may cause the request to be rejected completely.
+          example: 1
+          format: int32
+          type: integer
+        attributes:
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info in key: value pairs'
+          example:
+            number: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        invoicedAmount:
+          description: System-generated amount from Invoice service based on requested `amount`
+          example: 34.56
+          format: double
+          type: number
+        invoicedAmountInCurrencies:
+          items:
+            description: System-generated amount from Invoice service based on requested `amount` in all currencies used by an order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        payments:
+          items:
+            $ref: '#/components/schemas/orderAppeasementPaymentInfo'
+          type: array
+        reasonCode:
+          description: Merchant-defined appeasement reason code; varies from merchant to merchant.
+          example: Incorrect Item
+          type: string
+        refunds:
+          items:
+            $ref: '#/components/schemas/refundDetailResource'
+          type: array
+        source:
+          description: An optional field used to determine the source that initiated the API request.
+          example: CSR
+          type: string
+        subReasonCode:
+          description: Subreason code for appeasement, for another layer of classification
+          example: Late shipping
+          type: string
+      type: object
+    cancellationItemResource:
+      description: A resource used to capture detailed cancellation information at the item level.
+      properties:
+        amount:
+          description: Amount
+          example: '-20.'
+          format: double
+          type: number
+        amountInCurrencies:
+          description: The amount associated with the cancellation, itemized by each currency used within the original order.
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        attributes:
+          description: Custom attributes
+          type: object
+        cancellationCounter:
+          description: An identifier used for cancellations.
+          example: 1
+          type: string
+        invoicedAmount:
+          description: Invoiced amount
+          example: '-20.'
+          format: double
+          type: number
+        invoicedAmountInCurrencies:
+          items:
+            description: The invoiced amount, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        payments:
+          items:
+            $ref: '#/components/schemas/paymentReference'
+          type: array
+        quantity:
+          description: The total quantity of an item for this cancellation request.
+          example: 10
+          format: int32
+          type: integer
+        reasonCode:
+          description: Reason code
+          example: Order line cancel
+          type: string
+        refunds:
+          items:
+            $ref: '#/components/schemas/refundDetailResource'
+          type: array
+        source:
+          description: An optional field used to determine the source that initiated the API request.
+          example: CSR
+          type: string
+        status:
+          description: Cancellation status
+          enum:
+          - PROCESSING
+          - COMPLETED
+          - REJECTED
+          example: PROCESSING
+          type: string
+        subReasonCode:
+          description: Sub reason code
+          example: Late shipping
+          type: string
+      type: object
+    updateCustomerRequest:
+      description: Update customer info request
+      properties:
+        accountId:
+          description: Customer's loyalty account ID or external identifier that is used to track their loyalty program activity and rewards earned.
+          example: 62272e917b12209e68751d94
+          type: string
+        company:
+          description: Shopper's company name. This may be used for company discounts.
+          example: Demo Inc
+          type: string
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated an update request
+          example: 62272e917b12209e68751d94
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        userId:
+          description: Identifier of the logged in user who initiated the request. This could be from either fabric Identity service or an external Identity service.
+          example: 62272e917b12209e68751d94
+          type: string
+      type: object
+    orderDiscountRequest:
+      description: Order discount
+      properties:
+        amount:
+          description: The discount amount applied to a specific quantity of items.
+          example: 2.4
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The discount amount applied to a specific quantity of items, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        promotionCode:
+          description: Promotion code used by shoppers to take advantage of an ongoing promotion.
+          example: HNY2022
+          type: string
+        promotionId:
+          description: Unique promotion ID either from fabric Offers service or external Offers service. When fabric Offers service is used, this is the 24-character system-generated promotion ID returned in the response of Create promotion endpoint.
+          example: HNY2022
+          type: string
+        promotionName:
+          description: Promotion name
+          example: New Year
+          type: string
+        quantity:
+          description: Discounted quantity of given item
+          example: 2
+          format: int32
+          type: integer
+        type:
+          description: Promotion type. There are no pre-defined values.
+          example: promotion
+          type: string
+        unit:
+          description: Discount offer - dollar value or percentage
+          example: AMOUNT_OFF
+          type: string
+        value:
+          description: Discount value in amount or percentage
+          example: 2
+          format: int32
+          type: integer
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    orderResponse:
+      description: An object containing order details.
+      properties:
+        adjustmentTotal:
+          description: The total amount of price adjustments for all items of the order.
+          example: 123.45
+          format: double
+          type: number
+        adjustmentTotalInCurrencies:
+          items:
+            description: The total price adjustments applied to all items within an order, itemized by each currency used in that order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        adjustments:
+          description: Price adjustments refer to changes or modifications made to the listed price of a product. A Customer Sales Representative (CSR) makes the price adjustments to provide discounts, promotional offers, or coupons that the shopper used.
+          items:
+            $ref: '#/components/schemas/adjustmentDetail'
+          type: array
+        allocatedAt:
+          description: System-generated order allocation time (UTC) once the order is allocated using Allocation service
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        appeasementTotal:
+          description: Final appeasement amount
+          example: 12.34
+          format: double
+          type: number
+        appeasementTotalInCurrencies:
+          items:
+            description: The final appeasement amount, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        appeasements:
+          items:
+            $ref: '#/components/schemas/orderAppeasementDetail'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            fraudCheckStatus: UPDATED
+            loyaltyStatus: N
+          type: object
+        auditLogs:
+          items:
+            $ref: '#/components/schemas/auditLog'
+          type: array
+        cancelTotal:
+          description: Amount to be returned after order cancellation, calculated as `cancelledQuantity / orderedQuantity * itemTotal`
+          example: 12.34
+          format: double
+          type: number
+        cancelTotalInCurrencies:
+          items:
+            description: The total amount to be returned to the customer following an order cancellation, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        cancellations:
+          items:
+            $ref: '#/components/schemas/cancellationResource'
+          type: array
+        cancelledAt:
+          description: System-generated order cancellation time in UTC. This is returned in the response of Cancel order by ID - `POST /orders/{orderId}/actions/cancel` or Cancel order by order number - `POST /orders/order-number/{orderNumber}/actions/cancel` once the order is successfully cancelled.
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        cartId:
+          description: Unique cart identifier, either from fabric Cart service or an external Cart service. It is used for linking an order to a specific cart. If available, it is also used for inventory reservation from cart workflow.
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        channelId:
+          description: Sales channel ID
+          example: '12'
+          type: string
+        createdAt:
+          description: Order creation time (UTC)
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        currencies:
+          $ref: '#/components/schemas/currencies'
+          description: The supported currency groups you defined.
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        customer:
+          $ref: '#/components/schemas/invoiceCustomer'
+        discounts:
+          items:
+            $ref: '#/components/schemas/orderDiscount'
+          type: array
+        employeeId:
+          description: Employee (ID or name) who initiated the request
+          example: '43278'
+          type: string
+        erroredFields:
+          items:
+            $ref: '#/components/schemas/erroredField'
+          type: array
+        feeTotal:
+          description: Recalculated total fee, calculated as `orderedQuantity* itemFeeTotal`
+          example: 12.34
+          format: double
+          type: number
+        feeTotalInCurrencies:
+          items:
+            description: The updated total fee amount for an order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        fees:
+          items:
+            $ref: '#/components/schemas/orderFeeDetail'
+          type: array
+        invoiceTotal:
+          description: Total payment captured by fabric Invoice service. If merchant is using third-party service, then this amount will be null. For partial payment scenarios, this value will be different from `orderTotal`.
+          example: 12.34
+          format: double
+          type: number
+        invoiceTotalInCurrencies:
+          items:
+            description: The total payment captured by fabric's Invoice service, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        items:
+          description: Item details
+          items:
+            $ref: '#/components/schemas/orderItem'
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+        notes:
+          items:
+            $ref: '#/components/schemas/orderNote'
+          type: array
+        orderDiscount:
+          description: Recalculated order discount
+          example: 1.23
+          format: double
+          type: number
+        orderDiscountInCurrencies:
+          items:
+            description: The updated total discount applied to the order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        orderId:
+          description: 24-character system-generated order ID
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        orderNumber:
+          description: Merchant-defined order identifier. If omitted, this is generated by fabric's sequence generator using Configuration service
+          example: '309019176'
+          type: string
+        orderExternalId:
+          type: string
+          description: "A merchant-defined external order identifier.  \nThis field is optional and can be used to reference the order in external \nsystems such as an ERP, OMS, or CRM.\n"
+          example: 191763090_O1231
+        orderReleasedAt:
+          description: Order released time (UTC). When an order is placed, its status is On Hold by default and the duration of hold may vary from merchant to merchant (~1 min). After the hold period, the order is released from hold.
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        orderSubtotal:
+          description: Recalculated `orderSubtotal` - `summationOfAll(itemSubTotal)`
+          example: 123.45
+          format: double
+          type: number
+        orderSubtotalInCurrencies:
+          items:
+            description: The updated subtotal for the entire order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        orderTotal:
+          description: Total amount to be charged for the order = `orderSubTotal` - `orderDiscountTotal` + `orderFeeTotal` + `orderTaxTotal`
+          example: 146.9
+          format: double
+          type: number
+        orderTotalInCurrencies:
+          items:
+            description: The total amount to be charged for the order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        orderedAt:
+          description: Merchant-defined order creation time in UTC. It is mandatory in the request body of Create Order endpoint - `POST /orders`.
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        originalAdjustmentTotal:
+          description: Original adjustment total
+          example: 123.45
+          format: double
+          type: number
+        originalAdjustmentTotalInCurrencies:
+          items:
+            description: The initial total value of adjustments made to an order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalDiscount:
+          description: System-generated total discount, auto-filled by Orders service when the order is placed. This is saved for reference in case the value changes later.
+          example: 1.45
+          format: double
+          type: number
+        originalDiscountInCurrencies:
+          items:
+            description: The initial discount applied to an order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalFeeTotal:
+          description: System-generated total fees, auto-filled by Orders service when the order is placed.
+          example: 12.34
+          format: double
+          type: number
+        originalFeeTotalInCurrencies:
+          items:
+            description: The initial total fee amount, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalOrderTotal:
+          description: System-generated order total, auto-filled by Orders service when the order is placed. This is saved for reference in case the `orderTotal` changes later.
+          example: 146.9
+          format: double
+          type: number
+        originalOrderTotalInCurrencies:
+          items:
+            description: The initial total cost of the entire order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalSubtotal:
+          description: System-generated order subtotal, auto-filled by Orders service when the order is placed. This is saved for reference in case the value changes later.
+          example: 113.45
+          format: double
+          type: number
+        originalSubtotalInCurrencies:
+          items:
+            description: The initial subtotal of the entire order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalTaxTotal:
+          description: System-generated total tax, auto-filled by Orders service when the order is placed.
+          example: 12.34
+          format: double
+          type: number
+        originalTaxTotalInCurrencies:
+          items:
+            description: The initial total tax amount for an order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        payments:
+          items:
+            $ref: '#/components/schemas/orderPayment'
+          type: array
+        retail:
+          $ref: '#/components/schemas/orderRetail'
+        returnTotal:
+          description: Return total of order, for return scenarios, calculated as `summationOfAll(itemReturnTotal)`
+          example: 12.34
+          format: double
+          type: number
+        returnTotalInCurrencies:
+          items:
+            description: The total amount returned for an order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        returns:
+          items:
+            $ref: '#/components/schemas/orderReturnsInfo'
+          type: array
+        shipInfo:
+          items:
+            $ref: '#/components/schemas/orderShipInfo'
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+        statusCode:
+          description: Status code. There are no pre-defined values; possible values are - ORDER_ALLOCATED ("Order Allocated"), ORDER_SHIPPED ("Order Shipped"), ORDER_PARTIALLY_SHIPPED ("Order Partially Shipped"), ORDER_PICKED_UP ("Order Picked Up"), ORDER_PARTIALLY_PICKED_UP ("Order Partially Picked Up"), ORDER_DELIVERED ("Order Delivered"), ORDER_PARTIALLY_DELIVERED ("Order Partially Delivered"), ORDER_RETURNED ("Order Returned"), ORDER_HOLD_EXTERNAL ("Order on Hold") etc.
+          example: ORDER_CREATED
+          type: string
+        statusDescription:
+          description: Human-readable brief description based on `statusCode`
+          example: Order Created
+          type: string
+        subtype:
+          description: Order subtype, for further classification
+          enum:
+          - IOS
+          - ANDROID
+          - INTERNATIONAL
+          example: INTERNATIONAL
+          type: string
+        taxTotal:
+          description: Recalculated total tax on order `summationOfAll(itemTaxTotal)+summationOf(tax[].value)`
+          example: 12.34
+          format: double
+          type: number
+        taxTotalInCurrencies:
+          items:
+            description: The updated total tax amount, itemized by each currency used within that order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        type:
+          description: Order type is critical for the order life cycle as it indicates the workflow. For example, storefront orders have a different workflow than call center orders. fabric Orders service offers standard configurations for storefront, call center, point of sale, iOS, Android, and international.
+          enum:
+          - WEB
+          - CSC
+          - MOBILE_APP
+          - POS
+          example: WEB
+          type: string
+        transactionLogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/requestReferenceContextResource'
+        updatedAt:
+          description: Time of last update to order (UTC)
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        version:
+          description: Current version of order document. Indicates the number of times the order is updated by any operation.
+          example: 2
+          format: int64
+          type: integer
+      required:
+      - channelId
+      - items
+      - orderNumber
+      - shipInfo
+      - statusCode
+      - version
+      type: object
+    paymentCounterRefundInfo:
+      description: An object containing payment counter refund details.
+      properties:
+        amount:
+          description: Final refunded amount
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: the payment counter refund amount, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        paymentCounter:
+          description: Unique incremented number for this payment object.
+          example: 1
+          format: int32
+          type: integer
+      type: object
+    orderItem:
+      description: An object containing an orders item details.
+      properties:
+        adjustments:
+          description: Price adjustments are made to modify product prices during order creation, aiming to incentivize shoppers by offering discounts and promotions based on specified criteria. Price adjustments are also made to apply coupons that the shopper has used.
+          items:
+            $ref: '#/components/schemas/adjustmentDetail'
+          type: array
+        appeasementTotal:
+          description: Appeasement total = `summationOfAll(appeasements[].amount and items[].appeasements[].amount)`
+          example: 5.5
+          format: double
+          type: number
+        appeasementTotalInCurrencies:
+          items:
+            description: The total appeasement amount, calculated as the sum of all `appeasements[].amount` and `items[].appeasements[].amount` values, expressed in all currencies used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        appeasements:
+          description: Appeasement info
+          items:
+            $ref: '#/components/schemas/orderAppeasementDetail'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            colorCode: '001'
+            isDonation: 'false'
+            style: '570223020'
+          type: object
+        backOrderedQuantity:
+          description: Backordered quantity of given item
+          example: 10
+          format: int32
+          type: integer
+        cancellations:
+          items:
+            $ref: '#/components/schemas/cancellationItemResource'
+          type: array
+        cancelledAmount:
+          description: Cancelled amount is either voided (payment is only authorized but not captured at checkout) or refunded (amount is authorized and captured at checkout).
+          example: 12.4
+          format: double
+          type: number
+        cancelledAmountInCurrencies:
+          items:
+            description: The total amount cancelled, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        cancelledQuantity:
+          description: Cancelled quantity of an item
+          example: 10
+          format: int32
+          type: integer
+        channelId:
+          description: Sales channel ID
+          example: WHBM
+          type: string
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        deliveredQuantity:
+          description: Delivered quantity of an item
+          example: 10
+          format: int32
+          type: integer
+        discounts:
+          description: Discount details
+          items:
+            $ref: '#/components/schemas/orderDiscount'
+          type: array
+        employeeId:
+          description: Employee (ID or name) who initiated the request
+          example: 5345HJH
+          type: string
+        exchangeQuantity:
+          description: System-generated item quantity that are exchanged
+          example: 13
+          format: int32
+          type: integer
+        fees:
+          description: Fee details
+          items:
+            $ref: '#/components/schemas/itemFeeDetails'
+          type: array
+        fulfillment:
+          $ref: '#/components/schemas/itemFulfillmentResource'
+        hasInfiniteConsent:
+          description: Applicable for backorder and preorder scenarios where customer consents for further delay in delivery of preordered and backordered items than the initial estimate. **true:** Customer consents for delayed delivery. **false:** Customer does not consent for delayed delivery.
+          example: true
+          type: boolean
+        invoiceTotal:
+          description: Invoice total is updated once invoice created
+          example: 800
+          format: double
+          type: number
+        invoiceTotalInCurrencies:
+          items:
+            description: The total amount to be charged for the invoice, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        invoicedQuantity:
+          description: Invoiced quantity of an item
+          example: 10
+          format: int32
+          type: integer
+        isBackorder:
+          description: Merchant-defined value. **true:** Backordered item. **false:** Ordered item.
+          example: true
+          type: boolean
+        isDonation:
+          description: '**true:** Item is a donation. **false:** Item is not a donation.'
+          example: true
+          type: boolean
+        isExchangeItem:
+          description: Merchant-defined value for exchange scenarios. **true:** Item is an exchange. **false:** Item is not an exchange.
+          example: true
+          type: boolean
+        isGifting:
+          description: '**true:** Item is a gift. **false:** Item is not a gift.'
+          example: true
+          type: boolean
+        isPreorder:
+          description: Merchant-defined value. **true:** Pre-ordered item. **false:** Ordered item.
+          example: true
+          type: boolean
+        isFulfillable:
+          type: boolean
+          description: "Determines whether an **Allocation** document must be created before fulfillment.  \n- If `false`, the allocation step is skipped and the process continues directly to **Invoice & Payment Capture**.  \n- If omitted, the system defaults to `true`.\n"
+          example: true
+          default: true
+        isInventoryManaged:
+          type: boolean
+          description: "Indicates whether the **On-Hand / Available to Purchase** quantity is managed in fabric OMS.  \n- If `false`, inventory management is bypassed and no inventory document is created in OMS.  \n- If omitted, the system defaults to `true`.\n"
+          example: true
+          default: true
+        itemAdjustmentTotal:
+          description: Total price adjustment made to the item.
+          example: 123.45
+          format: double
+          type: number
+        itemAdjustmentTotalInCurrencies:
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemDiscountsTotal:
+          description: Item's total discount = `summationOfAll(discounts[].amount)'. Refer to `amount` in `orderDiscount`.
+          example: 80
+          format: double
+          type: number
+        itemDiscountsTotalInCurrencies:
+          items:
+            description: The total discount applied to an item, calculated as the sum of all `discounts[].amount` values, expressed in all currencies used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemFeeTotal:
+          description: Recalculated item's fee = `summationOfAll(itemFeeTotal)`. Refer to `amount` in `itemFeeDetails`
+          example: 200
+          format: double
+          type: number
+        itemFeeTotalInCurrencies:
+          items:
+            description: The updated fee for an item, calculated as the sum of all `itemFeeTotal` values, expressed in all currencies used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemId:
+          description: System-generated unique identifier of item from fabric Products (PIM) service
+          example: 1234
+          format: int32
+          type: integer
+        itemName:
+          description: Item name
+          example: Item
+          type: string
+        itemShippingTotal:
+          description: Merchant-defined item's shipping total
+          example: 10
+          format: double
+          type: number
+        itemShippingTotalInCurrencies:
+          items:
+            description: The updated total shipping cost for an item, expressed in all currencies used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemSubtotal:
+          description: Recalculated item's subtotal = `itemUnitPrice x (orderedQuantity - cancelledQuantity)`
+          example: 600
+          format: double
+          type: number
+        itemSubtotalInCurrencies:
+          items:
+            description: The updated subtotal for an item, calculated as `itemUnitPrice x (orderedQuantity - cancelledQuantity)`, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemSubtype:
+          description: Subtype of `type`, for another layer of classification.
+          example: Borderfree
+          type: string
+        itemTaxTotal:
+          description: Recalculated total tax on item = `summationOfAll(itemTaxTotal)`
+          example: 80
+          format: double
+          type: number
+        itemTaxTotalInCurrencies:
+          items:
+            description: The updated total tax on an item, calculated as the sum of all `itemTaxTotal` values, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemTotal:
+          description: Recalculated item's total cost = `itemSubTotal - itemDiscountTotal  + itemTaxTotal + itemFeeTotal`.
+          example: 800
+          format: double
+          type: number
+        itemTotalInCurrencies:
+          items:
+            description: The updated total cost of an item, calculated as `itemSubTotal - itemDiscountTotal + itemTaxTotal + itemFeeTotal`, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        itemUnitPrice:
+          description: Item's unit price
+          example: 10
+          format: double
+          type: number
+        itemUnitPriceInCurrencies:
+          items:
+            description: The price of a single unit of an item, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        lineItemId:
+          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it (in UUID format) during order creation.
+          example: d538b1f1-0e45-43c6-bfc6-9666fc1188ca
+          type: string
+        lineItemNumber:
+          description: Merchant-defined line item number to identify each item in an order
+          example: 1
+          format: int32
+          type: integer
+        lineOrderStatus:
+          description: System-generated status for each item in the orders - SHIPPED, RETURNED, CANCELLED, EXCHANGED, VALID, and the like
+          example: VALID
+          type: string
+        notes:
+          description: For additional information, to be used by Customer Service Representative (CSR) only
+          items:
+            $ref: '#/components/schemas/orderNote'
+          type: array
+        orderedQuantity:
+          description: Ordered quantity of given item
+          example: 60
+          format: int32
+          type: integer
+        orderedQuantityToShip:
+          description: Quantity of given item that is yet to ship, out of the initially allocated quantity. For example, if a customer orders four units of an item, inventory will reserve four units of the item. If only two units are currently available and are shipped, the remaining two units will be considered as the `pendingShippedQuantity`.
+          example: 10
+          format: int32
+          type: integer
+        originalDiscounts:
+          description: System-generated total discount, auto-filled by Orders service when the order is placed.
+          example: 50
+          format: double
+          type: number
+        originalDiscountsInCurrencies:
+          items:
+            description: The initial discounts applied, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalFeeTotal:
+          description: System-generated fee total, auto-filled by fabric Orders when the order is placed. This is saved for reference in case the value changes later.
+          example: 300
+          format: double
+          type: number
+        originalFeeTotalInCurrencies:
+          items:
+            description: The initial total fee amount, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalItemAdjustmentTotalInCurrencies:
+          items:
+            description: The initial total value of item adjustments, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalItemSubtotal:
+          description: System-generated total discount, auto-filled by Orders service when the order is placed.
+          example: 800
+          format: double
+          type: number
+        originalItemSubtotalInCurrencies:
+          items:
+            description: The initial subtotal for an item, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalItemTotal:
+          description: System-generated item total cost, auto-filled by Orders service when the order is placed
+          example: 500
+          format: double
+          type: number
+        originalItemTotalInCurrencies:
+          items:
+            description: The initial total cost of an item, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalOutstandingItemTotalInCurrencies:
+          items:
+            description: The initial outstanding total cost of items that had not yet been paid for, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalShippingTotal:
+          description: System-generated total shipping cost, auto-filled by Orders service when the order is placed.
+          example: 80
+          format: double
+          type: number
+        originalShippingTotalInCurrencies:
+          items:
+            description: The initial total shipping cost, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        originalTaxTotal:
+          description: System-generated total tax, auto-filled by Orders service when the order is placed.
+          example: 90
+          format: double
+          type: number
+        originalTaxTotalInCurrencies:
+          items:
+            description: The initial total tax amount, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        outstandingItemTotalInCurrencies:
+          items:
+            description: The remaining total cost of items that have not yet been paid for, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        parentLineItemNumber:
+          description: Applicable in exchange scenarios. Item being returned is the `parentLineItemNumber`.
+          example: 12
+          format: int32
+          type: integer
+        pendingExchangeQuantity:
+          description: System-generated item quantity pending for exchange
+          example: 12
+          format: int32
+          type: integer
+        pendingReturnQuantity:
+          description: Quantity of an item awaiting approval for return. For example, when customer initiates return request for 2 units of an item, the request will be initially in a pending status because they are awaiting approval from merchant. They are referred to as `pendingReturnQuantity`.
+          example: 10
+          format: int32
+          type: integer
+        pendingShippedBackOrderQuantity:
+          description: Backordered quantity that is yet to be shipped. For example, If a customer places a backorder for four units of an item, inventory will reserve four units of the item to ship when they become available. If only two units are available and are shipped, the remaining two backordered units will be considered as the `pendingShippedBackOrderQuantity`.
+          example: 10
+          format: int32
+          type: integer
+        processingReturnQuantity:
+          description: Quantity of an item currently being processed for return. For example, when merchant approves return of 1 out of 2 units of an item, then 1 is the `processingReturnQuantity`
+          example: 10
+          format: int32
+          type: integer
+        quantityInStatus:
+          $ref: '#/components/schemas/quantityInStatus'
+        refundAmount:
+          description: Merchant-defined total refund amount
+          example: 21.5
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          items:
+            description: The total refund amount, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        rejectedReturnQuantity:
+          description: Quantity of an item rejected in return request. For example, For example, when merchant rejects return of 1 out of 2 units of an item, then 1 is the `rejectedReturnQuantity`.
+          example: 10
+          format: int32
+          type: integer
+        reshippedQuantity:
+          description: Reshipped quantity of given item (in case of lost shipment)
+          example: 10
+          format: int32
+          type: integer
+        returnedQuantity:
+          description: Returned quantity of given item
+          example: 10
+          format: int32
+          type: integer
+        returns:
+          description: Order return details
+          items:
+            $ref: '#/components/schemas/orderReturns'
+          type: array
+        shipToId:
+          description: 'System-generated ship-to ID (UUID) associated with `shipInfo`, generated from CnC service. **Note**: An order can have multiple ship-to (delivery) locations and items going to the one location will have the same `shipToId`.'
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        shippedQuantity:
+          description: Shipped quantity of an item
+          example: 10
+          format: int32
+          type: integer
+        sku:
+          description: Stock keeping unit (SKU), unique identifier of item
+          example: P1234
+          type: string
+        taxCode:
+          description: Applicable tax code, varies from state to state
+          example: FR01
+          type: string
+        taxDetails:
+          description: Tax details
+          items:
+            $ref: '#/components/schemas/taxDetail'
+          type: array
+        type:
+          description: Order type. Critical in order life cycle as it indicates the workflow that varies with the type. For example, Storefront orders have a different workflow than Call Center orders. fabric Orders service offers default configurations for Storefront, Call Center, Point of Sale, iOS, Android, and International.
+          example: WEB_SHIP
+          type: string
+        uom:
+          description: Unit in which a product is sold or measured. It is important to accurately fulfill orders and ensure customers receive the correct quantity of products they have ordered. The possible values are EA (Each) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+        vendorId:
+          description: Vendor ID. Applicable in drop shipping to indicate vendor responsible for given item.
+          example: P1234
+          type: string
+      required:
+      - itemId
+      - lineItemId
+      - lineItemNumber
+      - shipToId
+      - sku
+      type: object
+    cancellationResource:
+      description: Cancellation resource
+      properties:
+        amount:
+          description: Amount
+          example: '-20.'
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The total amount, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        attributes:
+          description: Custom attributes
+          example:
+            number: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        cancellationCounter:
+          description: An identifier used for cancellations.
+          example: 1
+          type: string
+        invoicedAmount:
+          description: Invoiced amount
+          example: '-20.'
+          format: double
+          type: number
+        invoicedAmountInCurrencies:
+          items:
+            description: The invoiced amount will be displayed in all currencies used for the order. If only a single currency was used, then only that currency will be shown.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        payments:
+          items:
+            $ref: '#/components/schemas/paymentReference'
+          type: array
+        reasonCode:
+          description: Reason code
+          example: Order Line Cancel
+          type: string
+        refunds:
+          items:
+            $ref: '#/components/schemas/refundDetailResource'
+          type: array
+        source:
+          description: An optional field used to determine the source that initiated the API request.
+          example: CSR
+          type: string
+        status:
+          description: Cancellation Status
+          enum:
+          - PROCESSING
+          - COMPLETED
+          - REJECTED
+          example: PROCESSING
+          type: string
+        subReasonCode:
+          description: Sub reason code
+          example: Late shipping
+          type: string
+      type: object
+    orderSearchRequest:
+      description: Filter conditions with sort option
+      example:
+        filters:
+        - field: order.type
+          value: WEB
+        - condition: IN
+          field: order.items.type
+          values:
+          - WEB_SHIP
+          - WEB_PICKUP
+          - WEB_SDD
+        sort: -order.createdAt
+      properties:
+        filters:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/valueSearchFilter'
+            - $ref: '#/components/schemas/valuesSearchFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+        sort:
+          default: -order.createdAt
+          description: Field or property name to sort the results. + represents ascending and - represents descending order of sorting.
+          example: +order.createdAt
+          pattern: (^[+-]order\.[a-zA-Z.\-_]*)(,([+-]order\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+      - filters
+      type: object
+    updatePaymentBillToAddressRequest:
+      type: object
+      description: Request to update bill-to address for a specific payment in an order.
+      properties:
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        email:
+          type: string
+          description: Contact person's email
+          example: test@example.com
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        type:
+          type: string
+          description: Address type
+          example: Home
+        addressLine1:
+          type: string
+          description: Address line 1
+          example: 123
+        addressLine2:
+          type: string
+          description: Address line 2
+          example: Suite 100
+        addressLine3:
+          type: string
+          description: Address line 3
+          example: Seventh floor
+        addressLine4:
+          type: string
+          description: Address line 4
+          example: 'Attention: Pat E. Kake'
+        city:
+          type: string
+          description: City name
+          example: Seattle
+        region:
+          type: string
+          description: Region or state
+          example: WA
+        countryCode:
+          type: string
+          description: ISO 3166-1 alpha-2 based country code
+          example: US
+        postalCode:
+          type: string
+          description: Postal or ZIP code
+          example: 98121
+        latitude:
+          type: number
+          format: double
+          description: Address latitude, used with `longitude` to specify the address location. Decimal degrees format; negative is degrees South.<br>**Note:**Value must be between -90 and 90, both inclusive.
+          example: 47.6205
+        longitude:
+          type: number
+          format: double
+          description: Address longitude, used with `latitude` to specify the address location. Decimal degrees format; negative is degrees South.<br>**Note:**Value must be between -180 and 180, both inclusive.
+          example: -122.3493
+        attributes:
+          type: object
+          description: 'User defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
+          example:
+            giftMessage: '[]'
+      required:
+      - addressLine1
+      - city
+      - countryCode
+      - latitude
+      - longitude
+      - postalCode
+      - region
+      - type
+    updateOrderFeesAndTaxesRequest:
+      type: object
+      properties:
+        feeTotal:
+          type: number
+        feeTotalInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        fees:
+          type: array
+          items:
+            $ref: '#/components/schemas/orderFeeDetail'
+        taxTotal:
+          type: number
+        taxTotalInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/updateOrderFeesAndTaxesRequestUpdateItemFeesAndTaxesResource'
+        shipInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/updateOrderFeesAndTaxesRequestUpdateShipInfoFeesAndTaxesResource'
+    amountInCurrencyResource:
+      description: Amount in currency object details.
+      properties:
+        amount:
+          description: The amount displayed in the primary currency.
+          example: 123.45
+          format: double
+          type: number
+        currency:
+          description: Currency in ISO-4217
+          example: USD
+          type: string
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
+          type: string
+      required:
+      - currency
+      - group
+      type: object
+    createOrderRequest:
+      description: The object containing details related to order creation.
+      properties:
+        adjustmentTotal:
+          description: Total price adjustments for all items of the order.
+          example: 123.45
+          format: double
+          type: number
+        adjustmentTotalInCurrencies:
+          items:
+            description: The total adjustments made to the prices of all items in an order, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        adjustments:
+          description: Price adjustments are made to modify product prices during order creation, aiming to incentivize shoppers by offering discounts and promotions based on specified criteria. Price adjustments are also made to apply coupons that the shopper has used.
+          items:
+            $ref: '#/components/schemas/adjustmentDetail'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            fraudCheckStatus: UPDATED
+            fraudStatus: FRAUD_PASS
+          type: object
+        cartId:
+          description: Unique identifier of a cart, either from fabric Cart or an external cart service. It is used for linking an order to a specific cart. If available, it is also used for inventory reservation from cart workflow.
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        currencies:
+          $ref: '#/components/schemas/currencies'
+          description: The supported currency groups you defined.
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        customer:
+          $ref: '#/components/schemas/invoiceCustomer'
+        discounts:
+          description: Discounts
+          items:
+            $ref: '#/components/schemas/orderDiscountRequest'
+          type: array
+        employeeId:
+          description: Employee (ID or name) who initiated the order creation request
+          example: 62272e917b12209e68751d94
+          type: string
+        feeTotal:
+          description: Total item fee = `orderedQuantity` * Item Fee Total
+          example: 12.34
+          format: double
+          type: number
+        feeTotalInCurrencies:
+          items:
+            description: The total fee for an item, calculated as the `orderedQuantity` multiplied by the `Item Fee Total`, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        fees:
+          description: Fees
+          items:
+            $ref: '#/components/schemas/orderFeeDetail'
+          type: array
+        items:
+          description: Items
+          items:
+            $ref: '#/components/schemas/orderItemRequest'
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+        notes:
+          description: Additional info, if any. To be used by customer service representative (CSR) only
+          items:
+            $ref: '#/components/schemas/orderNote'
+          type: array
+        orderDiscount:
+          description: Order discount = `summationOfAll(itemDiscountTotal)`
+          example: 1.23
+          format: double
+          type: number
+        orderDiscountInCurrencies:
+          items:
+            description: The total discount applied to the order, calculated as the sum of all `itemDiscountTotal` values, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        orderNumber:
+          description: Merchant-defined order identifier. If omitted, this is generated by fabric's sequence generator using Configuration service.
+          example: '309019176'
+          type: string
+        orderExternalId:
+          type: string
+          description: "A merchant-defined external order identifier.  \nThis field is optional and can be used to reference the order in external \nsystems such as an ERP, OMS, or CRM.\n"
+          example: 191763090_O1231
+        orderSubtotal:
+          description: Recalculated order subtotal = `summationOfAll(itemSubTotal)`
+          example: 123.45
+          format: double
+          type: number
+        orderSubtotalInCurrencies:
+          items:
+            description: The updated subtotal for the entire order, calculated as the sum of all `itemSubTotal` values, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        orderTotal:
+          description: Total amount to be charged for the order = `orderSubTotal` - `orderDiscountTotal` + `orderFeeTotal` + `orderTaxTotal`.
+          example: 146.9
+          format: double
+          type: number
+        orderTotalInCurrencies:
+          items:
+            description: The total amount to be charged for an order, calculated as `orderSubTotal` - `orderDiscountTotal` + `orderFeeTotal` + `orderTaxTotal`, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        orderedAt:
+          description: Merchant-defined order creation time in UTC. It is mandatory in the request body of Create Order endpoint - `POST /orders`.
+          example: '2022-05-12T09:30:31.198Z'
+          format: date-time
+          type: string
+        payments:
+          description: Payments
+          items:
+            $ref: '#/components/schemas/orderPaymentRequest'
+          type: array
+        retail:
+          $ref: '#/components/schemas/orderRetail'
+        shipInfo:
+          description: Shipping info
+          items:
+            $ref: '#/components/schemas/orderShipInfo'
+          maxItems: 2147483647
+          minItems: 1
+          type: array
+        statusCode:
+          description: Status code. Primarily used for Point-of-Sale (POS) orders.
+          example: ORDER_CREATED
+          type: string
+        statusDescription:
+          description: Description corresponding to `statusCode`
+          example: Order Created
+          type: string
+        subtype:
+          description: Order subtype, for additional classification
+          enum:
+          - IOS
+          - ANDROID
+          - INTERNATIONAL
+          example: INTERNATIONAL
+          type: string
+        taxTotal:
+          description: Total tax on order = `summationOfAll(itemTaxTotal)+summationOfAll(tax[].value)`
+          example: 12.34
+          format: double
+          type: number
+        taxTotalInCurrencies:
+          items:
+            description: The total tax on an order, calculated as the sum of all `itemTaxTotal` values and all `tax[].value` values, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        type:
+          description: Order type. It is critical for order life cycle as it indicates the workflow that varies with the type. For example, Storefront orders have different workflows than Call Center orders. fabric Orders service offers standard configurations for Storefront, Call Center, Point of Sale, iOS, Android, and International.
+          enum:
+          - WEB
+          - CSC
+          - MOBILE_APP
+          - POS
+          example: WEB
+          type: string
+        requestContext:
+          $ref: '#/components/schemas/requestReferenceContextResource'
+          description: Request reference context information
+      required:
+      - items
+      - orderNumber
+      - statusCode
+      type: object
+    orderPaymentRequest:
+      description: An object containing the payment details for an order.
+      properties:
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            captureCurrencyCode: USD
+            payerId: M7AWTK3YK3B46
+            referenceId: 4DY41894J2904533S
+          type: object
+        authorizationExpirationDate:
+          description: Expiration time for authorization
+          example: '2022-01-27T16:15:58-05:00'
+          format: date-time
+          type: string
+        authorizedAmount:
+          description: Amount authorized to be debited from the given `paymentMethod`
+          example: 123.2
+          format: double
+          type: number
+        authorizedAmountInCurrencies:
+          items:
+            description: The authorized debit amount from the specified payment method, broken down by each currency used in the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        billToAddress:
+          $ref: '#/components/schemas/address'
+        chargedAmount:
+          description: Charged amount
+          example: 60
+          format: double
+          type: number
+        chargedAmountInCurrencies:
+          items:
+            description: The total amount charged, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        paidAt:
+          description: System-generated time of payment capture at shipment. When payment is captured at checkout, this is a merchant-defined value during order creation.
+          example: '2022-01-27T16:15:58-05:00'
+          format: date-time
+          type: string
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        paymentIdentifier:
+          $ref: '#/components/schemas/orderPaymentIdentifier'
+        paymentMethod:
+          description: Payment method
+          example: CREDIT_CARD
+          type: string
+        paymentProvider:
+          description: Payment provider
+          example: stripe
+          type: string
+        paymentStatus:
+          description: Payment status. There are no pre-defined values; possible values are Paid, Partially Paid, Authorized, and Error.
+          example: Paid
+          type: string
+        paymentToken:
+          $ref: '#/components/schemas/orderPaymentToken'
+      type: object
+    orderStatusUpdateRequest:
+      type: object
+      description: Request to update order status using state machine
+      properties:
+        statusCode:
+          type: string
+          description: Action code representing the next step in the flow
+          example: RELEASE_HOLD_EXTERNAL
+        statusDescription:
+          type: string
+          description: Optional description for the status update
+          example: Order created and ready for processing
+      required:
+      - statusCode
+    orderContactPhone:
+      description: Contact person's phone details.
+      properties:
+        number:
+          description: Contact person's phone number
+          example: 123-456-7890
+          type: string
+        type:
+          description: Contact number type
+          enum:
+          - MOBILE
+          - HOME
+          - BUSINESS
+          example: MOBILE
+          type: string
+      type: object
+    currencies:
+      description: currencies
+      properties:
+        groups:
+          items:
+            $ref: '#/components/schemas/currencyGroup'
+          type: array
+        primaryCurrency:
+          description: Primary currency for order
+          example: SHOPPER
+          type: string
+      type: object
+    orderRetail:
+      description: Optionally used as reference, for orders created from Point-of-Sale systems
+      properties:
+        cashierId:
+          description: Merchant-defined cashier ID during order creation
+          example: C-123
+          type: string
+        locationNumber:
+          description: Unique value to identify ship-from or Buy Online Pickup from Store location. This must be the locationNumber stored in the fabric Location service.
+          example: WH334
+          type: string
+        registerId:
+          description: Merchant-defined register ID during order creation
+          example: '113'
+          type: string
+        transactionId:
+          description: Transaction ID such as the Point-of-Sale system's version of the `orderId`.
+          example: '328942333412'
+          type: string
+      type: object
+    updateOrderFeesAndTaxesRequestUpdateShipInfoFeesAndTaxesResource:
+      type: object
+      properties:
+        shipToId:
+          type: string
+        shipToTaxTotal:
+          type: number
+        shipToTaxTotalInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        taxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/taxDetail'
+    paymentResponse:
+      description: Payment information
+      properties:
+        amount:
+          description: Transaction amount for the payment operation
+          example: -12.4
+          type: number
+        amountInCurrencies:
+          description: The details of the `CurrencyList`, itemized by each currency used within the order.
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          properties:
+            empty:
+              type: boolean
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            key: value
+          type: object
+        data:
+          $ref: '#/components/schemas/paymentDetails'
+        id:
+          description: ID provided by payment gateway in response to payment operation
+          example: '328942333412'
+          type: string
+        paymentId:
+          description: Merchant-provided unique identifier for a payment based on payment connector. When omitted, this value will be generated by fabric in UUID format.
+          example: '328942333412'
+          type: string
+        paymentLogId:
+          description: ID generated by fabric to uniquely identify the payment log
+          example: '328942333412'
+          type: string
+        paymentLogRefId:
+          description: Payment reference log ID with which this record is associated
+          example: '328942333412'
+          type: string
+        status:
+          description: Payment status such as Authorized, Captured, etc.
+          example: Authorized
+          type: string
+        type:
+          description: Transaction type such as VOID, CAPTURED, REDUND, etc.
+          example: REFUND
+          type: string
+      type: object
+    orderPickup:
+      description: An object containing the order pickup details.
+      properties:
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        pickupType:
+          description: Order pickup type
+          enum:
+          - PRIMARY
+          - ALTERNATE
+          example: PRIMARY
+          type: string
+      type: object
+    valuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/orderSearchFilter'
+      - properties:
+          values:
+            items:
+              description: Search criteria using multiple values
+              example: ORDER_CREATE
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find orders using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    pickupRequest:
+      description: An object containing pickup details.
+      properties:
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        pickupType:
+          description: Order pickup type
+          enum:
+          - PRIMARY
+          - ALTERNATE
+          example: PRIMARY
+          type: string
+      type: object
+    paymentReference:
+      description: Payment details for order
+      properties:
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        amount:
+          description: Payment refund amount
+          example: 60
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: Payment refund amount in currencies
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+    addPaymentLogRequest:
+      type: object
+      description: Request to add a payment log entry for a specific payment in an order
+      properties:
+        type:
+          type: string
+          description: Transaction type such as CAPTURE, VOID, REFUND, AUTH, REAUTH, etc.
+          example: CAPTURE
+        amount:
+          type: number
+          description: Transaction amount for the payment operation
+          example: 60
+        amountInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        paymentId:
+          type: string
+          description: Merchant-provided unique identifier for a payment based on payment connector
+          example: 820180910982102800
+        paymentLogId:
+          type: string
+          description: ID generated to uniquely identify the payment log
+          example: 671faad5-c530-4361-94a8-6b81614dfe30
+        status:
+          type: string
+          description: Payment status such as 200, 400, etc.
+          example: 200
+        data:
+          $ref: '#/components/schemas/paymentDetails'
+          description: Payment details object containing response information
+        attributes:
+          type: object
+          description: Merchant-defined custom attributes
+          example:
+            key: value
+    orderNote:
+      description: Note for attention
+      properties:
+        createdAt:
+          description: Time note was created (UTC)
+          example: '2022-05-12T09:30:31.198Z'
+          type: string
+        notes:
+          description: Additional info about the order, if any
+          example: Fragile - handle with care
+          type: string
+        user:
+          description: Customer Service Representative or Employee (ID or name) who created the note
+          example: 62272e917b12209e68751d94
+          type: string
+      type: object
+    invoiceCustomer:
+      description: Invoice customer
+      properties:
+        accountId:
+          description: Customer's loyalty account ID or external identifier that is used to track their loyalty program activity and rewards earned.
+          example: 62272e917b12209e68751d94
+          type: string
+        company:
+          description: Shopper's company name. This may be used for company discounts.
+          example: Demo Inc
+          type: string
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated an update request
+          example: 62272e917b12209e68751d94
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        userId:
+          description: Identifier of the logged in user who initiated the request. This could be from either fabric Identity service or an external Identity service.
+          example: 62272e917b12209e68751d94
+          type: string
+      type: object
+    orderPayment:
+      description: An object containing an orders payment details.
+      properties:
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            captureCurrencyCode: USD
+            payerId: M7AWTK3YK3B46
+            referenceId: 4DY41894J2904533S
+          type: object
+        authorizationAttempts:
+          description: An integer representing the number of payment authorization attempts.
+          example: 0
+          format: int64
+          type: integer
+        authorizedAmount:
+          description: Amount authorized to be debited from the given `paymentMethod`
+          example: 123.2
+          format: double
+          type: number
+        authorizedAmountInCurrencies:
+          items:
+            description: The amount authorized for debit from the specified payment method, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        billToAddress:
+          $ref: '#/components/schemas/address'
+        chargedAmount:
+          description: Amount charged to the given `paymentMethod`
+          example: 60
+          format: double
+          type: number
+        chargedAmountInCurrencies:
+          items:
+            description: The amount charged to the specified payment method, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        isFinalCapture:
+          description: '**true:** Payment is final capture. **false:** Payment is not a final capture.'
+          example: false
+          type: boolean
+        isPartialCapture:
+          description: '**true:** Payment is partial capture. **false:** Payment is full capture.'
+          example: false
+          type: boolean
+        paidAt:
+          description: System-generated time when payment was captured at shipment. In case of payment captured at checkout, this is a merchant-defined value given during order creation.
+          example: '2022-01-27T16:15:58-05:00'
+          format: date-time
+          type: string
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        paymentIdentifier:
+          $ref: '#/components/schemas/orderPaymentIdentifier'
+        paymentLogs:
+          description: Payment details
+          items:
+            $ref: '#/components/schemas/paymentResponse'
+          type: array
+        paymentMethod:
+          description: Payment method such as PayPal or credit card
+          example: CREDIT_CARD
+          type: string
+        paymentProvider:
+          description: Payment provider
+          example: stripe
+          type: string
+        paymentStatus:
+          description: Payment status. There are no pre-defined values; possible values are Paid, Partially Paid, Authorized, and Error.
+          example: Paid
+          type: string
+        paymentToken:
+          $ref: '#/components/schemas/orderPaymentToken'
+        reauthorizationAttempts:
+          description: An integer representing the number of payment reauthorization attempts.
+          example: 0
+          format: int64
+          type: integer
+        refundAmount:
+          description: Merchant-defined refund amount
+          example: 21.5
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          items:
+            description: The merchant specified refund amount, itemized by each currency used within a specific order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+      type: object
+    orderPaymentIdentifier:
+      description: An object containing the details of payment modes and payment identifiers.
+      properties:
+        cardIdentifier:
+          description: Last 4 digits of the card
+          example: '3456'
+          type: string
+        expirationMonth:
+          description: Card expiration month
+          example: '12'
+          type: string
+        expirationYear:
+          description: Card expiration year
+          example: '2029'
+          type: string
+        fabricPaymentReference:
+          description: System-generated UUID referenced internally for Invoice and Orders services.
+          example: f886c96c-5f65-11ed-9b6a-0242ac120002
+          type: string
+        paymentId:
+          description: Merchant provided unique identifier for a payment based on payment connector. When omitted, it is a fabric-generated UUID.
+          example: 62272e917b12209e68751d94
+          type: string
+      type: object
+    paymentDetailsResponseBody:
+      description: Payment info
+      properties:
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            key: value
+          type: object
+        errors:
+          description: Error details
+          items:
+            additionalProperties:
+              description: Error map
+              example:
+                key: value
+              type: object
+            description: Error map
+            example:
+              key: value
+            type: object
+          type: array
+        responseCode:
+          description: Response code such as success, OK, or failure
+          example: OK
+          type: string
+        status:
+          description: Payment status such as Authorized, Captured, etc.
+          example: Authorized
+          type: string
+        transactionId:
+          description: Transaction ID such as the point-of-sale system's version of the `orderId`.
+          example: '328942333412'
+          type: string
+        transactionTimestamp:
+          description: Transaction time (UTC) when the payment was successful
+          example: 2022-04-10T23:00:45:12.111Z
+          type: string
+      type: object
+    taxDetail:
+      description: An object containing tax information.
+      properties:
+        amount:
+          description: Tax amount
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The tax amount, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        attributes:
+          additionalProperties:
+            description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+            type: object
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          type: object
+        currency:
+          default: USD
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        name:
+          description: Applied tax name
+          example: STATE
+          type: string
+        rate:
+          description: Rate
+          example: 10
+          format: double
+          type: number
+        rateType:
+          description: Rate type
+          example: PERCENTAGE
+          type: string
+        taxCode:
+          description: Tax code applied
+          example: FR01
+          type: string
+      type: object
+    itemFulfillmentResource:
+      type: object
+      description: Item fulfillment model
+      properties:
+        isFulfillable:
+          type: boolean
+          default: 'true'
+          description: Indicates whether the item can be fulfilled based on its current state and configuration.
+          example: true
+        isInventoryManaged:
+          type: boolean
+          default: 'true'
+          description: To identify if an inventory is managed or not for the respective item
+          example: true
+        locationNumber:
+          type: string
+          description: Location number
+          example: 123
+        shipFromAddress:
+          $ref: '#/components/schemas/address'
+        trackingDetails:
+          $ref: '#/components/schemas/trackingDetailsResource'
+          description: Tracking details for the shipment
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+          description: Custom attributes for this item
+          example:
+            attribute1: value
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

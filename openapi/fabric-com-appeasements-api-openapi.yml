@@ -1,0 +1,996 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Appeasements API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- description: These endpoints help create appeasement requests.
+  name: Appeasements
+paths:
+  /orders/{orderIdType}/{orderIdValue}/actions/create-appeasement:
+    post:
+      tags:
+      - Appeasements
+      summary: Create an Appeasement by Order Identifier
+      description: "Creates an appeasement (such as a partial refund or credit) when a customer is dissatisfied \nwith their shopping experience. This endpoint allows you to initiate an appeasement \nrequest by providing an order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, you can still use this endpoint by setting `orderIdType` to `order-number`.\n"
+      operationId: createAppeasementByOrderIdentifier
+      parameters:
+      - name: orderIdType
+        in: path
+        description: "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+        required: true
+        schema:
+          type: string
+          enum:
+          - order-id
+          - order-number
+          - order-external-id
+        example: order-id
+      - name: orderIdValue
+        in: path
+        description: The value of the specified order identifier.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreateAppeasementRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appeasementResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/{orderIdType}/{orderIdValue}/actions/check-appeasement-eligibility:
+    post:
+      tags:
+      - Appeasements
+      summary: Check Appeasement Eligibility by Order Identifier
+      description: "Checks whether a given order is eligible for an appeasement (such as a partial refund or credit).  \nThis endpoint evaluates eligibility based on the provided order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      operationId: checkAppeasementEligibilityByOrderIdentifier
+      parameters:
+      - name: orderIdType
+        in: path
+        description: "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+        required: true
+        schema:
+          type: string
+          enum:
+          - order-id
+          - order-number
+          - order-external-id
+        example: order-id
+      - name: orderIdValue
+        in: path
+        description: The value of the specified order identifier.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appeasementEligibilityResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                message: Order not found
+                type: CLIENT_ERROR
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/order-number/{orderNumber}/actions/check-appeasement-eligibility:
+    post:
+      description: This endpoint checks for the appeasement eligibility of an order by order number.
+      operationId: checkAppeasementEligibilityByOrderNumber
+      parameters:
+      - description: Merchant-defined order identifier
+        example: ORDER0000111
+        in: path
+        name: orderNumber
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appeasementEligibilityResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Order not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Check Appeasement Eligibility by Order Number
+      tags:
+      - Appeasements
+  /orders/order-number/{orderNumber}/actions/create-appeasement:
+    post:
+      description: 'When customer is dissatisfied with their shopping experience, you may want to offer an appeasement amount to keep them happy. <p> This endpoint is used to create appeasement request by order number.</p> <p> **Note**: If you do not have an order number, use the corresponding order ID-based endpoint - `POST /orders/{orderId}/actions/create-appeasement`</p>'
+      operationId: createAppeasementByOrderNumber
+      parameters:
+      - description: Merchant-defined order identifier
+        example: 123k4h123k
+        in: path
+        name: orderNumber
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreateAppeasementRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appeasementResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create Appeasement by Order Number
+      tags:
+      - Appeasements
+  /orders/{orderId}/actions/check-appeasement-eligibility:
+    post:
+      description: This endpoint checks for the appeasement eligibility of an order by orderId.
+      operationId: checkAppeasementEligibilityByOrderId
+      parameters:
+      - description: The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint.
+        example: ORDER0000111
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appeasementEligibilityResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Order not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Check Appeasement Eligibility by Order ID
+      tags:
+      - Appeasements
+  /orders/{orderId}/actions/create-appeasement:
+    post:
+      description: 'When customer is dissatisfied with their shopping experience, you may want to offer an appeasements amount such as partial refund to keep them happy. <p> This endpoint is used to create appeasement request by order ID </p> <p>. **Note**: If you do not have an order ID, but have an order number, use the order number-based endpoint - `POST /orders/order-number/{orderNumber}/actions/create-appeasement`.</p>'
+      operationId: createAppeasement
+      parameters:
+      - description: 24-character system-generated ID. It is returned in the response of Create Order - `POST /orders` endpoint.
+        example: 5349b4ddd2781d08c09890f4
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreateAppeasementRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appeasementResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create Appeasement by Order ID
+      tags:
+      - Appeasements
+components:
+  parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+  schemas:
+    amountInCurrency:
+      description: Amount in currency object details.
+      properties:
+        amount:
+          description: The amount displayed in the primary currency.
+          example: 123.45
+          format: double
+          type: number
+        currency:
+          description: Currency in ISO-4217
+          example: USD
+          type: string
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
+          type: string
+      required:
+      - currency
+      - group
+      type: object
+    refundDetailResource:
+      description: Used for credit rules. This resource captures the split of fees and tax refunds at the item and order level.
+      properties:
+        amount:
+          description: Refund Amount
+          example: '-10.'
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The total refund amount, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        name:
+          description: The name of the fee or tax.
+          example: Name
+          type: string
+        type:
+          description: Type of refund
+          example: ITEM
+          type: string
+      type: object
+    orderContactName:
+      description: Contact person's name
+      properties:
+        firstName:
+          description: Contact person's first name
+          example: Alex
+          type: string
+        lastName:
+          description: Contact person's last name
+          example: Doe
+          type: string
+        middleName:
+          description: Contact person's middle name or initial
+          example: E
+          type: string
+      type: object
+    appeasementEligibilityItemResource:
+      description: An object that contains properties and information on an item's eligibility for appeasement.
+      properties:
+        lineItemId:
+          description: The system generated item sequence ID.
+          example: 6f25bf01-ae4e-4e7f-96b9-0579a40a1a7d
+          type: string
+        quantity:
+          description: The eligible quantity for appeasement.
+          example: 2
+          format: int32
+          type: integer
+        refundAmount:
+          description: The maximum eligible refund amount for an appeasement item.
+          example: 20.5
+          type: number
+        sku:
+          description: The unique identifier of item. Stock Keeping Unit (SKU).
+          example: P1234
+          type: string
+        refundAmountInCurrencies:
+          type: array
+          description: "A list of refund amounts, each represented in a specific currency.  \nEach item includes the monetary value and its associated currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.  \nThis allows multi-currency refunds to be accurately represented and processed.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    orderAppeasementPaymentInfo:
+      description: Order appeasement payment info
+      properties:
+        paymentCounter:
+          description: Payment counter to identify which payment to refund.
+          example: 1
+          format: int32
+          type: integer
+        refundAmount:
+          description: Refund amount for appeasements.
+          example: 34.56
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          items:
+            description: The refund amount specifically for appeasements, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+      type: object
+    orderCreateAppeasementRequest:
+      description: Appeasement request
+      properties:
+        appeasements:
+          description: Order-level appeasement details. At least one order-level or item-level appeasement must be added.
+          items:
+            $ref: '#/components/schemas/orderAppeasementDetail'
+          type: array
+        customer:
+          $ref: '#/components/schemas/invoiceCustomer'
+        items:
+          description: Item-level appeasements. At least one order-level or item-level appeasement must be added.
+          items:
+            $ref: '#/components/schemas/orderLineItemAppeasement'
+          type: array
+        orderExternalId:
+          type: string
+          description: "A merchant-defined external order identifier.  \nThis field is optional and can be used to reference the order in external \nsystems such as an ERP, OMS, or CRM.\n"
+          example: 191763090_O1231
+        source:
+          description: Merchant-defined source from where the appeasement request was initiated. There are no pre-defined values; possible values are Customer Service Representative (CSR), point-of-sale (POS), etc.
+          example: Storefront
+          type: string
+        userId:
+          description: Identifier of the logged in user who initiated the request. This could be from either fabric Identity service or an external Identity service.
+          example: '12'
+          type: string
+        requestContext:
+          $ref: '#/components/schemas/requestReferenceContextResource'
+          description: Request reference context information
+      required:
+      - source
+      - userId
+      type: object
+    orderLineItemAppeasement:
+      description: An object broken down by the item-level containing appeasement details for each item.
+      properties:
+        appeasements:
+          description: 'Item-level appeasements. **Note**: If the same appeasement counter is found twice at order level as well as item-level appeasement, item-level appeasement request is considered as duplicate. However, if the same appeasement counter is found under different items, then, it is not considered as duplicates.'
+          items:
+            $ref: '#/components/schemas/orderAppeasementDetail'
+          type: array
+        lineItemId:
+          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it (in UUID format) during order creation.
+          example: d538b1f1-0e45-43c6-bfc6-9666fc1188ca
+          type: string
+      required:
+      - appeasements
+      - lineItemId
+      type: object
+    requestReferenceContextResource:
+      type: object
+      description: Request reference context information
+      properties:
+        id:
+          type: string
+          description: System-generated unique identifier (UUID format)
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+        type:
+          type: string
+        requestId:
+          type: string
+          description: request id
+          readOnly: true
+        requestTime:
+          type: string
+          format: date-time
+          description: System-generated order creation time
+          example: '2022-04-12T09:30:31.198Z'
+        attributes:
+          type: object
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
+          example:
+            attribute: N
+            someFlag: true
+    orderAppeasementDetail:
+      description: The order appeasement details object containing appeasement details.
+      properties:
+        amount:
+          description: Merchant-defined appeasement amount, which should not exceed (`charged amount` - `already refunded amount`).
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          items:
+            description: The appeasement amount specified by the merchant, which must not be greater than the difference between the charged amount and any amounts already refunded, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        appeasementCounter:
+          description: Sequential or incremental counter for appeasement. Used for keeping track of duplicates in the request. If omitted in the request, it is automatically generated and will not be used to check duplicates. Multiple appeasement calls for the same order can cause repetition of appeasement counter and may cause the request to be rejected completely.
+          example: 1
+          format: int32
+          type: integer
+        attributes:
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info in key: value pairs'
+          example:
+            number: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        invoicedAmount:
+          description: System-generated amount from Invoice service based on requested `amount`
+          example: 34.56
+          format: double
+          type: number
+        invoicedAmountInCurrencies:
+          items:
+            description: System-generated amount from Invoice service based on requested `amount` in all currencies used by an order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+        payments:
+          items:
+            $ref: '#/components/schemas/orderAppeasementPaymentInfo'
+          type: array
+        reasonCode:
+          description: Merchant-defined appeasement reason code; varies from merchant to merchant.
+          example: Incorrect Item
+          type: string
+        refunds:
+          items:
+            $ref: '#/components/schemas/refundDetailResource'
+          type: array
+        source:
+          description: An optional field used to determine the source that initiated the API request.
+          example: CSR
+          type: string
+        subReasonCode:
+          description: Subreason code for appeasement, for another layer of classification
+          example: Late shipping
+          type: string
+      type: object
+    amountInCurrencyResource:
+      description: Amount in currency object details.
+      properties:
+        amount:
+          description: The amount displayed in the primary currency.
+          example: 123.45
+          format: double
+          type: number
+        currency:
+          description: Currency in ISO-4217
+          example: USD
+          type: string
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
+          type: string
+      required:
+      - currency
+      - group
+      type: object
+    orderContactPhone:
+      description: Contact person's phone details.
+      properties:
+        number:
+          description: Contact person's phone number
+          example: 123-456-7890
+          type: string
+        type:
+          description: Contact number type
+          enum:
+          - MOBILE
+          - HOME
+          - BUSINESS
+          example: MOBILE
+          type: string
+      type: object
+    appeasementEligibilityResponse:
+      description: A response object that contains properties and information on an item's eligibility for appeasement.
+      properties:
+        eligibleItems:
+          description: An array of containing an item's eligibility for returns, cancellations, or exchanges.
+          items:
+            $ref: '#/components/schemas/appeasementEligibilityItemResource'
+          type: array
+        eligibleReasonCodes:
+          description: An array containing the reason codes for the returns.
+          items:
+            $ref: '#/components/schemas/reasonCodeAndDescription'
+          type: array
+        orderId:
+          description: The fabric system generated 24-character order ID.
+          example: 62f3982438bcab1951be0a19
+          type: string
+        orderNumber:
+          description: A unique order number.
+          example: '309019176'
+          type: string
+        period:
+          description: The return, exchange, or cancellation time window set in your policy.
+          example: 30D00H00M
+          type: string
+        policyType:
+          description: The policy type that determines the eligibility of an exchange, return, appeasement or cancellation. If omitted, the default policy is used.
+          example: Company Policy 2023
+          type: string
+        remainingRefundableAmount:
+          description: The order's remaining refundable amount excluding items refunds.
+          example: 30.5
+          type: number
+        remainingRefundableAmountInCurrencies:
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        totalRefundableAmount:
+          description: The total refundable amount for the order.
+          example: 130.7
+          type: number
+        totalRefundableAmountInCurrencies:
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+      type: object
+    appeasementResponse:
+      description: Appeasement info
+      properties:
+        orderNumber:
+          description: Merchant-defined order identifier. If omitted, this is generated by fabric's sequence generator using Configuration service
+          example: '12'
+          type: string
+        totalAmountRefunded:
+          description: Total refunded amount
+          example: 25.5
+          format: double
+          type: number
+        totalAmountRefundedInCurrencies:
+          description: "The total amount that has been refunded, represented in one or more currencies.  \nEach entry provides the total refunded value and its corresponding currency code,  \nusing the structure defined in the `amountInCurrency` schema.  \nThis field enables tracking of cumulative refunds across multiple currencies.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+      type: object
+    invoiceCustomer:
+      description: Invoice customer
+      properties:
+        accountId:
+          description: Customer's loyalty account ID or external identifier that is used to track their loyalty program activity and rewards earned.
+          example: 62272e917b12209e68751d94
+          type: string
+        company:
+          description: Shopper's company name. This may be used for company discounts.
+          example: Demo Inc
+          type: string
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated an update request
+          example: 62272e917b12209e68751d94
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        userId:
+          description: Identifier of the logged in user who initiated the request. This could be from either fabric Identity service or an external Identity service.
+          example: 62272e917b12209e68751d94
+          type: string
+      type: object
+    reasonCodeAndDescription:
+      description: Return or exchange reason
+      properties:
+        code:
+          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
+          example: 1DMG
+          type: string
+        description:
+          description: Brief description for the return `code`
+          example: Damaged
+          type: string
+      type: object
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

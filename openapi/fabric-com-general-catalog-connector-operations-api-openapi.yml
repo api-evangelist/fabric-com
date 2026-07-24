@@ -1,0 +1,931 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints General Catalog Connector Operations API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- name: General Catalog Connector Operations
+  description: Search for products based on the specified filter conditions.
+paths:
+  /catalog-connector/products/search:
+    post:
+      tags:
+      - General Catalog Connector Operations
+      summary: Find Products
+      description: "Use this endpoint to search for products based on names, IDs, SKUs, image URLs, and more. By specifying the appropriate query parameters, you can exclude one or more types of data, such as collections, categories, variants, attributes, and products within a bundle.\n<Note> \n  - Use the `CONTAINS` search operation to search for products based on keywords of SKU, name, and more. \n  - Use the `IN` search operation to search for products based on one or more values, such as IDs, names, SKUs, image URLs, attributes, and types.\n  - Use the less than or equals to, `LTE`, greater than or equals to, `GTE`, less than, `LT`, greater than, `GT` and equals `EQ` operations to search for date-specific values, such as time of creation or modification.\n</Note>\n"
+      operationId: getCatalogsBySearchCriteria
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/localeParameter'
+      - $ref: '#/components/parameters/excludeBundleProductsParameter'
+      - $ref: '#/components/parameters/excludeCollectionsParameter'
+      - $ref: '#/components/parameters/excludeCategoriesParameter'
+      - $ref: '#/components/parameters/excludeVariantsParameter'
+      - $ref: '#/components/parameters/excludeAttributesParameter'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/productSearchRequest'
+      responses:
+        '200':
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getProductsBySearchResponse'
+              examples:
+                Product:
+                  $ref: '#/components/examples/productSearchResultExample'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '413':
+          $ref: '#/components/responses/payloadLimitExceededError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+components:
+  parameters:
+    localeParameter:
+      name: locale
+      in: query
+      example: en-US
+      description: "The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+      schema:
+        type: string
+      required: true
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      schema:
+        type: string
+      required: true
+      example: 5f328bf0b5f328bf0b5f328b
+      description: A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.
+    excludeBundleProductsParameter:
+      name: excludeBundleProducts
+      in: query
+      example: false
+      description: A flag indicating whether the products associated with a bundle should be excluded from the response. Set it to `true` to exclude products of a bundle and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeCategoriesParameter:
+      name: excludeCategories
+      in: query
+      example: false
+      description: A flag indicating whether the categories should be excluded from the response. Set it to `true` to exclude categories and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeVariantsParameter:
+      name: excludeVariants
+      in: query
+      example: false
+      description: A flag indicating whether item variants should be excluded from the response. Set it to `true` to exclude variants and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeCollectionsParameter:
+      name: excludeCollections
+      in: query
+      example: false
+      description: A flag indicating whether the collections should be excluded from the response. Set it to `true` to exclude collections and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeAttributesParameter:
+      name: excludeAttributes
+      in: query
+      example: false
+      description: A flag indicating whether attributes should be excluded from the response. Set it to `true` to exclude attributes and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: Unique request ID
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+  responses:
+    internalServerError:
+      description: Internal server error
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: SERVER_ERROR
+            message: Internal Server Error
+    payloadLimitExceededError:
+      description: The payload limit is exceeded. It should be less than 10MB.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: PAYLOAD_LIMIT_EXCEEDED_ERROR
+            message: Payload exceeds maximum configured size
+    badRequest:
+      description: Request is invalid or malformed
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+    notAuthorized:
+      description: The requester is unauthorized.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: UNAUTHORIZED_ERROR
+            message: Requester is unauthorized
+  schemas:
+    containsSearchOperation:
+      type: object
+      description: 'The search criteria based on single-string search.
+
+        For example, by using the `CONTAINS` operation, you can search for `parentSku`, `categoryName`, `collectionName`, `bundleProductSku`, `bundleProductName`, and more.'
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: CONTAINS
+          enum:
+          - CONTAINS
+        value:
+          $ref: '#/components/schemas/stringSchema'
+    bundleProductSchema:
+      description: The details of the bundle.
+      type: object
+      properties:
+        quantity:
+          type: integer
+          format: int32
+          description: The quantity of the bundle.
+          example: 2
+        type:
+          $ref: '#/components/schemas/productType'
+      allOf:
+      - $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+    booleanSchema:
+      type: boolean
+      nullable: true
+      description: Represents a boolean schema.
+      example: true
+    productTypeSearchOperation:
+      type: object
+      description: The search criteria based on product type.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/productType'
+    paginatedResultMeta:
+      description: The pagination data.
+      type: object
+      properties:
+        offset:
+          type: integer
+          format: int32
+          default: 0
+          example: 5
+          description: 'The number of records to skip before returning records.
+
+            For example, with offset of 20 and limit of 10, the system returns the records from 21-30.'
+        limit:
+          type: integer
+          format: int32
+          default: 10
+          example: 10
+          description: The maximum number of records per page.
+        count:
+          type: integer
+          format: int32
+          example: 100
+          description: The total number of records.
+    stringSearchOperation:
+      type: object
+      description: The search operation based on a string value, such as ID, name, SKU, image URL, attribute type, and more.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/stringSchema'
+    commonProductSchemaWithIdentifiers:
+      allOf:
+      - $ref: '#/components/schemas/commonProductSchema'
+      type: object
+      description: A common schema for product, variants, and bundles along with their identifiers.
+      properties:
+        sku:
+          $ref: '#/components/schemas/sku'
+        id:
+          $ref: '#/components/schemas/id'
+        itemId:
+          type: integer
+          format: int32
+          example: 1682313863
+          description: A unique identifier of an item, a variant or a bundle.
+    bundleCatalog:
+      description: The details of a bundle.
+      allOf:
+      - $ref: '#/components/schemas/extendedCommonProductSchema'
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/bundleProductType'
+        bundleProducts:
+          type: array
+          description: The details of a bundle.
+          items:
+            $ref: '#/components/schemas/bundleProductSchema'
+    integerSchema:
+      type: integer
+      nullable: true
+      format: int32
+      description: Represents an integer schema.
+      example: 1
+    extendedCommonProductSchema:
+      description: Additional details of a product.
+      allOf:
+      - $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+      type: object
+      properties:
+        categoryName:
+          type: string
+          description: The name of the category.
+          example: Shoes
+        categoryId:
+          type: string
+          description: A 24-character system-generated category ID.
+          example: 648055dff4aa98d6c43e02da
+        categories:
+          type: array
+          description: The list of categories, including their paths from the leaf category to the root category.
+          items:
+            $ref: '#/components/schemas/category'
+        collections:
+          type: array
+          description: The details of the collection used to display products on the storefront.
+          items:
+            type: object
+            additionalProperties: false
+            description: The collection details.
+            properties:
+              id:
+                type: string
+                description: A 24-character system-generated collection ID.
+                example: 648014741adc8a9de14e1a68
+              name:
+                type: string
+                description: The name of the collection.
+                example: Flash Sale
+              hierarchy:
+                type: array
+                description: The list of collections, including their paths from the leaf collection to the root collection.
+                items:
+                  $ref: '#/components/schemas/category'
+    productType:
+      type: string
+      description: The type of product.
+      enum:
+      - BUNDLE
+      - VARIANT
+      - ITEM
+      example: ITEM
+    id:
+      type: string
+      example: 5f7329dfd5288b0011332366
+      description: A 24-character system-generated ID.
+    datetimeOperation:
+      type: object
+      description: The search criteria based on date-time.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: GTE
+          enum:
+          - EQUALS
+          - LTE
+          - GTE
+          - LT
+          - GT
+        value:
+          type: string
+          description: The timestamp to be searched, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    datetimeRangeOperation:
+      type: object
+      description: The search criteria based on date range.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: RANGE
+          enum:
+          - RANGE
+        fromValue:
+          type: string
+          description: The start date for searching, in UTC format.
+          example: '2022-09-14T22:10:30.618Z'
+        toValue:
+          type: string
+          description: The end date for searching, in UTC format.
+          example: '2023-04-14T22:10:30.618Z'
+    stringSchema:
+      type: string
+      nullable: true
+      description: Represents a string schema.
+      example: blue
+    productSearchRequest:
+      minProperties: 1
+      additionalProperties: false
+      description: The search criteria to find products.
+      type: object
+      properties:
+        keyword:
+          type: object
+          description: The search criteria based on keywords of product name, SKU, item ID, more.
+          properties:
+            op:
+              type: string
+              description: The type of search operation.
+              example: CONTAINS
+              enum:
+              - CONTAINS
+            value:
+              $ref: '#/components/schemas/stringSchema'
+        id:
+          $ref: '#/components/schemas/stringSearchOperation'
+        sku:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        productName:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        image:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        itemId:
+          $ref: '#/components/schemas/integerSearchOperation'
+        type:
+          $ref: '#/components/schemas/productTypeSearchOperation'
+        parentSku:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        categoryId:
+          $ref: '#/components/schemas/stringSearchOperation'
+        categoryName:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        collectionId:
+          $ref: '#/components/schemas/stringSearchOperation'
+        collectionName:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        bundleProductName:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        bundleProductSku:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        bundleProductCount:
+          $ref: '#/components/schemas/integerSearchOperation'
+        variantProductName:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        variantProductSku:
+          anyOf:
+          - $ref: '#/components/schemas/stringSearchOperation'
+          - $ref: '#/components/schemas/containsSearchOperation'
+        attributes:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/attributeSearchOperation'
+            - $ref: '#/components/schemas/containsLessThanGreaterThanAttributeSearchOperation'
+        createdAt:
+          anyOf:
+          - $ref: '#/components/schemas/datetimeInOperation'
+          - $ref: '#/components/schemas/datetimeRangeOperation'
+          - $ref: '#/components/schemas/datetimeOperation'
+        updatedAt:
+          anyOf:
+          - $ref: '#/components/schemas/datetimeInOperation'
+          - $ref: '#/components/schemas/datetimeRangeOperation'
+          - $ref: '#/components/schemas/datetimeOperation'
+      example:
+        keyword:
+          op: CONTAINS
+          value: NIKE237765
+        id:
+          op: IN
+          value:
+          - 6482b9524ffa4978fd9cbf5c
+        sku:
+          op: IN
+          value:
+          - NIKE237765
+        productName:
+          op: IN
+          value:
+          - Nike runner shoes
+        image:
+          op: IN
+          value:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+        itemId:
+          op: IN
+          value:
+          - 2700537
+        type:
+          op: IN
+          value:
+          - ITEM
+        parentSku:
+          op: CONTAINS
+          value: NIKE237765
+        parentId:
+          op: IN
+          value:
+          - 6482e47771609dfca2beb29f
+        categoryId:
+          op: IN
+          value:
+          - 648014741adc8a9de14e1a68
+        categoryName:
+          op: CONTAINS
+          value: Shoes
+        collectionName:
+          op: CONTAINS
+          value: Flash Sale
+        bundleProductSku:
+          op: CONTAINS
+          value: BUNDLE237765
+        bundleProductName:
+          op: CONTAINS
+          value: nike
+        bundleProductId:
+          op: IN
+          value:
+          - 60ad7e9d858eb50007abbb19#123124
+        bundleProductCount:
+          op: GTE
+          value: 10
+        attributes:
+        - name: Color
+          op: IN
+          value:
+          - black
+        attributeIds:
+          op: IN
+          value:
+          - 60ad7e9d858eb50007abbb19
+          - 4aqz7e9d858eb5000cdeas12
+        attributeTypes:
+          op: IN
+          value:
+          - TEXT
+          - BOOLEAN
+          - LOV
+          - NUMBER
+        createdAt:
+          op: LTE
+          value: 2021-12-13 13:56:09.006000+00:00
+        updatedAt:
+          op: LTE
+          value: 2021-12-13 13:56:09.006000+00:00
+    attributeSearchOperation:
+      type: object
+      description: The search criteria based on attributes.
+      properties:
+        name:
+          $ref: '#/components/schemas/attributeName'
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/attributeValue'
+    variantProductType:
+      type: string
+      description: Represents the `variant` product type.
+      enum:
+      - VARIANT
+      example: VARIANT
+    containsLessThanGreaterThanAttributeSearchOperation:
+      type: object
+      description: The search criteria based on the attributes.
+      properties:
+        name:
+          $ref: '#/components/schemas/attributeName'
+        op:
+          type: string
+          description: The type of search operation.
+          example: CONTAINS
+          enum:
+          - CONTAINS
+          - LTE
+          - GTE
+          - LT
+          - GT
+        value:
+          $ref: '#/components/schemas/attributeValue'
+    attributeId:
+      type: string
+      description: A 24-character system-generated attribute ID.
+      example: 6480216349256438cb7d53b5
+    variantCatalog:
+      description: The details of an item variant.
+      allOf:
+      - $ref: '#/components/schemas/extendedCommonProductSchema'
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/variantProductType'
+        parentSku:
+          $ref: '#/components/schemas/sku'
+        parentId:
+          type: string
+          description: A 24-character system-generated ID of the parent item.
+          example: 648014741adc8a9de14e1a68
+    attribute:
+      type: object
+      additionalProperties: false
+      description: The details of the attribute.
+      properties:
+        name:
+          $ref: '#/components/schemas/attributeName'
+        value:
+          $ref: '#/components/schemas/attributeValue'
+        id:
+          $ref: '#/components/schemas/attributeId'
+        type:
+          $ref: '#/components/schemas/attributeType'
+    integerSearchOperation:
+      type: object
+      description: The search criteria based on integer values.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/integerSchema'
+    doubleSchema:
+      type: number
+      nullable: true
+      format: double
+      description: Represents a double schema.
+      example: 1
+    attributeValue:
+      anyOf:
+      - $ref: '#/components/schemas/booleanSchema'
+      - $ref: '#/components/schemas/stringSchema'
+      - $ref: '#/components/schemas/integerSchema'
+      - $ref: '#/components/schemas/doubleSchema'
+      - $ref: '#/components/schemas/arrayOfStringsSchema'
+      example: false
+      description: The attribute value.
+    itemProductType:
+      type: string
+      description: Represents the `item` product type.
+      enum:
+      - ITEM
+      example: ITEM
+    product:
+      description: The details of a product based on the product type.
+      anyOf:
+      - $ref: '#/components/schemas/itemCatalog'
+      - $ref: '#/components/schemas/variantCatalog'
+      - $ref: '#/components/schemas/bundleCatalog'
+    attributeName:
+      type: string
+      description: The name of the attribute.
+      example: isOnSale
+    itemCatalog:
+      description: The details of an item.
+      allOf:
+      - $ref: '#/components/schemas/extendedCommonProductSchema'
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/itemProductType'
+        variants:
+          type: array
+          description: The details of item variants.
+          items:
+            $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+    attributeType:
+      type: string
+      description: The type of attribute.
+      enum:
+      - NUMBER
+      - BOOLEAN
+      - TEXT
+      - LOV
+      example: TEXT
+    arrayOfStringsSchema:
+      type: array
+      description: Represents an array of string schema.
+      items:
+        type: string
+        nullable: true
+        description: Represents a string schema.
+    bundleProductType:
+      type: string
+      description: Represents the `bundle` product type.
+      enum:
+      - BUNDLE
+      example: BUNDLE
+    getProductsBySearchResponse:
+      description: Product Search Result list by IDs
+      allOf:
+      - $ref: '#/components/schemas/paginatedResultMeta'
+      - type: object
+        properties:
+          data:
+            type: array
+            items:
+              $ref: '#/components/schemas/product'
+    commonProductSchema:
+      type: object
+      description: A common schema for product, variants, and bundles.
+      properties:
+        productName:
+          type: string
+          description: The name of the product.
+          example: Nike Men's Training Shoe
+        images:
+          type: array
+          description: The list of product images.
+          items:
+            type: string
+          example:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+        attributes:
+          type: array
+          description: The name of the attribute and its value.
+          items:
+            $ref: '#/components/schemas/attribute'
+        createdAt:
+          type: string
+          description: The time of product creation, in UTC format.
+          format: date-time
+          example: 2021-12-13 13:56:09.006000+00:00
+        updatedAt:
+          type: string
+          description: The time of last update to product, in UTC format.
+          format: date-time
+          example: 2021-12-13 13:56:09.006000+00:00
+    datetimeInOperation:
+      type: object
+      description: The search criteria based on date-time using the IN condition.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            type: string
+          example:
+          - 2023-01-14 22:10:30.618000+00:00
+          - 2023-05-14 22:10:30.618000+00:00
+          description: The timestamp to search.
+    category:
+      type: object
+      additionalProperties: false
+      description: The details of a category.
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated category ID.
+          example: 648055dff4aa98d6c43e02da
+        name:
+          type: string
+          description: The name of the category.
+          example: Shoes
+        isRoot:
+          type: boolean
+          description: A flag indicating whether the given category is a root category. Set it to `true` if it's a root category and `false` if it isn't a root category.
+          example: true
+        attributes:
+          type: array
+          description: The details of an attribute.
+          items:
+            $ref: '#/components/schemas/attribute'
+    genericError:
+      type: object
+      description: The details of the error.
+      properties:
+        message:
+          type: string
+          description: A placeholder error message for all the 4xx, 5xx errors
+          example: Request is invalid
+        type:
+          type: string
+          description: A placeholder error type for all the 4xx, 5xx errors
+          example: Bad request
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The error type.
+                example: CLIENT_ERROR
+              message:
+                type: string
+                description: The error message corresponding to the `type`.
+                example: Invalid request. Unable to find/create product
+    sku:
+      type: string
+      description: Product SKU
+      example: 24ggs67-e89b-12e3-a456-026614174119
+  examples:
+    productSearchResultExample:
+      value:
+        offset: 0
+        limit: 10
+        count: 1
+        data:
+        - sku: NIKE237765
+          productName: Nike runner shoes
+          id: 6482b9524ffa4978fd9cbf5c
+          itemId: 2700537
+          categoryName: Sport Shoes
+          categoryId: 648014741adc8a9de14e1a68
+          images:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+          attributes:
+          - name: Color
+            value: black
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: false
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+          type: ITEM
+          variants:
+          - sku: NIKE237766
+            productName: Nike runner white shoes
+            id: 648aa9280d7b561b4663038c
+            itemId: 2700538
+            images:
+            - https://myawsomestore.com/is/image/nike/8801291_s7
+            attributes:
+            - name: Color
+              value: White
+              id: 6480216349256438cb7d53b5
+              type: TEXT
+            - name: Wide Fit
+              value: true
+              id: 640db94f9fc28b255d155a42
+              type: BOOLEAN
+            - name: Brand
+              value:
+              - Nike
+              id: 640db94f9fc28b255d155a42
+              type: LOV
+            createdAt: 2021-12-13 13:56:09.006000+00:00
+            updatedAt: 2021-12-13 13:56:09.006000+00:00
+          categories:
+          - name: Sport Shoes
+            id: 648014741adc8a9de14e1a68
+            isRoot: false
+            attributes:
+            - name: Fit
+              value: Relaxed Fit
+              id: 648014741adc8a9de14e1a00
+              type: TEXT
+          - name: Shoes
+            id: 648aa9258fdef29675dbce42
+            isRoot: true
+            attributes:
+            - name: Material
+              value: Mesh
+          collections:
+          - name: Flash sale
+            id: 648055dff4aa98d6c43e02da
+            hierarchy:
+            - name: Flash Sale
+              id: 648055dff4aa98d6c43e02da
+              isRoot: false
+              attributes:
+              - name: Duration
+                value: 600
+                type: NUMBER
+            - name: Sales
+              id: 648055e0f4aa98d6c43e02f7
+              isRoot: true
+          createdAt: 2021-12-13 13:56:09.006000+00:00
+          updatedAt: 2021-12-13 13:56:09.006000+00:00
+  requestBodies:
+    productSearchRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - search
+            properties:
+              sort:
+                type: string
+                description: The sorting criteria. Currently, the supported values are `sku`, `type`, `productName`, `itemId`, `categoryName`,  and `createdAt`. Use `-` to view the results in a descending order and `+` for ascending.
+                example: +sku,-productName
+              search:
+                $ref: '#/components/schemas/productSearchRequest'
+              offset:
+                description: 'The number of records to skip before returning records.
+
+                  For example, when the offset is 20 and limit is 10, the system returns records from 21 to 30.'
+                type: integer
+                format: int32
+                default: 0
+                example: 2
+              limit:
+                description: The maximum number of records per page.
+                type: integer
+                format: int32
+                default: 10
+                example: 10
+  headers:
+    xFabricRequestId:
+      schema:
+        type: string
+      required: false
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      description: Unique request ID
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

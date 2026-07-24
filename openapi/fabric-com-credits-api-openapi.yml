@@ -1,0 +1,1161 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Credits API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- description: Credits are refunds to customers, often in the form of gift cards or credit notes, when customers have made payments with cash or a card that has subsequently expired. Credits are provided during order returns and appeasements. Use these endpoints to create and manage credits.
+  name: Credits
+paths:
+  /orders/{orderIdType}/{orderIdValue}/actions/create-credits:
+    post:
+      tags:
+      - Credits
+      summary: Create Credits by Order Identifier
+      description: "Creates credits for an order when you want to issue compensation to a customer.  \nThis endpoint allows you to initiate a credit request using an order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      operationId: createCreditsByOrderIdentifier
+      parameters:
+      - name: orderIdType
+        in: path
+        description: "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+        required: true
+        schema:
+          type: string
+          enum:
+          - order-id
+          - order-number
+          - order-external-id
+        example: order-id
+      - name: orderIdValue
+        in: path
+        description: The value of the specified order identifier.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreditsRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderCreditsResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/{orderIdType}/{orderIdValue}/actions/check-credits-eligibility:
+    post:
+      tags:
+      - Credits
+      summary: Check Credits Eligibility by Order Identifier
+      description: "Checks whether an order is eligible for credits (for example, gift cards or store credits) \nin scenarios such as damaged products, late deliveries, or other qualifying \nconditions defined by your business policies.  \n\nThis endpoint allows you to verify eligibility using an order identifier, helping \nbusinesses manage credits effectively and provide appropriate compensation to \ncustomers.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      operationId: checkCreditsEligibilityByOrderIdentifier
+      parameters:
+      - name: orderIdType
+        in: path
+        description: "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+        required: true
+        schema:
+          type: string
+          enum:
+          - order-id
+          - order-number
+          - order-external-id
+        example: order-id
+      - name: orderIdValue
+        in: path
+        description: The value of the specified order identifier.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/creditsEligibilityResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/{orderIdType}/{orderIdValue}/actions/update-credit-status:
+    post:
+      tags:
+      - Credits
+      summary: Update Credit Status by Order Identifier
+      description: "Updates the status of credits associated with an order.  \nThis endpoint can also be used to add notes or update additional \nattributes related to a credit.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      operationId: updateCreditStatusByOrderIdentifier
+      parameters:
+      - name: orderIdType
+        in: path
+        description: "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+        required: true
+        schema:
+          type: string
+          enum:
+          - order-id
+          - order-number
+          - order-external-id
+        example: order-id
+      - name: orderIdValue
+        in: path
+        description: The value of the specified order identifier.
+        required: true
+        schema:
+          type: string
+        example: ORDER0001
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreditUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/creditsResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                - type: CLIENT_ERROR
+                  errorCode: SERVICE-4002
+                  message: Invalid value(s) specified for 'requiredField.field3'
+                  errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /orders/order-number/{orderNumber}/actions/check-credits-eligibility:
+    post:
+      description: When processing refunds, credits such as a gift card may be offered to customers for various reasons such as damaged products, late deliveries, or other qualifying factors as per your policy. <p> This endpoint checks the credits eligibility by order number, allowing you to manage credits effectively and provide appropriate compensation to eligible customers. </p>
+      operationId: getCreditsEligibilityByOrderNumber
+      parameters:
+      - description: The merchant-defined order identifier provided by the Create Order - `POST /orders` endpoint.
+        example: ORDER000001
+        in: path
+        name: orderNumber
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/creditsEligibilityResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Check Credits Eligibility by Order Number
+      tags:
+      - Credits
+  /orders/order-number/{orderNumber}/actions/create-credits:
+    post:
+      description: The following endpoint is used to create credits using an order number.
+      operationId: createCreditByOrderNumber
+      parameters:
+      - description: The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint.
+        example: ORDER0001
+        in: path
+        name: orderNumber
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreditsRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderCreditsResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create Credits by Order Number
+      tags:
+      - Credits
+  /orders/order-number/{orderNumber}/actions/update-credit-status:
+    post:
+      description: The update credit status endpoint is used to update the credits status, notes, and additional credit attributes.
+      operationId: updateCreditByOrderNumber
+      parameters:
+      - description: The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint.
+        example: ORDER0001
+        in: path
+        name: orderNumber
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreditUpdateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/creditsResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Credit Status by Order Number
+      tags:
+      - Credits
+  /orders/{orderId}/actions/check-credits-eligibility:
+    post:
+      description: In case of refund scenarios, credits such as gift card may be offered to customers for various reasons such as damaged products, later deliveries, or other qualifying factors as per your policy. <p> This endpoint checks the credits eligibility by order ID, allowing businesses to manage credits effectively and provide appropriate compensation to eligible customers.</p>
+      operationId: getCreditsEligibility
+      parameters:
+      - description: 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint.
+        example: 5349b4ddd2781d08c09890f4
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/creditsEligibilityResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Check Credits Eligibility by Order ID
+      tags:
+      - Credits
+  /orders/{orderId}/actions/create-credits:
+    post:
+      description: Use this endpoint to create credits by order ID.
+      operationId: createCredits
+      parameters:
+      - description: 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint.
+        example: 5349b4ddd2781d08c09890f4
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreditsRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderCreditsResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create Credits by Order ID
+      tags:
+      - Credits
+  /orders/{orderId}/actions/update-credit-status:
+    post:
+      description: Use this endpoint to update the credit status, as well as to add any associated notes and additional attributes.
+      operationId: updateCredit
+      parameters:
+      - description: 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint.
+        example: 5349b4ddd2781d08c09890f4
+        in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderCreditUpdateRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/creditsResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Credits by Order ID
+      tags:
+      - Credits
+components:
+  schemas:
+    creditsResponse:
+      description: Credit response
+      properties:
+        amount:
+          description: Credits amount
+          example: 21.5
+          format: double
+          type: number
+        amountInCurrencies:
+          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
+          example:
+            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        createdAt:
+          description: Credits creation time, in UTC format
+          example: '2022-07-11T15:03:14.642Z'
+          format: date-time
+          type: string
+        creditId:
+          description: Unique UUID of credit
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+          type: string
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated a the credits request
+          example: '12312232'
+          type: string
+        note:
+          description: Note
+          example: Credit request initiated
+          type: string
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        policyCode:
+          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
+          example: RC1
+          type: string
+        reasonCode:
+          description: Reason code
+          example: EC
+          type: string
+        source:
+          description: Source of credits request
+          example: CSR
+          type: string
+        statusCode:
+          description: Credit status
+          enum:
+          - PENDING
+          - CONFIRMED
+          - FAILED
+          - CANCELED
+          example: PENDING
+          type: string
+        subReasonCode:
+          description: Subreason code
+          example: ACC
+          type: string
+        type:
+          description: Credit type. Currently, supports only Gift Card
+          enum:
+          - GIFT_CARD
+          example: GIFT_CARD
+          type: string
+        updatedAt:
+          description: Time of last update to credits, in UTC format.
+          example: '2022-07-11T15:03:14.642Z'
+          format: date-time
+          type: string
+      required:
+      - amount
+      - currency
+      - reasonCode
+      - source
+      - type
+      type: object
+    creditsRequest:
+      description: Request for credits
+      properties:
+        amount:
+          description: Credits amount
+          example: 21.5
+          format: double
+          type: number
+        amountInCurrencies:
+          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
+          example:
+            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated a the credits request
+          example: '12312232'
+          type: string
+        note:
+          description: Note
+          example: Credit request initiated
+          type: string
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        policyCode:
+          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
+          example: RC1
+          type: string
+        reasonCode:
+          description: Reason code
+          example: EC
+          type: string
+        source:
+          description: Source of credits request
+          example: CSR
+          type: string
+        subReasonCode:
+          description: Subreason code
+          example: ACC
+          type: string
+        type:
+          description: Credit type. Currently, supports only Gift Card
+          enum:
+          - GIFT_CARD
+          example: GIFT_CARD
+          type: string
+      required:
+      - amount
+      - currency
+      - reasonCode
+      - source
+      - type
+      type: object
+    amountInCurrency:
+      description: Amount in currency object details.
+      properties:
+        amount:
+          description: The amount displayed in the primary currency.
+          example: 123.45
+          format: double
+          type: number
+        currency:
+          description: Currency in ISO-4217
+          example: USD
+          type: string
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
+          type: string
+      required:
+      - currency
+      - group
+      type: object
+    orderCreditsRequest:
+      description: Credits request
+      properties:
+        credits:
+          items:
+            $ref: '#/components/schemas/creditsRequest'
+          type: array
+      required:
+      - credits
+      type: object
+    reasonCodeAndDescription:
+      description: Return or exchange reason
+      properties:
+        code:
+          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
+          example: 1DMG
+          type: string
+        description:
+          description: Brief description for the return `code`
+          example: Damaged
+          type: string
+      type: object
+    creditsEligibilityResponse:
+      description: Credits eligibility model
+      properties:
+        description:
+          description: Description provided while requesting credits (for reference)
+          example: Policy used to add credits
+          type: string
+        eligibleReasonCodes:
+          description: Reason codes to support credits request
+          items:
+            $ref: '#/components/schemas/reasonCodeAndDescription'
+          type: array
+        orderId:
+          description: 24-character system-generated order ID
+          example: 62f3982438bcab1951be0a19
+          type: string
+        policyName:
+          description: Merchant-given policy name.
+          example: Credits policy
+          type: string
+        policyType:
+          description: Policy type used to check credits eligibility
+          example: credits
+          type: string
+      type: object
+    orderCreditsResponse:
+      description: Credits response
+      properties:
+        credits:
+          items:
+            $ref: '#/components/schemas/creditsResponse'
+          type: array
+      type: object
+    orderCreditUpdateRequest:
+      description: An object containing update credits details. This is only triggered on request.
+      properties:
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        creditId:
+          description: Unique UUID of credit
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+          type: string
+        note:
+          description: Placeholder for additional information, if any.
+          example: Credit request initiated
+          type: string
+        statusCode:
+          description: Credit status
+          enum:
+          - PENDING
+          - CONFIRMED
+          - FAILED
+          - CANCELED
+          example: PENDING
+          type: string
+      required:
+      - creditId
+      - statusCode
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+  parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

@@ -1,0 +1,344 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Menu API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- name: Menu
+  description: XM Menu API allows you to fetch menus and their items
+paths:
+  /v2/menu/live:
+    get:
+      summary: Get Live Menu for a Channel
+      description: Gets live menu of the specified channel along with all its menu items
+      operationId: getLiveMenuV2
+      tags:
+      - Menu
+      parameters:
+      - in: query
+        name: nodeId
+        description: ID of a specific menu item, associated with a live menu
+        schema:
+          type: string
+      - in: query
+        name: parentId
+        description: ID of parent menu item, associated with a live menu, to retrieve its sub-menu items
+        schema:
+          type: string
+      - in: query
+        name: depth
+        description: Depth to traverse when returning menu items
+        schema:
+          type: integer
+      - in: query
+        name: channels
+        description: Comma-separated list of channel IDs
+        schema:
+          type: string
+          default: '12'
+      - in: query
+        name: name
+        description: Name of a specific menu item, associated with a live menu
+        schema:
+          type: string
+      - $ref: '#/components/parameters/XSiteContent'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 200 response object
+                properties:
+                  query:
+                    type: object
+                    description: Details of request query
+                    properties:
+                      channelId:
+                        type: string
+                        description: Channel ID specified in the request
+                      nodeId:
+                        type: string
+                        description: Node ID specified in the request
+                      parentId:
+                        type: string
+                        description: Menu parent ID specified in the request
+                      depth:
+                        type: integer
+                        description: Search depth specified in the request
+                  menu:
+                    type: array
+                    description: List of menu items and their details
+                    items:
+                      type: object
+                      description: Menu and/or its menu item details
+                      oneOf:
+                      - type: object
+                        description: Menu and its menu item details
+                        properties:
+                          name:
+                            type: string
+                            description: Menu name
+                          channels:
+                            type: array
+                            description: Channel IDs associated with the menu
+                            items:
+                              type: string
+                              description: Channel ID associated with the menu
+                          children:
+                            $ref: '#/components/schemas/BrowseMenuItem'
+                          menuId:
+                            type: string
+                            description: Database ID for menu
+                      - $ref: '#/components/schemas/BrowseMenuItem'
+              examples:
+                queryByChannelId:
+                  summary: Query by Channel ID
+                  value:
+                    query:
+                      channelId: 02SZCA
+                    menu:
+                      name: Default
+                      channels:
+                      - 02SZCA
+                      children:
+                      - url: /books
+                        name: Books
+                        order: 0
+                        images: []
+                        nodeId: 6171d995bfdcf11c02a6177f
+                        parentId: 6171d977bfdcf11c02a61771
+                        children:
+                        - url: /books/mystery
+                          name: Mystery
+                          order: 0
+                          nodeId: 6171d9ecbfdcf11c02a617a7
+                          parentId: 6171d995bfdcf11c02a6177f
+                        - url: /books/sci-fi
+                          name: Sci-fi
+                          order: 1
+                          nodeId: 6171d9f2bfdcf11c02a617ac
+                          parentId: 6171d995bfdcf11c02a6177f
+                        - url: /books/education
+                          name: Education
+                          order: 2
+                          nodeId: 6171da2fbfdcf11c02a617ba
+                          parentId: 6171d995bfdcf11c02a6177f
+                      - url: /health-household
+                        name: Health & Household
+                        order: 1
+                        images:
+                        - _id: 6171db97bfdcf11c02a6181c
+                          order: 1
+                          url: https://imageUrl.com/myImage.jpg
+                          meta: Custom image
+                        params:
+                        - _id: 6171db97bfdcf11c02a6181d
+                          kind: Category
+                          value: Health & Household
+                        nodeId: 6171d9b9bfdcf11c02a61791
+                        parentId: 6171d977bfdcf11c02a61771
+                        children:
+                        - url: /health-household/household-supplies
+                          name: Household Supplies
+                          order: 0
+                          nodeId: 6171da4fbfdcf11c02a617ca
+                          parentId: 6171d9b9bfdcf11c02a61791
+                        - url: /health-household/vision-care
+                          name: Vision Care
+                          order: 1
+                          nodeId: 6171da5bbfdcf11c02a617cf
+                          parentId: 6171d9b9bfdcf11c02a61791
+                          children:
+                          - url: /health-household/vision-care/glasses
+                            name: Reading Glasses
+                            order: 0
+                            nodeId: 6171da7ebfdcf11c02a617e0
+                            parentId: 6171da5bbfdcf11c02a617cf
+                          - url: /health-household/vision-care/contacts
+                            name: Contact Lenses
+                            order: 1
+                            nodeId: 6171da8abfdcf11c02a617e5
+                            parentId: 6171da5bbfdcf11c02a617cf
+                          - url: /health-household/vision-care/contacts-care
+                            name: Contact Lens Care
+                            order: 2
+                            nodeId: 6171da90bfdcf11c02a617ea
+                            parentId: 6171da5bbfdcf11c02a617cf
+                        - url: /health-household/medical
+                          name: Medical Supplies & Equipment
+                          order: 2
+                          nodeId: 6171da67bfdcf11c02a617d4
+                          parentId: 6171d9b9bfdcf11c02a61791
+                      menuId: 6171d977bfdcf11c02a61771
+                queryByNodeId:
+                  summary: Query by Nodeid
+                  value:
+                    query:
+                      channelId: 02SZCA
+                      nodeId: 6171da5bbfdcf11c02a617cf
+                    menu:
+                    - url: /health-household/vision-care
+                      name: Vision Care
+                      order: 1
+                      nodeId: 6171da5bbfdcf11c02a617cf
+                      parentId: 6171d9b9bfdcf11c02a61791
+                      children:
+                      - url: /health-household/vision-care/glasses
+                        name: Reading Glasses
+                        order: 0
+                        nodeId: 6171da7ebfdcf11c02a617e0
+                        parentId: 6171da5bbfdcf11c02a617cf
+                      - url: /health-household/vision-care/contacts
+                        name: Contact Lenses
+                        order: 1
+                        nodeId: 6171da8abfdcf11c02a617e5
+                        parentId: 6171da5bbfdcf11c02a617cf
+                      - url: /health-household/vision-care/contacts-care
+                        name: Contact Lens Care
+                        order: 2
+                        nodeId: 6171da90bfdcf11c02a617ea
+                        parentId: 6171da5bbfdcf11c02a617cf
+                queryByNodeIdAndDepth:
+                  summary: Query by Nodeid and Depth
+                  value:
+                    query:
+                      channelId: 02SZCA
+                      nodeId: 6171da5bbfdcf11c02a617cf
+                      depth: 1
+                    menu:
+                    - url: /health-household/vision-care
+                      name: Vision Care
+                      order: 1
+                      nodeId: 6171da5bbfdcf11c02a617cf
+                      parentId: 6171d9b9bfdcf11c02a61791
+                queryByParentId:
+                  summary: Query by Parent ID
+                  value:
+                    query:
+                      channelId: 02SZCA
+                      parentId: 6171da5bbfdcf11c02a617cf
+                    menu:
+                    - url: /health-household/vision-care/glasses
+                      name: Reading Glasses
+                      order: 0
+                      nodeId: 6171da7ebfdcf11c02a617e0
+                      parentId: 6171da5bbfdcf11c02a617cf
+                    - url: /health-household/vision-care/contacts
+                      name: Contact Lenses
+                      order: 1
+                      nodeId: 6171da8abfdcf11c02a617e5
+                      parentId: 6171da5bbfdcf11c02a617cf
+                    - url: /health-household/vision-care/contacts-care
+                      name: Contact Lens Care
+                      order: 2
+                      nodeId: 6171da90bfdcf11c02a617ea
+                      parentId: 6171da5bbfdcf11c02a617cf
+        '404':
+          description: Menu not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: NOT_FOUND
+                message: Menu specified is not a live menu.
+        '500':
+          description: Request was received but an internal error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                code: INTERNAL_SERVER_ERROR
+                message: An internal error occurred. If the issue persists please contact support@fabric.inc.
+components:
+  schemas:
+    BrowseMenuItem:
+      type: object
+      description: Browse menu item object
+      properties:
+        url:
+          type: string
+          description: Relative menu item url path
+        name:
+          type: string
+          description: Menu item name
+        order:
+          type: integer
+          description: Order of appearance of the menu item in the UI
+        images:
+          type: array
+          description: List of image resources
+          items:
+            type: object
+            description: Details of image resource
+            properties:
+              _id:
+                type: string
+                description: Virtual ID for the image resource
+              order:
+                type: integer
+                description: Order in which the image was added or appears
+              url:
+                type: string
+                description: URL of image resource
+              meta:
+                type: string
+                description: Information about the image
+        params:
+          type: array
+          description: List of additional data associated with the menu item
+          items:
+            type: object
+            description: Additional data associated with the menu item
+            properties:
+              _id:
+                type: string
+                description: Parameter virtual ID
+              kind:
+                type: string
+                description: Parameter description
+              value:
+                type: string
+                description: Value of parameter
+        nodeId:
+          type: string
+          description: Database ID for menu item
+        parentId:
+          type: string
+          description: Database ID for menu item parent
+        children:
+          $ref: '#/components/schemas/BrowseMenuItem'
+    Error:
+      type: object
+      description: Server error response object
+      properties:
+        code:
+          type: string
+          description: Code associated with the type of server error
+        message:
+          type: string
+          description: Message associated with the server error
+      required:
+      - code
+      - message
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

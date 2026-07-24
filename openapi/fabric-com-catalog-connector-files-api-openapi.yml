@@ -1,0 +1,515 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Catalog Connector Files API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- name: Catalog Connector Files
+  description: Retrieve an import template, import a file to the Catalog Connector, view import and export status, and download a previously processed file.
+paths:
+  /catalog-connector-templates/actions/generate:
+    post:
+      tags:
+      - Catalog Connector Files
+      summary: Retrieve an Import Template
+      description: Use this endpoint to retrieve the product import template for Catalog Connector in either CSV or JSONL format, based on your preferred data handling method. You can open CSV template in applications, such as Excel or Google Sheets and JSONL template in text editors compatible with JSONL, such as Visual Studio Code. After filling in product data, save the template file with a unique name on your local system.
+      operationId: generateTemplate
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/generateTemplateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/csv: {}
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-files:
+    post:
+      tags:
+      - Catalog Connector Files
+      summary: Create a File Object and Retrieve the File Upload URL
+      description: Use this endpoint to retrieve the URL of the AWS S3 location to upload the file that you want to import to the Catalog Connector.
+      operationId: createFile
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/createProductFileRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/file'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+    get:
+      tags:
+      - Catalog Connector Files
+      summary: Retrieve Import and Export History
+      description: 'Use this endpoint to access files previously imported to or exported from the Catalog Connector, sorted in chronological order. You can refine the search results by using the following query parameters:
+
+        - `ids`: Provide a comma-separated list of file IDs to retrieve multiple files by their IDs. Note that pagination isn''t supported when using this parameter.
+
+        - Format type (`formatType`) :  Specify the format of the file to filter files by format. The options are **CSV** or **JSONL**.
+
+        - Operation type (`type`): Use this parameter to specify whether you want imported or exported files.
+
+        - Pagination (`offset`, `limit`):  Use offset and limit parameters to refine the number of results returned.
+
+        - `sort`:  Use this parameter to view results in ascending or descending order.
+
+        If no query parameters are specified, the endpoint returns up to 10 records.
+
+        '
+      operationId: getFiles
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/ids'
+      - $ref: '#/components/parameters/fileName'
+      - $ref: '#/components/parameters/formatTypeQueryParam'
+      - $ref: '#/components/parameters/productFileType'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/sortBy'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getFilesResponse'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-files/actions/download:
+    get:
+      tags:
+      - Catalog Connector Files
+      summary: Download a File by ID
+      description: 'Use this endpoint to retrieve the URL used to download a previously processed file. You can then make a GET request with this URL to retrieve the products data in CSV or JSONL format.
+
+        <Note> The download link is valid for five minutes. </Note>
+
+        '
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/fileId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/fileDownloadResponse'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '404':
+          $ref: '#/components/responses/notFoundError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+components:
+  parameters:
+    fileName:
+      in: query
+      name: fileName
+      schema:
+        type: string
+      description: Use this endpoint to specify the name of the file you want to retrieve.
+      example: bulk_import_123345677788999.csv
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      schema:
+        type: string
+      required: true
+      example: 5f328bf0b5f328bf0b5f328b
+      description: A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.
+    productFileType:
+      in: query
+      name: type
+      schema:
+        $ref: '#/components/schemas/productFileJobTypes'
+      description: Specify the type of operation or job performed when the file was uploaded.
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: Unique request ID
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    sortBy:
+      in: query
+      name: sort
+      description: The sorting criteria. Currently, the supported values are `updatedAt` and `name`. Use `-` for descending order and `+` for ascending.
+      schema:
+        type: string
+        example: +name,-updatedAt
+      required: false
+    formatTypeQueryParam:
+      in: query
+      name: formatType
+      description: Depending on the context, it represents the format of the file or template.
+      schema:
+        $ref: '#/components/schemas/formatTypes'
+      example: csv
+    fileId:
+      in: query
+      name: fileId
+      description: A 24-character system-generated file ID.
+      schema:
+        type: string
+      example: 5f328bf0b5f328bf0b5f328b
+      required: true
+    ids:
+      in: query
+      name: ids
+      description: "The 24-character system-generated file ID created using the [Create a File](/v3/api-reference/catalog-connector/files/create-file) endpoint.\n\nDepending on the type of IDs, the array represents the file IDs or job IDs. Specify up to 15 IDs separated by commas. Note the following limitations of using this parameter:\n  - This parameter can't be combined with any other parameters. \n  - Pagination isn't supported when this parameter is specified.\n"
+      schema:
+        type: string
+      example: 5f328bf0b5f328bf0b5f328b, 1e328bf0b5f328bf0b5f3287
+    offset:
+      in: query
+      name: offset
+      description: The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, the system returns records from 21 to 30.
+      schema:
+        type: integer
+        format: int32
+        default: 0
+        example: 2
+      required: false
+    limit:
+      in: query
+      name: limit
+      description: The maximum number of records per page.
+      schema:
+        type: integer
+        format: int32
+        default: 10
+        example: 20
+  responses:
+    internalServerError:
+      description: Internal server error
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: SERVER_ERROR
+            message: Internal Server Error
+    forbidden:
+      description: The user isn't allowed to perform this action.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: REQUEST_DENIED
+            message: User does not have the required permission
+    badRequest:
+      description: Request is invalid or malformed
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+    notFoundError:
+      description: The requested entity isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: NOT_FOUND
+            message: Resource not found
+    notAuthorized:
+      description: The requester is unauthorized.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: UNAUTHORIZED_ERROR
+            message: Requester is unauthorized
+  schemas:
+    productsType:
+      type: string
+      enum:
+      - ITEM
+      - BUNDLE
+      description: Specify the product type you want to import using the product import template you will receive from a successful response.
+      example: ITEM
+    productFileJobTypes:
+      type: string
+      enum:
+      - CATALOG_CONN_ITEM_VARIANT_IMPORT
+      - CATALOG_CONN_ITEM_VARIANT_EXPORT
+      - CATALOG_CONN_BUNDLE_IMPORT
+      - CATALOG_CONN_BUNDLE_EXPORT
+      description: Specify the type of operation or job performed by uploading the file.
+      example: CATALOG_CONN_ITEM_VARIANT_IMPORT
+    fileDownloadResponse:
+      type: object
+      description: The URL generated in the response of the `Download a file by ID` request.
+      properties:
+        location:
+          type: string
+          description: The URL to download an imported file.
+          format: uri
+          example: https://pim-v3-dev02-us-east-1-files.s3.us-east-1.amazonaws.com/local/PRODUCT_EXPORT/abc.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=EXAMPLEACCESSKEYID%252F20230317%252Fus-east-1%252Fs3%252Faws4_request&X-Amz-Date=20230317T171516Z&X-Amz-Expires=300&X-Amz-Signature=EXAMPLESIGNATURE&X-Amz-SignedHeaders=host&x-id=GetObject
+    formatTypes:
+      type: string
+      enum:
+      - csv
+      - jsonl
+      description: Specify the file format used to upload to Catalog Connector.
+      example: jsonl
+    commonFileSchema:
+      type: object
+      description: The details of the file.
+      properties:
+        id:
+          type: string
+          description: The 24-character system-generated file ID created using the [Create a File](/v3/api-reference/catalog-connector/files/create-file) endpoint.
+          example: 857f1f77bcf86cd799439054
+        type:
+          $ref: '#/components/schemas/productFileJobTypes'
+        name:
+          type: string
+          description: The name of the file to be uploaded to the AWS S3 location.
+          example: bulk_import_123345677788999.csv
+        locale:
+          $ref: '#/components/schemas/locale'
+        formatType:
+          $ref: '#/components/schemas/formatTypes'
+        createdAt:
+          type: string
+          description: The time of file creation, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+        updatedBy:
+          type: string
+          description: The email of the user who last updated the file.
+          example: test@email.com
+        updatedAt:
+          type: string
+          description: The time of last update to the file, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    getFilesResponse:
+      type: object
+      description: The response of the `Retrieve import or export history` request, along with pagination data.
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/commonFileSchema'
+        offset:
+          description: 'The number of records to skip before returning records.
+
+            For example, when the offset is 20 and limit is 10, the system returns the records from 21 to 30.'
+          type: integer
+          format: int32
+          default: 0
+          example: 5
+        limit:
+          description: The maximum number of records per page.
+          type: integer
+          format: int32
+          default: 10
+          example: 10
+        count:
+          description: The total number of records.
+          type: integer
+          format: int32
+          example: 100
+    locale:
+      type: string
+      description: 'The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format).
+
+
+        The default value is `en-US`.
+
+        '
+      example: en-US
+    file:
+      allOf:
+      - $ref: '#/components/schemas/newCommonFileSchema'
+      - type: object
+        properties:
+          location:
+            type: string
+            description: The AWS S3 file location of the imported file is provided as a URL.
+            example: https://s3.console.aws.amazon.com/s3/buckets/greatwall-stg01-bulk-import-pim/bulk_import_123345677788999.csv
+    newCommonFileSchema:
+      type: object
+      description: The details of the file.
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated file ID.
+          example: 857f1f77bcf86cd799439054
+        type:
+          $ref: '#/components/schemas/productFileJobTypes'
+        name:
+          type: string
+          description: The name of the file name to be uploaded to the AWS S3 location.
+          example: bulk_import_123345677788999.csv
+        locale:
+          $ref: '#/components/schemas/locale'
+        formatType:
+          $ref: '#/components/schemas/formatTypes'
+        createdAt:
+          type: string
+          description: The time of file creation, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+        updatedBy:
+          type: string
+          description: The email of the user who last updated the file.
+          example: test@email.com
+        updatedAt:
+          type: string
+          description: The time of last update to the file, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    genericError:
+      type: object
+      description: The details of the error.
+      properties:
+        message:
+          type: string
+          description: A placeholder error message for all the 4xx, 5xx errors
+          example: Request is invalid
+        type:
+          type: string
+          description: A placeholder error type for all the 4xx, 5xx errors
+          example: Bad request
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The error type.
+                example: CLIENT_ERROR
+              message:
+                type: string
+                description: The error message corresponding to the `type`.
+                example: Invalid request. Unable to find/create product
+  requestBodies:
+    generateTemplateRequest:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            description: Template request
+            required:
+            - type
+            - formatType
+            properties:
+              type:
+                $ref: '#/components/schemas/productsType'
+              formatType:
+                $ref: '#/components/schemas/formatTypes'
+    createProductFileRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            description: A sample request to create a file object and retrieve the upload URL to import products to the Catalog Connector.
+            required:
+            - type
+            - name
+            - locale
+            - formatType
+            properties:
+              type:
+                $ref: '#/components/schemas/productFileJobTypes'
+              name:
+                type: string
+                description: The name of the file to be imported.
+                example: bulk_import_123345677788999.csv
+              locale:
+                $ref: '#/components/schemas/locale'
+              formatType:
+                $ref: '#/components/schemas/formatTypes'
+  headers:
+    xFabricRequestId:
+      schema:
+        type: string
+      required: false
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      description: Unique request ID
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

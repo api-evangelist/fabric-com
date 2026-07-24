@@ -1,0 +1,708 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Catalog Connector Jobs API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- name: Catalog Connector Jobs
+  description: Export data from the Catalog Connector and retrieve the status of previously processed files.
+paths:
+  /catalog-connector-jobs/actions/export:
+    post:
+      tags:
+      - Catalog Connector Jobs
+      summary: Export Products
+      description: "Use this endpoint to start an internal job to export products from Catalog Connector. \nSpecify the `formatType` query parameter to export data in either CSV or JSONL format. In the request body, provide the `ids` of all products to be exported, the product type, and the locale.\n"
+      operationId: exportProductsJob
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/exportIDJobRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/jobIdResponse'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-jobs:
+    get:
+      tags:
+      - Catalog Connector Jobs
+      summary: Retrieve Jobs
+      description: "Use this endpoint to retrieve a paginated list of import and export jobs related to Catalog Connector.\nThe following constraints apply when using the query parameters:\n  - The query parameter job `ids` can't be combined with any other query parameters.\n  - The query parameter `inputFileIds` can only be combined with the query parameter `lastJobOnly`. \n  - Pagination isn't supported when `ids` or `inputFileIds` is specified.\n"
+      operationId: getJobs
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/ids'
+      - $ref: '#/components/parameters/productFileType'
+      - $ref: '#/components/parameters/inputFileIds'
+      - $ref: '#/components/parameters/lastJobOnly'
+      - $ref: '#/components/parameters/offset'
+      - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/productJob'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /catalog-connector-jobs/search:
+    post:
+      tags:
+      - Catalog Connector Jobs
+      summary: Search Jobs
+      description: Get a paginated list of jobs related to products and collections by specifying the request body. You need to specify the criteria for the search such as job `id`, `type`, `status`, `collectionId`, or `inputFileId`.
+      operationId: getJobsBySearchCriteria
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        $ref: '#/components/requestBodies/jobSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/productJob'
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestId'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/notAuthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+components:
+  schemas:
+    job:
+      type: object
+      description: The details of the import or export job.
+      properties:
+        id:
+          type: string
+          description: The 24-character system-generated file ID created using the [Create a File](/v3/api-reference/catalog-connector/files/create-file) endpoint.
+          example: 877f1f77bcf86cd799439087
+        inputFileId:
+          type: string
+          example: 327f1f77bcf86cd799439045
+          description: The IDs of the files to be processed as part of the job.
+        outputFiles:
+          type: array
+          description: The IDs of the processed files. The output files include success files, error files, and more.
+          items:
+            type: string
+            description: The IDs of the processed files. The output files include success files, error files, and more.
+            example: 507f1f77bcf86cd7994390163, 967f1f77bcf86cd799439058
+        errorFiles:
+          type: array
+          description: The IDs of the processed files. The output files include success files, error files, and more.
+          items:
+            type: string
+            description: A 24-character system-generated IDs of the error files. The error files list products that couldn't be processed through the job.
+            example: 887f1f77bcf86cd799439011, 997f1f77bcf86cd799439074
+        progressTracker:
+          type: object
+          properties:
+            updatedAt:
+              type: string
+              description: The time when the tracker was last updated, in UTC format.
+              example: '2023-02-14T22:10:30.618Z'
+            totalCount:
+              type: integer
+              format: int32
+              description: The total number of records to be processed through the job.
+              example: 100000
+            processedCount:
+              type: integer
+              format: int32
+              description: The total number of records processed.
+              example: 40000
+            errorCount:
+              type: integer
+              format: int32
+              description: Total number of records with error.
+              example: 10
+        status:
+          type: string
+          description: The job status.
+          enum:
+          - IN_PROGRESS
+          - COMPLETED
+          - FAILED
+          example: COMPLETED
+        statusMessage:
+          description: A brief message corresponding to the job `status`.
+          type: string
+          example: 100% completed
+        additionalDetails:
+          type: object
+          properties:
+            itemsCreated:
+              type: integer
+              format: int32
+              description: The number of items created during the import process. Only applicable when job `type` is `PRODUCT_IMPORT`.
+              example: 10
+            itemsUpdated:
+              type: integer
+              format: int32
+              description: The number of items updated during the import process. Only applicable when job `type` is `PRODUCT_IMPORT`.
+              example: 10
+        createdAt:
+          type: string
+          description: The time of job creation, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+        completedAt:
+          type: string
+          description: The time of job completion, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+        updatedBy:
+          type: string
+          description: The email of the user who last updated the job.
+          example: test@email.com
+        updatedAt:
+          type: string
+          description: The time when the job was last updated, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    productJob:
+      description: The details of the job.
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/job'
+            type: object
+            properties:
+              type:
+                $ref: '#/components/schemas/productFileJobTypes'
+        offset:
+          description: 'The number of records to skip before returning records.
+
+            For example, when the offset is 20 and limit is 10, the system returns the records from 21 to 30.'
+          type: integer
+          format: int32
+          default: 0
+          example: 5
+        limit:
+          description: The maximum number of records per page.
+          type: integer
+          format: int32
+          default: 10
+          example: 10
+        count:
+          description: The total number of records.
+          type: integer
+          format: int32
+          example: 100
+    productFileJobTypes:
+      type: string
+      enum:
+      - CATALOG_CONN_ITEM_VARIANT_IMPORT
+      - CATALOG_CONN_ITEM_VARIANT_EXPORT
+      - CATALOG_CONN_BUNDLE_IMPORT
+      - CATALOG_CONN_BUNDLE_EXPORT
+      description: Specify the type of operation or job performed by uploading the file.
+      example: CATALOG_CONN_ITEM_VARIANT_IMPORT
+    productAsyncJobTypes:
+      type: string
+      enum:
+      - CATALOG_CONN_ITEM_VARIANT_EXPORT
+      - CATALOG_CONN_BUNDLE_EXPORT
+      description: The supported job types.
+      example: CATALOG_CONN_ITEM_VARIANT_EXPORT
+    containsStringSearchOperation:
+      type: object
+      description: An operation used to define string search.
+      required:
+      - op
+      - value
+      properties:
+        op:
+          type: string
+          description: Search operation that can be performed on a `string` type.
+          example: CONTAINS
+          enum:
+          - CONTAINS
+        value:
+          $ref: '#/components/schemas/stringSchema'
+    jobIdResponse:
+      type: object
+      description: The job ID.
+      properties:
+        jobId:
+          type: string
+          description: A 24-character system-generated job ID.
+          example: 877f1f77bcf86cd799439087
+    id:
+      type: string
+      example: 5f7329dfd5288b0011332366
+      description: A 24-character system-generated ID.
+    datetimeOperation:
+      type: object
+      description: The search criteria based on date-time.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: GTE
+          enum:
+          - EQUALS
+          - LTE
+          - GTE
+          - LT
+          - GT
+        value:
+          type: string
+          description: The timestamp to be searched, in UTC format.
+          example: '2021-09-14T22:10:30.618Z'
+    genericError:
+      type: object
+      description: The details of the error.
+      properties:
+        message:
+          type: string
+          description: A placeholder error message for all the 4xx, 5xx errors
+          example: Request is invalid
+        type:
+          type: string
+          description: A placeholder error type for all the 4xx, 5xx errors
+          example: Bad request
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The error type.
+                example: CLIENT_ERROR
+              message:
+                type: string
+                description: The error message corresponding to the `type`.
+                example: Invalid request. Unable to find/create product
+    datetimeRangeOperation:
+      type: object
+      description: The search criteria based on date range.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: RANGE
+          enum:
+          - RANGE
+        fromValue:
+          type: string
+          description: The start date for searching, in UTC format.
+          example: '2022-09-14T22:10:30.618Z'
+        toValue:
+          type: string
+          description: The end date for searching, in UTC format.
+          example: '2023-04-14T22:10:30.618Z'
+    stringSchema:
+      type: string
+      nullable: true
+      description: Represents a string schema.
+      example: blue
+    stringSearchWithNullableOperation:
+      type: object
+      description: String search
+      anyOf:
+      - $ref: '#/components/schemas/simpleMultiStringWithNullableSearchOperation'
+      - $ref: '#/components/schemas/containsStringSearchOperation'
+    jobSearchRequestMatch:
+      minProperties: 1
+      additionalProperties: false
+      description: Search criteria to match jobs.
+      type: object
+      properties:
+        id:
+          description: job id search
+          $ref: '#/components/schemas/simpleMultiIdSearchOperation'
+        inputFileId:
+          description: Search based on input file ID
+          $ref: '#/components/schemas/simpleMultiIdSearchOperation'
+        name:
+          description: Search based on job name
+          $ref: '#/components/schemas/stringSearchWithNullableOperation'
+        keyword:
+          description: Search based on either job name or job ID
+          anyOf:
+          - $ref: '#/components/schemas/containsStringSearchOperation'
+          - $ref: '#/components/schemas/simpleMultiStringSearchOperation'
+        type:
+          description: Search based on job type
+          $ref: '#/components/schemas/multiJobType'
+        status:
+          description: Search based on job status
+          $ref: '#/components/schemas/multiJobStatuses'
+        createdAt:
+          description: Search based on job creation time
+          $ref: '#/components/schemas/datetimeSearchOperation'
+        completedAt:
+          description: Search based on job completion Time
+          $ref: '#/components/schemas/datetimeSearchOperation'
+    formatTypes:
+      type: string
+      enum:
+      - csv
+      - jsonl
+      description: Specify the file format used to upload to Catalog Connector.
+      example: jsonl
+    datetimeSearchOperation:
+      type: object
+      description: Date-time search
+      anyOf:
+      - $ref: '#/components/schemas/datetimeRangeOperation'
+      - $ref: '#/components/schemas/datetimeInOperation'
+      - $ref: '#/components/schemas/datetimeOperation'
+    multiJobStatuses:
+      type: object
+      required:
+      - op
+      - value
+      description: 'Search jobs using multiple job types.
+
+        For example, `COMPLETED'' or ''SCHEDULED`.'
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/jobStatuses'
+    multiJobType:
+      type: object
+      description: 'Search jobs using multiple job types.
+
+        For example, `ITEM_VARIANT_IMPORT, BUNDLE_EXPORT`.'
+      required:
+      - op
+      - value
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/productFileJobTypes'
+    locale:
+      type: string
+      description: 'The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format).
+
+
+        The default value is `en-US`.
+
+        '
+      example: en-US
+    jobStatuses:
+      type: string
+      enum:
+      - SCHEDULED
+      - COMPLETED_PARTIALLY
+      - IN_PROGRESS
+      - COMPLETED
+      - FAILED
+      - UPDATING_SEARCH_INDEX
+      - CANCELLATION_IN_PROGRESS
+      - CANCELLED
+      description: Job status
+      example: COMPLETED
+    simpleMultiIdSearchOperation:
+      type: object
+      description: A simple multi-string search operation.
+      required:
+      - op
+      - value
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/id'
+    simpleMultiStringSearchOperation:
+      type: object
+      description: Simple multi-string search.
+      required:
+      - op
+      - value
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/stringSchema'
+    datetimeInOperation:
+      type: object
+      description: The search criteria based on date-time using the IN condition.
+      properties:
+        op:
+          type: string
+          description: The type of search operation.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            type: string
+          example:
+          - 2023-01-14 22:10:30.618000+00:00
+          - 2023-05-14 22:10:30.618000+00:00
+          description: The timestamp to search.
+    simpleMultiStringWithNullableSearchOperation:
+      type: object
+      description: Simple multi-string search.
+      required:
+      - op
+      - value
+      properties:
+        op:
+          type: string
+          description: Operations that can be performed on a `string` type.
+          example: IN
+          enum:
+          - IN
+        value:
+          type: array
+          items:
+            $ref: '#/components/schemas/stringSchema'
+  responses:
+    internalServerError:
+      description: Internal server error
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: SERVER_ERROR
+            message: Internal Server Error
+    forbidden:
+      description: The user isn't allowed to perform this action.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: REQUEST_DENIED
+            message: User does not have the required permission
+    badRequest:
+      description: Request is invalid or malformed
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+    notAuthorized:
+      description: The requester is unauthorized.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: UNAUTHORIZED_ERROR
+            message: Requester is unauthorized
+  parameters:
+    lastJobOnly:
+      in: query
+      name: lastJobOnly
+      description: A flag indicating whether the response should be based only on the last job. Set it to `true` to show response based on the last job and `false` to include response based on all jobs that meet the criteria. This is only applicable with `type` and `inputFileIds`.
+      schema:
+        type: boolean
+      example: true
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      schema:
+        type: string
+      required: true
+      example: 5f328bf0b5f328bf0b5f328b
+      description: A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.
+    productFileType:
+      in: query
+      name: type
+      schema:
+        $ref: '#/components/schemas/productFileJobTypes'
+      description: Specify the type of operation or job performed when the file was uploaded.
+    inputFileIds:
+      in: query
+      name: inputFileIds
+      description: The file IDs specified in the request. You can specify up to 15 file IDs separated by commas. - This parameter can only be combined with the query parameter `lastJobOnly`. - Pagination isn't supported when this is specified.
+      schema:
+        type: string
+      example: 87328bf0b5f328bf0b5f328b, 9f328bf0b5f328bf0b5f3258
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: Unique request ID
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    ids:
+      in: query
+      name: ids
+      description: "The 24-character system-generated file ID created using the [Create a File](/v3/api-reference/catalog-connector/files/create-file) endpoint.\n\nDepending on the type of IDs, the array represents the file IDs or job IDs. Specify up to 15 IDs separated by commas. Note the following limitations of using this parameter:\n  - This parameter can't be combined with any other parameters. \n  - Pagination isn't supported when this parameter is specified.\n"
+      schema:
+        type: string
+      example: 5f328bf0b5f328bf0b5f328b, 1e328bf0b5f328bf0b5f3287
+    offset:
+      in: query
+      name: offset
+      description: The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, the system returns records from 21 to 30.
+      schema:
+        type: integer
+        format: int32
+        default: 0
+        example: 2
+      required: false
+    limit:
+      in: query
+      name: limit
+      description: The maximum number of records per page.
+      schema:
+        type: integer
+        format: int32
+        default: 10
+        example: 20
+  requestBodies:
+    exportIDJobRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            description: A sample request to export data.
+            required:
+            - ids
+            - locale
+            - type
+            properties:
+              ids:
+                type: array
+                minItems: 1
+                description: The product type IDs that must be exported.
+                items:
+                  type: string
+                  description: The product type IDs that must be exported.
+                example:
+                - 5f328bf0b5f328bf0b5f328b
+                - 22328bf0b5f328bf0b5f3287
+              formatType:
+                $ref: '#/components/schemas/formatTypes'
+              locale:
+                $ref: '#/components/schemas/locale'
+              type:
+                $ref: '#/components/schemas/productAsyncJobTypes'
+    jobSearchRequest:
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+            - match
+            description: Request for a job search.
+            properties:
+              sort:
+                type: string
+                description: Sorting criteria. Sorting is supported on `id`, `type`, `status`, `completedAt`, and `createdAt`. `-` refers to descending while `+` refers to ascending order.
+                example: +id,-type
+              match:
+                $ref: '#/components/schemas/jobSearchRequestMatch'
+              offset:
+                description: 'Number of records to skip before returning records.
+
+                  For example, `offset=20, limit=10` returns records 21-30.'
+                type: integer
+                format: int32
+                default: 0
+                example: 2
+              limit:
+                description: Maximum number of records per page.
+                type: integer
+                format: int32
+                default: 10
+                example: 10
+  headers:
+    xFabricRequestId:
+      schema:
+        type: string
+      required: false
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      description: Unique request ID
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

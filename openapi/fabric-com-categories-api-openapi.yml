@@ -1,0 +1,284 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Categories API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- name: Categories
+paths:
+  /v2/categories/import:
+    post:
+      summary: Bulk Import Categories
+      description: 'Upload a CSV file to import category data for the specified brand/domain. The import is processed asynchronously.
+
+
+        **Expected CSV columns**
+
+        - **name** or **category_name** (required): Category name
+
+        - **parent_id** or **parent_category_id** (optional): Parent category ID
+
+        - **breadcrumb** (optional): Full breadcrumb path
+
+        - **inferred_category** (optional): AI-inferred category
+
+        '
+      operationId: importCategories
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/DomainHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV file containing categories (e.g. categories.csv)
+                name:
+                  type: string
+                  description: Human friendly import name
+                  example: Spring catalog category import
+                notify_email:
+                  type: boolean
+                  description: Send an email when the import completes.
+                  default: true
+                  example: true
+      responses:
+        '202':
+          description: Import accepted for asynchronous processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryImportAcceptedResponse'
+              example:
+                import_id: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+                status: PENDING
+                message: Import queued. Use GET /categories/import/{import_id} to track progress.
+                created_at: '2026-03-12T17:58:13.605818Z'
+        '400':
+          description: Bad request - invalid CSV or missing file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '401':
+          description: Unauthorized - missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      tags:
+      - Categories
+  /v2/categories/import/{import_id}:
+    get:
+      summary: Get Category Import Status
+      description: Retrieve the current status and results of a category import created using `POST /api/v2/categories/import`.
+      operationId: getCategoryImportStatus
+      parameters:
+      - $ref: '#/components/parameters/DomainHeader'
+      - name: import_id
+        in: path
+        required: true
+        description: Import ID returned from `POST /api/v2/categories/import`.
+        schema:
+          type: string
+          format: uuid
+          example: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+      responses:
+        '200':
+          description: Import status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryImportStatusResponse'
+              example:
+                import_id: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+                name: tcs_category_test.csv
+                status: COMPLETED
+                total_rows: 333
+                processed_rows: 333
+                new_count: 333
+                updated_count: 0
+                skipped_count: 0
+                failed_count: 0
+                input_filename: tcs_category_test.csv
+                input_file_url: https://example.com/input.csv
+                error_file_url: null
+                error_message: null
+                started_at: '2026-03-12T17:58:13.722428Z'
+                completed_at: '2026-03-12T17:58:14.564840Z'
+                created_at: '2026-03-12T17:58:13.605818Z'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: Import not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+      tags:
+      - Categories
+components:
+  schemas:
+    CategoryImportAcceptedResponse:
+      type: object
+      required:
+      - import_id
+      - status
+      - message
+      - created_at
+      properties:
+        import_id:
+          type: string
+          format: uuid
+          description: Identifier for the import job.
+          example: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+        status:
+          type: string
+          example: PENDING
+        message:
+          type: string
+          description: Status message for the queued import.
+          example: Import queued. Use GET /categories/import/{import_id} to track progress.
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the import was created.
+          example: '2026-03-12T17:58:13.605818Z'
+    CategoryImportStatusResponse:
+      type: object
+      required:
+      - import_id
+      - status
+      - total_rows
+      - processed_rows
+      - created_at
+      properties:
+        import_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: tcs_category_test.csv
+        status:
+          type: string
+          example: COMPLETED
+        total_rows:
+          type: integer
+          example: 333
+        processed_rows:
+          type: integer
+          example: 333
+        new_count:
+          type: integer
+          example: 333
+        updated_count:
+          type: integer
+          example: 0
+        skipped_count:
+          type: integer
+          example: 0
+        failed_count:
+          type: integer
+          example: 0
+        input_filename:
+          type: string
+          example: tcs_category_test.csv
+        input_file_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://example.com/input.csv
+        error_file_url:
+          type: string
+          format: uri
+          nullable: true
+          example: null
+        error_message:
+          type: string
+          nullable: true
+          example: null
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+  parameters:
+    DomainHeader:
+      name: domain
+      in: header
+      required: true
+      schema:
+        type: string
+        example: vessel.com
+      description: The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

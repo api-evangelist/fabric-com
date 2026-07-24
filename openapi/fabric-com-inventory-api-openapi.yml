@@ -1,0 +1,1479 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Inventory API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
+  name: Inventory
+paths:
+  /inventories:
+    post:
+      description: Create inventory based on the combination of location number, channel ID, and item ID or SKU.
+      operationId: createInventory
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createInventory'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventory'
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Following attributes not found:[notFoundAttribute]
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '409':
+          content:
+            application/json:
+              example:
+                message: Inventory with same item ID or SKU, location ID and channel ID already exists
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Conflict
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create Inventory
+      tags:
+      - Inventory
+  /inventories/actions/find:
+    post:
+      description: Search for inventories of specific items by SKUs, itemIds, location numbers, and other parameters as specified in the request body. This endpoint retrieves the exact available quantity of the searched inventory.
+      operationId: findInventories
+      parameters:
+      - description: Number of records to be skipped before returning all records. Default is `0` when no value is specified.
+        example: 0
+        in: query
+        name: offset
+        schema:
+          default: 0
+          example: 0
+          format: int32
+          type: integer
+      - description: Maximum number of records to be returned on a single page. For example, when offset=20 and limit=10, it returns records 21-30 on a single page. Default is `10` when no value is specified.
+        example: 10
+        in: query
+        name: limit
+        schema:
+          default: 10
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/xFabricChannelIdOptional'
+      - $ref: '#/components/parameters/xFabricChannelIdsOptional'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/inventoriesRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/findInventoriesResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Find Inventories of Specific Items
+      tags:
+      - Inventory
+  /inventories/actions/find-and-adjust-inventory-counters:
+    post:
+      description: With this endpoint, you can modify inventory counters (also known as inventory positions) to maintain accurate inventory records. These counters are adjusted when new inventory is received or when an item is shipped. If the inventory does not exist, an error message will be displayed. An inventory can have multiple counters, and all counters will be updated when this endpoint is used.
+      operationId: updateExistingInventoryCounter
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/adjustCounterRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventory'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: inventory or counter code not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Adjust Inventory Counters
+      tags:
+      - Inventory
+  /inventories/actions/find-and-update:
+    post:
+      description: Add a new property to existing inventory. <p> **Note:** This endpoint does not override all the existing properties; rather it updates inventory by adding new properties or by updating the existing inventory properties that are specified in the request body. Inventory is identified based on the combination of location number, channel ID, and item ID or SKU. </p>
+      operationId: updateInventory
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateInventory'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventory'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Following attributes not found:[isBopis]
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Inventory by Adding New Property
+      tags:
+      - Inventory
+  /inventories/actions/find-by-geography:
+    post:
+      description: Search for list of inventories of specific items  in a specific region based on SKUs, postal code, latitude, longitude, and other details of the location as specified in the request body.
+      operationId: findInventoriesByGeography
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      - $ref: '#/components/parameters/xFabricChannelIdOptional'
+      - $ref: '#/components/parameters/xFabricChannelIdsOptional'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/findInventoryByGeographyRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventoryGeographyResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Find Inventory of Specific Items in a Specific Region
+      tags:
+      - Inventory
+  /inventories/search:
+    post:
+      description: Search for inventories based on filter criteria.
+      operationId: searchInventories
+      parameters:
+      - in: query
+        name: fetchOnlyIds
+        required: false
+        schema:
+          default: false
+          type: boolean
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/inventorySearchRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inventorySearchResponses'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Search for Inventories
+      tags:
+      - Inventory
+components:
+  parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelIdOptional:
+      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: false
+      schema:
+        type: string
+    xFabricChannelIdsOptional:
+      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.
+      example: 12, 13, 16
+      in: header
+      name: x-fabric-channel-ids
+      required: false
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+  schemas:
+    inventorySearchResponses:
+      description: Inventory search response sample
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/inventorySearchResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    valueSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventorySearchFilter'
+      - properties:
+          value:
+            description: A single value to search inventory
+            example: SKU
+            oneOf:
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+        type: object
+      description: Criteria to find inventories by a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    inventorySearchRequest:
+      description: Sample request to search inventory
+      example:
+        filters:
+        - condition: EQ
+          field: inventory.sku
+          value: '*V3'
+        - condition: IN
+          field: inventory.locationNumber
+          values:
+          - 3173*
+          - '45213'
+        sort: -inventory.createdAt
+      properties:
+        filters:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/valueSearchFilter'
+            - $ref: '#/components/schemas/valuesSearchFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+        sort:
+          default: -inventory.createdAt
+          description: Property by which data is sorted
+          example: +inventory.createdAt
+          pattern: (^[+-]inventory\.[a-zA-Z.\-_]*)(,([+-]inventory\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+      - filters
+      type: object
+    inventoryGeographyResponse:
+      description: Geo search response sample
+      properties:
+        inventories:
+          description: Inventories present in queried region.
+          items:
+            $ref: '#/components/schemas/inventory'
+          type: array
+        locations:
+          description: List Locations sorted by nearest first where Inventory present in queried region.
+          items:
+            $ref: '#/components/schemas/geoLocationResource'
+          type: array
+      type: object
+    createInventory:
+      description: Create inventory request sample. Either `sku` or `itemId` is mandatory.
+      properties:
+        backorderLimit:
+          description: Maximum restock inventory quantity
+          example: 50
+          format: int32
+          type: integer
+        backorderShipmentAt:
+          description: Time when backorder is shipped
+          example: 2022-08-01 20:03:28.483000+00:00
+          format: date-time
+          type: string
+        counters:
+          additionalProperties:
+            description: Inventory counter (also known as inventory position) configured by the merchant
+            example:
+              allocated: 10
+              onHand: 100
+              shipped: 20
+            type: object
+          description: Inventory counter (also known as inventory position) configured by the merchant
+          example:
+            allocated: 10
+            onHand: 100
+            shipped: 20
+          type: object
+        customAttributes:
+          additionalProperties:
+            description: Custom attributes to store additional information
+            example: '{"isBopis":true}'
+            type: string
+          description: Custom attributes to store additional information
+          example:
+            isBopis: true
+          type: object
+        hasInfiniteInventory:
+          default: false
+          description: Infinite inventory flag.**true:** Inventory can be used any number of times and does not have any consumption limit.**false:** Inventory can't be used infinitely, and has a consumption limit.
+          example: false
+          type: boolean
+        itemId:
+          description: Merchant-defined item ID whose inventory is created or updated. If omitted, fabric Inventory service generates the `itemId`. If you choose to use the `itemId` in your environment, you must include it in all inventory *Write* requests.
+          example: 12345
+          format: int32
+          type: integer
+        leadTime:
+          description: Time between when an order is placed to replenish inventory and when the order is received at warehouse
+          example: 5 days
+          type: string
+        locationNumber:
+          description: Represents the warehouse or store location where the inventory is stored. It is recommended to link `locationNumber` to the corresponding value in the fabric Locations service.
+          example: 12345
+          format: int32
+          type: integer
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the location
+          example: 10
+          format: int32
+          type: integer
+        networkCode:
+          description: Code of the network to which the inventory belongs
+          example: ShipToHome
+          type: string
+        preorderLimit:
+          description: Maximum first-shipping inventory quantity
+          example: 40
+          format: int32
+          type: integer
+        preorderShipmentAt:
+          description: Time when preorder is shipped
+          example: 2022-08-01 20:03:28.483000+00:00
+          format: date-time
+          type: string
+        region:
+          description: Region where inventory is managed
+          example: North America
+          type: string
+        safetyStock:
+          description: Reserved inventory quantity at the location
+          example: 10
+          format: int32
+          type: integer
+        sku:
+          description: Product SKU (Stock Keeping Unit) identifier. It serves as the primary reference key for the inventory and provides uniqueness to the item.
+          example: SKU1
+          type: string
+        status:
+          description: Inventory status IN_STOCK, LOW_STOCK, etc.
+          enum:
+          - IN_STOCK
+          - LOW_STOCK
+          - OUT_OF_STOCK
+          - BACKORDER_STOCK
+          - PREORDER_STOCK
+          example: ' IN_STOCK'
+          type: string
+        type:
+          description: Inventory type - a classifier attribute that provides flexibility to define inventory types
+          example: primary
+          type: string
+        vendorId:
+          description: ID of the vendor who will replenish the inventory for the retailer
+          example: vendor1
+          type: string
+        virtualCountersStatus:
+          $ref: '#/components/schemas/virtualCounters'
+      required:
+      - counters
+      - locationNumber
+      - sku
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    inventoriesRequest:
+      description: Find inventory request
+      properties:
+        itemIds:
+          description: List of item IDs for which the inventories are to be searched
+          items:
+            description: Item ID
+            example: 127122871
+            format: int64
+            type: integer
+          type: array
+        locationNumbers:
+          description: Location numbers
+          items:
+            description: Location number
+            example: 12
+            format: int32
+            type: integer
+          type: array
+        locationTypes:
+          description: Location types
+          items:
+            description: Location type
+            example: DC
+            type: string
+          type: array
+        networkCodes:
+          description: Codes associated with networks in which inventory of the SKUs are maintained
+          items:
+            description: Network code
+            example: '4'
+            type: string
+          type: array
+        region:
+          description: Region
+          example: North America
+          type: string
+        segments:
+          description: Segments
+          items:
+            description: Segment
+            example: B2B_Special
+            type: string
+          type: array
+        skus:
+          description: List of SKUs for which the inventories are to be searched within the specified region
+          items:
+            description: SKU
+            example: SKU1
+            type: string
+          type: array
+      type: object
+    findInventoriesResponse:
+      description: Find inventory response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/inventory'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    updateInventory:
+      description: Sample request to update inventory
+      properties:
+        backorderLimit:
+          description: Maximum restock inventory quantity
+          example: 50
+          format: int32
+          type: integer
+        backorderShipmentAt:
+          description: Time when backorder is shipped
+          example: 2022-08-01 20:03:28.483000+00:00
+          format: date-time
+          type: string
+        channelId:
+          description: Sales channel ID; identifies business operations location.
+          example: channel_xyz
+          type: string
+        counters:
+          additionalProperties:
+            description: Inventory counter (also known as inventory position) configured by the merchant
+            example:
+              allocated: 10
+              onHand: 100
+              shipped: 20
+            type: object
+          description: Inventory counter (also known as inventory position) configured by the merchant
+          example:
+            allocated: 10
+            onHand: 100
+            shipped: 20
+          type: object
+        customAttributes:
+          additionalProperties:
+            description: Placeholder for additional info
+            example: '{"isBopis":true}'
+            type: string
+          description: Placeholder for additional info
+          example:
+            isBopis: true
+          type: object
+        hasInfiniteInventory:
+          default: false
+          description: Infinite inventory flag.**true:** Inventory can be used any number of times and does not have any consumption limit.**false:** Inventory can't be used infinitely, and has a consumption limit.
+          example: false
+          type: boolean
+        isNoStock:
+          description: An attribute used to indicate that a SKU is out of stock.
+          example: false
+          type: boolean
+        itemId:
+          description: Merchant-defined item ID whose inventory is created or updated. If omitted, fabric Inventory service generates the `itemId`. If you choose to use the `itemId` in your environment, you must include it in all inventory *Write* requests.
+          example: 12345
+          format: int32
+          type: integer
+        leadTime:
+          description: The time between when an order is placed to replenish inventory and when the order is received at warehouse.
+          example: 5 days
+          type: string
+        locationNumber:
+          description: Represents the warehouse or store location where the inventory is stored. The locationNumber is crucial for inventory management. When creating or updating inventory, you need to include the locationNumber to specify which location the inventory belongs to.
+          example: 12345
+          format: int32
+          type: integer
+        lowStock:
+          description: The lowStock parameter is used to alert low stock at a location when inventory is below a set number.
+          example: 10
+          format: int32
+          type: integer
+        preorderLimit:
+          description: The maximum preorder limit.
+          example: 40
+          format: int32
+          type: integer
+        preorderShipmentAt:
+          description: Time when preorder is shipped
+          example: 2022-08-01 20:03:28.483000+00:00
+          format: date-time
+          type: string
+        region:
+          description: Region where inventory is managed
+          example: North America
+          type: string
+        safetyStock:
+          description: Reserved inventory quantity at the location
+          example: 10
+          format: int32
+          type: integer
+        sku:
+          description: Product SKU (Stock Keeping Unit) identifier. It serves as the primary reference key for the inventory and provides uniqueness to the item.
+          example: SKU1
+          type: string
+        status:
+          description: Inventory status IN_STOCK, LOW_STOCK, etc.
+          enum:
+          - IN_STOCK
+          - LOW_STOCK
+          - OUT_OF_STOCK
+          - BACKORDER_STOCK
+          - PREORDER_STOCK
+          example: ' IN_STOCK'
+          type: string
+        type:
+          description: Inventory type - a classifier attribute that provides flexibility to define inventory types
+          example: primary
+          type: string
+        vendorId:
+          description: ID of the vendor who will replenish the inventory for the retailer
+          example: vendor1
+          type: string
+        virtualCountersStatus:
+          $ref: '#/components/schemas/virtualCounters'
+      required:
+      - counters
+      - locationNumber
+      - sku
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    adjustCounterRequest:
+      description: Sample request to adjust counter
+      properties:
+        counters:
+          additionalProperties:
+            description: Inventory counter (also known as inventory position) configured by the merchant
+            example:
+              onHand: 100
+            type: object
+          description: Inventory counter (also known as inventory position) configured by the merchant
+          example:
+            onHand: 100
+          type: object
+        inventoryId:
+          description: The fabric system-generated inventory ID. This ID is generated during inventory creation.
+          example: 723910d81723
+          type: string
+        isNoStock:
+          description: An attribute used to indicate that a SKU is out of stock.
+          example: false
+          type: boolean
+        itemId:
+          description: Merchant-defined item ID whose inventory is updated. If omitted, fabric Inventory service generates the `itemId`. If you choose to use the `itemId` in your environment, you must include it in all inventory *Write* requests.
+          example: 12345
+          format: int32
+          type: integer
+        locationNumber:
+          description: Represents the warehouse or store location where the inventory is stored. The locationNumber is crucial for inventory management. When creating or updating inventory, you need to include the locationNumber to specify which location the inventory belongs to.
+          example: 12345
+          format: int32
+          type: integer
+        sku:
+          description: Product SKU (Stock Keeping Unit) identifier. It serves as the primary reference key for the inventory and provides uniqueness to the item.
+          example: SKU1
+          type: string
+        status:
+          description: Inventory status IN_STOCK, LOW_STOCK, etc.
+          enum:
+          - IN_STOCK
+          - LOW_STOCK
+          - OUT_OF_STOCK
+          - BACKORDER_STOCK
+          - PREORDER_STOCK
+          example: ' IN_STOCK'
+          type: string
+        virtualCountersStatus:
+          $ref: '#/components/schemas/virtualCounters'
+      required:
+      - counters
+      - locationNumber
+      - sku
+      type: object
+    findInventoryByGeographyRequest:
+      description: Find inventory by geography request
+      properties:
+        locationTypes:
+          description: List of location types
+          items:
+            description: Location type
+            example: DC
+            type: string
+          type: array
+        origin:
+          $ref: '#/components/schemas/geoOrigin'
+        skus:
+          description: List of SKUs for which the inventories are to be searched within the specified region
+          items:
+            description: SKU
+            example: sku1
+            type: string
+          type: array
+      required:
+      - origin
+      type: object
+    inventorySearchResponse:
+      description: Inventory search response sample
+      properties:
+        backorderLimit:
+          description: Maximum restock inventory quantity
+          example: 50
+          format: int32
+          type: integer
+        backorderShipmentAt:
+          description: Time when backorder is shipped
+          example: '2022-08-01T20:03:28.483Z'
+          format: date-time
+          type: string
+        channelId:
+          description: Sales channel ID; identifies business operations location.
+          example: channel_xyz
+          type: string
+        counters:
+          additionalProperties:
+            description: Merchant-defined inventory counter (also known as inventory position)
+            format: int32
+            type: integer
+          description: Merchant-defined inventory counter (also known as inventory position)
+          example:
+            allocated: 10
+            onHand: 100
+            shipped: 20
+          type: object
+        createdAt:
+          description: Time of inventory creation
+          example: '2022-08-01T18:03:28.483Z'
+          format: date-time
+          type: string
+        customAttributes:
+          additionalProperties:
+            description: Placeholder for additional info
+            example: '{"isBopis":true}'
+            type: string
+          description: Placeholder for additional info
+          example:
+            isBopis: true
+          type: object
+        hasInfiniteInventory:
+          default: false
+          description: Infinite inventory flag.**true:** Inventory can be used any number of times and does not have any consumption limit.**false:** Inventory can't be used infinitely, and has a consumption limit.
+          example: false
+          type: boolean
+        inventoryId:
+          description: The fabric system-generated inventory ID. This ID is generated during inventory creation.
+          example: 723910d81723
+          type: string
+        isNoStock:
+          description: An attribute used to indicate that a SKU is out of stock.
+          example: false
+          type: boolean
+        itemId:
+          description: Merchant-defined item ID whose inventory is created or updated. If omitted, fabric Inventory service generates the `itemId`. If you choose to use the `itemId` in your environment, you must include it in all inventory *Write* requests.
+          example: 12345
+          format: int32
+          type: integer
+        leadTime:
+          description: The time between when an order is placed to replenish inventory and when the order is received at warehouse.
+          example: 5 days
+          type: string
+        locationNumber:
+          description: Represents the warehouse or store location where the inventory is stored. The locationNumber is crucial for inventory management. When creating or updating inventory, you need to include the locationNumber to specify which location the inventory belongs to.
+          example: 12345
+          format: int32
+          type: integer
+        lowStock:
+          description: The lowStock parameter is used to alert low stock at a location when inventory is below a set number.
+          example: 10
+          format: int32
+          type: integer
+        networkCode:
+          description: Code of the network to which the inventory belongs
+          example: ShipToHome
+          type: string
+        preorderLimit:
+          description: Maximum first-shipping inventory quantity
+          example: 40
+          format: int32
+          type: integer
+        preorderShipmentAt:
+          description: Time when preorder is shipped
+          example: '2022-08-01T20:03:28.483Z'
+          format: date-time
+          type: string
+        region:
+          description: Region where inventory is managed
+          example: North America
+          type: string
+        safetyStock:
+          description: Reserved inventory quantity at the location
+          example: 10
+          format: int32
+          type: integer
+        sku:
+          description: Product SKU (Stock Keeping Unit) identifier. It serves as the primary reference key for the inventory and provides uniqueness to the item.
+          example: SKU1
+          type: string
+        status:
+          description: Inventory status IN_STOCK, LOW_STOCK, etc.
+          enum:
+          - IN_STOCK
+          - LOW_STOCK
+          - OUT_OF_STOCK
+          - BACKORDER_STOCK
+          - PREORDER_STOCK
+          example: ' IN_STOCK'
+          type: string
+        type:
+          description: Inventory type - a classifier attribute that provides flexibility to define inventory types
+          example: primary
+          type: string
+        updatedAt:
+          description: Time when inventory was last updated
+          example: '2022-08-01T20:03:28.483Z'
+          format: date-time
+          type: string
+        vendorId:
+          description: ID of the vendor who will replenish the inventory for the retailer
+          example: vendor1
+          type: string
+        virtualCounters:
+          $ref: '#/components/schemas/virtualCounters'
+        virtualCountersStatus:
+          $ref: '#/components/schemas/virtualCounters'
+      type: object
+    geoLocationResource:
+      description: Geo location response sample
+      properties:
+        capacity:
+          $ref: '#/components/schemas/capacity'
+        distance:
+          description: Distance of the location from the provided coordinates; distance is defined using the unit specified in `distanceUnit`.
+          example: 12.34
+          format: double
+          type: number
+        locationNumber:
+          description: Location number of the inventory
+          example: 12345
+          format: int32
+          type: integer
+        locationType:
+          description: Type of the location
+          example: DC
+          type: string
+      type: object
+    valuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventorySearchFilter'
+      - properties:
+          values:
+            items:
+              description: Multiple values using which inventory details are searched
+              example: SKU
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find inventories by multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    virtualCounters:
+      description: Virtual counters are calculated at run time from counters
+      properties:
+        availableBackorder:
+          type: string
+        availablePreorder:
+          type: string
+        availableToPurchase:
+          type: string
+      type: object
+    inventorySearchFilter:
+      description: Criteria to find inventory. To search using a single value, `valueSearchFilter` is considered. To search using multiple values, `valuesSearchFilter` is considered.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilter'
+          GT: '#/components/schemas/valueSearchFilter'
+          GTE: '#/components/schemas/valueSearchFilter'
+          IN: '#/components/schemas/valuesSearchFilter'
+          LT: '#/components/schemas/valueSearchFilter'
+          LTE: '#/components/schemas/valueSearchFilter'
+          NEQ: '#/components/schemas/valueSearchFilter'
+          NIN: '#/components/schemas/valuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: Filter conditions. **EQ (Equal to):** Searches for exact match. **NEQ (Not equal to):** Searches by excluding the specified value. **IN:** Search for multiple values. **NIN (Not IN):** Excludes the specified values in the search. **LT (Less than):** Searches for values that are less than the specified value. **GT (Greater than):**  Search for values that are greater than the specified value. **LTE (Less than or equal to):** Searches for values that are less than or equal to the specified value. **GTE (Greater than or equal to):** Searches for values that are greater than or equal to the specified value.
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: inventory.sku
+          pattern: ^inventory\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: Group name
+          example: GroupA
+          type: string
+      required:
+      - condition
+      - field
+      type: object
+    inventory:
+      description: Inventory response sample
+      properties:
+        backorderLimit:
+          description: Maximum restock inventory quantity
+          example: 50
+          format: int32
+          type: integer
+        backorderShipmentAt:
+          description: Time when backorder is shipped
+          example: 2022-08-01 20:03:28.483000+00:00
+          format: date-time
+          type: string
+        channelId:
+          description: Sales channel ID; identifies business operations location.
+          example: channel_xyz
+          type: string
+        counters:
+          additionalProperties:
+            description: Merchant-defined inventory counter (also known as inventory position)
+            format: int32
+            type: integer
+          description: Merchant-defined inventory counter (also known as inventory position)
+          example:
+            allocated: 10
+            onHand: 100
+            shipped: 20
+          type: object
+        createdAt:
+          description: Time of inventory creation
+          example: 2022-08-01 18:03:28.483000+00:00
+          format: date-time
+          type: string
+        customAttributes:
+          additionalProperties:
+            description: Placeholder for additional info
+            example: '{"isBopis":true}'
+            type: string
+          description: Placeholder for additional info
+          example:
+            isBopis: true
+          type: object
+        hasInfiniteInventory:
+          default: false
+          description: Infinite inventory flag. **true:** Inventory can be used any number of times and does not have any consumption limit. **false:** Inventory can't be used infinitely, and has a consumption limit.
+          example: false
+          type: boolean
+        inventoryId:
+          description: The fabric system-generated inventory ID. This ID is generated during inventory creation.
+          example: 723910d81723
+          type: string
+        isNoStock:
+          description: An attribute used to indicate that a SKU is out of stock.
+          example: false
+          type: boolean
+        itemId:
+          description: Merchant-defined item ID whose inventory is created or updated. If omitted, fabric Inventory service generates the `itemId`. If you choose to use the `itemId` in your environment, you must include it in all inventory *Write* requests.
+          example: 12345
+          format: int32
+          type: integer
+        leadTime:
+          description: The time between when an order is placed to replenish inventory and when the order is received at warehouse.
+          example: 5 days
+          type: string
+        locationNumber:
+          description: Represents the warehouse or store location where the inventory is stored. The locationNumber is crucial for inventory management. When creating or updating inventory, you need to include the locationNumber to specify which location the inventory belongs to.
+          example: 12345
+          format: int32
+          type: integer
+        lowStock:
+          description: The lowStock parameter is used to alert low stock at a location when inventory is below a set number.
+          example: 10
+          format: int32
+          type: integer
+        networkCode:
+          description: Code of the network to which the inventory belongs
+          example: ShipToHome
+          type: string
+        networkCounters:
+          additionalProperties:
+            description: Indicates inventory positions at network
+            format: int32
+            type: integer
+          description: Indicates inventory positions at network
+          example:
+            softReserve: 10
+          type: object
+        preorderLimit:
+          description: Maximum first-shipping inventory quantity
+          example: 40
+          format: int32
+          type: integer
+        preorderShipmentAt:
+          description: Time when preorder is shipped
+          example: 2022-08-01 20:03:28.483000+00:00
+          format: date-time
+          type: string
+        region:
+          description: Region where inventory is managed
+          example: North America
+          type: string
+        safetyStock:
+          description: Reserved inventory quantity at the location
+          example: 10
+          format: int32
+          type: integer
+        sku:
+          description: Product SKU (Stock Keeping Unit) identifier. It serves as the primary reference key for the inventory and provides uniqueness to the item.
+          example: SKU1
+          type: string
+        status:
+          description: Inventory status IN_STOCK, LOW_STOCK, etc.
+          enum:
+          - IN_STOCK
+          - LOW_STOCK
+          - OUT_OF_STOCK
+          - BACKORDER_STOCK
+          - PREORDER_STOCK
+          example: ' IN_STOCK'
+          type: string
+        type:
+          description: Inventory type - a classifier attribute that provides flexibility to define inventory types
+          example: primary
+          type: string
+        updatedAt:
+          description: Time when inventory was last updated
+          example: 2022-08-01 20:03:28.483000+00:00
+          format: date-time
+          type: string
+        vendorId:
+          description: ID of the vendor who will replenish the inventory for the retailer
+          example: vendor1
+          type: string
+        virtualCounters:
+          $ref: '#/components/schemas/virtualCounters'
+        virtualCountersStatus:
+          $ref: '#/components/schemas/virtualCounters'
+      type: object
+    geoOrigin:
+      description: Geo search origin. Must include (`postalCode`) OR (`city` and `region` and `countryCode`) OR (`latitude` and `longitude`)
+      properties:
+        city:
+          description: City for which location will be searched
+          example: San Francisco
+          type: string
+        countryCode:
+          description: ISO 3166-1 alpha-2 based country code
+          example: US
+          type: string
+        distanceUnit:
+          default: MILE
+          description: Distance unit
+          enum:
+          - MILE
+          - KILOMETER
+          - METER
+          example: MILE
+          type: string
+        latitude:
+          description: Latitude of the location in degree
+          example: 21.2629852
+          format: double
+          type: number
+        longitude:
+          description: Longitude of the location in degree
+          example: -108.7256871
+          format: double
+          type: number
+        maxDistance:
+          default: 100
+          description: Maximum distance (in radius) from the specified postal code within which the location will be searched
+          example: 100
+          format: double
+          type: number
+        minDistance:
+          default: 0
+          description: Minimum distance (in radius) from the specified postal code within which the location will be searched
+          example: 10
+          format: double
+          type: number
+        postalCode:
+          description: Postal code from where nearby locations are to be searched
+          example: '94008'
+          type: string
+        region:
+          description: Region for which location will be searched
+          example: New York
+          type: string
+      type: object
+    capacity:
+      description: Location Capacity Model used by fulfillment specialist to optimize fulfillments across the distribution network and monitor productivity by location
+      properties:
+        allocationPercentage:
+          description: Current percentage of allocations at this location. Calculated by (currentAllocations / maxAllocations)*100
+          example: 20
+          format: int32
+          type: integer
+        currentAllocations:
+          description: Current allocations at this location.
+          example: 5
+          format: int32
+          readOnly: true
+          type: integer
+        infiniteAllocation:
+          type: boolean
+        isCapacityFull:
+          description: If location has no allocation capacity limit.
+          example: true
+          type: boolean
+        maxAllocations:
+          description: Maximum allocations this location can take at any given time. When currentAllocations=maxAllocations, this location is AtCapacity and can't take any further allocations.
+          example: 30
+          format: int32
+          type: integer
+      type: object
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

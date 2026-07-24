@@ -1,0 +1,386 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- description: 'This endpoint helps perform additional operations for inventory
+
+    management.'
+  name: Actions Endpoints
+paths:
+  /inventories/actions/hard-reserve-search:
+    post:
+      description: Search for hard reservations based on filter criteria.
+      operationId: search
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/hardReservationSearchRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Search for Inventory Hard Reservations
+      tags:
+      - Actions Endpoints
+components:
+  schemas:
+    valuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventorySearchFilter'
+      - properties:
+          values:
+            items:
+              description: Multiple values using which inventory details are searched
+              example: SKU
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find inventories by multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    hardReservationSearchRequest:
+      description: Hard reservation search request model
+      example:
+        filters:
+        - condition: EQ
+          field: hardReserve.allocationRequestId
+          value: '123'
+        - condition: IN
+          field: hardReserve.inventoryAllocations.channelId
+          values:
+          - WHBM
+          - CHO
+        sort: -hardReserve.createdAt
+      properties:
+        filters:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/valueSearchFilter'
+            - $ref: '#/components/schemas/valuesSearchFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+        sort:
+          default: -hardReserve.createdAt
+          description: Resource property on which data needs to be sorted on.
+          example: +hardReserve.createdAt
+          pattern: (^[+-]hardReserve\.[a-zA-Z.\-_]*)(,([+-]hardReserve\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+      - filters
+      type: object
+    valueSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventorySearchFilter'
+      - properties:
+          value:
+            description: A single value to search inventory
+            example: SKU
+            oneOf:
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+        type: object
+      description: Criteria to find inventories by a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    importCount:
+      description: Import count object
+      properties:
+        error:
+          description: Total rows with errors in the file
+          example: 2000
+          format: int32
+          type: integer
+        processed:
+          description: Total rows processed in the file. `processed` = `uploaded` - `error` **Note:** Rows that are not formatted according to system requirements will not be imported.
+          example: 8000
+          format: int32
+          type: integer
+        uploaded:
+          description: Total rows in the file
+          example: 10000
+          format: int32
+          type: integer
+      type: object
+    inventorySearchFilter:
+      description: Criteria to find inventory. To search using a single value, `valueSearchFilter` is considered. To search using multiple values, `valuesSearchFilter` is considered.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilter'
+          GT: '#/components/schemas/valueSearchFilter'
+          GTE: '#/components/schemas/valueSearchFilter'
+          IN: '#/components/schemas/valuesSearchFilter'
+          LT: '#/components/schemas/valueSearchFilter'
+          LTE: '#/components/schemas/valueSearchFilter'
+          NEQ: '#/components/schemas/valueSearchFilter'
+          NIN: '#/components/schemas/valuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: Filter conditions. **EQ (Equal to):** Searches for exact match. **NEQ (Not equal to):** Searches by excluding the specified value. **IN:** Search for multiple values. **NIN (Not IN):** Excludes the specified values in the search. **LT (Less than):** Searches for values that are less than the specified value. **GT (Greater than):**  Search for values that are greater than the specified value. **LTE (Less than or equal to):** Searches for values that are less than or equal to the specified value. **GTE (Greater than or equal to):** Searches for values that are greater than or equal to the specified value.
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: inventory.sku
+          pattern: ^inventory\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: Group name
+          example: GroupA
+          type: string
+      required:
+      - condition
+      - field
+      type: object
+    inventoryImportStatusResponse:
+      description: An object containing the inventory import status response details.
+      properties:
+        attributes:
+          description: 'Custom attributes. This is a placeholder for additional info in key: value pairs'
+          example:
+            attribute: '12345'
+          type: object
+        createdAt:
+          description: Time of import request
+          example: '2022-08-01T18:03:28.483Z'
+          format: date-time
+          type: string
+        errorFileUrl:
+          description: 'Directory path where file uploaded '
+          example: https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2
+          type: string
+        fileName:
+          description: Uploaded file name
+          example: orderUpload.csv
+          type: string
+        finishedAt:
+          description: Date and time file import was completed
+          example: '2022-08-01T18:03:28.483Z'
+          format: date-time
+          type: string
+        importCount:
+          $ref: '#/components/schemas/importCount'
+        importId:
+          description: Imported file's unique ID
+          example: 62ff5c0bec0aed3c86202c32
+          type: string
+        originalFileUrl:
+          description: Path to download the uploaded file
+          example: https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2
+          type: string
+        statusCode:
+          description: Uploaded file's current status
+          enum:
+          - INITIATED
+          - PROCESSING
+          - COMPLETED
+          - SYSTEM_ERROR
+          example: INITIATED
+          type: string
+        type:
+          enum:
+          - INVENTORY
+          - INVENTORY_COUNTERS
+          example: INVENTORY
+          type: string
+        updatedAt:
+          description: Date and time record was last modified
+          example: '2022-08-01T20:03:28.483Z'
+          format: date-time
+          type: string
+      required:
+      - createdAt
+      - importId
+      type: object
+    searchResponse:
+      description: Search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/inventoryImportStatusResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+  parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

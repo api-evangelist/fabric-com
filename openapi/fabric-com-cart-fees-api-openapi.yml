@@ -1,0 +1,459 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Cart Fees API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- name: Cart Fees
+  description: Cart fee endpoints are used to add, update and remove fees at the Cart level.
+paths:
+  /carts/{cartId}/fees:
+    post:
+      tags:
+      - Cart Fees
+      summary: Create Fee
+      description: 'Creates a fee that is applied to the corresponding cart.
+
+
+        The Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.
+
+        '
+      operationId: createFee
+      parameters:
+      - name: cartId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint.
+      - name: x-fabric-tenant-id
+        in: header
+        description: "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n"
+        required: true
+        schema:
+          type: string
+          example: 617329dfd5288b0011332311
+      - name: x-fabric-request-id
+        in: header
+        description: ' Unique request ID for tracking.'
+        required: false
+        schema:
+          type: string
+          example: 263e731c-45c8-11ed-b878-0242ac120002
+      - name: x-fabric-channel-id
+        in: header
+        description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.
+        required: false
+        schema:
+          type: string
+          example: '12'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFeeRequestWithTaxDetails'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewFee'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '404':
+          description: Cart or Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+  /carts/{cartId}/fees/{feeId}:
+    delete:
+      tags:
+      - Cart Fees
+      summary: Delete Fee
+      description: 'Removes a fee from the cart.
+
+
+        The Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.
+
+
+        The Fee ID from the [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/delete-fees) endpoint is used in the path parameter.
+
+        '
+      operationId: removeFee
+      parameters:
+      - name: cartId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint.
+      - name: feeId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: The Fee ID generated from the [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
+      - name: x-fabric-tenant-id
+        in: header
+        description: "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n"
+        required: true
+        schema:
+          type: string
+          example: 617329dfd5288b0011332311
+      - name: x-fabric-request-id
+        in: header
+        description: ' Unique request ID for tracking.'
+        required: false
+        schema:
+          type: string
+          example: 263e731c-45c8-11ed-b878-0242ac120002
+      - name: x-fabric-channel-id
+        in: header
+        description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.
+        required: false
+        schema:
+          type: string
+          example: '12'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '404':
+          description: Cart or Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    patch:
+      tags:
+      - Cart Fees
+      summary: Update Fee
+      description: 'Updates a fee in the cart.
+
+
+        The Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.
+
+
+        The Fee ID from the [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/delete-fees) endpoint is used in the path parameter.
+
+        '
+      operationId: updateFee_1
+      parameters:
+      - name: cartId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint.
+      - name: feeId
+        in: path
+        required: true
+        schema:
+          type: string
+          description: The Fee ID generated from the [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
+      - name: x-fabric-tenant-id
+        in: header
+        description: "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n"
+        required: true
+        schema:
+          type: string
+          example: 617329dfd5288b0011332311
+      - name: x-fabric-request-id
+        in: header
+        description: ' Unique request ID for tracking.'
+        required: false
+        schema:
+          type: string
+          example: 263e731c-45c8-11ed-b878-0242ac120002
+      - name: x-fabric-channel-id
+        in: header
+        description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.
+        required: false
+        schema:
+          type: string
+          example: '12'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeeRequestWithTaxDetails'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdatedFee'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '404':
+          description: Cart or Item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+components:
+  schemas:
+    Tax:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Tax amount
+          example: 3
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+            example:
+              rate: '5.0'
+              type: COUNTY
+          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+          example:
+            rate: '5.0'
+            type: COUNTY
+      description: Tax
+    UpdatedFee:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Fee ID generated from the [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes used to describe a fee, such as an eco fee.
+            example:
+              source: eco
+          description: Custom attributes used to describe a fee, such as an eco fee.
+          example:
+            source: eco
+        tax:
+          $ref: '#/components/schemas/TaxCollection'
+        updatedAt:
+          type: string
+          description: The date and time when the fee was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the fee was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+        taxDetails:
+          $ref: '#/components/schemas/FeeTaxDetails'
+      description: Fee
+    NotFound:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
+    FeeTaxDetails:
+      type: object
+      properties:
+        destinationAddress:
+          type: string
+          description: The destination address where the item will be delivered.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+        originAddress:
+          type: string
+          description: The origin address from which the item will be fulfilled.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+      description: Tax details used to determine tax for a cart fee.
+    TaxCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Tax total in the collection.
+          example: 3
+        collection:
+          type: array
+          description: An array containing taxes in a collection.
+          items:
+            $ref: '#/components/schemas/Tax'
+      description: A collection of taxes.
+    ClientError:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: Human-readable error description
+          example: x-fabric-tenant-id is required
+      description: Client error details
+    ResourcePrice:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          exclusiveMinimum: false
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
+    CreateFeeRequestWithTaxDetails:
+      required:
+      - name
+      - price
+      type: object
+      properties:
+        taxDetails:
+          $ref: '#/components/schemas/FeeTaxDetailsRequest'
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes that describe the fee, such as an eco fee.
+            example:
+              source: eco
+          description: Custom attributes that describe the fee, such as an eco fee.
+          example:
+            source: eco
+      description: Fee Request
+    UpdateFeeRequestWithTaxDetails:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes
+            example:
+              source: eco
+          description: Custom attributes
+          example:
+            source: eco
+        taxDetails:
+          $ref: '#/components/schemas/FeeTaxDetailsRequest'
+      description: Fee Request
+    FeeTaxDetailsRequest:
+      type: object
+      properties:
+        destinationAddress:
+          type: string
+          description: Identifier of the address
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+        originAddress:
+          type: string
+          description: Identifier of the address
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+      description: Tax details used to determine tax for a cart fee
+    NewFee:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the fee generated in this response, used for referencing in other endpoints.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes that provide more context for the fee, such as the source of the fee.
+            example:
+              source: eco
+          description: Custom attributes that provide more context for the fee, such as the source of the fee.
+          example:
+            source: eco
+        tax:
+          $ref: '#/components/schemas/TaxCollection'
+        updatedAt:
+          type: string
+          description: The date and time when the fee was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the fee was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+        taxDetails:
+          $ref: '#/components/schemas/FeeTaxDetails'
+      description: Fee
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

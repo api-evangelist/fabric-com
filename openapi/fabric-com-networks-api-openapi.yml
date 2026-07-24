@@ -1,0 +1,632 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Networks API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- description: Network refers to a group of locations having a group of SKUs in each location. These endpoints let you read, create, and manage an inventory-network by location, brand, or any other custom attributes.
+  name: Networks
+paths:
+  /inventory-networks:
+    get:
+      description: Get a paginated list of all the created networks.
+      operationId: searchNetworks
+      parameters:
+      - description: Number of records to skip before returning all records. Default is `0` when no value is specified.
+        example: 0
+        in: query
+        name: offset
+        schema:
+          default: 0
+          example: 0
+          format: int32
+          type: integer
+      - description: Maximum number of results per page. Default is `10` when no value is specified.
+        example: 10
+        in: query
+        name: limit
+        schema:
+          default: 10
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/networkSearchResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get All Networks
+      tags:
+      - Networks
+    post:
+      description: Create a network using conditional rules to add locations and SKU to the network.
+      operationId: createNetwork
+      parameters:
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createNetwork'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/network'
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '409':
+          content:
+            application/json:
+              example:
+                message: Inventory network with code already exists
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Conflict
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create Inventory Network
+      tags:
+      - Networks
+  /inventory-networks/{networkCode}:
+    delete:
+      description: Delete a specific network, with all its details, by specified network code. Once deleted, it can't be undone.
+      operationId: deleteNetwork
+      parameters:
+      - description: Network code
+        example: DC
+        in: path
+        name: networkCode
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/network'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Network code not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Delete Network by Code
+      tags:
+      - Networks
+    get:
+      description: Get details of a specific network by code.
+      operationId: getNetwork
+      parameters:
+      - description: Merchant-specified network code
+        example: DC
+        in: path
+        name: networkCode
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/network'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Network code not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get Network by Code
+      tags:
+      - Networks
+    put:
+      description: Update details of a specific inventory network by specified network code.
+      operationId: updateNetwork
+      parameters:
+      - description: Network code
+        example: DC
+        in: path
+        name: networkCode
+        required: true
+        schema:
+          type: string
+      - $ref: '#/components/parameters/xFabricTenantId'
+      - $ref: '#/components/parameters/xFabricChannelId'
+      - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateNetwork'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/network'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                - message: Invalid request
+                  type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Network by Code
+      tags:
+      - Networks
+components:
+  parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+  schemas:
+    networkSearchResponse:
+      description: Network search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/network'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    network:
+      description: Network response details
+      properties:
+        code:
+          description: Unique network code
+          example: DC
+          type: string
+        createdAt:
+          description: Time network was configured
+          example: 2022-08-01 18:03:28.483000+00:00
+          format: date-time
+          type: string
+        description:
+          description: Network description
+          example: network-mar6th
+          type: string
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Network name
+          example: Distribution Center
+          type: string
+        networkId:
+          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        rule:
+          description: Rule by which a network will be created with the group of inventories
+          example:
+            locationData.attributes.safetyStock: 10
+            locationData.isActive: true
+            locationData.type: Store
+            productData.attributes.brand: ABC
+            productData.attributes.isSoldOnline: true
+          type: object
+        safetyStock:
+          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
+          example: 10
+          format: int32
+          type: integer
+        updatedAt:
+          description: Time network was last updated
+          example: 2022-08-01 18:03:28.483000+00:00
+          format: date-time
+          type: string
+      required:
+      - code
+      - name
+      - rule
+      type: object
+    updateNetwork:
+      description: Request sample to update network
+      properties:
+        description:
+          description: Network description
+          example: network-mar6th
+          type: string
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Network name
+          example: Distribution Center
+          type: string
+        networkId:
+          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        rule:
+          description: Rule by which a network will be created with the group of inventories
+          example:
+            locationData.attributes.safetyStock: 10
+            locationData.isActive: true
+            locationData.type: Store
+            productData.attributes.brand: ABC
+            productData.attributes.isSoldOnline: true
+          type: object
+        safetyStock:
+          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
+          example: 10
+          format: int32
+          type: integer
+      required:
+      - name
+      - rule
+      type: object
+    createNetwork:
+      description: Sample request to create network
+      properties:
+        code:
+          description: Unique network code
+          example: DC
+          type: string
+        description:
+          description: Network description
+          example: network-mar6th
+          type: string
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Network name
+          example: Distribution Center
+          type: string
+        networkId:
+          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        rule:
+          description: Rule by which a network will be created with the group of inventories
+          example:
+            locationData.attributes.safetyStock: 10
+            locationData.isActive: true
+            locationData.type: Store
+            productData.attributes.brand: ABC
+            productData.attributes.isSoldOnline: true
+          type: object
+        safetyStock:
+          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
+          example: 10
+          format: int32
+          type: integer
+      required:
+      - code
+      - name
+      - rule
+      type: object
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '

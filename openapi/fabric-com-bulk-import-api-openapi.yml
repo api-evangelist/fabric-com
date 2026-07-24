@@ -1,0 +1,837 @@
+openapi: 3.0.1
+info:
+  title: Cart Actions Endpoints Bulk Import API
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  contact:
+    name: Cart Support
+    email: support.cnc@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  version: 3.0.0
+servers:
+- url: https://api.fabric.inc/v3
+security:
+- bearerAuth: []
+tags:
+- name: Bulk Import
+  description: Set of endpoints to help bulk import of items, bundles, categories and attributes through CSV files
+paths:
+  /api-category/v1/category/bulk/template:
+    get:
+      tags:
+      - Bulk Import
+      summary: Generate CSV Template for Categories
+      description: Generates CSV template to bulk upload categories.
+      operationId: generateCSVfileForCategory
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/csv:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-category/v1/upload-url:
+    post:
+      tags:
+      - Bulk Import
+      summary: Generate S3 Bucket URL for Categories Import
+      description: 'Generates S3 bucket URL to upload categories using CSV file. Follow these steps to bulk upload categories using CSV: <br /> 1) Download the template using *GET /api-category/v1/category/bulk/template* <br /> 2) Upload the URL using *POST /api-category/v1/upload-url*<br /> 3) Open the URL from the response of the above endpoint (*POST /api-category/v1/upload-url*), change the method to PUT, update **binary** in the requestBody type to view the select file option and upload a CSV from local system <br /> 4) You may check the status using this endpoint *GET /api-category/v1/category/bulk/file/:fileId/status*'
+      operationId: generateS3urlForCategory
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetS3URLRequestUsingOnlyFileName'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetS3URLResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-category/v1/category/file/search:
+    post:
+      tags:
+      - Bulk Import
+      summary: Get Imported Files for Categories
+      description: Gets a list of files used for importing categories, along with their current statuses. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`.
+      operationId: fileSearchForCategories
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilePaginationResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-category/v1/category/bulk/file/{fileId}/status:
+    get:
+      tags:
+      - Bulk Import
+      summary: Get File Upload Status
+      description: Gets file upload status by file ID.
+      operationId: getFileStatusForCategories
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      - in: path
+        name: fileId
+        description: 24-character system-generated file ID
+        schema:
+          type: string
+        required: true
+        example: 626c3c28e041b10009810b21
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/UploadFileStatusResponse'
+                - $ref: '#/components/schemas/UploadFileStatusNoItemResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/product/bulk/template/{accountId}/{nodeId}:
+    get:
+      tags:
+      - Bulk Import
+      summary: Generate CSV Template File for Items
+      description: Generates CSV template to upload items for a specific category.
+      operationId: generateCSVfile
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      - in: path
+        name: accountId
+        description: Account ID
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: nodeId
+        description: A 24-character system-generated category ID
+        schema:
+          type: string
+        required: true
+        example: 6131f771d4a7fa4314e45ebd
+      responses:
+        '200':
+          description: OK
+          content:
+            application/csv:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/upload-url:
+    post:
+      tags:
+      - Bulk Import
+      summary: Generate S3 Bucket URL for Item Import
+      description: 'Generates S3 bucket URL to upload items using CSV file. Follow these steps for bulk upload using CSV: <br /> 1) Download the template using *GET /api-product/v1/product/bulk/template/:accountid/:nodeId* <br /> 2) Upload the url using *POST /api-product/v1/upload-url*<br /> 3) Open the URL from the response of the above endpoint (*POST /api-product/v1/upload-url*), change the method to PUT, update **binary** in the requestBody type to view the select file option and upload a CSV from local system <br /> 4) You may check the status using this endpoint *GET /api-product/v1/product/bulk/file/:fileId/status*'
+      operationId: generateS3url
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetS3URLRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetS3URLResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/product/file/search:
+    post:
+      tags:
+      - Bulk Import
+      summary: Get Imported Files for Items
+      description: Gets a list of files used to import items, along with their current statuses. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`.
+      operationId: fileSearch
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilePaginationResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/product/bulk/template/bundle/{accountId}/{nodeId}:
+    get:
+      tags:
+      - Bulk Import
+      summary: Generate CSV Template for Bundles
+      description: Generates CSV template to upload bundles for a specific category.
+      operationId: generateItemBundleCSVfile
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      - in: path
+        name: accountId
+        description: Account ID
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: nodeId
+        description: A 24-character system-generated category ID
+        schema:
+          type: string
+        required: true
+        example: 6131f771d4a7fa4314e45ebd
+      responses:
+        '200':
+          description: OK
+          content:
+            application/csv:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/upload-url/bundle:
+    post:
+      tags:
+      - Bulk Import
+      summary: Generate S3 Bucket URL for Bundle Import
+      description: Generates S3 bucket URL to upload item bundles using CSV file
+      operationId: generateItemBundleS3url
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetS3URLBundleRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetS3URLBundleResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/product/file/bundle/search:
+    post:
+      tags:
+      - Bulk Import
+      summary: Get Imported Files for Bundles
+      description: Gets a list of files used to import bundles, along with their current statuses. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`.
+      operationId: ItemBundleFileSearch
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilePaginationResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/product/bulk/template/attribute:
+    get:
+      tags:
+      - Bulk Import
+      summary: Generate CSV Template for Item Attributes
+      description: 'Generates CSV template to upload item attributes. '
+      operationId: generateItemAttributeCSVfile
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/csv:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/upload-url/attribute:
+    post:
+      tags:
+      - Bulk Import
+      summary: Generate S3 Bucket URL for Item Attribute Import
+      description: Generates S3 bucket URL to upload item attribute using CSV file
+      operationId: generateItemAttributeS3url
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetS3URLItemAttributeRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetS3URLItemAttributeResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/product/file/attribute/search:
+    post:
+      tags:
+      - Bulk Import
+      summary: Get Imported Files for Item Attributes
+      description: Gets a list of files used to import item attributes, along with their current statuses. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`.
+      operationId: ItemAttributeFileSearch
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FilePaginationResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+  /api-product/v1/product/bulk/file/{fileId}/status:
+    get:
+      tags:
+      - Bulk Import
+      summary: Get File Upload Status
+      description: Gets file upload status by using file ID
+      operationId: getFileStatus
+      security:
+      - authorization: []
+      parameters:
+      - $ref: '#/components/parameters/xSiteContent'
+      - in: path
+        name: fileId
+        description: A 24-character system-generated file ID
+        schema:
+          type: string
+        required: true
+        example: 626c3c28e041b10009810b21
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/schemas/UploadFileStatusResponse'
+                - $ref: '#/components/schemas/UploadFileStatusNoItemResponse'
+        '400':
+          description: Client error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+components:
+  schemas:
+    GetS3URLBundleResponse:
+      type: object
+      properties:
+        fileId:
+          description: A 24-character system-generated file ID
+          type: string
+          example: 626c3c28e041b10009810b21
+        url:
+          description: S3 bucket URL, to upload the template file
+          type: string
+          example: https://demo-dev02-bulk-import-pim.s3.amazonaws.com/item-bundles/609ac75051f11a0007cf38b3/dev02/1651266490891-men-shoes-bundle-local.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA26KLJWUAMB3F4HM7%2F20220429%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220429T210813Z&X-Amz-Expires=300&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDsaCXVzLWVhc3QtMSJGMEQCIGW476Ala9Go95rgQ3gVPwSvCbcZPrm4WgLs186q0R6GAiBqqVo4yuAkTKZTMl2qBF8hJOySqicG42ObKpyPtBmGWir4Awj0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAIaDDc1MjMxNDA3MDI3MiIMSeKQqQmLFWlfgsfVKswDvUDycKtqRnlcHaiuM56ZPrzPio9ylmxLaqjgUDCdF73ZqtkL41jqTf0kI%2FOnkXegoOks5dRbnprCbDwJxQFiwyOgQ9w8VC8ZCVzG6s6V7vnQDMQZ2mAVDk30KjL9BXShFNqBqY6r6COCJtyi5kMHpUjA8HM6Q7N19XOg7kH1VVnm4UZpWU%2F9blF8EMjiqIvWfjmRdv%2BnmBdx3RztZ0jEuJ9g4YeEmOZUUCaZoNLl78nE5vPoTQLNW%2F5YzKMO8ECTJ3Vr8nY%2BCVl5bTrAMK4TdCK%2BVaZjEpw7DQrSKmaR1JhQlYxD%2F%2F3WxPc%2FECeYD7eTLmWOYXh3LELhOYyy49%2Bx0MhdUaYQTlSsuU4NKnWcYcyeIh5J7%2Bef4Q9PgkBZqdE7gCN5m%2BqmfDLzu4W1SjR47MbdXYIiShDdvvM2DDrmwfMuTMS14fEWiMP4zhuehc12gA%2BGTwmuHjqYQCuRswGncP9574CXT1mzu%2BcW5bqMNKg80paslu2ipNJL4vScEjV%2FFYcYGCoXskYgBQr5IZJ4xdtv%2BYGrEMiCbob8UZ1oT5QtJSyLVqOqGt%2FvomDHdHqMved8fQbyddZo28DC%2BwB1DEI3XsLEp3rZFCeLzTCt3bCTBjqmAe%2F4uuvRSexVKYd%2F4XCVdbKrZG%2Fl7JoTsJv%2FI4k8nqezmqPAgpErsqCyvqyUXTx8jgrxi70EuiH6n1F5QEhMfge4C41jFKqYsY%2FxWEkwZw89koTrbzGs2z64i4eCzDU5u3OItYGVaEctdbHnpx%2FA3xnOgdPoGP%2FDQPVgCdsMWvjCkRDbNcBoSLXuXSRBgbOXy2RgkHY5YQ%2Fxys257mGLb3FZhjqvScs%3D&X-Amz-Signature=24c29de90587424ffdb21a7d970ef08c0a68ebaccd562f95b766dd01faad9d56&X-Amz-SignedHeaders=host%3Bx-amz-meta-account%3Bx-amz-meta-channel%3Bx-amz-meta-fileid%3Bx-amz-meta-filename%3Bx-amz-meta-nodeid%3Bx-amz-meta-prefix%3Bx-amz-meta-stage&x-amz-meta-account=609ac75051f11a0007cf38b3&x-amz-meta-channel=12&x-amz-meta-fileid=626c3c28e041b10009810b21&x-amz-meta-filename=men-shoes-bundle-local.csv&x-amz-meta-nodeid=626a31a2d877f5e49efad330&x-amz-meta-prefix=item&x-amz-meta-stage=dev02
+        key:
+          description: S3 key of the file
+          type: string
+          example: item-bundles/609ac75051f11a0007cf38b3/dev02/1651266490891-men-shoes-bundle-local.csv
+    UploadFileStatusNoItemResponse:
+      type: object
+      properties:
+        code:
+          description: Status code
+          type: string
+          example: ITEM_NOT_FOUND
+        description:
+          description: Status description
+          type: string
+          example: item not found
+        name:
+          description: Status name
+          type: string
+          example: item not found
+    objectUploadFileStatusNotFound:
+      type: object
+      properties:
+        code:
+          description: Status code
+          type: string
+          example: NOT_FOUND
+        description:
+          description: Description for status
+          type: string
+          example: status not found
+        name:
+          description: Status name
+          type: string
+          example: not found
+    GetS3URLRequest:
+      type: object
+      properties:
+        nodeId:
+          description: Category ID associated with the file
+          type: string
+          example: 611eef8b81f92b882d4f9741
+        fileName:
+          description: File name to be uploaded in the generated URL
+          type: string
+          example: men-shoes.csv
+    ServerError:
+      type: object
+      properties:
+        code:
+          description: Error code
+          type: string
+          example: 500
+        message:
+          description: Human-readable error description
+          type: string
+          example: An internal error occurred. If the issue persists please contact support@fabric.inc.
+    ClientError:
+      type: object
+      properties:
+        code:
+          description: Error code for machine consumption
+          type: string
+          example: 400
+        message:
+          description: Human-readable error description
+          type: string
+          example: Client error
+    GetS3URLResponse:
+      type: object
+      properties:
+        fileId:
+          description: A 24-character system-generated file ID
+          type: string
+          example: 626c3c28e041b10009810b21
+        url:
+          description: S3 bucket URL, to upload the template file.
+          type: string
+          example: https://demo-dev02-bulk-import-pim.s3.amazonaws.com/item/609ac75051f11a0007cf38b3/dev02/1651260453554-men-shoes.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA26KLJWUACLU2AF6F%2F20220429%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220429T192736Z&X-Amz-Expires=300&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDsaCXVzLWVhc3QtMSJGMEQCIGW476Ala9Go95rgQ3gVPwSvCbcZPrm4WgLs186q0R6GAiBqqVo4yuAkTKZTMl2qBF8hJOySqicG42ObKpyPtBmGWir4Awj0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAIaDDc1MjMxNDA3MDI3MiIMSeKQqQmLFWlfgsfVKswDvUDycKtqRnlcHaiuM56ZPrzPio9ylmxLaqjgUDCdF73ZqtkL41jqTf0kI%2FOnkXegoOks5dRbnprCbDwJxQFiwyOgQ9w8VC8ZCVzG6s6V7vnQDMQZ2mAVDk30KjL9BXShFNqBqY6r6COCJtyi5kMHpUjA8HM6Q7N19XOg7kH1VVnm4UZpWU%2F9blF8EMjiqIvWfjmRdv%2BnmBdx3RztZ0jEuJ9g4YeEmOZUUCaZoNLl78nE5vPoTQLNW%2F5YzKMO8ECTJ3Vr8nY%2BCVl5bTrAMK4TdCK%2BVaZjEpw7DQrSKmaR1JhQlYxD%2F%2F3WxPc%2FECeYD7eTLmWOYXh3LELhOYyy49%2Bx0MhdUaYQTlSsuU4NKnWcYcyeIh5J7%2Bef4Q9PgkBZqdE7gCN5m%2BqmfDLzu4W1SjR47MbdXYIiShDdvvM2DDrmwfMuTMS14fEWiMP4zhuehc12gA%2BGTwmuHjqYQCuRswGncP9574CXT1mzu%2BcW5bqMNKg80paslu2ipNJL4vScEjV%2FFYcYGCoXskYgBQr5IZJ4xdtv%2BYGrEMiCbob8UZ1oT5QtJSyLVqOqGt%2FvomDHdHqMved8fQbyddZo28DC%2BwB1DEI3XsLEp3rZFCeLzTCt3bCTBjqmAe%2F4uuvRSexVKYd%2F4XCVdbKrZG%2Fl7JoTsJv%2FI4k8nqezmqPAgpErsqCyvqyUXTx8jgrxi70EuiH6n1F5QEhMfge4C41jFKqYsY%2FxWEkwZw89koTrbzGs2z64i4eCzDU5u3OItYGVaEctdbHnpx%2FA3xnOgdPoGP%2FDQPVgCdsMWvjCkRDbNcBoSLXuXSRBgbOXy2RgkHY5YQ%2Fxys257mGLb3FZhjqvScs%3D&X-Amz-Signature=24c29de90587424ffdb21a7d970ef08c0a68ebaccd562f95b766dd01faad9d56&X-Amz-SignedHeaders=host%3Bx-amz-meta-account%3Bx-amz-meta-channel%3Bx-amz-meta-fileid%3Bx-amz-meta-filename%3Bx-amz-meta-nodeid%3Bx-amz-meta-prefix%3Bx-amz-meta-stage&x-amz-meta-account=609ac75051f11a0007cf38b3&x-amz-meta-channel=12&x-amz-meta-fileid=626c3c28e041b10009810b21&x-amz-meta-filename=men-shoes-bundle-local.csv&x-amz-meta-nodeid=611eef8b81f92b882d4f9741&x-amz-meta-prefix=item&x-amz-meta-stage=dev02
+        key:
+          description: S3 key of the file
+          type: string
+          example: item/609ac75051f11a0007cf38b3/dev02/1651260453554-men-shoes.csv
+    StatusResponse:
+      type: object
+      properties:
+        code:
+          description: Status code
+          type: string
+        type:
+          description: Status type
+          type: string
+          enum:
+          - ATTRIBUTE
+          - ATTRIBUTE_VALUE
+          - ITEM
+          - BUNDLE
+          - NODE
+          - HIERARCHY
+        source:
+          description: Status source
+          type: string
+          enum:
+          - PIM
+          - WAM
+        name:
+          description: Status name
+          type: string
+        description:
+          description: Status description
+          type: string
+        createdOn:
+          description: Time of file creation
+          type: string
+          format: date-time
+        createdBy:
+          description: User ID that created the file
+          type: string
+          example: broma0
+        modifiedOn:
+          type: string
+          format: date-time
+          description: Time when file was last modified
+        modifiedBy:
+          type: string
+          example: broma0
+          description: User ID that last modified the file
+    UploadFileStatusResponse:
+      type: object
+      properties:
+        createdOn:
+          type: string
+          description: Time of file upload (UTC format)
+          example: '2021-09-14T22:10:30.618Z'
+        name:
+          type: string
+          description: Name of CSV file
+          example: Duplicate+New+Dup.csv
+        csvLink:
+          type: string
+          description: URL to download uploaded CSV file.
+          example: https://demo-dev02-bulk-import-pim.s3.amazonaws.com/item-bundles/609ac75051f11a0007cf38b3/dev02/1651266490891-men-shoes-bundle-local.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA26KLJWUAMB3F4HM7%2F20220429%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220429T210813Z&X-Amz-Expires=300&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDsaCXVzLWVhc3QtMSJGMEQCIGW476Ala9Go95rgQ3gVPwSvCbcZPrm4WgLs186q0R6GAiBqqVo4yuAkTKZTMl2qBF8hJOySqicG42ObKpyPtBmGWir4Awj0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAIaDDc1MjMxNDA3MDI3MiIMSeKQqQmLFWlfgsfVKswDvUDycKtqRnlcHaiuM56ZPrzPio9ylmxLaqjgUDCdF73ZqtkL41jqTf0kI%2FOnkXegoOks5dRbnprCbDwJxQFiwyOgQ9w8VC8ZCVzG6s6V7vnQDMQZ2mAVDk30KjL9BXShFNqBqY6r6COCJtyi5kMHpUjA8HM6Q7N19XOg7kH1VVnm4UZpWU%2F9blF8EMjiqIvWfjmRdv%2BnmBdx3RztZ0jEuJ9g4YeEmOZUUCaZoNLl78nE5vPoTQLNW%2F5YzKMO8ECTJ3Vr8nY%2BCVl5bTrAMK4TdCK%2BVaZjEpw7DQrSKmaR1JhQlYxD%2F%2F3WxPc%2FECeYD7eTLmWOYXh3LELhOYyy49%2Bx0MhdUaYQTlSsuU4NKnWcYcyeIh5J7%2Bef4Q9PgkBZqdE7gCN5m%2BqmfDLzu4W1SjR47MbdXYIiShDdvvM2DDrmwfMuTMS14fEWiMP4zhuehc12gA%2BGTwmuHjqYQCuRswGncP9574CXT1mzu%2BcW5bqMNKg80paslu2ipNJL4vScEjV%2FFYcYGCoXskYgBQr5IZJ4xdtv%2BYGrEMiCbob8UZ1oT5QtJSyLVqOqGt%2FvomDHdHqMved8fQbyddZo28DC%2BwB1DEI3XsLEp3rZFCeLzTCt3bCTBjqmAe%2F4uuvRSexVKYd%2F4XCVdbKrZG%2Fl7JoTsJv%2FI4k8nqezmqPAgpErsqCyvqyUXTx8jgrxi70EuiH6n1F5QEhMfge4C41jFKqYsY%2FxWEkwZw89koTrbzGs2z64i4eCzDU5u3OItYGVaEctdbHnpx%2FA3xnOgdPoGP%2FDQPVgCdsMWvjCkRDbNcBoSLXuXSRBgbOXy2RgkHY5YQ%2Fxys257mGLb3FZhjqvScs%3D&X-Amz-Signature=24c29de90587424ffdb21a7d970ef08c0a68ebaccd562f95b766dd01faad9d56&X-Amz-SignedHeaders=host%3Bx-amz-meta-account%3Bx-amz-meta-channel%3Bx-amz-meta-fileid%3Bx-amz-meta-filename%3Bx-amz-meta-nodeid%3Bx-amz-meta-prefix%3Bx-amz-meta-stage&x-amz-meta-account=609ac75051f11a0007cf38b3&x-amz-meta-channel=12&x-amz-meta-fileid=626c3c28e041b10009810b21&x-amz-meta-filename=men-shoes-bundle-local.csv&x-amz-meta-nodeid=626a31a2d877f5e49efad330&x-amz-meta-prefix=item&x-amz-meta-stage=dev02
+        errorCsv:
+          type: string
+          description: URL to download import error file.
+          example: https://demo-dev02-bulk-import-pim.s3.amazonaws.com/item-bundles/609ac75051f11a0007cf38b3/dev02/1651266490891-error.zip?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA26KLJWUAMB3F4HM7%2F20220429%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220429T210813Z&X-Amz-Expires=300&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDsaCXVzLWVhc3QtMSJGMEQCIGW476Ala9Go95rgQ3gVPwSvCbcZPrm4WgLs186q0R6GAiBqqVo4yuAkTKZTMl2qBF8hJOySqicG42ObKpyPtBmGWir4Awj0%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAIaDDc1MjMxNDA3MDI3MiIMSeKQqQmLFWlfgsfVKswDvUDycKtqRnlcHaiuM56ZPrzPio9ylmxLaqjgUDCdF73ZqtkL41jqTf0kI%2FOnkXegoOks5dRbnprCbDwJxQFiwyOgQ9w8VC8ZCVzG6s6V7vnQDMQZ2mAVDk30KjL9BXShFNqBqY6r6COCJtyi5kMHpUjA8HM6Q7N19XOg7kH1VVnm4UZpWU%2F9blF8EMjiqIvWfjmRdv%2BnmBdx3RztZ0jEuJ9g4YeEmOZUUCaZoNLl78nE5vPoTQLNW%2F5YzKMO8ECTJ3Vr8nY%2BCVl5bTrAMK4TdCK%2BVaZjEpw7DQrSKmaR1JhQlYxD%2F%2F3WxPc%2FECeYD7eTLmWOYXh3LELhOYyy49%2Bx0MhdUaYQTlSsuU4NKnWcYcyeIh5J7%2Bef4Q9PgkBZqdE7gCN5m%2BqmfDLzu4W1SjR47MbdXYIiShDdvvM2DDrmwfMuTMS14fEWiMP4zhuehc12gA%2BGTwmuHjqYQCuRswGncP9574CXT1mzu%2BcW5bqMNKg80paslu2ipNJL4vScEjV%2FFYcYGCoXskYgBQr5IZJ4xdtv%2BYGrEMiCbob8UZ1oT5QtJSyLVqOqGt%2FvomDHdHqMved8fQbyddZo28DC%2BwB1DEI3XsLEp3rZFCeLzTCt3bCTBjqmAe%2F4uuvRSexVKYd%2F4XCVdbKrZG%2Fl7JoTsJv%2FI4k8nqezmqPAgpErsqCyvqyUXTx8jgrxi70EuiH6n1F5QEhMfge4C41jFKqYsY%2FxWEkwZw89koTrbzGs2z64i4eCzDU5u3OItYGVaEctdbHnpx%2FA3xnOgdPoGP%2FDQPVgCdsMWvjCkRDbNcBoSLXuXSRBgbOXy2RgkHY5YQ%2Fxys257mGLb3FZhjqvScs%3D&X-Amz-Signature=24c29de90587424ffdb21a7d970ef08c0a68ebaccd562f95b766dd01faad9d56&X-Amz-SignedHeaders=host%3Bx-amz-meta-account%3Bx-amz-meta-channel%3Bx-amz-meta-fileid%3Bx-amz-meta-filename%3Bx-amz-meta-nodeid%3Bx-amz-meta-prefix%3Bx-amz-meta-stage&x-amz-meta-account=609ac75051f11a0007cf38b3&x-amz-meta-channel=12&x-amz-meta-fileid=626c3c28e041b10009810b21&x-amz-meta-filename=men-shoes-bundle-local.csv&x-amz-meta-nodeid=626a31a2d877f5e49efad330&x-amz-meta-prefix=item&x-amz-meta-stage=dev02
+        statuses:
+          type: array
+          description: Upload status
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/objectUploadFileStatus'
+            - $ref: '#/components/schemas/objectUploadFileStatusNotFound'
+    GetS3URLItemAttributeRequest:
+      type: object
+      properties:
+        fileName:
+          description: File name to be uploaded in the generated URL
+          type: string
+          example: item-attributes.csv
+    FileSearchRequest:
+      type: object
+      properties:
+        page:
+          description: 'Page number to be retrieved. <br /> **Note**: <br /> 1) Applicable only in a paginated response. <br /> 2) Always paired with `size`'
+          type: number
+          example: 1
+        size:
+          description: 'Number of records (attribute groups) per page <br /> **Note**: <br /> 1) Applicable only in a paginated response. <br /> 2) Always paired with `page`'
+          example: 10
+    objectUploadFileStatus:
+      type: object
+      properties:
+        code:
+          description: Progress code
+          type: string
+          example: FILE_PROGRESS_COMPLETE
+        description:
+          description: Status description
+          type: string
+          example: Import successful
+        name:
+          description: Status name
+          type: string
+          example: file progress is complete
+    FileResponse:
+      type: object
+      properties:
+        type:
+          description: Status type
+          type: string
+          enum:
+          - IMPORT
+          - EXPORT
+        name:
+          description: File name
+          type: string
+        statuses:
+          description: Current status of the file
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusResponse'
+        progress:
+          description: Import progress in percentage
+          type: number
+          example: 100
+        createdOn:
+          description: Time of file creation
+          type: string
+          format: date-time
+        createdBy:
+          description: User ID that created the file
+          type: string
+          example: broma0
+        modifiedOn:
+          description: Time when file was last modified
+          type: string
+          format: date-time
+        modifiedBy:
+          type: string
+          example: broma0
+          description: User ID that last modified the file
+        secondsTakenToImport:
+          description: Time taken to import the file (doesn't include the whole time for the full bulk import process).
+          type: number
+        secondsTakenToProcess:
+          description: Time taken to process the file after the file was read
+          type: number
+    GetS3URLBundleRequest:
+      type: object
+      properties:
+        nodeId:
+          description: Category ID associated with the file
+          type: string
+          example: 626a31a2d877f5e49efad330
+        fileName:
+          description: File name to be uploaded in the generated URL
+          type: string
+          example: men-shoes-bundle-local.csv
+    GetS3URLRequestUsingOnlyFileName:
+      type: object
+      properties:
+        fileName:
+          description: File name to be uploaded in the generated URL
+          type: string
+          example: men-shoes.csv
+    GetS3URLItemAttributeResponse:
+      type: object
+      properties:
+        fileId:
+          description: A 24-character system-generated file ID
+          type: string
+          example: 626c415430548500093811f1
+        url:
+          description: S3 bucket url, to upload the template file.
+          type: string
+          example: https://demo-dev02-bulk-import-pim.s3.amazonaws.com/attribute/60ac19ef893ab1000864b771/dev02/1651261780352-item-attributes.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIA26KLJWUAC474VT4E%2F20220429%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220429T194940Z&X-Amz-Expires=300&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDwaCXVzLWVhc3QtMSJHMEUCIQCesp8JqH%2F%2F3QZP%2BcybG392bRrSI2d%2BHbBfYknEgqDuXAIgStf8iZndc9fOzokQimbgivAGx1hum81ZVqKbxFuigaMqsAII9f%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARACGgw3NTIzMTQwNzAyNzIiDE7VWWdAw%2BMtShgibSqEAtJrxQ%2B0h7Bu9DE3FcCGCi4fyAoLxtkAFRUWQ28ciZDvS5PC%2BU4%2FOvjuXSttg%2Bz%2F8E3Ff0QqI8%2BWOOG02O4DQSpUEc9aDBqXFVB2nezNz6CCyoIhlxRhHJXrjboktovlKAHnRpB0KRgHo7B05v2%2BM9z49w%2FzFrB%2FrW5XF0bFMyYGsm3aK0%2B4C8kS9oJ0dDxaKYxe%2BaKrn0XmcBLBduu3fL2h6WRhv29%2FDQxmwDO9O%2FNXfYAxnB2iQYAo2ZuL8ujcyDQPp2zNLFYiwQpQYE4DhVCT2CDw1SJU7xTi3ZHYDmt7xfe2vgwKxPolZumOIVIhBa7%2Fj7tma%2FbuX%2BAjKHUFnBfMnE5oMPuBsZMGOpoBWHVtEmbAx%2FsCaUu9jpSJoHgNkIDwxVGvV2XPPoNJIhLg9aCC2cMnAkRbbLOplmV4fnWmsY15Hdjd6CIhX5fCKGv2gLJCs6XpanNOm89KI8Ro9q4Gh5MvytJlSIEXuYgBI%2B2%2FWF5iNF0%2BUZX7cNtZjLK7yXHytJP94f0vF%2BqbAIpG%2FT9yyn1Z9KKWyMeIpCYsAsEY%2F1seiB6slA%3D%3D&X-Amz-Signature=b029ce0c5158f33fc4867d6a40f59d133d15d34fb300615e6c74b7414f8fe668&X-Amz-SignedHeaders=host%3Bx-amz-meta-account%3Bx-amz-meta-channel%3Bx-amz-meta-fileid%3Bx-amz-meta-filename%3Bx-amz-meta-prefix%3Bx-amz-meta-stage%3Bx-amz-meta-user&x-amz-meta-account=60ac19ef893ab1000864b771&x-amz-meta-channel=&x-amz-meta-fileid=626c415430548500093811f1&x-amz-meta-filename=item-attributes.csv&x-amz-meta-prefix=attribute&x-amz-meta-stage=dev02
+        key:
+          description: S3 key of the file
+          type: string
+          example: attribute/60ac19ef893ab1000864b771/dev02/1651261780352-item-attributes.csv
+    FilePaginationResponse:
+      type: object
+      properties:
+        totalSize:
+          description: Total number of records
+          type: number
+          example: 100
+        pageSize:
+          description: Number of records (bundle) in a page
+          type: number
+          example: 10
+        pages:
+          description: Number of pages for the given `pageSize`
+          type: number
+          example: 10
+        files:
+          description: Files and their details
+          type: array
+          items:
+            $ref: '#/components/schemas/FileResponse'
+  parameters:
+    xSiteContent:
+      name: x-site-context
+      in: header
+      description: The `x-site-context` header is a JSON object that contains information about the source you wish to pull from. The mandatory `account` is the 24 character identifier found in Copilot. The `channel` (Sales channel ID), `stage` (environment name), and `date` attributes can be used to further narrow the scope of your data source.
+      required: true
+      schema:
+        type: string
+        example: '{"date": "2023-01-01T00:00:00.000Z", "channel": 12, "account": "1234abcd5678efgh9ijklmno","stage":"production"}'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+
+        '
