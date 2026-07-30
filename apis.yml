@@ -1,298 +1,2419 @@
 aid: fabric-com
 url: https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/apis.yml
 apis:
-  - aid: fabric-com:fabric-identity-api
-    name: fabric Identity API
-    tags:
-      - Authentication
-      - Authorization
-      - Identity
-      - OAuth2
-    humanURL: https://developer.fabric.inc/v3/api-reference/identity
-    baseURL: https://{customer_name}.login.fabric.inc
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/identity
-        type: Documentation
-      - url: openapi/fabric-identity-openapi.yml
-        type: OpenAPI
-    description: >-
-      fabric's Identity API issues OAuth2 access tokens used by every other fabric service. Implements the standard
-      authorization-code and client-credentials flows on a per-tenant Okta-backed auth server, returning bearer tokens
-      scoped to the calling account. Used to authenticate both first-party storefronts and third-party integrations
-      against the v3 commerce APIs.
-  - aid: fabric-com:fabric-customers-api
-    name: fabric Customers API
-    tags:
-      - Customers
-      - Profiles
-      - Addresses
-      - Shoppers
-    humanURL: https://developer.fabric.inc/v3/api-reference/customers
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/customers
-        type: Documentation
-      - url: openapi/fabric-customers-openapi.yml
-        type: OpenAPI
-    description: >-
-      Create and manage storefront customers (shoppers), their profiles, addresses, and self-service operations. The
-      Customers API is the system of record for shopper identity inside fabric and feeds Cart, Orders, and Experiences
-      with the customer object referenced across the platform.
-  - aid: fabric-com:fabric-pim-api
-    name: fabric Product Catalog (PIM) API
-    tags:
-      - Catalog
-      - Products
-      - PIM
-      - Attributes
-      - Categories
-    humanURL: https://developer.fabric.inc/v3/api-reference/product-catalog
-    baseURL: https://live.copilot.fabric.inc
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/product-catalog
-        type: Documentation
-      - url: openapi/fabric-pim-openapi.yml
-        type: OpenAPI
-      - url: https://github.com/FabricCommerce/fabric-pim-samples
-        type: GitHub
-    description: >-
-      fabric's Product Information Management (PIM) service for modeling products, variants, categories, attribute
-      schemas, and bulk imports. Powers the merchandiser-facing Copilot UI and exposes the canonical product catalog
-      that downstream services (Catalog Connector, Cart, Offers, Experiences) consume.
-  - aid: fabric-com:fabric-catalog-connector-api
-    name: fabric Catalog Connector API
-    tags:
-      - Catalog
-      - Connector
-      - Import
-      - Export
-    humanURL: https://developer.fabric.inc/v3/api-reference/catalog-connector
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/catalog-connector
-        type: Documentation
-      - url: openapi/fabric-catalog-openapi.yml
-        type: OpenAPI
-    description: >-
-      Catalog Connector (formerly PIM Connector) is a lightweight ingestion service for customers who already own their
-      PIM. It accepts CSV/JSON template files, runs async import/export jobs, and pushes the resulting products and SKUs
-      into fabric's downstream commerce surface without forcing migration off the existing system of record.
-  - aid: fabric-com:fabric-offers-prices-api
-    name: fabric Offers - Prices API
-    tags:
-      - Pricing
-      - Offers
-      - SKU
-    humanURL: https://developer.fabric.inc/v3/api-reference/offers
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/offers
-        type: Documentation
-      - url: openapi/fabric-offers-prices-openapi.yml
-        type: OpenAPI
-    description: >-
-      Create, update, and look up base and sale prices for SKUs across price lists. The Prices API is the system of
-      record for fabric's pricing data and is the source the Real-time Pricing Engine evaluates against at cart time.
-  - aid: fabric-com:fabric-offers-pricing-engine-api
-    name: fabric Offers - Real-time Pricing Engine API
-    tags:
-      - Pricing
-      - Engine
-      - Offers
-      - Cart
-    humanURL: https://developer.fabric.inc/v3/api-reference/offers
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/offers
-        type: Documentation
-      - url: openapi/fabric-offers-pricing-openapi.yml
-        type: OpenAPI
-    description: >-
-      The Real-time Pricing Engine (RTPE) evaluates list prices, sale prices, and active promotions for a set of
-      products, SKUs, or an entire cart in a single call. Returns the calculated effective price and the promotion
-      attribution chain used to surface live prices on storefronts.
-  - aid: fabric-com:fabric-offers-promotions-api
-    name: fabric Offers - Promotions API
-    tags:
-      - Promotions
-      - Discounts
-      - Coupons
-      - Offers
-    humanURL: https://developer.fabric.inc/v3/api-reference/offers
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/offers
-        type: Documentation
-      - url: openapi/fabric-offers-promotions-openapi.yml
-        type: OpenAPI
-    description: >-
-      Create, search, toggle, and end promotions — discounts on items, carts, or shipping methods. The Promotions API is
-      the authoring surface; the Pricing Engine applies the active promotions returned by these endpoints to live cart
-      and pricing calculations.
-  - aid: fabric-com:fabric-inventory-api
-    name: fabric Inventory API
-    tags:
-      - Inventory
-      - Stock
-      - Locations
-      - Networks
-    humanURL: https://developer.fabric.inc/v3/api-reference/inventory
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/inventory
-        type: Documentation
-      - url: openapi/fabric-inventory-openapi.yml
-        type: OpenAPI
-    description: >-
-      Manage stock counts, locations, and inventory networks across stores, warehouses, and dropship partners. Inventory
-      feeds the cart, OMS, and storefront product detail pages with the available-to-promise figures that drive
-      fulfillment decisions.
-  - aid: fabric-com:fabric-cart-api
-    name: fabric Cart API
-    tags:
-      - Cart
-      - Checkout
-      - Commerce
-      - Storefront
-    humanURL: https://developer.fabric.inc/v3/api-reference/cart
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/cart
-        type: Documentation
-      - url: openapi/fabric-cart-openapi.yml
-        type: OpenAPI
-    description: >-
-      The v3 Cart API is fabric's modular cart service for adding, updating, and removing items; managing fulfillments,
-      addresses, fees, taxes, coupons, and payments; and producing the order draft that Checkout consumes. Supports both
-      guest and authenticated shopper carts.
-  - aid: fabric-com:fabric-checkout-api
-    name: fabric Checkout API
-    tags:
-      - Checkout
-      - Cart
-      - Order Drafts
-      - Commerce
-    humanURL: https://developer.fabric.inc/v3/api-reference/checkout
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/checkout
-        type: Documentation
-      - url: openapi/fabric-checkout-openapi.yml
-        type: OpenAPI
-    description: >-
-      Completes the checkout process and places an order for the items in a cart. Takes the cart-produced order draft,
-      validates payments, and hands the resulting order off to OMS for fulfillment.
-  - aid: fabric-com:fabric-cart-orchestrator-api
-    name: fabric Cart Orchestrator (ShopperXP) API
-    tags:
-      - Cart
-      - Orchestrator
-      - ShopperXP
-      - Storefront
-    humanURL: https://developer.fabric.inc/v3/api-reference/shopper-xp
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/shopper-xp
-        type: Documentation
-      - url: openapi/fabric-shopperxp-openapi.yml
-        type: OpenAPI
-    description: >-
-      The Cart Orchestrator (ShopperXP) wraps Cart, Offers, Inventory, and Identity into a single storefront-facing
-      surface. Storefront clients call one orchestrator endpoint per shopper action and the service fans out to the
-      underlying commerce APIs in the correct sequence.
-  - aid: fabric-com:fabric-orders-api
-    name: fabric Orders (OMS) API
-    tags:
-      - Orders
-      - OMS
-      - Fulfillment
-      - Returns
-    humanURL: https://developer.fabric.inc/v3/api-reference/orders
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/orders
-        type: Documentation
-      - url: openapi/fabric-orders-openapi.yml
-        type: OpenAPI
-    description: >-
-      fabric's Order Management System (OMS) — order creation, lookup, status transitions, payment authorization,
-      address and fee updates, and the operational surface used by customer service, fulfillment teams, and downstream
-      finance systems.
-  - aid: fabric-com:fabric-shipments-api
-    name: fabric Shipments API
-    tags:
-      - Shipments
-      - Fulfillment
-      - OMS
-      - Tracking
-    humanURL: https://developer.fabric.inc/v3/api-reference/orders
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/orders
-        type: Documentation
-      - url: openapi/fabric-shipments-openapi.yml
-        type: OpenAPI
-    description: >-
-      Manage the shipment lifecycle inside OMS — create, look up, update, and cancel shipments; associate carrier and
-      tracking information; and notify downstream systems as packages move from the warehouse to the customer.
-  - aid: fabric-com:fabric-invoices-api
-    name: fabric Invoices API
-    tags:
-      - Invoices
-      - Billing
-      - OMS
-      - Finance
-    humanURL: https://developer.fabric.inc/v3/api-reference/orders
-    baseURL: https://api.fabric.inc/v3
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/orders
-        type: Documentation
-      - url: openapi/fabric-invoices-openapi.yml
-        type: OpenAPI
-    description: >-
-      Issue and manage invoices generated from shipped or fulfilled orders. The Invoices API captures the financial
-      event tied to an order's fulfillment and is the integration point for ERP, tax, and finance systems consuming
-      fabric order data.
-  - aid: fabric-com:fabric-experiences-api
-    name: fabric Experiences (XM) API
-    tags:
-      - Experiences
-      - XM
-      - Content
-      - Storefront
-      - Pages
-    humanURL: https://developer.fabric.inc/v3/api-reference/experiences
-    baseURL: https://cdn.xm.fabric.inc/api
-    properties:
-      - url: https://developer.fabric.inc/v3/api-reference/experiences
-        type: Documentation
-      - url: openapi/fabric-experiences-openapi.yml
-        type: OpenAPI
-      - url: https://github.com/FabricCommerce/Fabric-React-Components
-        type: GitHub
-    description: >-
-      fabric Experiences (formerly XM) is the headless storefront content service — pages, global components, and menus
-      served from a CDN-backed read API. Powers the merchandiser-authored, shopper-facing surfaces of fabric
-      storefronts.
-  - aid: fabric-com:fabric-product-agent-api
-    name: fabric Product Agent API
-    tags:
-      - AI
-      - Agentic Commerce
-      - NEON
-      - Product Agent
-      - Agents
-    humanURL: https://developer.fabric.inc/product-agent/overview
-    baseURL: https://commerceos.aiagents.fabric.inc/api
-    properties:
-      - url: https://developer.fabric.inc/product-agent/overview
-        type: Documentation
-      - url: openapi/fabric-product-agent-openapi.yml
-        type: OpenAPI
-    description: >-
-      fabric NEON's Product Agent — the agentic commerce control plane that monitors product visibility across AI search
-      surfaces, benchmarks against custom prompts, and enriches product data with intent signals for downstream channel
-      activation. fabric's headline 2026 capability.
+- aid: fabric-com:fabric-com-actions-endpoints-api
+  name: fabric Actions Endpoints API
+  description: >-
+    This endpoint helps perform additional operations for inventory
+
+    management.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Actions Endpoints
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-actions-endpoints-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-addresses-api
+  name: fabric Addresses API
+  description: Address endpoints are used to add add, update and remove addresses from the Cart.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Addresses
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-addresses-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-appeasements-api
+  name: fabric Appeasements API
+  description: These endpoints help create appeasement requests.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Appeasements
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-appeasements-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-attributes-api
+  name: fabric Attributes API
+  description: >-
+    Item attributes are the objective and factual descriptions of items that shoppers see when they browse
+    through your site. Attributes may be technical specifications like size, weight, etc., design specifications
+    like color, material, etc., or basic specifications like name, description, and ID. Ites attributes
+    are crucial as they directly influence purchasing decisions. Complete and correct item information
+    help shoppers narrow down their search and filter items with minimal cognitive load.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Attributes
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-attributes-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-authentication-endpoints-api
+  name: fabric Authentication Endpoints API
+  description: >-
+    These endpoints allow apps to authenticate themselves or their end users using fabric Identity. The
+    main objective of these endpoints is to provide access tokens to applications, allowing them to invoke
+    other fabric services such as Orders, Product Catalog, and more.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Authentication Endpoints
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-authentication-endpoints-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-bulk-import-api
+  name: fabric Bulk Import API
+  description: >-
+    Set of endpoints to help bulk import of items, bundles, categories and attributes through CSV files
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Bulk Import
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-bulk-import-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-cancellations-api
+  name: fabric Cancellations API
+  description: >-
+    These endpoints check eligibility of order cancellation requests and if eligible, processes order
+    cancellation.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Cancellations
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-cancellations-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-cart-actions-api
+  name: fabric Cart Actions API
+  description: The Cart Actions API from fabric — 3 operation(s) for cart actions.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Cart Actions
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-cart-actions-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-cart-adjustments-api
+  name: fabric Cart Adjustments API
+  description: >-
+    Cart adjustment endpoints are used to add, update and remove adjustments at the Cart level.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Cart Adjustments
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-cart-adjustments-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-cart-api
+  name: fabric Cart API
+  description: >-
+    Cart endpoints are used to do basic cart operations, such as create a cart, add item to the corresponding
+    cart, update items, remove items, delete cart, update status of the cart, and more.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Cart
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-cart-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-cart-fees-api
+  name: fabric Cart Fees API
+  description: Cart fee endpoints are used to add, update and remove fees at the Cart level.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Cart Fees
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-cart-fees-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-cartpayments-api
+  name: fabric CartPayments API
+  description: >-
+    CartPayments endpoints are used to authorize or void payments that are located within the shopping
+    cart.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - CartPayments
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-cartpayments-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-carts-api
+  name: fabric Carts API
+  description: >-
+    Cart endpoints are used to perform basic cart operations, such as create, update, delete and more.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Carts
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-carts-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-catalog-connector-files-api
+  name: fabric Catalog Connector Files API
+  description: >-
+    Retrieve an import template, import a file to the Catalog Connector, view import and export status,
+    and download a previously processed file.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Catalog Connector Files
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-catalog-connector-files-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-catalog-connector-jobs-api
+  name: fabric Catalog Connector Jobs API
+  description: >-
+    Export data from the Catalog Connector and retrieve the status of previously processed files.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Catalog Connector Jobs
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-catalog-connector-jobs-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-catalog-connector-operations-by-item-id-api
+  name: fabric Catalog Connector Operations by Item ID API
+  description: Supports product operations based on Item ID.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Catalog Connector Operations by Item ID
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-catalog-connector-operations-by-item-id-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-catalog-connector-operations-by-product-id-api
+  name: fabric Catalog Connector Operations by Product ID API
+  description: Supports product operations based on Product ID.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Catalog Connector Operations by Product ID
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-catalog-connector-operations-by-product-id-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-catalog-connector-operations-by-sku-api
+  name: fabric Catalog Connector Operations by SKU API
+  description: Supports product operations based on SKU.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Catalog Connector Operations by SKU
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-catalog-connector-operations-by-sku-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-categories-api
+  name: fabric Categories API
+  description: The Categories API from fabric — 2 operation(s) for categories.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Categories
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-categories-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-category-api
+  name: fabric Category API
+  description: >-
+    Categories (also called hierarchies or nodes) are hierarchical structures to organize items and services
+    into intuitive groups. Organizing items in this way simplifies item discovery and lifecycle management.
+    There are two types of categories - **Primary** and **Alternate**. They enable you to create, organize,
+    and distribute item data.  - Primary category is the original catalog tree with nested levels of categories
+    that place each item where it belongs, within a category. For example, `Computers` is a parent category
+    with `Laptops` and `Desktops` as children categories, and `MacBook Pro` is an item within `Laptops`.
+    This organization can be represented as Computers > Laptops > MacBook Pro.  - Alternate categories
+    serve as alternate organizations of the Primary category. Their main purpose is distribution management
+    by displaying items on your website based on separate browsing structure configurations you set to
+    help you achieve various merchandizing objectives, such as organizational requirements, multi-regional
+    assortments, multi-channel assortments, and collections. For example, a company that sells, repairs,
+    and supports computers and related items and services will have a Primary category containing a full
+    list of their SKUs. However, this Primary category is not granular enough to use on their storefront.
+    Hence, multiple Alternate hierarchies are created to target specific shopper segment experiences.
+    For laptop consumers they'll have one Alternate category, which lists all the laptops and PCs. For
+    large businesses they'll have  another Alternate category, which lists all commercial laptops, PCs,
+    printers, and servers. Both of the Alternate categories act as filters of the Primary category, tailored
+    to the purpose of that merchandising strategy.  **Category**, a subset of Product Catalog endpoints,
+    aims to simplify catalog management by letting you create, update, and get one or more categories,
+    category attributes, and item attributes. In addition, you can add and update category sources, source
+    exclusions, and item attribute conditions.   **Note**: The root name of primary category is PRIMARY,
+    and it cannot be changed.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Category
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-category-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-checkout-session-api
+  name: fabric Checkout Session API
+  description: >-
+    The Checkout Session endpoint lets you create and complete a checkout session, and place an order
+    for the cart items.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Checkout Session
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-checkout-session-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-counters-api
+  name: fabric Counters API
+  description: >-
+    Counter refers to inventory positions such as, available, in-transit, on-hand, or other custom positions.
+    These endpoints let you read, update, and create custom counters that suit your business use case.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Counters
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-counters-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-coupons-api
+  name: fabric Coupons API
+  description: Coupon endpoints are used to add and remove coupons from the Cart
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Coupons
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-coupons-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-credits-api
+  name: fabric Credits API
+  description: >-
+    Credits are refunds to customers, often in the form of gift cards or credit notes, when customers
+    have made payments with cash or a card that has subsequently expired. Credits are provided during
+    order returns and appeasements. Use these endpoints to create and manage credits.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Credits
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-credits-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-customer-address-api
+  name: fabric Customer Address API
+  description: >-
+    These endpoints provide the features for store admins to create and manage customers' addresses.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Customer Address
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-customer-address-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-customer-api
+  name: fabric Customer API
+  description: >-
+    Customer endpoints are used do basic customer operations, such as update a customer, add attributes
+    and more.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Customer
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-customer-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-customer-profile-api
+  name: fabric Customer Profile API
+  description: >-
+    These endpoints provide the features for store admins to create and manage customers' details.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Customer Profile
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-customer-profile-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-customer-self-api
+  name: fabric Customer Self API
+  description: >-
+    These endpoints provide the feature for customers or shoppers to independently manage their details
+    in the storefront.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Customer Self
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-customer-self-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-frauds-api
+  name: fabric Frauds API
+  description: These endpoints deal with potential fraud orders.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Frauds
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-frauds-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-fulfillment-adjustments-api
+  name: fabric Fulfillment Adjustments API
+  description: >-
+    Fulfillment adjustments endpoints are used to add, update and remove adjustments at the Fulfillment
+    level.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Fulfillment Adjustments
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-fulfillment-adjustments-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-fulfillment-fees-api
+  name: fabric Fulfillment Fees API
+  description: >-
+    Fulfillment fees endpoints are used to add, update and remove fees at the Fulfillment level.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Fulfillment Fees
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-fulfillment-fees-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-fulfillments-api
+  name: fabric Fulfillments API
+  description: Fulfillment endpoints are used to add add, update and remove fulfillments from the Cart.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Fulfillments
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-fulfillments-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-general-catalog-connector-operations-api
+  name: fabric General Catalog Connector Operations API
+  description: Search for products based on the specified filter conditions.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - General Catalog Connector Operations
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-general-catalog-connector-operations-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-global-components-api
+  name: fabric Global Components API
+  description: XM Global Components API allows you to fetch all the live global component data
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Global Components
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-global-components-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-inventory-api
+  name: fabric Inventory API
+  description: >-
+    fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions
+    as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize
+    the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create
+    and update inventory details. fabric's Inventory API includes high-performance endpoints built on
+    highly scalable architecture, and includes a configurable data model to orchestrate the inventory
+    lifecycle events.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Inventory
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-inventory-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-inventory-import-configs-api
+  name: fabric Inventory Import Configs API
+  description: These endpoints help in performing inventory import file config operations
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Inventory Import Configs
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-inventory-import-configs-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-inventory-imports-api
+  name: fabric Inventory Imports API
+  description: >-
+    Inventory Imports endpoints let you upload and download inventory details, in bulk, using a CSV file
+    to and from AWS (Amazon Web Service) server presigned S3 URL that is generated from the Order service
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Inventory Imports
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-inventory-imports-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-invoices-api
+  name: fabric Invoices API
+  description: >-
+    fabric **Invoices** API helps in generating invoices that can be used by any third party system for
+    order fulfillment operation.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Invoices
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-invoices-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-item-actions-api
+  name: fabric Item Actions API
+  description: The Item Actions API from fabric — 3 operation(s) for item actions.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Item Actions
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-item-actions-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-item-adjustments-api
+  name: fabric Item Adjustments API
+  description: >-
+    Item adjustments endpoints are used to add, update and remove adjustments at the Item level.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Item Adjustments
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-item-adjustments-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-item-fees-api
+  name: fabric Item Fees API
+  description: Item fee endpoints are used to add, update and remove fees at the Item level.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Item Fees
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-item-fees-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-items-api
+  name: fabric Items API
+  description: Item endpoints are used to add, update and remove items from the Cart.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Items
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-items-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-lineitems-api
+  name: fabric LineItems API
+  description: >-
+    LineItem endpoints are used to performbasic lineItem operations, such as create, update, delete and
+    more.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - LineItems
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-lineitems-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-menu-api
+  name: fabric Menu API
+  description: XM Menu API allows you to fetch menus and their items
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Menu
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-menu-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-networks-api
+  name: fabric Networks API
+  description: >-
+    Network refers to a group of locations having a group of SKUs in each location. These endpoints let
+    you read, create, and manage an inventory-network by location, brand, or any other custom attributes.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Networks
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-networks-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-optimize-api
+  name: fabric Optimize API
+  description: The Optimize API from fabric — 4 operation(s) for optimize.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Optimize
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-optimize-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-orderdrafts-api
+  name: fabric OrderDrafts API
+  description: Order draft endpoints are used to create an order draft or get a generated order draft.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - OrderDrafts
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-orderdrafts-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-orders-api
+  name: fabric Orders API
+  description: >-
+    These endpoints create orders, update pickup details (for BOPIS scenarios) and get order details.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-orders-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-pages-api
+  name: fabric Pages API
+  description: XM Pages API allows you to fetch all the live pages, or a live page by a specific URL
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Pages
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-pages-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-payments-api
+  name: fabric Payments API
+  description: Payments endpoints are used to add add, update and remove payments from the Cart.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-payments-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-platform-api
+  name: fabric Platform API
+  description: The Platform API from fabric — 1 operation(s) for platform.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Platform
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-platform-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-prices-api
+  name: fabric Prices API
+  description: The Prices API from fabric — 4 operation(s) for prices.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Prices
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-prices-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-product-api
+  name: fabric Product API
+  description: >-
+    **Product**, a subset of Product Catalog endpoints, aims at making item management more efficient.
+    They create, update, and get items, which may be individual items or collection of items (called bundles).
+    Each item has a title, item ID, description, category, and assigned attributes. Multiple options of
+    a given item become variants of that item. For example, a t-shirt with three sizes may have small,
+    medium, and large variants. Each variant has its own item ID, attributes, and other data points. Each
+    variant is nested under its parent item, allowing the different options to appear on the same product
+    page. You can also create or update one or more item attributes and attribute groups.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Product
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-product-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-promotions-api
+  name: fabric Promotions API
+  description: The Promotions API from fabric — 5 operation(s) for promotions.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Promotions
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-promotions-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-real-time-pricing-engine-api
+  name: fabric Real-time Pricing Engine API
+  description: >-
+    The Real-time Pricing Engine API from fabric — 3 operation(s) for real-time pricing engine.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Real-time Pricing Engine
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-real-time-pricing-engine-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-reservednetwork-endpoints-api
+  name: fabric ReservedNetwork Endpoints API
+  description: These endpoints help in performing reserved network operations
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - ReservedNetwork Endpoints
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-reservednetwork-endpoints-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-returns-api
+  name: fabric Returns API
+  description: >-
+    These endpoints check eligibility of order return or exchanges requests and, if eligible, processes
+    order return or exchanges.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Returns
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-returns-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-shipments-api
+  name: fabric Shipments API
+  description: >-
+    fabric **Shipments** API is a multi-tenant service that enables you to manage shipments for existing
+    'Allocations.' Shipments serve as records of the locations from which an order was fulfilled. Typical
+    user of fabric Shipments service is a Warehouse management service or Point of Sale service. <p> **Note**:
+    Shipments API relies on the Allocation service to send allocation details to external merchant systems
+    after an order is placed. Allocation is the prerequisite for using Shipments API.</p>
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Shipments
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-shipments-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-tracking-api
+  name: fabric Tracking API
+  description: These endpoints track orders.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Tracking
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-tracking-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-transfer-shipment-controller-api
+  name: fabric transfer-shipment-controller API
+  description: >-
+    The transfer-shipment-controller API from fabric — 9 operation(s) for transfer-shipment-controller.
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - transfer-shipment-controller
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-transfer-shipment-controller-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
+- aid: fabric-com:fabric-com-validations-api
+  name: fabric Validations API
+  description: >-
+    Validation endpoints are used to pass in data from fabric and third-party services to perform business
+    logic on the Cart
+  humanURL: https://developer.fabric.inc/v3/api-reference/identity
+  baseURL: https://{customer_name}.login.fabric.inc
+  tags:
+  - Validations
+  properties:
+  - type: OpenAPI
+    url: openapi/fabric-com-validations-api-openapi.yml
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/identity
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/customers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/product-catalog
+  - type: GitHub
+    url: https://github.com/FabricCommerce/fabric-pim-samples
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/catalog-connector
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/offers
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/inventory
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/cart
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/checkout
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/shopper-xp
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/orders
+  - type: Documentation
+    url: https://developer.fabric.inc/v3/api-reference/experiences
+  - type: GitHub
+    url: https://github.com/FabricCommerce/Fabric-React-Components
+  - type: Documentation
+    url: https://developer.fabric.inc/product-agent/overview
 name: fabric
 tags:
   - Commerce
@@ -313,7 +2434,20 @@ tags:
   - Experiences
   - Agentic Commerce
 kind: contract
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: enterprise
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Enterprise · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/fabric-com.png
 access: 3rd-Party
 common:
   - type: AgenticAccess
