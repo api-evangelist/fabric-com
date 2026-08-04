@@ -1,0 +1,1626 @@
+externalDocs:
+  description: Find out more about Product Agent.
+  url: https://developer.fabric.inc/product-agent/overview
+servers:
+  - url: https://commerceos.aiagents.fabric.inc/api
+    description: Production API
+info:
+  contact:
+    email: support@fabric.inc
+    name: fabric Support Team
+  description: |
+    The Product Agent API helps brands optimize product data for AI-driven commerce.
+    Monitor how your catalog performs in AI search experiences, enrich product
+    content for stronger semantic visibility, and publish optimized data across
+    channels. Designed for iterative improvement, Product Agent enables teams to
+    measure, refine, and enhance product content as AI shopping behavior evolves.
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: fabric Orders API
+  version: 3.0.0
+  x-audience: external-public
+openapi: 3.0.1
+"x-mint": {
+    "mcp": {
+      "enabled": true
+    }
+  }
+paths:
+  /platform/v1/auth/token:
+    post:
+      servers:
+        - url: https://commerceos.aiagents.fabric.inc
+          description: Auth Server
+      security: []
+      summary: Create Access Token
+      description: |
+        Generates an access token using the client credentials flow. Tokens expire every 60 minutes.
+
+        To authenticate, provide your `client_id`, `client_secret`, and set `grant_type` to `client_credentials`.
+
+        If you do not have a `client_id` and `client_secret`, contact fabric support to request API access credentials.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - client_id
+                - client_secret
+                - grant_type
+              properties:
+                grant_type:
+                  type: string
+                  example: client_credentials
+                client_id:
+                  type: string
+                  example: ser_zUe74HYT98d6ItDhIQWYYur0k
+                client_secret:
+                  type: string
+                  example: bv_1s9uWC_7324598gjdsh_ijSUVmm6YCt-6Ahd8Nt3GsTb8w8
+      responses:
+          '200':
+            description: Successful authentication
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AuthResponse'
+          "400":
+            content:
+              application/json:
+                example:
+                  errors:
+                    - message: Invalid request
+                      type: CLIENT_ERROR
+                  message: Bad request
+                  type: CLIENT_ERROR
+                schema:
+                  $ref: '#/components/schemas/errorResponse'
+            description: Bad request
+          "401":
+            content:
+              application/json:
+                example:
+                  message: Unauthorized request
+                  type: CLIENT_ERROR
+                schema:
+                  $ref: '#/components/schemas/errorResponse'
+            description: Unauthorized
+          "500":
+            content:
+              application/json:
+                example:
+                  message: Internal server error
+                  type: SERVER_ERROR
+                schema:
+                  $ref: '#/components/schemas/errorResponse'
+            description: Internal server error
+  /v2/categories/import:
+    post:
+      summary: Bulk Import Categories
+      description: |
+        Upload a CSV file to import category data for the specified brand/domain. The import is processed asynchronously.
+
+        **Expected CSV columns**
+        - **name** or **category_name** (required): Category name
+        - **parent_id** or **parent_category_id** (optional): Parent category ID
+        - **breadcrumb** (optional): Full breadcrumb path
+        - **inferred_category** (optional): AI-inferred category
+      operationId: importCategories
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DomainHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV file containing categories (e.g. categories.csv)
+                name:
+                  type: string
+                  description: Human friendly import name
+                  example: Spring catalog category import
+                notify_email:
+                  type: boolean
+                  description: Send an email when the import completes.
+                  default: true
+                  example: true
+      responses:
+        '202':
+          description: Import accepted for asynchronous processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryImportAcceptedResponse'
+              example:
+                import_id: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+                status: PENDING
+                message: Import queued. Use GET /categories/import/{import_id} to track progress.
+                created_at: '2026-03-12T17:58:13.605818Z'
+        '400':
+          description: Bad request - invalid CSV or missing file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '401':
+          description: Unauthorized - missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /v2/categories/import/{import_id}:
+    get:
+      summary: Get Category Import Status
+      description: Retrieve the current status and results of a category import created using `POST /api/v2/categories/import`.
+      operationId: getCategoryImportStatus
+      parameters:
+        - $ref: '#/components/parameters/DomainHeader'
+        - name: import_id
+          in: path
+          required: true
+          description: Import ID returned from `POST /api/v2/categories/import`.
+          schema:
+            type: string
+            format: uuid
+            example: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+      responses:
+        '200':
+          description: Import status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryImportStatusResponse'
+              example:
+                import_id: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+                name: tcs_category_test.csv
+                status: COMPLETED
+                total_rows: 333
+                processed_rows: 333
+                new_count: 333
+                updated_count: 0
+                skipped_count: 0
+                failed_count: 0
+                input_filename: tcs_category_test.csv
+                input_file_url: https://example.com/input.csv
+                error_file_url: null
+                error_message: null
+                started_at: '2026-03-12T17:58:13.722428Z'
+                completed_at: '2026-03-12T17:58:14.564840Z'
+                created_at: '2026-03-12T17:58:13.605818Z'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: Import not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /v2/attributes/import:
+    post:
+      summary: Import Attributes from CSV
+      description: |
+        Upload a CSV file to import attribute definitions for the specified brand/domain. The import is processed asynchronously.
+
+        **Expected CSV columns**
+        - **attribute_name** (required): Attribute display name
+        - **attribute_key** (optional): Machine-readable key
+        - **description** (optional): Attribute description
+        - **data_type** (optional): Data type
+        - **scope** (optional): Attribute scope
+        - **enum_values** (optional): Allowed values, pipe-delimited (e.g. `S|M|L`)
+        - **allow_ai_content** (optional): Allow AI to generate values (`true`/`false`)
+        - **source** (optional): `MERCHANT` or `GOLD_STANDARD`
+        - **guideline_reason** (optional): Guidance for AI enrichment
+      operationId: importAttributes
+      parameters:
+        - $ref: '#/components/parameters/DomainHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: CSV file containing attribute definitions.
+                name:
+                  type: string
+                  description: Human-friendly import name.
+                  example: Spring attributes import
+      responses:
+        '202':
+          description: Import accepted for asynchronous processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributeImportAcceptedResponse'
+              example:
+                import_id: e2716438-b763-4be8-82d2-36abe0cb92b1
+                name: attribute_test.csv
+                status: PENDING
+                total_rows: 36
+                processed_rows: 0
+                created_count: 0
+                updated_count: 0
+                skipped_count: 0
+                failed_count: 0
+                input_filename: attribute_test.csv
+                input_file_url: null
+                error_file_url: null
+                error_message: null
+                errors: []
+                started_at: null
+                completed_at: null
+                created_at: '2026-03-12T18:04:03.879876Z'
+        '400':
+          description: Bad request - invalid CSV or missing file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '401':
+          description: Unauthorized - missing or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /v2/attributes/import/{import_id}:
+    get:
+      summary: Get Attribute Import Status
+      description: Retrieve the current status and results of an attribute import created using `POST /v2/attributes/import`.
+      operationId: getAttributeImportStatus
+      parameters:
+        - $ref: '#/components/parameters/DomainHeader'
+        - name: import_id
+          in: path
+          required: true
+          description: Import ID returned from `POST /v2/attributes/import`.
+          schema:
+            type: string
+            format: uuid
+            example: e2716438-b763-4be8-82d2-36abe0cb92b1
+      responses:
+        '200':
+          description: Import status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttributeImportStatusResponse'
+              example:
+                import_id: e2716438-b763-4be8-82d2-36abe0cb92b1
+                name: attribute_test.csv
+                status: COMPLETED
+                total_rows: 36
+                processed_rows: 36
+                created_count: 35
+                updated_count: 0
+                skipped_count: 0
+                failed_count: 1
+                input_filename: attribute_test.csv
+                input_file_url: https://example.com/input.csv
+                error_file_url: https://example.com/errors.csv
+                error_message: null
+                errors:
+                  - "Row 35: invalid data_type 'BOOLREAN'"
+                started_at: '2026-03-12T18:04:03.998437Z'
+                completed_at: '2026-03-12T18:04:04.724584Z'
+                created_at: '2026-03-12T18:04:03.879876Z'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: Import not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse' 
+  /v2/optimize/artifacts:
+    post:
+      summary: Upload a Catalog Artifact
+      description: |
+        Uploads a catalog CSV as multipart form data and returns an `artifact_id` for use when starting an optimization workflow.
+
+        The HTTP client must set the `Content-Type: multipart/form-data` header with the appropriate boundary; the header should not be set manually. The `domain` header is required and must be a brand domain (for example, `vessel.com`) that the authenticated principal is authorized to access.
+
+        Each request creates a new artifact, even when the file content is identical to a previously uploaded file. Retain the returned `artifact_id` for the workflow that will reference it.
+
+        For catalogs larger than approximately 100 MB, contact fabric support to enable the presigned-URL upload flow.
+
+        ### Catalog CSV format
+
+        The uploaded file must be UTF-8 encoded, comma-delimited, and include a header row. The supported columns are:
+
+        | Column               | Required    | Description |
+        | :------------------- | :---------- | :---------- |
+        | `title`              | Yes         | Product display name as shown on the product detail page. |
+        | `sku`                | Yes         | Unique product identifier within the brand catalog. |
+        | `description`        | Yes         | Full product description from the product detail page. |
+        | `category_id`        | Conditional | The brand's category identifier. Each row must provide either `category_id` or `breadcrumb`. |
+        | `breadcrumb`         | Conditional | Full category hierarchy separated by ` > ` (for example, `Mens > Clothing > Pants`). Each row must provide either `breadcrumb` or `category_id`. |
+        | `category`           | No          | Free-text category label. Used as a hint when neither `category_id` nor `breadcrumb` resolves to a known category. |
+        | `product_group_id`   | No          | Identifier shared by product variants that belong to the same family. |
+        | `price`              | No          | Numeric price value for the product. |
+        | `currency`           | No          | Currency code corresponding to `price`. |
+        | `url`                | No          | Canonical product detail page URL. |
+        | `images`             | No          | One or more image URLs separated by the pipe character (`\|`). |
+        | `attribute.<name>`   | No          | Custom attribute value. Free-form string, single value per cell. The `<name>` segment must match an attribute key configured for the brand. |
+
+        For a worked end-to-end example including auth and workflow creation, see the [Product Import Developer Guide](/product-agent/developer-guides/postman-import-csv-guide).
+      operationId: uploadOptimizeArtifact
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DomainHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadArtifactRequest'
+      responses:
+        '201':
+          description: Artifact uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtifactResponse'
+              example:
+                artifact_id: art_95c650ded4824dc79bb6df16427e4a10
+                kind: csv
+                source: upload
+                bytes: 45678
+                sha256: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+                content_type: text/csv
+                uri: s3://product-agent-data-prod-ue2/optimize-artifacts/svc_yourClientId/art_95c650ded4824dc79bb6df16427e4a10/catalog.csv
+                original_filename: catalog.csv
+                brand_id: 691df5949676c8e0b1d7b6b3
+                created_at: '2026-05-15T10:30:00Z'
+        '401':
+          description: Unauthorized. The access token is missing or has expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '403':
+          description: Forbidden. The caller is not authorized for the brand specified in the `domain` header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /v2/optimize/artifacts/{artifact_id}:
+    get:
+      summary: Retrieve Artifact Metadata and Download URL
+      description: |
+        Returns metadata for a previously uploaded artifact along with a short-lived signed `download_url` for retrieving the original file contents. This endpoint supports inspection, auditing, and re-download of an artifact prior to starting a workflow.
+
+        The `download_url` is a presigned URL that remains valid until `download_url_expires_at`. After expiry, call this endpoint again to obtain a new URL.
+      operationId: getOptimizeArtifact
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DomainHeader'
+        - name: artifact_id
+          in: path
+          required: true
+          description: Artifact identifier returned by `POST /v2/optimize/artifacts`.
+          schema:
+            type: string
+            example: art_95c650ded4824dc79bb6df16427e4a10
+        - name: expires_seconds
+          in: query
+          required: false
+          description: Lifetime of the signed `download_url` in seconds. Minimum 60, maximum 3600, default 900.
+          schema:
+            type: integer
+            minimum: 60
+            maximum: 3600
+            default: 900
+            example: 900
+      responses:
+        '200':
+          description: Artifact metadata and signed download URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtifactReadResponse'
+              example:
+                artifact_id: art_95c650ded4824dc79bb6df16427e4a10
+                kind: csv
+                source: upload
+                bytes: 45678
+                sha256: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+                content_type: text/csv
+                uri: s3://product-agent-data-prod-ue2/optimize-artifacts/svc_yourClientId/art_95c650ded4824dc79bb6df16427e4a10/catalog.csv
+                original_filename: catalog.csv
+                brand_id: 691df5949676c8e0b1d7b6b3
+                created_at: '2026-05-15T10:30:00Z'
+                download_url: https://product-agent-data-prod-ue2.s3.amazonaws.com/optimize-artifacts/svc_yourClientId/art_95c650ded4824dc79bb6df16427e4a10/catalog.csv?X-Amz-Signature=...
+                download_url_expires_at: '2026-05-15T10:45:00Z'
+        '401':
+          description: Unauthorized. The access token is missing or has expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '403':
+          description: Forbidden. The artifact belongs to a different brand.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: Artifact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /v2/optimize/workflows:
+    post:
+      summary: Create an Optimization Workflow
+      description: |
+        Creates an optimization workflow that processes a previously uploaded artifact. Provide the `artifact_id` returned by `POST /v2/optimize/artifacts` as `input.artifact.artifact_id`.
+
+        Workflows run in supervised mode by default. The workflow pauses at human-in-the-loop review gates that allow reviewers to approve taxonomy mappings, sample enrichments, and the final publish step.
+
+        **Review gates are approved in the CommerceOS web application, not through the API.** When a workflow reaches `status: REVIEW_PENDING`, direct a reviewer to [CommerceOS](https://commerceos.fabric.inc) to evaluate and approve the active gate. Once the reviewer acts in the UI, the workflow resumes automatically and the next poll of `GET /v2/optimize/workflows/{workflow_id}` reflects the new state.
+      operationId: createOptimizeWorkflow
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DomainHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkflowRequest'
+            example:
+              input:
+                artifact:
+                  artifact_id: art_95c650ded4824dc79bb6df16427e4a10
+              name: Spring 2026 catalog enrichment
+              origin: API
+              tags: []
+      responses:
+        '201':
+          description: Workflow created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptimizeWorkflowResponse'
+              example:
+                id: 9349773c-27fe-4d4f-a093-a5793dff8702
+                brand_id: 691df5949676c8e0b1d7b6b3
+                type: OPTIMIZE
+                origin: API
+                workflow_type: null
+                status: PENDING
+                current_step: null
+                current_hitl_gate: null
+                name: Spring 2026 catalog enrichment
+                tags: []
+                started_at: null
+                completed_at: null
+                last_error: null
+                retry_count: 0
+                workflow_metadata: null
+                progress: null
+                review_summary:
+                  total_categories: 0
+                  decided_categories: 0
+                  pending_categories: 0
+                  rerunning_categories: 0
+                  rejected_categories: 0
+                  ready_for_publish_categories: 0
+                  published_categories: 0
+                reviewer_summary: []
+                created_by:
+                  id: user_xyz
+                  type: user
+                  name: Integration Bot
+                  email: integration@acme.com
+                updated_by:
+                  id: user_xyz
+                  type: user
+                  name: Integration Bot
+                  email: integration@acme.com
+                created_at: '2026-05-15T10:35:00Z'
+                updated_at: '2026-05-15T10:35:00Z'
+        '400':
+          description: Bad request. The `input` field is missing or specifies more than one source.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '403':
+          description: Forbidden. The caller is not authorized for the brand specified in the `domain` header, or the referenced artifact belongs to a different brand.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: Referenced artifact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+  /v2/optimize/workflows/{workflow_id}:
+    get:
+      summary: Retrieve Optimization Workflow Status
+      description: |
+        Returns the current state of an optimization workflow, including `status`, `current_step`, `current_hitl_gate` (when the workflow is paused at a review gate), per-phase progress, and aggregated review and reviewer summaries.
+
+        Poll this endpoint to track a workflow through its lifecycle. A `401` response indicates that the access token has expired; re-authenticate and retry the request.
+
+        The `status` value progresses through `PENDING`, then `RUNNING` or `IN_PROGRESS`, then `REVIEW_PENDING` when paused at a human-in-the-loop gate, and ultimately `COMPLETED`. `FAILED` and `CANCELLED` are terminal alternatives.
+
+        **When `status` is `REVIEW_PENDING`**, the value of `current_hitl_gate` identifies the active gate. Gate approval is performed in the [CommerceOS](https://commerceos.fabric.inc) web application — direct the assigned reviewer to CommerceOS to evaluate and approve the gate. Once the reviewer acts, the workflow resumes and subsequent polls reflect the new state.
+      operationId: getOptimizeWorkflowStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/DomainHeader'
+        - name: workflow_id
+          in: path
+          required: true
+          description: Workflow identifier returned by `POST /v2/optimize/workflows`.
+          schema:
+            type: string
+            example: 9349773c-27fe-4d4f-a093-a5793dff8702
+      responses:
+        '200':
+          description: Workflow state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OptimizeWorkflowResponse'
+              example:
+                id: 9349773c-27fe-4d4f-a093-a5793dff8702
+                brand_id: 691df5949676c8e0b1d7b6b3
+                type: OPTIMIZE
+                origin: API
+                workflow_type: null
+                status: REVIEW_PENDING
+                current_step: TAXONOMY_MAP
+                current_hitl_gate: TAXONOMY_REVIEW
+                name: Spring 2026 catalog enrichment
+                tags: []
+                started_at: '2026-05-15T10:35:12Z'
+                completed_at: null
+                last_error: null
+                retry_count: 0
+                workflow_metadata: null
+                progress:
+                  current_phase: taxonomy
+                  current_step: TAXONOMY_MAP
+                  current_gate: TAXONOMY_REVIEW
+                  phases:
+                    validation:
+                      status: COMPLETED
+                    taxonomy:
+                      status: REVIEW_PENDING
+                    enrichment:
+                      status: NOT_STARTED
+                    publish:
+                      status: NOT_STARTED
+                review_summary:
+                  total_categories: 12
+                  decided_categories: 3
+                  pending_categories: 9
+                  rerunning_categories: 0
+                  rejected_categories: 0
+                  ready_for_publish_categories: 0
+                  published_categories: 0
+                reviewer_summary:
+                  - reviewer_user_id: user_xyz
+                    name: Alex Reviewer
+                    email: alex@acme.com
+                    first_name: Alex
+                    last_name: Reviewer
+                    category_ids:
+                      - cat_apparel
+                      - cat_outerwear
+                    categories_at_open_gate: 2
+                    current_gate: TAXONOMY_REVIEW
+                created_by:
+                  id: user_xyz
+                  type: user
+                  name: Integration Bot
+                  email: integration@acme.com
+                updated_by:
+                  id: user_xyz
+                  type: user
+                  name: Integration Bot
+                  email: integration@acme.com
+                created_at: '2026-05-15T10:35:00Z'
+                updated_at: '2026-05-15T10:42:08Z'
+        '401':
+          description: Unauthorized. The access token is missing or has expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '403':
+          description: Forbidden. The workflow belongs to a different brand.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '404':
+          description: Workflow not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+components:
+  headers:
+    domain:
+      description: The brand domain associated with the request. Used to scope the request to a specific brand.
+      example: Vessel
+      required: false
+      schema:
+        type: string
+  parameters:
+    DomainHeader:
+      name: domain
+      in: header
+      required: true
+      schema:
+        type: string
+        example: vessel.com
+      description: The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.
+  schemas:
+    AttributeImportAcceptedResponse:
+      type: object
+      required:
+        - import_id
+        - name
+        - status
+        - total_rows
+        - processed_rows
+        - created_count
+        - updated_count
+        - skipped_count
+        - failed_count
+        - input_filename
+        - errors
+        - created_at
+      properties:
+        import_id:
+          type: string
+          format: uuid
+          description: Identifier for the attribute import job.
+          example: e2716438-b763-4be8-82d2-36abe0cb92b1
+        name:
+          type: string
+          description: Import name.
+          example: attribute_test.csv
+        status:
+          type: string
+          example: PENDING
+        total_rows:
+          type: integer
+          example: 36
+        processed_rows:
+          type: integer
+          example: 0
+        created_count:
+          type: integer
+          example: 0
+        updated_count:
+          type: integer
+          example: 0
+        skipped_count:
+          type: integer
+          example: 0
+        failed_count:
+          type: integer
+          example: 0
+        input_filename:
+          type: string
+          example: attribute_test.csv
+        input_file_url:
+          type: string
+          format: uri
+          nullable: true
+          example: null
+        error_file_url:
+          type: string
+          format: uri
+          nullable: true
+          example: null
+        error_message:
+          type: string
+          nullable: true
+          example: null
+        errors:
+          type: array
+          items:
+            type: string
+          example: []
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-03-12T18:04:03.879876Z'
+    AttributeImportStatusResponse:
+      type: object
+      required:
+        - import_id
+        - status
+        - total_rows
+        - processed_rows
+        - created_at
+      properties:
+        import_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: attribute_test.csv
+        status:
+          type: string
+          example: COMPLETED
+        total_rows:
+          type: integer
+          example: 36
+        processed_rows:
+          type: integer
+          example: 36
+        created_count:
+          type: integer
+          example: 35
+        updated_count:
+          type: integer
+          example: 0
+        skipped_count:
+          type: integer
+          example: 0
+        failed_count:
+          type: integer
+          example: 1
+        input_filename:
+          type: string
+          example: attribute_test.csv
+        input_file_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://example.com/input.csv
+        error_file_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://example.com/errors.csv
+        error_message:
+          type: string
+          nullable: true
+          example: null
+        errors:
+          type: array
+          items:
+            type: string
+          example:
+            - "Row 35: invalid data_type 'BOOLREAN'"
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    AuthResponse:
+      type: object
+      required:
+        - access_token
+        - token_type
+        - expires_in
+        - scope
+      properties:
+        access_token:
+          type: string
+          description: Access token used for authenticated requests. Tokens expire every 60 minutes.
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        token_type:
+          type: string
+          description: Type of token returned.
+          example: bearer
+        expires_in:
+          type: integer
+          description: Time in seconds until the token expires.
+          example: 3600
+        scope:
+          type: string
+          description: Scope of the access token.
+          example: ""
+    CategoryImportAcceptedResponse:
+      type: object
+      required:
+        - import_id
+        - status
+        - message
+        - created_at
+      properties:
+        import_id:
+          type: string
+          format: uuid
+          description: Identifier for the import job.
+          example: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+        status:
+          type: string
+          example: PENDING
+        message:
+          type: string
+          description: Status message for the queued import.
+          example: Import queued. Use GET /categories/import/{import_id} to track progress.
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the import was created.
+          example: '2026-03-12T17:58:13.605818Z'
+    CategoryImportStatusResponse:
+      type: object
+      required:
+        - import_id
+        - status
+        - total_rows
+        - processed_rows
+        - created_at
+      properties:
+        import_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: tcs_category_test.csv
+        status:
+          type: string
+          example: COMPLETED
+        total_rows:
+          type: integer
+          example: 333
+        processed_rows:
+          type: integer
+          example: 333
+        new_count:
+          type: integer
+          example: 333
+        updated_count:
+          type: integer
+          example: 0
+        skipped_count:
+          type: integer
+          example: 0
+        failed_count:
+          type: integer
+          example: 0
+        input_filename:
+          type: string
+          example: tcs_category_test.csv
+        input_file_url:
+          type: string
+          format: uri
+          nullable: true
+          example: https://example.com/input.csv
+        error_file_url:
+          type: string
+          format: uri
+          nullable: true
+          example: null
+        error_message:
+          type: string
+          nullable: true
+          example: null
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    MeResponse:
+      type: object
+      required:
+        - id
+        - company_id
+        - company
+        - email
+        - name
+        - role
+        - email_verified
+        - brands
+        - created_at
+        - updated_at
+        - _id
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        company_id:
+          $ref: '#/components/schemas/ObjectId'
+        company:
+          $ref: '#/components/schemas/Company'
+        email:
+          type: string
+          format: email
+          example: jane.doe@acme.com
+        name:
+          type: string
+          example: Jane Doe
+        role:
+          type: string
+          example: admin
+        email_verified:
+          type: boolean
+          example: true
+        auth_provider:
+          type: string
+          nullable: true
+          example: null
+        brands:
+          type: array
+          items:
+            $ref: '#/components/schemas/Brand'
+        created_at:
+          type: string
+          format: date-time
+          example: '2025-12-01T13:50:07.128000Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2026-01-11T19:56:50.940000Z'
+        _id:
+          $ref: '#/components/schemas/ObjectId'
+    Company:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+      properties:
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-03-09T19:37:07.330827Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2026-03-09T19:37:07.330830Z'
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        name:
+          type: string
+          example: ACME Inc.
+        business_info:
+          type: object
+          nullable: true
+          additionalProperties: true
+          example: null
+    Brand:
+      type: object
+      required:
+        - id
+        - domain
+        - entitlements
+        - is_demo_brand
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectId'
+        domain:
+          type: string
+          example: acme.com
+        entitlements:
+          $ref: '#/components/schemas/Entitlements'
+        is_demo_brand:
+          type: boolean
+          example: false
+        ga4_property_id:
+          type: string
+          nullable: true
+          example: null
+        gsc_site_url:
+          type: string
+          nullable: true
+          example: null
+    Entitlements:
+      type: object
+      additionalProperties: false
+      properties:
+        monitor:
+          type: boolean
+          example: true
+        activate:
+          type: boolean
+          example: true
+    ObjectId:
+      type: string
+      description: MongoDB-style object identifier.
+      pattern: '^[a-fA-F0-9]{24}$'
+      example: 692d9d0eb8636aa1286823be
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    ArtifactKind:
+      type: string
+      enum:
+        - csv
+      description: Artifact file format. The supported value is `csv`.
+    ArtifactSource:
+      type: string
+      enum:
+        - upload
+        - presigned
+        - uri
+        - generated
+      description: |
+        Indicates how the artifact was ingested. `upload` denotes a direct multipart upload, `presigned` denotes the presigned-URL flow used for large files, `uri` denotes a server-side fetch from an external URI, and `generated` denotes a system-produced artifact.
+    UploadArtifactRequest:
+      type: object
+      required:
+        - file
+      properties:
+        file:
+          type: string
+          format: binary
+          description: The catalog file to upload. The file must be a CSV.
+        kind:
+          allOf:
+            - $ref: '#/components/schemas/ArtifactKind'
+          nullable: true
+          description: Optional. When omitted, the server infers the kind from the filename extension or content type. The supported value is `csv`.
+    ArtifactResponse:
+      type: object
+      required:
+        - artifact_id
+        - kind
+        - source
+        - content_type
+        - uri
+        - brand_id
+        - created_at
+      properties:
+        artifact_id:
+          type: string
+          description: Stable identifier for the artifact. Reference this value when creating a workflow.
+          example: art_95c650ded4824dc79bb6df16427e4a10
+        kind:
+          $ref: '#/components/schemas/ArtifactKind'
+        source:
+          $ref: '#/components/schemas/ArtifactSource'
+        bytes:
+          type: integer
+          nullable: true
+          description: File size in bytes.
+          example: 45678
+        sha256:
+          type: string
+          nullable: true
+          description: Hex-encoded SHA-256 checksum of the file contents.
+          example: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+        content_type:
+          type: string
+          description: MIME type as detected by the server.
+          example: text/csv
+        uri:
+          type: string
+          description: Internal storage URI for the artifact. Informational only.
+          example: s3://product-agent-data-prod-ue2/optimize-artifacts/svc_yourClientId/art_95c650ded4824dc79bb6df16427e4a10/catalog.csv
+        original_filename:
+          type: string
+          nullable: true
+          description: The filename submitted with the multipart upload.
+          example: catalog.csv
+        brand_id:
+          type: string
+          description: The brand the artifact is associated with, derived from the `domain` header.
+          example: 691df5949676c8e0b1d7b6b3
+        created_at:
+          type: string
+          format: date-time
+          description: Upload timestamp in UTC.
+          example: '2026-05-15T10:30:00Z'
+    ArtifactReadResponse:
+      type: object
+      required:
+        - artifact_id
+        - kind
+        - source
+        - content_type
+        - uri
+        - brand_id
+        - created_at
+        - download_url
+        - download_url_expires_at
+      description: Artifact metadata plus a short-lived signed URL for downloading the original file contents.
+      properties:
+        artifact_id:
+          type: string
+          example: art_95c650ded4824dc79bb6df16427e4a10
+        kind:
+          $ref: '#/components/schemas/ArtifactKind'
+        source:
+          $ref: '#/components/schemas/ArtifactSource'
+        bytes:
+          type: integer
+          nullable: true
+          example: 45678
+        sha256:
+          type: string
+          nullable: true
+          example: 9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08
+        content_type:
+          type: string
+          example: text/csv
+        uri:
+          type: string
+          example: s3://product-agent-data-prod-ue2/optimize-artifacts/svc_yourClientId/art_95c650ded4824dc79bb6df16427e4a10/catalog.csv
+        original_filename:
+          type: string
+          nullable: true
+          example: catalog.csv
+        brand_id:
+          type: string
+          example: 691df5949676c8e0b1d7b6b3
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-05-15T10:30:00Z'
+        download_url:
+          type: string
+          description: Short-lived presigned URL for downloading the original file contents. The URL is valid until `download_url_expires_at`.
+          example: https://product-agent-data-prod-ue2.s3.amazonaws.com/optimize-artifacts/svc_yourClientId/art_95c650ded4824dc79bb6df16427e4a10/catalog.csv?X-Amz-Signature=...
+        download_url_expires_at:
+          type: string
+          format: date-time
+          description: Expiry timestamp in UTC for `download_url`. After this time, call `GET /v2/optimize/artifacts/{artifact_id}` again to obtain a new URL.
+          example: '2026-05-15T10:45:00Z'
+    ArtifactInput:
+      type: object
+      required:
+        - artifact_id
+      properties:
+        artifact_id:
+          type: string
+          description: Identifier returned by `POST /v2/optimize/artifacts`.
+          example: art_95c650ded4824dc79bb6df16427e4a10
+    WorkflowInput:
+      type: object
+      required:
+        - artifact
+      description: Specifies the source of the workflow's input data. Provide `artifact.artifact_id` from a prior call to `POST /v2/optimize/artifacts`.
+      properties:
+        artifact:
+          $ref: '#/components/schemas/ArtifactInput'
+    CreateWorkflowRequest:
+      type: object
+      required:
+        - input
+      description: Request body for creating an optimization workflow. Customer integrations should set `origin` to `API`. Supervised review gating is applied automatically.
+      properties:
+        input:
+          $ref: '#/components/schemas/WorkflowInput'
+        name:
+          type: string
+          nullable: true
+          description: Human-readable name displayed in the Commerce OS UI.
+          example: Spring 2026 catalog enrichment
+        tags:
+          type: array
+          nullable: true
+          items:
+            type: string
+          example: []
+        origin:
+          type: string
+          nullable: true
+          enum:
+            - COMMERCEOS
+            - API
+          default: API
+          description: Set to `API` for customer integrations. Defaults to `API` when omitted.
+        metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: Arbitrary JSON object stored on the workflow for caller use.
+    AuditPrincipal:
+      type: object
+      required:
+        - id
+        - type
+      description: |
+        Resolved reference for the `created_by` and `updated_by` audit fields. A `type` of `unknown` is returned when the referenced identifier can no longer be resolved (for example, when a user has been hard-deleted).
+      properties:
+        id:
+          type: string
+          description: 'Either `auth_users.id` or `auth_service_clients.client_id`.'
+          example: user_xyz
+        type:
+          type: string
+          enum:
+            - user
+            - service
+            - unknown
+          description: 'Indicates the principal type: `user` for end-user actors, `service` for machine clients, and `unknown` when the principal cannot be resolved.'
+        name:
+          type: string
+          nullable: true
+          description: Display name. Null when `type` is `unknown`.
+          example: Alex Reviewer
+        email:
+          type: string
+          nullable: true
+          description: Email address. Null when `type` is `service` or `unknown`.
+          example: alex@acme.com
+    WorkflowReviewSummary:
+      type: object
+      description: |
+        Aggregate counts across categories at the current enrichment-side review gate. This summary supports diagnosing which categories are blocking progression. For non-enrichment gates (taxonomy, validation, publish) the counts are typically zero, because those gates are workflow-level rather than per-category.
+      properties:
+        total_categories:
+          type: integer
+          default: 0
+        decided_categories:
+          type: integer
+          default: 0
+        pending_categories:
+          type: integer
+          default: 0
+        rerunning_categories:
+          type: integer
+          default: 0
+        rejected_categories:
+          type: integer
+          default: 0
+        ready_for_publish_categories:
+          type: integer
+          default: 0
+        published_categories:
+          type: integer
+          default: 0
+    WorkflowReviewerSummaryResponse:
+      type: object
+      required:
+        - reviewer_user_id
+      description: Per-reviewer summary included in the workflow response. The `name` and `email` fields are resolved from `auth_users` at read time.
+      properties:
+        reviewer_user_id:
+          type: string
+          example: user_xyz
+        name:
+          type: string
+          nullable: true
+          example: Alex Reviewer
+        email:
+          type: string
+          nullable: true
+          example: alex@acme.com
+        first_name:
+          type: string
+          nullable: true
+          example: Alex
+        last_name:
+          type: string
+          nullable: true
+          example: Reviewer
+        category_ids:
+          type: array
+          items:
+            type: string
+          example:
+            - cat_apparel
+            - cat_outerwear
+        categories_at_open_gate:
+          type: integer
+          default: 0
+          example: 2
+        current_gate:
+          type: string
+          nullable: true
+          example: TAXONOMY_REVIEW
+    WorkflowProgress:
+      type: object
+      description: |
+        Phase-keyed progress for the workflow, computed at read time. The `phases` object contains one key per phase (`validation`, `taxonomy`, `enrichment`, `publish`), each carrying a phase-specific structure.
+      properties:
+        current_phase:
+          type: string
+          nullable: true
+          example: taxonomy
+        current_step:
+          type: string
+          nullable: true
+          example: TAXONOMY_MAP
+        current_gate:
+          type: string
+          nullable: true
+          example: TAXONOMY_REVIEW
+        phases:
+          type: object
+          additionalProperties: true
+          description: Phase-keyed progress map. Keys are `validation`, `taxonomy`, `enrichment`, `publish`; each value is a phase-specific progress object.
+    OptimizeWorkflowResponse:
+      type: object
+      required:
+        - id
+        - brand_id
+        - status
+        - created_at
+        - updated_at
+      description: |
+        Workflow state envelope returned by `POST /v2/optimize/workflows` and `GET /v2/optimize/workflows/{workflow_id}`. The `status` value progresses through `PENDING`, then `RUNNING` or `IN_PROGRESS`, then `REVIEW_PENDING`, and ultimately `COMPLETED`. `FAILED` and `CANCELLED` are terminal alternatives.
+      properties:
+        id:
+          type: string
+          description: Workflow identifier. Use this value to poll for status and to construct deep links into the Commerce OS UI.
+          example: 9349773c-27fe-4d4f-a093-a5793dff8702
+        brand_id:
+          type: string
+          example: 691df5949676c8e0b1d7b6b3
+        type:
+          type: string
+          nullable: true
+          example: OPTIMIZE
+        origin:
+          type: string
+          nullable: true
+          enum:
+            - COMMERCEOS
+            - API
+          example: API
+        workflow_type:
+          type: string
+          nullable: true
+          example: null
+        status:
+          type: string
+          description: Current lifecycle state.
+          enum:
+            - PENDING
+            - RUNNING
+            - IN_PROGRESS
+            - REVIEW_PENDING
+            - COMPLETED
+            - FAILED
+            - CANCELLED
+          example: REVIEW_PENDING
+        current_step:
+          type: string
+          nullable: true
+          description: |
+            Current step in the workflow. One of `VALIDATE` / `VALIDATION`, `TAXONOMY_MAP` / `TAXONOMY`, `ENRICH` / `ENRICHMENT`, or `PUBLISH` / `PUBLISHED`.
+          example: TAXONOMY_MAP
+        current_hitl_gate:
+          type: string
+          nullable: true
+          description: |
+            Active human-in-the-loop review gate. Populated when `status` is `REVIEW_PENDING`. One of `VALIDATION_REVIEW`, `TAXONOMY_REVIEW`, `SAMPLE_REVIEW`, `ENRICHMENT_SAMPLE_REVIEW`, `FULL_ENRICHMENT_REVIEW`, `ENRICHMENT_FULL_REVIEW`, or `PUBLISH_APPROVAL`.
+          example: TAXONOMY_REVIEW
+        name:
+          type: string
+          nullable: true
+          example: Spring 2026 catalog enrichment
+        tags:
+          type: array
+          items: {}
+          example: []
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2026-05-15T10:35:12Z'
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+        last_error:
+          type: string
+          nullable: true
+          description: Most recent error message. Populated when `status` is `FAILED`.
+          example: null
+        retry_count:
+          type: integer
+          default: 0
+          example: 0
+        workflow_metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+        progress:
+          allOf:
+            - $ref: '#/components/schemas/WorkflowProgress'
+          nullable: true
+        review_summary:
+          $ref: '#/components/schemas/WorkflowReviewSummary'
+        reviewer_summary:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkflowReviewerSummaryResponse'
+        created_by:
+          allOf:
+            - $ref: '#/components/schemas/AuditPrincipal'
+          nullable: true
+        updated_by:
+          allOf:
+            - $ref: '#/components/schemas/AuditPrincipal'
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          example: '2026-05-15T10:35:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          example: '2026-05-15T10:42:08Z'
+    ValidationError:
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      properties:
+        loc:
+          type: array
+          items:
+            oneOf:
+              - type: string
+              - type: integer
+        msg:
+          type: string
+        type:
+          type: string
+    HTTPValidationError:
+      type: object
+      description: Validation error response body returned with HTTP 422.
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
+  securitySchemes:
+    authorization:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+security:
+  - authorization: []

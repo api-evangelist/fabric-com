@@ -1,0 +1,1765 @@
+openapi: 3.0.0
+x-mint:
+  mcp:
+    enabled: true
+info:
+  title: Offers - Prices
+  description: >-
+    fabric Pricing endpoints let you create and manage price details for one or
+    more items. You can configure the prices endpoints to include your default
+    price list in all requests.
+  version: 3.0.0
+  x-audience: external-public
+  termsOfService: https://fabric.inc/terms-of-use
+  contact:
+    name: Offers support
+    email: support@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+externalDocs:
+  description: Find out more about Offers
+  url: https://developer.fabric.inc/docs/offers-overview
+servers:
+  - url: https://api.fabric.inc/v3
+    description: Production environment
+paths:
+  /prices:
+    post:
+      tags:
+        - Prices
+      summary: Create Price
+      description: Create or update price of an item based on given `itemId` and `itemSku`
+      operationId: createPrices
+      security:
+        - AuthorizationToken: []
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xClientId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createPriceRequest'
+            examples:
+              createPrice:
+                $ref: '#/components/examples/createPrice'
+      responses:
+        '201':
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createPriceResponse'
+              examples:
+                createPrice:
+                  $ref: '#/components/examples/getPrice'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/missingTenantHeader'
+                  - $ref: '#/components/schemas/error400'
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error401'
+        '404':
+          description: Not Found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/priceListNotFound'
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error500'
+    get:
+      tags:
+        - Prices
+      summary: Get All Active Prices
+      description: >-
+        Get a paginated list of active and scheduled prices. Active prices have
+        start date greater than the current date and end date is in the future.
+      operationId: getPrices
+      security:
+        - AuthorizationToken: []
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xClientId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/queryParameterSize'
+        - $ref: '#/components/parameters/queryParameterOffset'
+        - $ref: '#/components/parameters/queryParameterPriceListId'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPricesResponse'
+              examples:
+                listPrice:
+                  $ref: '#/components/examples/listPrice'
+                listPriceWithRange:
+                  $ref: '#/components/examples/listPriceRange'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/missingTenantHeader'
+                  - $ref: '#/components/schemas/error400'
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error401'
+        '404':
+          description: Not Found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/priceListNotFound'
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error500'
+  /prices/{itemId}:
+    get:
+      tags:
+        - Prices
+      summary: Get Price by Itemid
+      description: >-
+        Get a paginated list of price details for the given `itemId` and
+        `priceListId`. If `priceListId` isn't specified, prices are retrieved
+        for the `itemId` that belongs to the default price list.
+      operationId: getPricesByItemId
+      security:
+        - AuthorizationToken: []
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xClientId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/queryParameterSize'
+        - $ref: '#/components/parameters/queryParameterOffset'
+        - $ref: '#/components/parameters/queryParameterPriceListId'
+        - name: itemId
+          in: path
+          required: true
+          description: The item ID from which prices are retrieved.
+          schema:
+            type: number
+        - name: status
+          in: query
+          description: >
+            The status used to filter prices. The following statuses are
+            available:
+
+            - `ACTIVE`: Displays current prices or regular prices. These are the
+            prices that are actively displayed and applied to products on an
+            ongoing basis.
+
+            - `SCHEDULED`: Displays prices that will be applied to products in
+            the future. Retailers often use scheduled prices for marketing
+            campaigns to attract customers, generate sales, clear inventory, or
+            create a sense of urgency.
+
+            - `ALL`: Displays both `ACTIVE` and `SCHEDULED` prices.
+          required: false
+          schema:
+            type: string
+            default: ALL
+            enum:
+              - ACTIVE
+              - SCHEDULED
+              - ALL
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPriceResponse'
+              examples:
+                getPrice:
+                  $ref: '#/components/examples/getPriceById'
+                getPriceRangeWithQuantity:
+                  $ref: '#/components/examples/getPriceRangeById'
+                getPriceRangeWithArea:
+                  $ref: '#/components/examples/getPriceRangeWithAreaById'
+                getPriceRangeWithWidth:
+                  $ref: '#/components/examples/getPriceRangeWithWidthById'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/missingTenantHeader'
+                  - $ref: '#/components/schemas/error400'
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error401'
+        '404':
+          description: Not Found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/itemIdNotFound'
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error500'
+    delete:
+      tags:
+        - Prices
+      summary: Delete Price by Itemid
+      description: >-
+        Delete price details by `itemId`. If `priceListId` isn't specified,
+        price is deleted for the `itemId` that belongs to the default price
+        list.
+      operationId: deletePricesByItemId
+      security:
+        - AuthorizationToken: []
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xClientId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/queryParameterPriceListId'
+        - name: itemId
+          in: path
+          required: true
+          description: The item ID of the price record that's being deleted.
+          schema:
+            type: number
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deletePriceResponse'
+              example:
+                priceListId: 100000
+                itemId: 10000001
+                itemSku: SKU0123456
+                isDeleted: true
+                channelId: '12'
+                currency: USD
+                offers:
+                  startAt: '2019-08-24T14:15:22Z'
+                  endAt: '2019-08-25T14:15:22Z'
+                  price:
+                    base: 299.99
+                    sale: 199.99
+                    cost: 148.99
+                createdAt: '2019-08-20T14:15:22Z'
+                updatedAt: '2019-08-20T14:15:22Z'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/missingTenantHeader'
+                  - $ref: '#/components/schemas/error400'
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error401'
+        '404':
+          description: Not Found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/itemIdNotFound'
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error500'
+  /prices/sku/{sku}:
+    get:
+      tags:
+        - Prices
+      summary: Get Price by SKU
+      description: >-
+        Get price details for the `sku` and `priceListId`. If `priceListId`
+        isn't specified, price is retrieved for the `sku` that belongs to the
+        default price list.
+      operationId: getPricesBySku
+      security:
+        - AuthorizationToken: []
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xClientId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/queryParameterSize'
+        - $ref: '#/components/parameters/queryParameterOffset'
+        - $ref: '#/components/parameters/queryParameterPriceListId'
+        - name: sku
+          in: path
+          required: true
+          description: Product SKU to get the price record for
+          schema:
+            type: string
+            example: SKU0123456
+        - name: status
+          in: query
+          description: >
+            The status used to filter prices. The following statuses are
+            available:
+
+            - `ACTIVE`: Displays current prices or regular prices. These are the
+            prices that are actively displayed and applied to products on an
+            ongoing basis.
+
+            - `SCHEDULED`: Displays prices that will be applied to products in
+            the future. Retailers often use scheduled prices for marketing
+            campaigns to attract customers, generate sales, clear inventory, or
+            create a sense of urgency.
+
+            - `ALL`: Displays both `ACTIVE` and `SCHEDULED` prices.
+          required: false
+          schema:
+            type: string
+            default: ALL
+            enum:
+              - ACTIVE
+              - SCHEDULED
+              - ALL
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getPriceResponse'
+              examples:
+                getPrice:
+                  $ref: '#/components/examples/getPriceById'
+                getPriceRangeWithQuantity:
+                  $ref: '#/components/examples/getPriceRangeById'
+                getPriceRangeWithArea:
+                  $ref: '#/components/examples/getPriceRangeWithAreaById'
+                getPriceRangeWithWidth:
+                  $ref: '#/components/examples/getPriceRangeWithWidth'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/missingTenantHeader'
+                  - $ref: '#/components/schemas/error400'
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error401'
+        '404':
+          description: Not Found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/itemSkuNotFound'
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error500'
+    delete:
+      tags:
+        - Prices
+      summary: Delete Price by SKU
+      description: Delete price record for the given `sku` and `priceListId`.
+      operationId: deletePricesBySku
+      security:
+        - AuthorizationToken: []
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xClientId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+        - $ref: '#/components/parameters/queryParameterPriceListId'
+        - name: sku
+          in: path
+          required: true
+          description: The product SKU of the price details that are being deleted.
+          schema:
+            type: string
+            example: SKU0123456
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/deletePriceBySkuResponse'
+              example:
+                priceListId: 100000
+                itemId: 10000001
+                itemSku: SKU0123456
+                isDeleted: true
+                channelId: '12'
+                currency: USD
+                offers:
+                  startAt: '2019-08-24T14:15:22Z'
+                  endAt: '2019-08-25T14:15:22Z'
+                  price:
+                    base: 299.99
+                    sale: 199.99
+                    cost: 148.99
+                createdAt: '2019-08-20T14:15:22Z'
+                updatedAt: '2019-08-20T14:15:22Z'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/missingTenantHeader'
+                  - $ref: '#/components/schemas/error400'
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error401'
+        '404':
+          description: Not Found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/itemSkuNotFound'
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error500'
+  /prices/batch:
+    post:
+      tags:
+        - Prices
+      summary: Create Batch Prices
+      description: Create one or more prices for items based on `itemId` and `itemSku`.
+      operationId: createBatchPrices
+      security:
+        - AuthorizationToken: []
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xClientId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createBatchPriceRequest'
+            examples:
+              createPrice:
+                $ref: '#/components/examples/createBulkPrice'
+              createPriceWithQuantity:
+                $ref: '#/components/examples/createBulkPriceRangeWithQuantity'
+              createPriceWithArea:
+                $ref: '#/components/examples/createBulkPriceRangeWithArea'
+              createPriceWithDimensions:
+                $ref: '#/components/examples/createBulkPriceRangeWithWidths'
+      responses:
+        '201':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/createBatchPriceResponse'
+              examples:
+                createPrice:
+                  $ref: '#/components/examples/getBulkPrice'
+                createPriceRangeWithQuantity:
+                  $ref: '#/components/examples/getBulkPriceRange'
+                createPriceRangeWithArea:
+                  $ref: '#/components/examples/getBulkPriceRangeArea'
+                createBulkPriceRangeWithDimensions:
+                  $ref: '#/components/examples/getBulkPriceRangeDimensions'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                anyOf:
+                  - $ref: '#/components/schemas/batchPriceErrors'
+                  - $ref: '#/components/schemas/missingTenantHeader'
+                  - $ref: '#/components/schemas/error400'
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error401'
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponse'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error500'
+components:
+  securitySchemes:
+    AuthorizationToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  examples:
+    createPrice:
+      value:
+        priceListId: 100000
+        itemId: 10000001
+        itemSku: SKU0123456
+        offers:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+    getPrice:
+      value:
+        priceListId: 100000
+        itemId: 10000001
+        itemSku: SKU0123456
+        isDeleted: false
+        channelId: '12'
+        currency: USD
+        offers:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+        createdAt: 2019-08-20T14:15:22.000Z
+        updatedAt: 2019-08-20T14:15:22.000Z
+    getPriceById:
+      value:
+        query:
+          size: 10
+          offset: 0
+        priceMetadata:
+          priceListId: 100000
+          itemId: 10000001
+          itemSku: SKU0123456
+          isDeleted: false
+          channelId: '12'
+          currency: USD
+          createdAt: 2019-08-20T14:15:22.000Z
+          updatedAt: 2019-08-20T14:15:22.000Z
+        data:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+    createPriceRangeWithQuantity:
+      value:
+        priceListId: 100000
+        itemId: 10000001
+        itemSku: SKU0123456
+        offers:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+          priceRange:
+            priceMethodType: QUANTITY_PRICING
+            ranges:
+              - minQuantity: 1
+                maxQuantity: 20
+                price: 20.75
+            priceAddons:
+              - id: 1000000051
+    createPriceRangeWithArea:
+      value:
+        priceListId: 100000
+        itemId: 10000001
+        itemSku: SKU0123456
+        offers:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+          priceRange:
+            priceMethodType: SQUARE_AREA_PRICING
+            ranges:
+              - minArea: 1
+                maxArea: 20
+                price: 20.75
+            priceAddons:
+              - id: 1000000051
+    getPriceRangeWithArea:
+      value:
+        priceListId: 100000
+        itemId: 10000001
+        itemSku: SKU0123456
+        isDeleted: false
+        channelId: '12'
+        currency: USD
+        offers:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+          priceRange:
+            priceMethodType: SQUARE_AREA_PRICING
+            ranges:
+              - minArea: 1
+                maxArea: 20
+                price: 20.75
+            priceAddons:
+              - id: 61118
+                name: BuildMotor
+                price: 458.97
+        createdAt: 2019-08-20T14:15:22.000Z
+        updatedAt: 2019-08-20T14:15:22.000Z
+    getPriceRangeWithWidth:
+      value:
+        priceListId: 100000
+        itemId: 10000001
+        itemSku: SKU0123456
+        isDeleted: false
+        channelId: '12'
+        currency: USD
+        offers:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+          priceRange:
+            priceMethodType: TABLE_PRICING_LENGTH_WIDTH
+            ranges:
+              - minLength: 1
+                maxLength: 100
+                widths:
+                  - minWidth: 1
+                    maxWidth: 200
+                    price: 20.75
+            priceAddons:
+              - id: 1000000051
+        createdAt: 2019-08-20T14:15:22.000Z
+        updatedAt: 2019-08-20T14:15:22.000Z
+    getPriceRangeById:
+      value:
+        query:
+          size: 10
+          offset: 0
+        priceMetadata:
+          priceListId: 100000
+          itemId: 10000001
+          itemSku: SKU0123456
+          isDeleted: false
+          channelId: '12'
+          currency: USD
+          createdAt: 2019-08-20T14:15:22.000Z
+          updatedAt: 2019-08-20T14:15:22.000Z
+        data:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+          priceRange:
+            priceMethodType: QUANTITY_PRICING
+            ranges:
+              - minQuantity: 1
+                maxQuantity: 20
+                price: 20.75
+            priceAddons:
+              - id: 61118
+                name: BuildMotor
+                price: 458.97
+    getPriceRangeWithAreaById:
+      value:
+        query:
+          size: 10
+          offset: 0
+        priceMetadata:
+          priceListId: 100000
+          itemId: 10000001
+          itemSku: SKU0123456
+          isDeleted: false
+          channelId: '12'
+          currency: USD
+          createdAt: 2019-08-20T14:15:22.000Z
+          updatedAt: 2019-08-20T14:15:22.000Z
+        data:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+          priceRange:
+            priceMethodType: SQUARE_AREA_PRICING
+            ranges:
+              - minArea: 1
+                price: 20.75
+            priceAddons:
+              - id: 61118
+                name: BuildMotor
+                price: 458.97
+    getPriceRangeWithWidthById:
+      value:
+        query:
+          size: 10
+          offset: 0
+        priceMetadata:
+          priceListId: 100000
+          itemId: 10000001
+          itemSku: SKU0123456
+          isDeleted: false
+          channelId: '12'
+          currency: USD
+          createdAt: 2019-08-20T14:15:22.000Z
+          updatedAt: 2019-08-20T14:15:22.000Z
+        data:
+          startAt: 2019-08-24T14:15:22.000Z
+          endAt: 2019-08-25T14:15:22.000Z
+          price:
+            base: 299.99
+            sale: 199.99
+            cost: 148.99
+          priceRange:
+            priceMethodType: TABLE_PRICING_LENGTH_WIDTH
+            ranges:
+              - minLength: 1
+                maxLength: 100
+                widths:
+                  - minWidth: 1
+                    maxWidth: 200
+                    price: 20.75
+            priceAddons:
+              - id: 1000000051
+    listPrice:
+      value:
+        query:
+          size: 10
+          offset: 0
+          count: 34
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            isDeleted: false
+            channelId: '12'
+            currency: USD
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+            createdAt: 2019-08-20T14:15:22.000Z
+            updatedAt: 2019-08-20T14:15:22.000Z
+    listPriceRange:
+      value:
+        query:
+          size: 10
+          offset: 0
+          count: 34
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            isDeleted: false
+            channelId: '12'
+            currency: USD
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+              priceRange:
+                priceMethodType: QUANTITY_PRICING
+                ranges:
+                  - minQuantity: 1
+                    price: 20.75
+                priceAddons:
+                  - id: 61118
+                    name: BuildMotor
+                    price: 458.97
+            createdAt: 2019-08-20T14:15:22.000Z
+            updatedAt: 2019-08-20T14:15:22.000Z
+    createBulkPrice:
+      value:
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+    createBulkPriceRangeWithQuantity:
+      value:
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299
+                sale: 199
+                cost: 148
+              priceRange:
+                priceMethodType: QUANTITY_PRICING
+                ranges:
+                  - minQuantity: 1
+                    maxQuantity: 20
+                    price: 20.75
+                priceAddons:
+                  - id: 1000000051
+    createBulkPriceRangeWithWidths:
+      value:
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+              priceRange:
+                priceMethodType: TABLE_PRICING_LENGTH_WIDTH
+                ranges:
+                  - minLength: 1
+                    maxLength: 100
+                    widths:
+                      - minWidth: 1
+                        maxWidth: 200
+                        price: 20.75
+                priceAddons:
+                  - id: 1000000051
+    createBulkPriceRangeWithArea:
+      value:
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+              priceRange:
+                priceMethodType: SQUARE_AREA_PRICING
+                ranges:
+                  - minArea: 1
+                    maxArea: 20
+                    price: 20.75
+                priceAddons:
+                  - id: 1000000051
+    getBulkPrice:
+      value:
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            isDeleted: false
+            channelId: '12'
+            currency: USD
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+            createdAt: 2019-08-20T14:15:22.000Z
+            updatedAt: 2019-08-20T14:15:22.000Z
+    getBulkPriceRange:
+      value:
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            isDeleted: false
+            channelId: '12'
+            currency: USD
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+              priceRange:
+                priceMethodType: QUANTITY_PRICING
+                ranges:
+                  - minQuantity: 1
+                    maxQuantity: 20
+                    price: 20.75
+                priceAddons:
+                  - id: 61118
+                    name: BuildMotor
+                    price: 458.97
+            createdAt: 2019-08-20T14:15:22.000Z
+            updatedAt: 2019-08-20T14:15:22.000Z
+    getBulkPriceRangeArea:
+      value:
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            isDeleted: false
+            channelId: '12'
+            currency: USD
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+              priceRange:
+                priceMethodType: SQUARE_AREA_PRICING
+                ranges:
+                  - minArea: 1
+                    maxArea: 20
+                    price: 20.75
+                priceAddons:
+                  - id: 1000000051
+            createdAt: 2019-08-20T14:15:22.000Z
+            updatedAt: 2019-08-20T14:15:22.000Z
+    getBulkPriceRangeDimensions:
+      value:
+        data:
+          - priceListId: 100000
+            itemId: 10000001
+            itemSku: SKU0123456
+            isDeleted: false
+            channelId: '12'
+            currency: USD
+            offers:
+              startAt: 2019-08-24T14:15:22.000Z
+              endAt: 2019-08-25T14:15:22.000Z
+              price:
+                base: 299.99
+                sale: 199.99
+                cost: 148.99
+              priceRange:
+                priceMethodType: TABLE_PRICING_LENGTH_WIDTH
+                ranges:
+                  - minLength: 1
+                    maxLength: 100
+                    widths:
+                      - minWidth: 1
+                        maxWidth: 200
+                        price: 20.75
+                priceAddons:
+                  - id: 1000000051
+            createdAt: 2019-08-20T14:15:22.000Z
+            updatedAt: 2019-08-20T14:15:22.000Z
+  schemas:
+    missingTenantHeader:
+      type: object
+      description: Tenant header is missing
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: TENANT_HEADER_REQUIRED
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: x-fabric-tenant-id header is required
+    error400:
+      type: object
+      description: Bad request error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: BAD_REQUEST
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Bad request
+    error401:
+      type: object
+      description: Unauthorized error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: UNAUTHORIZED
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Invalid credentials
+    error500:
+      type: object
+      description: Internal server error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: INTERNAL_SERVER_ERROR
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Internal server error
+    priceListNotFound:
+      type: object
+      description: Price list not found error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: PRICE_LIST_NOT_FOUND
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: No price list found with this ID
+    createdAt:
+      type: string
+      format: date-time
+      description: The timestamp when the price was created.
+      example: 2019-08-20T14:15:22.000Z
+    updatedAt:
+      type: string
+      format: date-time
+      description: The timestamp when the price was last updated.
+      example: 2019-08-20T14:15:22.000Z
+    isDeleted:
+      type: boolean
+      description: |
+        `true`: The price is deleted
+
+        `false`: The price isn't deleted
+      example: false
+    offsetQuery:
+      type: object
+      description: Provides pagination data.
+      properties:
+        size:
+          type: integer
+          format: int32
+          example: 10
+          minimum: 1
+          maximum: 100
+          default: 10
+          description: The maximum number of records per page.
+        offset:
+          type: integer
+          format: int32
+          example: 10
+          minimum: 0
+          default: 0
+          description: >-
+            The number of records to skip before returning records. For example,
+            with an offset of 20 and limit of 10, you will get records from 21
+            to 30.
+        count:
+          type: integer
+          format: int32
+          example: 50
+          description: The total number of available records.
+    price:
+      type: object
+      required:
+        - priceListId
+        - channelId
+        - currency
+        - offers
+      properties:
+        itemId:
+          type: integer
+          format: int32
+          example: 1000000051
+          description: >-
+            The product item ID assigned when a price is created, updated, or
+            deleted.
+        itemSku:
+          type: string
+          example: SKU123456
+          description: >-
+            The product item SKU assigned when a price is created, updated, or
+            deleted.
+        priceListId:
+          type: integer
+          format: int32
+          description: >-
+            The price list ID assigned when price details are created or
+            updated.
+          example: 100000
+        isDeleted:
+          $ref: '#/components/schemas/isDeleted'
+        channelId:
+          description: Channel ID
+          type: string
+          example: '12'
+        currency:
+          description: The currency type set for the price list.
+          type: string
+          example: USD
+        offers:
+          type: array
+          description: Item prices
+          items:
+            allOf:
+              - $ref: '#/components/schemas/priceWithOffersMetaData'
+              - type: object
+        createdAt:
+          $ref: '#/components/schemas/createdAt'
+        updatedAt:
+          $ref: '#/components/schemas/updatedAt'
+    priceRequest:
+      type: object
+      description: Details to create prices for an item
+      required:
+        - offers
+      properties:
+        priceListId:
+          type: integer
+          format: int32
+          description: >-
+            ID of the price list for which prices will be created or updated. If
+            you don't mention `priceListId`, price will be created or updated
+            for the default price list.
+          example: 100000
+        itemId:
+          type: integer
+          format: int32
+          example: 10000001
+          description: >-
+            The product item ID assigned when a price is created or updated. It
+            is a required property.
+        itemSku:
+          type: string
+          example: SKU0123456
+          description: The product SKU assigned when a price is created or updated.
+        offers:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            required:
+              - startAt
+              - endAt
+              - price
+            allOf:
+              - $ref: '#/components/schemas/priceWithOffersMetaData'
+              - type: object
+    priceMetadata:
+      type: object
+      required:
+        - priceListId
+        - createdAt
+        - updatedAt
+      properties:
+        isDeleted:
+          $ref: '#/components/schemas/isDeleted'
+        itemId:
+          type: integer
+          format: int32
+          description: The assigned product item ID the price is retrieved for.
+          example: 1000000051
+        itemSku:
+          type: string
+          description: The assigned product SKU the price is retrieved for.
+          example: SKU123456
+        priceListId:
+          type: integer
+          format: int32
+          description: >-
+            The price list ID for retrieving prices for the specified `itemId`
+            and `itemSku`.
+          example: 100000
+        channelId:
+          description: Channel ID
+          type: string
+          example: '12'
+        currency:
+          description: The currency type set for the price list.
+          type: string
+          example: USD
+        createdAt:
+          $ref: '#/components/schemas/createdAt'
+        updatedAt:
+          $ref: '#/components/schemas/updatedAt'
+    priceWithOffersMetaData:
+      type: object
+      description: Price details including offer price
+      required:
+        - startAt
+        - endAt
+        - price
+      properties:
+        startAt:
+          type: string
+          description: The timestamp of when the adjusted price starts.
+          format: date-time
+          example: 2020-02-02T17:22:48.570Z
+        endAt:
+          type: string
+          description: The timestamp of when the adjusted price ends.
+          format: date-time
+          example: 2020-02-02T17:22:48.570Z
+        price:
+          type: object
+          description: Price details
+          required:
+            - base
+          properties:
+            base:
+              description: >-
+                Item base price. It's the minimum fixed price of the item before
+                any taxes or other charges added.
+              type: number
+              nullable: true
+              format: double
+              example: 2.99
+            sale:
+              description: >-
+                Item sale price. It's the discounted price at which the item is
+                sold to clear inventory.
+              type: number
+              nullable: true
+              format: double
+              example: 99.99
+            cost:
+              description: >-
+                Cost of the item set by the manufacturer. It's the amount that
+                costs the manufacturer to produce or acquire the product.
+              type: number
+              nullable: true
+              format: double
+              example: 149
+    basePriceRangeMetaData:
+      type: object
+      description: >-
+        Parent class for `priceRangeQuantity`, `priceRangeArea` and
+        `priceRangeDimensions`
+      required:
+        - priceMethodType
+      properties:
+        priceMethodType:
+          type: string
+          description: Price method name
+          enum:
+            - QUANTITY_PRICING
+            - SQUARE_AREA_PRICING
+            - TABLE_PRICING_LENGTH_WIDTH
+          example: QUANTITY_PRICING
+        priceAddons:
+          type: array
+          description: Item add-ons
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                format: int32
+                example: 1000000051
+                description: Add-on ID
+      discriminator:
+        propertyName: priceMethodType
+        mapping:
+          QUANTITY_PRICING: '#/components/schemas/priceRangeQuantity'
+          SQUARE_AREA_PRICING: '#/components/schemas/priceRangeArea'
+          TABLE_PRICING_LENGTH_WIDTH: '#/components/schemas/priceRangeDimensions'
+    priceRangeQuantity:
+      allOf:
+        - $ref: '#/components/schemas/basePriceRangeMetaData'
+        - type: object
+          description: >-
+            Optional field used by merchants who wants to manage the prices of
+            items with quantity-range prices
+          required:
+            - ranges
+          properties:
+            ranges:
+              type: array
+              description: Pricing range based on SKU quantity
+              items:
+                type: object
+                required:
+                  - minQuantity
+                  - price
+                properties:
+                  minQuantity:
+                    type: integer
+                    format: int32
+                    example: 1
+                    description: Minimum SKU quantity to get certain price
+                  maxQuantity:
+                    type: integer
+                    format: int32
+                    example: 20
+                    description: Maximum SKU quantity to get certain price
+                  price:
+                    type: number
+                    format: double
+                    description: Price for the specific quantity range
+                    example: 20.75
+    priceRangeArea:
+      allOf:
+        - $ref: '#/components/schemas/basePriceRangeMetaData'
+        - type: object
+          description: >-
+            An optional field used by merchants to manage prices of items based
+            on area-range.
+          required:
+            - ranges
+          properties:
+            ranges:
+              type: array
+              description: The details of pricing based on area of an item.
+              items:
+                type: object
+                required:
+                  - minArea
+                  - price
+                properties:
+                  minArea:
+                    type: integer
+                    format: int32
+                    example: 1
+                    description: The minimum area of an item to get a certain price.
+                  maxArea:
+                    type: integer
+                    format: int32
+                    example: 20
+                    description: The maximum area of an item to get a certain price.
+                  price:
+                    description: The price for the specific range of area.
+                    type: number
+                    format: double
+                    example: 20.75
+    priceRangeDimensions:
+      allOf:
+        - $ref: '#/components/schemas/basePriceRangeMetaData'
+        - type: object
+          description: >-
+            An optional field used by merchants to manage the prices of items
+            with a dimensions-range prices.
+          required:
+            - ranges
+          properties:
+            ranges:
+              type: array
+              description: The pricing based on the dimensions (length, width) of the item.
+              items:
+                type: object
+                required:
+                  - minLength
+                  - maxLength
+                  - widths
+                properties:
+                  minLength:
+                    type: integer
+                    format: int32
+                    example: 1
+                    description: The minimum length of the item to get a certain price.
+                  maxLength:
+                    type: integer
+                    format: int32
+                    example: 90
+                    description: The maximum length of the item to get a certain price.
+                  widths:
+                    type: array
+                    description: The pricing details based on width of the item.
+                    items:
+                      type: object
+                      required:
+                        - minWidth
+                        - maxWidth
+                        - price
+                      properties:
+                        minWidth:
+                          type: integer
+                          format: int32
+                          example: 1
+                          description: >-
+                            The minimum width of the item to get a certain
+                            price.
+                        maxWidth:
+                          type: integer
+                          format: int32
+                          example: 10
+                          description: >-
+                            The maximum width of the item to get a certain
+                            price.
+                        price:
+                          description: The price for the specific widths-range.
+                          type: number
+                          format: double
+                          example: 20.75
+    getPriceResponse:
+      type: object
+      properties:
+        query:
+          $ref: '#/components/schemas/offsetQuery'
+        priceMetadata:
+          $ref: '#/components/schemas/priceMetadata'
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/priceWithOffersMetaData'
+    getPricesResponse:
+      type: object
+      properties:
+        query:
+          $ref: '#/components/schemas/offsetQuery'
+        data:
+          type: array
+          description: An array containing price details.
+          items:
+            allOf:
+              - $ref: '#/components/schemas/priceMetadata'
+              - type: object
+                required:
+                  - offers
+                properties:
+                  offers:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/priceWithOffersMetaData'
+                        - type: object
+    createPriceResponse:
+      $ref: '#/components/schemas/price'
+    deletePriceResponse:
+      allOf:
+        - $ref: '#/components/schemas/price'
+        - type: object
+          required:
+            - itemId
+    deletePriceBySkuResponse:
+      allOf:
+        - $ref: '#/components/schemas/price'
+        - type: object
+          required:
+            - itemSku
+    createPriceRequest:
+      $ref: '#/components/schemas/priceRequest'
+    createBatchPriceRequest:
+      type: object
+      properties:
+        data:
+          type: array
+          description: The sample request to create batch prices.
+          items:
+            $ref: '#/components/schemas/priceRequest'
+    createBatchPriceResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          description: The sample response of price creation.
+          items:
+            $ref: '#/components/schemas/price'
+    batchPriceErrors:
+      type: object
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: DATA_ERROR
+        details:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Request validation check
+        errors:
+          type: array
+          description: The error details related to batch prices.
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The error code.
+                example: PRICE_TIME_RANGE_ERROR
+              instance:
+                type: string
+                description: The endpoint.
+                example: /prices/batch
+              name:
+                type: string
+                description: The name of the error.
+                example: Please verify `startAt`, `endAt` time
+              detail:
+                type: string
+                description: The error message.
+                example: >-
+                  `startAt` should be at least 15 mins before `EndAt`, and
+                  neither should be a past date.
+              status:
+                type: integer
+                format: int32
+                description: The HTTP status code.
+                example: 400
+    itemIdNotFound:
+      type: object
+      description: Item not found error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: ITEMID_NOT_FOUND
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: The itemId you entered doesn't exist
+    itemSkuNotFound:
+      type: object
+      description: Item not found error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: ITEMSKU_NOT_FOUND
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: The itemSku you entered doesn't exist
+  parameters:
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      schema:
+        type: string
+        minLength: 24
+        maxLength: 24
+      required: true
+      example: 5f328bf0b5f328bf0b5f328b
+      description: >-
+        A header used by fabric to identify the tenant making the request. You
+        must include tenant id in the authentication header for an API request
+        to access any of fabric’s endpoints. You can retrieve the tenant id ,
+        which is also called account id, from
+        [Copilot](/v3/platform/settings/account-details/getting-the-account-id).
+        This header is required.
+    xFabricChannelId:
+      in: header
+      name: x-fabric-channel-id
+      schema:
+        type: string
+        example: '12'
+      description: >-
+        x-fabric-channel-id identifies the sales channel through which the API
+        request is being made; primarily for multichannel use cases. It is a
+        required field.
+    xClientId:
+      in: header
+      name: x-client-id
+      schema:
+        type: string
+      required: false
+      example: copilot
+      description: >-
+        A unique identifier obtained from
+        [Copilot](/v3/platform/settings/api-apps/getting-system-app-credentials)
+        for the System app in the fabric ecosystem, essential for OpenID Connect
+        authentication flows.
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: A unique request ID.
+      required: false
+      schema:
+        type: string
+        example: 263e731c-45c8-11ed-b878-0242ac120002
+    queryParameterSize:
+      name: size
+      in: query
+      description: The maximum number of records per page.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        default: 10
+        maximum: 100
+    queryParameterOffset:
+      name: offset
+      in: query
+      description: >-
+        The number of records to skip before returning records. For example,
+        with an offset of 20 and limit of 10, you will get records from 21 to
+        30.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        example: 0
+        default: 0
+    queryParameterPriceListId:
+      name: priceListId
+      in: query
+      description: >-
+        The price list ID to which the item belongs. If not provided, the
+        default price list is used.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        example: 100000
+  headers:
+    xFabricRequestIdResponse:
+      description: Unique request ID
+      schema:
+        type: string
+        example: 263e731c-45c8-11ed-b878-0242ac120002

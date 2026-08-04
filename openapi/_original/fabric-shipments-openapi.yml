@@ -1,0 +1,4480 @@
+components:
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
+  parameters:
+    xFabricChannelId:
+      description: >-
+        x-fabric-channel-id identifies the sales channel where the API request
+        is being made; primarily for multichannel use cases. The channel ids are
+        12 corresponding to US and 13 corresponding to Canada. The default
+        channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelIdOptional:
+      description: >-
+        x-fabric-channel-id identifies the sales channel through which the API
+        request is being made; primarily for multichannel use cases. It is an
+        optional field. The default US channel is 12 while the default Canada
+        channel is 13.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: false
+      schema:
+        type: string
+    xFabricChannelIds:
+      description: >-
+        x-fabric-channel-id identifies the sales channel where the API request
+        is being made; primarily for multichannel use cases. The channel ids are
+        12 corresponding to US and 13 corresponding to Canada. The default
+        channel id is 12. This field is required. A comma separated list of
+        sales channel IDs. This comma separated list of sales channel IDs are
+        required when using multiple channels.
+      example: 12, 13, 16
+      in: header
+      name: x-fabric-channel-ids
+      required: false
+      schema:
+        type: string
+    xFabricChannelIdsOptional:
+      description: >-
+        x-fabric-channel-id identifies the sales channel through which the API
+        request is being made; primarily for multichannel use cases. It is an
+        optional field. The default US channel is 12 while the default Canada
+        channel is 13. This field is optional. **Note:** Use `xFabricChannelIds`
+        for multiple channels, and `xFabricChannelId` for a single channel.
+      example: 12, 13, 16
+      in: header
+      name: x-fabric-channel-ids
+      required: false
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricTenantId:
+      description: >-
+        A header used by fabric to identify the tenant making the request. You
+        must include tenant id in the authentication header for an API request
+        to access any of fabric’s endpoints. You can retrieve the tenant id ,
+        which is also called account id, from
+        [Copilot](/v3/platform/settings/account-details/getting-the-account-id).
+        This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+  schemas:
+    acknowledgePackageTrackingRequest:
+      description: Acknowledgement for package tracking
+      properties:
+        attributes:
+          additionalProperties:
+            description: Additional custom attribute mappings.
+            type: object
+          description: A list of custom mapped attributes.
+          type: object
+        eventType:
+          description: Event type for which acknowledgement is received
+          enum:
+            - ORDER_CREATE_IN_PTS
+            - ORDER_CANCELLED_IN_PTS
+            - SHIPMENT_CREATE_IN_PTS
+            - SHIPMENT_CANCELLED_IN_PTS
+            - TRANSFER_CREATE_IN_PTS
+            - TRANSFER_CANCELLED_IN_PTS
+            - TRANSFER_SHIPMENT_CREATE_IN_PTS
+            - TRANSFER_SHIPMENT_CANCELLED_IN_PTS
+          example: ORDER_CREATE_IN_PTS
+          type: string
+      required:
+        - eventType
+      type: object
+    address:
+      description: Address details
+      properties:
+        addressLine1:
+          description: Address line 1
+          example: 123 Main St.
+          type: string
+        addressLine2:
+          description: Address line 2
+          example: Suite 100
+          type: string
+        addressLine3:
+          description: Address line 3
+          example: Seventh floor
+          type: string
+        addressLine4:
+          description: Address line 4
+          example: 'Attention: Pat E. Kake'
+          type: string
+        city:
+          description: City name
+          example: Seattle
+          type: string
+        countryCode:
+          description: ISO 3166-1 alpha-2 based country code
+          example: US
+          type: string
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        latitude:
+          description: >-
+            Address latitude, used with `longitude` to specify the address
+            location. Decimal degrees format; negative is degrees South.
+            **Note:**Value must be between -90 and 90, both inclusive.
+          example: 47.6205
+          format: double
+          type: number
+        longitude:
+          description: >-
+            Address longitude, used with `latitude` to specify the address
+            location. Decimal degrees format; negative is degrees South.
+            **Note:**Value must be between -180 and 180, both inclusive.
+          example: -122.3493
+          format: double
+          type: number
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        postalCode:
+          description: Postal or ZIP code
+          example: '98121'
+          type: string
+        region:
+          description: Region or state
+          example: WA
+          type: string
+        type:
+          description: Address type
+          example: Home
+          type: string
+      required:
+        - addressLine1
+        - city
+        - countryCode
+        - latitude
+        - longitude
+        - postalCode
+        - region
+        - type
+      type: object
+    amountInCurrencyResource:
+      type: object
+      description: Amount in currency  details
+      properties:
+        currency:
+          type: string
+          description: Currency in ISO-4217
+          example: USD
+        group:
+          type: string
+          description: 'Customer defined function name which uses this currency. '
+          example: SHOPPER
+        amount:
+          type: number
+          format: double
+          description: Amount in currency
+          example: 123.45
+      required:
+        - currency
+        - group
+    baseGiftCardDetails:
+      type: object
+      description: Base gift card details
+      properties:
+        giftCardNumber:
+          type: string
+          description: Gift card number
+          example: 453456765
+        amount:
+          type: number
+          format: double
+          description: Gift card amount
+          example: 50
+        amountInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+    baseScratchedItemDetails:
+      type: object
+      description: Base details of items scratched (removed) from a shipment.
+      properties:
+        orderId:
+          type: string
+          description: >-
+            System-generated 24-character order ID, returned in the response of
+            the Create Order endpoint (`POST /orders`).
+          example: 6413e370cb0dc859b6c0dcb0
+        orderNumber:
+          type: string
+          description: Merchant-defined order number associated with the shipment.
+          example: 309020213
+        orderExternalId:
+          type: string
+          description: >-
+            External order identifier defined by the merchant. Useful for
+            reconciliation with external systems.
+          example: 123k4h123k
+        lineItemId:
+          type: string
+          description: >-
+            Unique identifier for the line item in the order. If not provided,
+            fabric automatically generates this value in UUID format during
+            order creation.
+          example: 2
+        itemId:
+          type: integer
+          format: int32
+          description: System-generated unique identifier for the item.
+          example: 100043
+        sku:
+          type: string
+          description: >-
+            Stock keeping unit (SKU), a merchant-defined unique identifier for
+            the item.
+          example: SKU00043
+        quantity:
+          type: integer
+          format: int32
+          default: 0
+          description: Number of units scratched from the shipment.
+          example: 1
+        uom:
+          type: string
+          description: >-
+            Unit of measure for the item (for example, EA for Each, GAL for
+            Gallon, DZ for Dozen).
+          example: EA
+        reasonCode:
+          type: string
+          description: >-
+            Code indicating the primary reason for scratching the item from the
+            shipment.
+          example: ReasonCode23454
+        subReasonCode:
+          type: string
+          description: >-
+            Code indicating a more specific sub-reason related to the scratch
+            action.
+          example: SubReasonCode23242
+        attributes:
+          type: object
+          description: >-
+            Merchant-defined custom attributes in key-value format. Useful for
+            adding supplemental information.
+          example:
+            attribute1: value
+      required:
+        - lineItemId
+        - quantity
+        - reasonCode
+    cartonDetails:
+      description: Carton details
+      properties:
+        cartonNumber:
+          description: >-
+            Merchant-defined unique identifier. This can optionally be generated
+            by fabric by using the resource generator feature of the
+            Configuration service.
+          example: '1'
+          type: string
+        cartonType:
+          description: Carton type
+          example: Package
+          type: string
+        estimatedDeliveryDate:
+          description: >-
+            Estimated delivery date given by carrier (UTC). It's based on
+            several factors including selected shipping method and delivery
+            location.
+          example: '2023-03-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        estimatedShipDate:
+          description: Estimated ship date given by carrier (UTC)
+          example: '2023-03-25T07:58:30.996Z'
+          format: date-time
+          type: string
+        items:
+          description: Item
+          items:
+            $ref: '#/components/schemas/cartonItems'
+          type: array
+        promisedDeliveryDate:
+          description: Promised delivery date given by seller (UTC)
+          example: '2023-03-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        shipmentCarrier:
+          description: Shipment carrier
+          example: FEDEX
+          type: string
+        shipmentMethod:
+          description: Shipment method
+          example: ground
+          type: string
+        tracking:
+          description: Tracking details
+          items:
+            $ref: '#/components/schemas/trackingResource'
+          type: array
+        trackingNumber:
+          description: >-
+            Merchant-defined shipment tracking number for the given carton. Used
+            for tracking shipment, also for updating tracking status of given
+            carton.
+          example: 1Z999AA10123456784
+          type: string
+        trackingURL:
+          description: Shipment tracking URL for the given carton
+          example: https://fedex.com/tracking
+          type: string
+        weight:
+          description: Carton weight
+          example: 500 gram
+          type: string
+      type: object
+    cartonItems:
+      description: Item details
+      properties:
+        attributes:
+          description: >-
+            Merchant-defined custom attributes. This is a placeholder for
+            addition info (in key: value pairs)
+          example:
+            attribute1: value
+          type: object
+        fees:
+          description: Return fee details
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        giftCards:
+          description: Gift card details
+          items:
+            $ref: '#/components/schemas/giftCardDetails'
+          type: array
+        itemId:
+          description: Unique item identifier from fabric Products service
+          example: 100023
+          format: int32
+          type: integer
+        lineItemId:
+          description: >-
+            Unique number assigned by merchant to identify each item in an
+            order. When this value isn't provided, fabric will auto generate (in
+            UUID format) during order creation.
+          example: '1'
+          type: string
+        orderId:
+          description: >-
+            24-character system-generated ID displayed in the response of Create
+            Order endpoint - `POST /orders`
+          example: 6413e370cb0dc859b6c0dcb0
+          type: string
+        orderNumber:
+          description: Merchant-defined order identifier
+          example: '309020213'
+          type: string
+        shipmentExternalId:
+          type: string
+          description: >-
+            Unique shipment identifier defined by the merchant. This value can
+            be used to track or reconcile shipments in external systems and
+            serves as a reference between fabric and the merchant's order
+            management or fulfillment system.
+          example: 123k4h123k
+        orderedQuantity:
+          description: Ordered quantity of given item
+          example: 2
+          format: int32
+          minimum: 0
+          type: integer
+        refundAmount:
+          description: Return amount. Applicable for return shipment scenarios.
+          example: 10
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          type: array
+          description: >
+            The return amount represented in one or more currencies.  
+
+            Each entry specifies the refunded value and its corresponding
+            currency code,  
+
+            following the structure defined in the `amountInCurrencyResource`
+            schema.
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        returnQuantity:
+          description: >-
+            Returned quantity of given item. Applicable for return shipment
+            scenarios.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+        returnRequestCounter:
+          description: >-
+            Number of times return request is made for the given order.
+            Applicable only for return shipment scenario.
+          example: 1
+          format: int32
+          type: integer
+        segment:
+          description: Item segment
+          example: segment
+          type: string
+        shippedQuantity:
+          description: Shipped quantity of given item
+          example: 2
+          format: int32
+          minimum: 0
+          type: integer
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU0023
+          type: string
+        uom:
+          description: >-
+            Unit in which a product is measured or sold. UOM can be set to
+            'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+        vendorId:
+          description: >-
+            Vendor ID. Applicable in dropshipping scenarios to indicate the
+            vendor responsible for the given item.
+          example: '56'
+          type: string
+      required:
+        - lineItemId
+        - shippedQuantity
+      type: object
+    cartonDetailsBasedOnOrder:
+      type: object
+      description: Details of a carton included in a shipment, based on the order.
+      properties:
+        cartonNumber:
+          type: string
+          description: >-
+            Unique carton identifier defined by the merchant. This value can
+            also be auto-generated by fabric using the resource generator
+            feature in the Configuration service.
+          example: 1
+        cartonType:
+          type: string
+          description: >-
+            Type of carton used for shipping (for example, Package, Pallet,
+            Crate).
+          example: Package
+        promisedDeliveryDate:
+          type: string
+          format: date-time
+          description: Promised delivery date provided by the seller (in UTC).
+          example: '2023-03-26T07:58:30.996Z'
+        estimatedShipDate:
+          type: string
+          format: date-time
+          description: Estimated ship date provided by the carrier (in UTC).
+          example: '2023-03-25T07:58:30.996Z'
+        estimatedDeliveryDate:
+          type: string
+          format: date-time
+          description: >-
+            Estimated delivery date provided by the carrier (in UTC). Determined
+            by factors such as the selected shipping method and delivery
+            location.
+          example: '2023-03-26T07:58:30.996Z'
+        shipmentMethod:
+          type: string
+          description: >-
+            Shipping method selected for the carton (for example, Ground, Air,
+            2-Day).
+          example: ground
+        shipmentCarrier:
+          type: string
+          description: >-
+            Carrier responsible for delivering the carton (for example, FedEx,
+            UPS).
+          example: FEDEX
+        weight:
+          type: string
+          description: >-
+            Weight of the carton. Units should be specified consistently (for
+            example, pounds or kilograms).
+          example: 500
+        trackingNumber:
+          type: string
+          description: >-
+            Tracking number assigned to the carton. Used to monitor shipment
+            progress and update tracking status.
+          example: 1Z999AA10123456784
+        trackingURL:
+          type: string
+          description: Direct URL for tracking the carton shipment.
+          example: https://fedex.com/tracking
+        tracking:
+          type: array
+          description: Tracking history and status updates for the carton.
+          items:
+            $ref: '#/components/schemas/trackingResource'
+        items:
+          type: array
+          description: List of items contained within the carton.
+          items:
+            $ref: '#/components/schemas/cartonItems'
+      required:
+        - items
+    createShipmentRequest:
+      description: Details to create shipment
+      properties:
+        allocationId:
+          description: >-
+            Allocation ID for this shipment, generated by the fabric Allocation
+            service through Create allocation (internal) endpoint, which occurs
+            prior to Shipment Creation. This is mandatory to create a new
+            shipment.
+          example: '112345678912340'
+          type: string
+        attributes:
+          description: >-
+            Merchant-defined custom attributes. This is a placeholder for
+            addition info (in key: value pairs)
+          example:
+            attribute1: value
+          type: object
+        cartons:
+          description: Carton details
+          items:
+            $ref: '#/components/schemas/cartonDetails'
+          type: array
+        invoiceId:
+          description: >-
+            Invoice ID generated from fabric Invoice service during shipment
+            creation. **Note**: Invoices are only created for Shipments where
+            merchants have payment **Capture at Shipment** feature enabled. The
+            value will be “Null” if merchants don't have “Capture at Shipment”
+            feature enabled.
+          example: 63ef4360aafa8a7f5247fe48
+          type: string
+        locationNumber:
+          description: >-
+            Unique value to identify ship-from location. This must be the
+            `locationNumber` stored in the fabric Location service.
+          example: WH334
+          type: string
+        locationType:
+          description: >-
+            Location type, such as distribution center (DC) or warehouse. This
+            must be the type stored in the fabric Location service.
+          example: DC
+          type: string
+        masterTrackingNumber:
+          description: Master tracking number for all cartons in the shipment
+          example: TX112345678
+          type: string
+        poNumber:
+          description: Merchant-defined purchase order number
+          example: '1125'
+          type: string
+        recipients:
+          description: Recipient details
+          items:
+            $ref: '#/components/schemas/shipmentRecipient'
+          type: array
+        reshipmentReasonCode:
+          description: Reshipment reason code
+          example: Order is missing
+          type: string
+        scratchedItems:
+          description: Scratched items
+          items:
+            $ref: '#/components/schemas/scratchedItemDetails'
+          type: array
+        shipToAddress:
+          $ref: '#/components/schemas/address'
+        shipToId:
+          description: >-
+            Ship-to ID generated in the response of Create Shipping endpoint of
+            Shipping service
+          example: sg6683620405
+          type: string
+        shipmentId:
+          description: Shipment's autogenerated unique id
+          example: 627963716b19511e8a3a631b
+          type: string
+        shipmentNumber:
+          description: Merchant-defined shipment identifier
+          example: '78974156816152'
+          type: string
+        shipmentExternalId:
+          type: string
+          description: >-
+            Unique shipment identifier defined by the merchant. This value can
+            be used to track or reconcile shipments in external systems and
+            serves as a reference between fabric and the merchant's order
+            management or fulfillment system.
+          example: 123k4h123k
+        shippedAt:
+          description: Order shipment time (UTC)
+          example: '2023-04-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        statusCode:
+          description: >-
+            Current shipment status (fabric-defined codes). For standard
+            shipments, the initial status would be SHIPMENT_CREATED. For pickup
+            shipment, the initial status would be PICKUP_CREATED and once the
+            customer picks up, the status changes to PICKUP_COMPLETED
+          enum:
+            - SHIPMENT_CREATED
+            - SHIPMENT_UPDATED
+            - SHIPMENT_CANCELLED
+            - PICKUP_CREATED
+            - PICKUP_COMPLETED
+            - SHIPMENT_RETURN_PENDING
+            - SHIPMENT_RETURN_RECEIVED
+            - SHIPMENT_PARTIALLY_DELIVERED
+            - SHIPMENT_DELIVERED
+            - SHIPMENT_ERROR
+          example: SHIPMENT_CREATED
+          type: string
+        subtype:
+          description: >-
+            Shipment subtype. Free-form text to add another layer of
+            classification, if required.
+          example: COD
+          type: string
+        totalCartons:
+          description: Total number of cartons in the given shipment.
+          example: 2
+          format: int32
+          type: integer
+        type:
+          description: Shipment types
+          enum:
+            - STANDARD
+            - RESHIP
+            - RETURN
+            - SCRATCH
+            - PENDING_RETURN
+            - PICKUP
+            - TRANSFER
+          example: STANDARD
+          type: string
+        vendorId:
+          description: >-
+            Vendor ID. Applicable in dropshipping scenarios to indicate the
+            vendor responsible for the given item.
+          example: '56'
+          type: string
+      required:
+        - allocationId
+        - shipmentNumber
+      type: object
+    createShipmentByOrderRequest:
+      type: object
+      description: Request payload to create a shipment for an order.
+      properties:
+        shipmentNumber:
+          type: string
+          description: Unique shipment identifier defined by the merchant.
+          example: 78974156816152
+        shipmentExternalId:
+          type: string
+          description: >-
+            Unique shipment identifier defined by the merchant. This value can
+            be used to track or reconcile shipments in external systems and
+            serves as a reference between fabric and the merchant's order
+            management or fulfillment system.
+          example: 123k4h123k
+        poNumber:
+          type: string
+          description: Merchant-defined purchase order number associated with the shipment.
+          example: 1125
+        vendorId:
+          type: string
+          description: >-
+            Vendor identifier. In dropshipping scenarios, indicates the vendor
+            responsible for fulfilling the shipment.
+          example: 56
+        statusCode:
+          type: string
+          description: Current status of the shipment.
+          enum:
+            - SHIPMENT_CREATED
+            - SHIPMENT_UPDATED
+            - SHIPMENT_CANCELLED
+            - PICKUP_CREATED
+            - PICKUP_COMPLETED
+            - SHIPMENT_RETURN_PENDING
+            - SHIPMENT_RETURN_RECEIVED
+            - SHIPMENT_PARTIALLY_DELIVERED
+            - SHIPMENT_DELIVERED
+            - SHIPMENT_ERROR
+          example: SHIPMENT_CREATED
+        type:
+          type: string
+          description: Type of shipment.
+          enum:
+            - STANDARD
+            - RESHIP
+            - RETURN
+            - SCRATCH
+            - PENDING_RETURN
+            - PICKUP
+            - TRANSFER
+          example: STANDARD
+        subtype:
+          type: string
+          description: >-
+            Free-form text to provide an additional classification for the
+            shipment, if required.
+          example: COD
+        reshipmentReasonCode:
+          type: string
+          description: Code indicating the reason for a reshipment.
+          example: Order is missing
+        shippedAt:
+          type: string
+          format: date-time
+          description: UTC timestamp indicating when the shipment was created or shipped.
+          example: '2023-04-06T07:58:30.996Z'
+        locationNumber:
+          type: string
+          description: >-
+            Identifier of the ship-from location. Must match the
+            `locationNumber` stored in the fabric Location service.
+          example: 132412
+        locationType:
+          type: string
+          description: >-
+            Type of the ship-from location (for example, distribution center
+            (DC) or warehouse). Must match the value stored in the fabric
+            Location service.
+          example: DC
+        totalCartons:
+          type: integer
+          format: int32
+          description: Total number of cartons included in the shipment.
+          example: 2
+        masterTrackingNumber:
+          type: string
+          description: >-
+            Carrier-provided master tracking number that applies to all cartons
+            in the shipment.
+          example: TX112345678
+        shipToId:
+          type: string
+          description: >-
+            Ship-to identifier generated in the response of the Create Shipping
+            endpoint in the Shipping service.
+          example: sg6683620405
+        shipToAddress:
+          $ref: '#/components/schemas/address'
+        recipients:
+          type: array
+          description: List of recipients for the shipment.
+          items:
+            $ref: '#/components/schemas/shipmentRecipient'
+        attributes:
+          type: object
+          description: >-
+            Merchant-defined custom attributes, represented as key-value pairs.
+            Useful for storing additional information.
+          example:
+            attribute1: value
+        cartons:
+          type: array
+          description: Details of cartons included in the shipment.
+          items:
+            $ref: '#/components/schemas/cartonDetailsBasedOnOrder'
+        scratchedItems:
+          type: array
+          description: Details of items marked as scratched from the shipment.
+          items:
+            $ref: '#/components/schemas/baseScratchedItemDetails'
+      required:
+        - shipmentNumber
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    giftCardActivation:
+      description: Gift card info
+      properties:
+        giftCardNumber:
+          description: Gift card number
+          example: '453456765'
+          type: string
+        giftCardStatus:
+          description: Gift card status
+          enum:
+            - PENDING_ACTIVATION
+            - ACTIVE
+            - FAILED
+          example: ACTIVE
+          type: string
+      required:
+        - giftCardNumber
+        - giftCardStatus
+      type: object
+    giftCardDetails:
+      description: Gift card details
+      properties:
+        amount:
+          description: Gift card amount
+          example: 50
+          format: double
+          type: number
+        giftCardNumber:
+          description: Gift card number
+          example: '453456765'
+          type: string
+      type: object
+    giftCardItem:
+      description: Gift card details
+      properties:
+        giftCards:
+          description: Gift cards
+          items:
+            $ref: '#/components/schemas/giftCardActivation'
+          maxItems: 100
+          minItems: 1
+          type: array
+        shipmentLineItemId:
+          description: >-
+            Unique number assigned by merchant to identify item in a shipment.
+            When this value isn't provided, fabric will auto generate (UUID
+            format) during shipment.
+          example: 607f1f77bcf86cd799439011
+          type: string
+      required:
+        - giftCards
+        - shipmentLineItemId
+      type: object
+    giftCardItemsActivationRequest:
+      description: Gift card activation request
+      properties:
+        items:
+          description: Items
+          items:
+            $ref: '#/components/schemas/giftCardItem'
+          maxItems: 1000
+          minItems: 1
+          type: array
+      required:
+        - items
+      type: object
+    libQuery:
+      description: Library Query Model
+      properties:
+        filters:
+          additionalProperties:
+            description: >-
+              A query used to filter your records. The query structure should
+              match the target entity ( for example, order, shipment, etc)
+              structure.
+            example: |
+              {
+                      "retail": {
+                          "locationNum": 12
+                      },
+                      "orderSubTotal": {
+                          "lt": 1400
+                      },
+                      "orderNumber": {order-*Z},
+                      "statusCode": [
+                          "ORDER_CREATED"
+                      ],
+                      "createdAt":{
+                          "lt": "2022-09-11T23:12:00.123Z"
+                      },
+                      "shipInfo": {
+                          "shipToId": ["23434","23436"]
+                      }
+                  }
+            type: object
+          description: >-
+            A query used to filter your records. The query structure should
+            match the target entity ( for example, order, shipment, etc)
+            structure.
+          example: |
+            {
+                    "retail": {
+                        "locationNum": 12
+                    },
+                    "orderSubTotal": {
+                        "lt": 1400
+                    },
+                    "orderNumber": {order-*Z},
+                    "statusCode": [
+                        "ORDER_CREATED"
+                    ],
+                    "createdAt":{
+                        "lt": "2022-09-11T23:12:00.123Z"
+                    },
+                    "shipInfo": {
+                        "shipToId": ["23434","23436"]
+                    }
+                }
+          type: object
+        limit:
+          default: 10
+          description: The maximum number of records per page.
+          example: 10
+          format: int32
+          type: integer
+        offset:
+          default: 0
+          description: >-
+            The number of records to skip before returning all records. For
+            example, `offset=20, limit=10` returns records 21-30.
+          example: 10
+          format: int64
+          type: integer
+        sortBy:
+          default: updatedAt
+          description: The item property that data is sorted on.
+          example: updatedAt
+          type: string
+        sortDirection:
+          default: desc
+          description: The direction of the sorting, such as ascending or descending.
+          enum:
+            - asc
+            - desc
+          example: desc
+          type: string
+      required:
+        - filters
+      type: object
+    libQueryResponse:
+      description: The library query response model object containing query properties.
+      properties:
+        count:
+          description: The count for the query response.
+          example: 100
+          format: int64
+          type: integer
+        limit:
+          description: The maximum number of records per page.
+          example: 10
+          format: int32
+          type: integer
+        offset:
+          description: >-
+            The number of records to skip before returning all records. For
+            example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int64
+          type: integer
+      type: object
+    name:
+      description: Order contact name model
+      properties:
+        first:
+          description: First name
+          example: John
+          type: string
+        last:
+          description: Last name
+          example: Doe
+          type: string
+        middle:
+          description: Middle name
+          example: M
+          type: string
+      type: object
+    orderAddress:
+      description: Order address model
+      properties:
+        address1:
+          description: The first address line.
+          example: House No 129
+          type: string
+        address2:
+          description: The second address line.
+          example: 10 Downing Street
+          type: string
+        address3:
+          description: The third address line.
+          example: Bakers Colony
+          type: string
+        address4:
+          description: The fourth address line.
+          example: Near ABC School
+          type: string
+        city:
+          description: City
+          example: Beaumont
+          type: string
+        country:
+          description: Country
+          example: USA
+          type: string
+        email:
+          description: A valid email address.
+          example: test@example.com
+          type: string
+        latitude:
+          description: Latitude
+          example: 35.294952
+          format: double
+          type: number
+        longitude:
+          description: Longitude
+          example: 32.294952
+          format: double
+          type: number
+        name:
+          $ref: '#/components/schemas/name'
+        phone:
+          $ref: '#/components/schemas/phone'
+        postalCode:
+          description: Postal code
+          example: '77705'
+          type: string
+        state:
+          description: State
+          example: TX
+          type: string
+        type:
+          description: The type of address provided. For example, home or residence.
+          example: residence
+          type: string
+      required:
+        - address1
+      type: object
+    orderAuditLogUpdatedField:
+      description: Audit log for change history
+      properties:
+        fieldName:
+          description: Field or property name that was updated
+          example: UOM
+          type: string
+        fieldOriginalValue:
+          description: Original value of `fieldName` before it was updated
+          example: PK
+          type: string
+      type: object
+    orderContactName:
+      description: Contact person's name
+      properties:
+        firstName:
+          description: Contact person's first name
+          example: Alex
+          type: string
+        lastName:
+          description: Contact person's last name
+          example: Doe
+          type: string
+        middleName:
+          description: Contact person's middle name or initial
+          example: E
+          type: string
+      type: object
+    orderContactPhone:
+      description: Contact person's phone details
+      properties:
+        number:
+          description: Contact person's phone number
+          example: 123-456-7890
+          type: string
+        type:
+          description: Contact number type
+          enum:
+            - MOBILE
+            - HOME
+            - BUSINESS
+          example: MOBILE
+          type: string
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page.
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: >-
+            The number of records to skip before returning all records. For
+            example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    phone:
+      description: The contact phone number provided by the order.
+      properties:
+        number:
+          description: Phone number
+          example: '+10612345678'
+          type: string
+        type:
+          description: The phone number type. For example, `MOBILE`, `HOME`, or `BUSINESS`.
+          enum:
+            - MOBILE
+            - HOME
+            - BUSINESS
+          example: MOBILE
+          type: string
+      type: object
+    returnFeeDetail:
+      description: Return fee details
+      properties:
+        amount:
+          description: Merchant-defined return amount
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          type: array
+          description: >
+            The return amount represented in one or more currencies.  
+
+            Each entry specifies the refunded value and its corresponding
+            currency code,  
+
+            following the structure defined in the `amountInCurrencyResource`
+            schema.
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        name:
+          description: Fee name
+          example: RETURN_FEE
+          type: string
+        reason:
+          description: Merchant-defined return reason
+          example: Return fee
+          type: string
+        type:
+          description: Return fee type
+          enum:
+            - TAX
+            - DISCOUNT
+            - FEE
+            - ITEM
+            - ADJUSTMENT
+          example: FEE
+          type: string
+      type: object
+    scratchedItemDetails:
+      description: Details of scratched items in shipment
+      properties:
+        attributes:
+          description: >-
+            Merchant-defined custom attributes. This is a placeholder for
+            addition info (in key: value pairs)
+          example:
+            attribute1: value
+          type: object
+        itemId:
+          description: Unique item identifier
+          example: 100043
+          format: int32
+          type: integer
+        lineItemId:
+          description: >-
+            Unique number assigned by merchant to identify each item in an
+            order. When this value isn't provided, fabric will auto generate (in
+            UUID format) during order creation.
+          example: '2'
+          type: string
+        orderId:
+          type: string
+          description: >-
+            24-character system-generated ID displayed in the response of Create
+            Order endpoint - `POST /orders`
+          example: 6413e370cb0dc859b6c0dcb0
+        orderNumber:
+          type: string
+          description: Merchant-defined order identifier
+          example: 309020213
+        quantity:
+          default: 0
+          description: Number of scratched items
+          example: 1
+          format: int32
+          type: integer
+        reasonCode:
+          description: The primary reason code for the item scratch.
+          example: ReasonCode23454
+          type: string
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU00043
+          type: string
+        shipmentExternalId:
+          type: string
+          description: >-
+            Unique shipment identifier defined by the merchant. This value can
+            be used to track or reconcile shipments in external systems and
+            serves as a reference between fabric and the merchant's order
+            management or fulfillment system.
+          example: 123k4h123k
+        subReasonCode:
+          description: The sub-reason code for the item scratch.
+          example: SubReasonCode23242
+          type: string
+        uom:
+          description: >-
+            Unit in which a product is measured or sold. UOM can be set to
+            'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+      required:
+        - lineItemId
+        - quantity
+        - reasonCode
+      type: object
+    searchResponse:
+      description: The search response.
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/transferShipmentResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+        stats:
+          description: A list of stats.
+          items:
+            description: The stats details.
+            type: string
+          type: array
+      type: object
+    shipmentAcknowledge:
+      description: Shipment acknowledgement details
+      properties:
+        acknowledgedAt:
+          description: >-
+            Shipment acknowledgement time from middleware. If omitted, fabric
+            uses the time (UTC) of Acknowledgement shipment call - `POST
+            /shipments/{shipmentId}/acknowledge`.
+          example: '2023-08-01T20:03:28.483971941Z'
+          format: date-time
+          type: string
+        attributes:
+          description: >-
+            Merchant-defined custom attributes. This is a placeholder for
+            addition info (in key: value pairs)
+          example:
+            shipmentId: 627963716b19511e8a3a631b
+          type: object
+      type: object
+    shipmentAcknowledgeResponse:
+      description: Shipment acknowledgement response
+      properties:
+        acknowledgedAt:
+          description: Shipment acknowledgement time (UTC)
+          example: '2023-02-01T20:03:28.483971941Z'
+          format: date-time
+          type: string
+      type: object
+    shipmentAuditLog:
+      description: Details for updating shipment
+      properties:
+        auditId:
+          description: System-generated audit ID (UUID format)
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+          type: string
+        auditType:
+          description: Audit type such as cancel, return, etc.
+          example: CANCEL
+          type: string
+        auditedAt:
+          description: Audit time (UTC)
+          example: '2023-03-12T09:24:54.804Z'
+          format: date-time
+          type: string
+        employeeId:
+          description: Employee (ID or name) who made the last update
+          example: '6227'
+          type: string
+        lineItemId:
+          description: >-
+            Merchant-defined unique identifier for each item in an order. When
+            omitted, fabric will generate it during order creation, in UUID
+            format.
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        note:
+          description: Additional info, if any
+          example: Note
+          type: string
+        reasonCode:
+          description: Merchant-defined reason code, varies from merchant to merchant
+          example: Scratched item
+          type: string
+        source:
+          description: >-
+            Merchant-defined source from where the update was initiated. There
+            are no predefined values; possible values could be Customer Service
+            Representative (CSR), Point-of-Sale (POS), etc.
+          example: POS
+          type: string
+        subReasonCode:
+          description: >-
+            Merchant-defined sub reason code; provides more clarity to audit
+            reason
+          example: Scratched item
+          type: string
+        updatedFields:
+          description: Audit log for change history
+          items:
+            $ref: '#/components/schemas/orderAuditLogUpdatedField'
+          type: array
+      type: object
+    shipmentCarton:
+      description: Carton details
+      properties:
+        cartonNumber:
+          description: >-
+            Merchant-defined unique identifier. This can optionally be generated
+            by fabric by using the resource generator feature of the
+            Configuration service.
+          example: '1'
+          type: string
+        cartonType:
+          description: Carton type
+          example: Package
+          type: string
+        estimatedDeliveryDate:
+          description: >-
+            Estimated delivery date given by carrier based on several factors
+            including selected shipping method and delivery location (UTC).
+          example: '2023-04-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        estimatedShipmentDate:
+          description: >-
+            Estimated ship date given by seller based on availability of items,
+            their processing time, delivery location, and selected shipping
+            method (UTC).
+          example: '2023-03-25T07:58:30.996Z'
+          format: date-time
+          type: string
+        items:
+          description: Carton item details
+          items:
+            $ref: '#/components/schemas/shipmentItem'
+          type: array
+        promisedDeliveryDate:
+          description: Promised delivery date given by seller (UTC)
+          example: '2023-03-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        shipmentCarrier:
+          description: Shipment carrier name
+          example: FEDEX
+          type: string
+        shipmentMethod:
+          description: Shipment method
+          example: ground
+          type: string
+        tracking:
+          description: Carton tracking details
+          items:
+            $ref: '#/components/schemas/trackingResource'
+          type: array
+        trackingNumber:
+          description: Carton tracking number. There is a single tracking number per carton
+          example: 1Z999AA10123456784
+          type: string
+        trackingURL:
+          description: Carton tracking URL
+          example: https://example.com/tracking
+          type: string
+        weight:
+          description: Carton weight
+          example: 500 grams
+          type: string
+      type: object
+    shipmentGiftCardDetail:
+      description: Gift card details
+      properties:
+        amount:
+          description: Gift card amount
+          example: 50
+          format: double
+          type: number
+        amountInCurrencies:
+          type: array
+          description: >
+            The gift card amount represented in one or more currencies.  
+
+            Each entry specifies the refunded value and its corresponding
+            currency code,  
+
+            following the structure defined in the `amountInCurrencyResource`
+            schema.
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        giftCardActivatedAt:
+          description: Time gift card was activated (UTC)
+          example: '2023-04-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        giftCardActivationRequestedAt:
+          description: Time of placing gift card activation request (UTC)
+          example: '2023-03-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        giftCardNumber:
+          description: Gift card number
+          example: '453456765'
+          type: string
+        giftCardStatus:
+          description: Gift card status
+          enum:
+            - PENDING_ACTIVATION
+            - ACTIVE
+            - FAILED
+          example: ACTIVE
+          type: string
+      type: object
+    shipmentItem:
+      description: Details of item in shipment
+      properties:
+        fees:
+          description: Fee details
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        giftCards:
+          description: Gift card details
+          items:
+            $ref: '#/components/schemas/shipmentGiftCardDetail'
+          type: array
+        itemId:
+          description: Unique item identifier
+          example: 100023
+          format: int32
+          type: integer
+        lineItemId:
+          description: >-
+            Unique number assigned by merchant to identify each item in an
+            order. When this value isn't provided, fabric will auto generate (in
+            UUID format) during order creation.
+          example: '1'
+          type: string
+        orderId:
+          description: >-
+            24-character order ID generated in the response of Create Order
+            endpoint - `POST /orders`
+          example: 6413e370cb0dc859b6c0dcb0
+          type: string
+        orderNumber:
+          description: Merchant-defined order identifier
+          example: '309020213'
+          type: string
+        orderedQuantity:
+          default: 0
+          description: Ordered quantity of given item
+          example: 2
+          format: int32
+          type: integer
+        refundAmount:
+          description: Refund amount for returned items
+          example: 10
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          type: array
+          description: >
+            The refund amount for returned items represented in one or more
+            currencies.  
+
+            Each entry specifies the refunded value and its corresponding
+            currency code,  
+
+            following the structure defined in the `amountInCurrencyResource`
+            schema.
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        returnQuantity:
+          default: 0
+          description: Returned quantity of given item
+          example: 1
+          format: int32
+          type: integer
+        segment:
+          description: Item segment
+          example: segment
+          type: string
+        shipmentLineItemId:
+          description: >-
+            Unique number assigned by merchant to identify item in a shipment.
+            When this value isn't provided, fabric will auto generate it (UUID
+            format) during shipment.
+          example: 607f1f77bcf86cd799439011
+          type: string
+        shippedQuantity:
+          default: 0
+          description: Shipped quantity of given item
+          example: 2
+          format: int32
+          type: integer
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU0023
+          type: string
+        uom:
+          description: >-
+            Unit in which a product is measured or sold. UOM can be set to
+            'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+        vendorId:
+          description: >-
+            Vendor ID. Applicable in dropshipping scenarios to indicate the
+            vendor responsible for the given item.
+          example: vend12346667
+          type: string
+      type: object
+    shipmentRecipient:
+      description: Shipment recipient details
+      properties:
+        email:
+          description: Recipient's email
+          example: support@example.inc
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+      type: object
+    shipmentResponse:
+      description: Shipment details
+      properties:
+        allocationId:
+          description: >-
+            System-generated allocation ID (UUID) from the Create allocation
+            endpoint of fabric Allocation service. It refers to the given
+            shipment. **Note**: Allocation occurs prior to Shipment Creation.
+            `allocationId` is mandatory to create a Shipment.
+          example: 6413e3d3fd03a35efccb426e
+          type: string
+        auditLogs:
+          description: Audit log details
+          items:
+            $ref: '#/components/schemas/shipmentAuditLog'
+          type: array
+        cartons:
+          description: Carton details
+          items:
+            $ref: '#/components/schemas/shipmentCarton'
+          type: array
+        createdAt:
+          description: Shipment creation time (UTC)
+          example: '2023-04-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        invoiceId:
+          description: >-
+            Invoice ID generated from fabric Invoice service during shipment
+            creation. **Note**: Invoices are only created for Shipments where
+            merchants have payment **Capture at Shipment** feature enabled. The
+            value will be “Null” if merchants don't have “Capture at Shipment”
+            feature enabled.
+          example: 63ef4360aafa8a7f5247fe48
+          type: string
+        locationNumber:
+          description: >-
+            Unique value to identify ship-from location. This must be the
+            `locationNumber` stored in the fabric Location service.
+          example: WH334
+          type: string
+        locationType:
+          description: Location type, such as distribution center (DC) or warehouse
+          example: DC
+          type: string
+        masterTrackingNumber:
+          description: Master tracking number for all cartons in the shipment
+          example: TX112345678
+          type: string
+        orderNumbers:
+          description: >-
+            List of order numbers associated with a shipment. **Note**:
+            Currently, a shipment can be associated with only one order. In the
+            future, this property will support a scenario where a customer
+            places a second order for the same product immediately after their
+            first order. Multiple order numbers can be linked to one shipment in
+            such cases.
+          items:
+            example: 309020213, 459020213
+            type: string
+          type: array
+        poNumber:
+          description: Merchant-defined purchase order number
+          example: '1125'
+          type: string
+        recipients:
+          description: Recipient details
+          items:
+            $ref: '#/components/schemas/shipmentRecipient'
+          type: array
+        reshipmentReasonCode:
+          description: The reshipment reason code.
+          example: Order is missing
+          type: string
+        scratchedItems:
+          description: Details of scratched items
+          items:
+            $ref: '#/components/schemas/shipmentScratchedItem'
+          type: array
+        shipToAddress:
+          $ref: '#/components/schemas/address'
+        shipToId:
+          description: >-
+            Ship-to ID generated in the response of Create shipping endpoint of
+            Shipping service
+          example: '1'
+          type: string
+        shipmentId:
+          description: System-generated shipment ID (UUID)
+          example: 627963716b19511e8a3a631b
+          type: string
+        shipmentNumber:
+          description: >-
+            Merchant-defined unique shipment identifier. **Note**: It can be
+            optionally generated by fabric by using resource generator feature
+            in the Configuration service
+          example: '78974156816152'
+          type: string
+        shipmentExternalId:
+          type: string
+          description: >-
+            Unique shipment identifier defined by the merchant. This value can
+            be used to track or reconcile shipments in external systems and
+            serves as a reference between fabric and the merchant's order
+            management or fulfillment system.
+          example: 123k4h123k
+        shippedAt:
+          description: Order shipment time (UTC)
+          example: '2023-04-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        statusCode:
+          description: >-
+            Current shipment status (fabric-defined codes). **Note**: For
+            standard shipments, the status would be SHIPMENT_CREATED. For pickup
+            shipment, the initial status would be PICKUP_CREATED and once the
+            customer picks up, the status changes to PICKUP_COMPLETED
+          enum:
+            - SHIPMENT_CREATED
+            - SHIPMENT_UPDATED
+            - SHIPMENT_CANCELLED
+            - PICKUP_CREATED
+            - PICKUP_COMPLETED
+            - SHIPMENT_DELIVERED
+            - SHIPMENT_RETURN_PENDING
+            - SHIPMENT_RETURN_RECEIVED
+            - SHIPMENT_PARTIALLY_DELIVERED
+          example: SHIPMENT_CREATED
+          type: string
+        subtype:
+          description: >-
+            Shipment subtype, for another layer of classification. There are no
+            pre-defined values; the possible value is Cash On Delivery (COD)
+          example: COD
+          type: string
+        totalCartons:
+          description: >-
+            Total number of cartons in the given shipment. There can be only one
+            carton per trackingNumber.
+          example: 2
+          format: int64
+          type: integer
+        type:
+          description: Shipment types
+          enum:
+            - STANDARD
+            - RESHIP
+            - RETURN
+            - SCRATCH
+            - PENDING_RETURN
+            - PICKUP
+            - TRANSFER
+          example: STANDARD
+          type: string
+        updatedAt:
+          description: Time of last update to shipment (UTC)
+          example: '2023-04-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        vendorId:
+          description: >-
+            Vendor ID. Applicable in dropshipping scenarios to indicate the
+            vendor responsible for the given item.
+          example: '56'
+          type: string
+        version:
+          description: >-
+            The current version of the shipment document. This integer indicates
+            the number of times the shipment has been updated by any operation.
+          example: 2
+          format: int64
+          type: integer
+      required:
+        - version
+      type: object
+    shipmentScratchedItem:
+      description: >-
+        Customer may cancel allocation line items as part of the shipment post
+        request. In fabric Shipments service, this is called 'Scratched Items'
+        or 'scratchedItems'.
+      properties:
+        itemId:
+          description: Unique item identifier
+          example: 100043
+          format: int32
+          type: integer
+        lineItemId:
+          description: >-
+            Unique number assigned by merchant to identify each item in an
+            order. When this value isn't provided, fabric will auto generate it
+            (in UUID format) during order creation.
+          example: '2'
+          type: string
+        orderId:
+          description: >-
+            24-character ID displayed in the response of Create Order endpoint -
+            `POST /orders`
+          example: 6413e370cb0dc859b6c0dcb0
+          type: string
+        quantity:
+          default: 0
+          description: Number of scratched items
+          example: 1
+          format: int32
+          type: integer
+        reasonCode:
+          description: Reason code for scratch
+          example: ReasonCode23454
+          type: string
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU00043
+          type: string
+        subReasonCode:
+          description: Sub-reason code
+          example: SubReasonCode23242
+          type: string
+        uom:
+          description: >-
+            Unit in which a product is measured or sold. UOM can be set to
+            'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+      required:
+        - reasonCode
+      type: object
+    shipmentSearchFilter:
+      description: >-
+        Criteria to find shipments. To search using a single value, the
+        `valueSearchFilter` is considered. To search using multiple values,
+        `valuesSearchFilter` is considered.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilter'
+          GT: '#/components/schemas/valueSearchFilter'
+          GTE: '#/components/schemas/valueSearchFilter'
+          IN: '#/components/schemas/valuesSearchFilter'
+          LT: '#/components/schemas/valueSearchFilter'
+          LTE: '#/components/schemas/valueSearchFilter'
+          NEQ: '#/components/schemas/valueSearchFilter'
+          NIN: '#/components/schemas/valuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: >-
+            Filter conditions. EQ (Equal to): Searches for exact match. NEQ (Not
+            equal to): Searches by excluding the specified value. IN: Search for
+            multiple values. NIN (Not IN): Excludes the specified values in the
+            search. LT (Less than): Searches for values that are less than the
+            specified value. GT (Greater than):  Search for values that are
+            greater than the specified value. LTE (Less than or equal to):
+            Searches for values that are less than or equal to the specified
+            value. GTE (Greater than or equal to): Searches for values that are
+            greater than or equal to the specified value.
+          enum:
+            - EQ
+            - NEQ
+            - IN
+            - NIN
+            - LT
+            - GT
+            - LTE
+            - GTE
+          example: LT
+          type: string
+        field:
+          description: Field name
+          example: shipment.shipmentNum
+          pattern: ^shipment\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: Group name
+          example: GroupA
+          type: string
+      required:
+        - condition
+        - field
+      type: object
+    shipmentShipToAddress:
+      description: ShipmentShipToAddress Model
+      properties:
+        addressLine1:
+          description: Address line 1
+          example: 254 House number
+          type: string
+        addressLine2:
+          description: Address line 2
+          example: 888 Broadway
+          type: string
+        addressLine3:
+          description: Address line 3
+          example: 17th street
+          type: string
+        addressLine4:
+          description: Address line 4
+          example: Pearl
+          type: string
+        city:
+          description: City
+          example: New York
+          type: string
+        country:
+          description: Country
+          example: USA
+          type: string
+        latitude:
+          description: Latitude
+          example: 134.13413
+          format: double
+          type: number
+        longitude:
+          description: Longitude
+          example: 757.0435
+          format: double
+          type: number
+        postalCode:
+          description: Postal code
+          example: '1003'
+          type: string
+        state:
+          description: State
+          example: NY
+          type: string
+        type:
+          description: The type of address that was provided.
+          example: home
+          type: string
+      type: object
+    shipmentTrackingDetail:
+      description: Shipment tracking details
+      properties:
+        shipmentNumber:
+          description: Merchant-defined unique shipment identifier
+          example: '78974156816152'
+          type: string
+        tracking:
+          description: Tracking details
+          items:
+            $ref: '#/components/schemas/trackingResource'
+          type: array
+        trackingNumber:
+          description: Tracking number
+          example: 1Z999AA10123456784
+          type: string
+        trackingURL:
+          description: Tracking URL
+          example: https://example.com/tracking
+          type: string
+      required:
+        - shipmentNumber
+        - trackingNumber
+      type: object
+    shipmentsResponse:
+      description: Shipment response
+      properties:
+        shipments:
+          description: Shipment details
+          items:
+            $ref: '#/components/schemas/shipmentResponse'
+          type: array
+      type: object
+    shipmentsSearchRequest:
+      description: Sort and filter criteria for shipment search
+      example:
+        filters:
+          - condition: EQ
+            field: shipment.shipmentNum
+            value: Shipment_112255
+          - condition: IN
+            field: shipment.cartons.cartonNum
+            values:
+              - Tracking_*
+        sort: '-shipment.shipDate'
+      properties:
+        filters:
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/valueSearchFilter'
+              - $ref: '#/components/schemas/valuesSearchFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+        sort:
+          default: '-shipment.shipDate'
+          description: >-
+            Property name on which response needed to be sorted. **Note**: `-`
+            refers to descending and `+` refers to ascending order
+          example: '-shipment.shipDate'
+          pattern: (^[+-]shipment\.[a-zA-Z.\-_]*)(,([+-]shipment\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+        - filters
+      type: object
+    shipmentsSearchResponse:
+      description: Shipment search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/shipmentResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    trackingResource:
+      description: Shipment tracking details
+      properties:
+        event:
+          description: >-
+            Shipment-specific event. Mandatory in the request body of Update
+            shipment tracking - `POST /shipments/actions/update-tracking`
+            endpoint
+          example: picked up
+          type: string
+        eventId:
+          description: Event ID provided by carrier
+          example: 627963716b19511e8a3a631b
+          type: string
+        eventRecordedAt:
+          description: Time event was recorded (UTC)
+          example: '2019-09-30T07:58:30.996Z'
+          format: date-time
+          type: string
+        location:
+          description: Delivery location
+          example: Reno, NV
+          type: string
+        notes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example: '{"description":"Shipment picked up"}'
+            type: string
+          description: Attributes to save any additional info
+          example:
+            description: Shipment picked up
+          type: object
+        shipmentCarrier:
+          description: Shipment carrier
+          example: FEDEX
+          type: string
+      type: object
+    transferItemAdjustment:
+      description: An object containing all the transfer item adjustment properties.
+      properties:
+        adjustmentQuantity:
+          default: 0
+          description: The total adjustment quantity. The default value is 0.
+          example: 2
+          format: int32
+          type: integer
+        attributes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example:
+              attribute1: value
+            type: object
+          description: Attributes to save any additional info
+          example:
+            attribute1: value
+          type: object
+        reasonCode:
+          description: The primary reason code for the item adjustment.
+          example: DAMAGED
+          type: string
+        subReasonCode:
+          description: The sub reason code for the item adjustment.
+          example: DAMAGED
+          type: string
+      type: object
+    transferReceivingCartonRequest:
+      description: An object containing information on the carton transfer.
+      properties:
+        cartonNumber:
+          description: The carton number.
+          example: '1'
+          type: string
+        items:
+          description: An array of carton items.
+          items:
+            $ref: '#/components/schemas/transferReceivingLineItemRequest'
+          type: array
+      required:
+        - cartonNumber
+      type: object
+    transferReceivingLineItemRequest:
+      description: >-
+        An object containing cancellation information and properties for a line
+        item.
+      properties:
+        adjustments:
+          description: An array adjustments that have been made.
+          items:
+            $ref: '#/components/schemas/transferItemAdjustment'
+          type: array
+        attributes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example:
+              attribute1: value
+            type: object
+          description: Attributes to save any additional info
+          example:
+            attribute1: value
+          type: object
+        quantity:
+          description: The quantity of a specific item to be cancelled.
+          example: 1
+          format: int32
+          minimum: 1
+          type: integer
+        shipmentLineItemId:
+          description: Unique shipment line item id
+          example: 13432-34343-34343-3434
+          type: string
+      required:
+        - quantity
+        - shipmentLineItemId
+      type: object
+    transferReceivingRequest:
+      description: Transfer Receiving Request
+      properties:
+        cartons:
+          description: Carton Details for receiving
+          items:
+            $ref: '#/components/schemas/transferReceivingCartonRequest'
+          type: array
+      type: object
+    transferShipFrom:
+      description: >-
+        An object containing information and properties for the transfers ship
+        from location.
+      properties:
+        locationName:
+          description: Location name
+          example: Store1
+          type: string
+        locationNumber:
+          description: Location number
+          example: WH334
+          type: string
+        locationType:
+          description: Location type
+          example: STORE
+          type: string
+        shipFromAddress:
+          $ref: '#/components/schemas/orderAddress'
+      required:
+        - locationNumber
+      type: object
+    transferShipFromRequest:
+      description: >-
+        An object containing information and properties for the transfers ship
+        from request.
+      properties:
+        locationName:
+          description: Location name
+          example: Store1
+          type: string
+        locationNumber:
+          description: Location number
+          example: WH334
+          type: string
+        locationType:
+          description: Location type
+          example: STORE
+          type: string
+        shipFromAddress:
+          $ref: '#/components/schemas/orderAddress'
+      required:
+        - locationNumber
+      type: object
+    transferShipTo:
+      description: >-
+        An object containing information and properties for the transfers ship
+        to location.
+      properties:
+        locationName:
+          description: Location name
+          example: Store1
+          type: string
+        locationNumber:
+          description: Location number
+          example: WH334
+          type: string
+        locationType:
+          description: Location type
+          example: STORE
+          type: string
+        shipToAddress:
+          $ref: '#/components/schemas/shipmentShipToAddress'
+        shipToId:
+          description: Used to link item with it's shipping address in shipment
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+      required:
+        - locationNumber
+      type: object
+    transferShipToRequest:
+      description: >-
+        An object containing information and properties for the transfers ship
+        to request.
+      properties:
+        locationName:
+          description: Location name
+          example: Store1
+          type: string
+        locationNumber:
+          description: Location number
+          example: WH334
+          type: string
+        locationType:
+          description: Location type
+          example: STORE
+          type: string
+        shipToAddress:
+          $ref: '#/components/schemas/shipmentShipToAddress'
+        shipToId:
+          description: Used to link item with it's shipping address in shipment
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+      required:
+        - locationNumber
+      type: object
+    transferShipmentCarton:
+      description: >-
+        An object containing information and properties of the transfer shipment
+        carton.
+      properties:
+        attributes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example:
+              attribute1: value
+            type: object
+          description: Attributes to save any additional info
+          example:
+            attribute1: value
+          type: object
+        cartonNumber:
+          description: Carton number
+          example: '1'
+          type: string
+        cartonType:
+          description: Carton type
+          example: Package
+          type: string
+        estimatedDeliveryDate:
+          description: Estimated delivery date
+          example: '2022-05-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        estimatedShipmentDate:
+          description: Estimated ship date
+          example: '2022-05-25T07:58:30.996Z'
+          format: date-time
+          type: string
+        items:
+          description: List of item to be shipped
+          items:
+            $ref: '#/components/schemas/transferShipmentItem'
+          type: array
+        promisedDeliveryDate:
+          description: Promised delivery date
+          example: '2022-05-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        shipmentCarrier:
+          description: Shipment carrier
+          example: FEDEX
+          type: string
+        shipmentMethod:
+          description: Shipment method
+          example: ground
+          type: string
+        tracking:
+          description: Tracking detail list
+          items:
+            $ref: '#/components/schemas/trackingResource'
+          type: array
+        trackingNumber:
+          description: Tracking number
+          example: 1Z999AA10123456784
+          type: string
+        trackingURL:
+          description: Tracking URL
+          example: https://example.com/tracking
+          type: string
+        weight:
+          description: Weight
+          example: 500 gram
+          type: string
+      type: object
+    transferShipmentCartonResource:
+      description: >-
+        An object containing information and properties of the transfer shipment
+        carton resource.
+      properties:
+        attributes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example:
+              attribute1: value
+            type: object
+          description: Attributes to save any additional info
+          example:
+            attribute1: value
+          type: object
+        cartonNumber:
+          description: Carton number
+          example: '1'
+          type: string
+        cartonType:
+          description: Carton type
+          example: Package
+          type: string
+        estimatedDeliveryDate:
+          description: Estimated delivery date
+          example: '2022-05-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        estimatedShipmentDate:
+          description: Estimated ship date
+          example: '2022-05-25T07:58:30.996Z'
+          format: date-time
+          type: string
+        items:
+          description: List of item to be shipped
+          items:
+            $ref: '#/components/schemas/transferShipmentItem'
+          type: array
+        promisedDeliveryDate:
+          description: Promised delivery date
+          example: '2022-05-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        shipmentCarrier:
+          description: Shipment carrier
+          example: FEDEX
+          type: string
+        shipmentMethod:
+          description: Shipment method
+          example: ground
+          type: string
+        tracking:
+          description: Tracking detail list
+          items:
+            $ref: '#/components/schemas/trackingResource'
+          type: array
+        trackingNumber:
+          description: Tracking number
+          example: 1Z999AA10123456784
+          type: string
+        trackingURL:
+          description: Tracking URL
+          example: https://example.com/tracking
+          type: string
+        weight:
+          description: Weight
+          example: 500 gram
+          type: string
+      type: object
+    transferShipmentItem:
+      description: >-
+        An object containing information and properties of the transfer shipment
+        item.
+      properties:
+        adjustments:
+          description: Adjustment
+          items:
+            $ref: '#/components/schemas/transferItemAdjustment'
+          type: array
+        attributes:
+          additionalProperties:
+            description: Customized attributes
+            example:
+              attribute1: value
+            type: object
+          description: Customized attributes
+          example:
+            attribute1: value
+          type: object
+        channelId:
+          description: Channel id
+          example: '12'
+          type: string
+        deliveredQuantity:
+          default: 0
+          description: Delivered quantity
+          example: 2
+          format: int32
+          type: integer
+        itemId:
+          description: Item id
+          example: '100023'
+          type: string
+        lineItemId:
+          description: Line item ID
+          example: '1'
+          type: string
+        packedQuantity:
+          default: 0
+          description: Packed quantity
+          example: 2
+          format: int32
+          type: integer
+        quantityType:
+          description: Transfer quantity type
+          enum:
+            - INCREMENT
+            - DECREMENT
+            - ABSOLUTE
+          type: string
+        receivedQuantity:
+          default: 0
+          description: Received quantity
+          example: 2
+          format: int32
+          type: integer
+        segment:
+          description: Segment
+          type: string
+        shipmentLineItemId:
+          description: System generated shipment line item ID
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        shippedQuantity:
+          default: 0
+          description: Shipped quantity
+          example: 2
+          format: int32
+          type: integer
+        sku:
+          description: Sku
+          example: SKU0023
+          type: string
+        stockedQuantity:
+          default: 0
+          description: Stocked quantity
+          example: 2
+          format: int32
+          type: integer
+        uom:
+          description: Unit of measurement
+          example: EA
+          type: string
+        vendorId:
+          description: Vendor ID
+          example: vend12346667
+          type: string
+      type: object
+    transferShipmentRequest:
+      description: >-
+        An object containing information and properties of the transfer shipment
+        request.
+      properties:
+        attributes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example:
+              attribute1: value
+            type: object
+          description: Attributes to save any additional info
+          example:
+            attribute1: value
+          type: object
+        cartons:
+          description: Carton list
+          items:
+            $ref: '#/components/schemas/transferShipmentCartonResource'
+          type: array
+        masterTrackingNumber:
+          description: Master tracking number
+          example: TX112345678
+          type: string
+        poNumber:
+          description: Optional purchase order number
+          example: '1125'
+          type: string
+        recipient:
+          description: Recipient list
+          items:
+            $ref: '#/components/schemas/shipmentRecipient'
+          type: array
+        shipFrom:
+          $ref: '#/components/schemas/transferShipFromRequest'
+        shipTo:
+          $ref: '#/components/schemas/transferShipToRequest'
+        shipmentNumber:
+          description: Shipment's unique identification number
+          example: '78974156816152'
+          type: string
+        shippedAt:
+          description: Ship date
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        subtype:
+          description: Shipment subtype
+          enum:
+            - COD
+          example: COD
+          type: string
+        totalCartons:
+          description: Total number of cartons
+          example: 2
+          format: int64
+          type: integer
+        transferId:
+          description: Transfer ID for this shipment
+          example: '112345678912340'
+          type: string
+        transferNumber:
+          description: Transfer number for this shipment
+          example: '112345678912340'
+          type: string
+        type:
+          description: Shipment types
+          enum:
+            - STANDARD
+            - RESHIP
+            - RETURN
+            - SCRATCH
+            - PENDING_RETURN
+            - PICKUP
+            - TRANSFER
+          example: TRANSFER
+          type: string
+        vendorId:
+          description: Vendor ID
+          example: '56'
+          type: string
+      required:
+        - shipFrom
+        - shipTo
+        - shipmentNumber
+        - transferNumber
+      type: object
+    transferShipmentResponse:
+      description: >-
+        An object containing information and properties of the transfer shipment
+        response.
+      properties:
+        attributes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example:
+              attribute1: value
+            type: object
+          description: Attributes to save any additional info
+          example:
+            attribute1: value
+          type: object
+        auditLogs:
+          description: Audit logs list
+          items:
+            $ref: '#/components/schemas/shipmentAuditLog'
+          type: array
+        cartons:
+          description: Carton list
+          items:
+            $ref: '#/components/schemas/transferShipmentCarton'
+          type: array
+        createdAt:
+          description: Created date
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        deliveredAt:
+          description: Delivered date of shipment
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        masterTrackingNumber:
+          description: Master tracking number
+          example: TX112345678
+          type: string
+        poNumber:
+          description: Optional purchase order number
+          example: '1125'
+          type: string
+        receivedAt:
+          description: Received date of shipment
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        recipient:
+          description: Recipient list
+          items:
+            $ref: '#/components/schemas/shipmentRecipient'
+          type: array
+        shipFrom:
+          $ref: '#/components/schemas/transferShipFrom'
+        shipTo:
+          $ref: '#/components/schemas/transferShipTo'
+        shipmentId:
+          description: Shipment's autogenerated unique id
+          example: 627963716b19511e8a3a631b
+          type: string
+        shipmentNumber:
+          description: Shipment's unique identification number
+          example: '78974156816152'
+          type: string
+        shippedAt:
+          description: Ship date
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        statusCode:
+          description: Transfer Shipment Status
+          enum:
+            - TRANSFER_SHIPMENT_PACKED
+            - TRANSFER_SHIPMENT_SENT
+            - TRANSFER_SHIPMENT_CREATED
+            - TRANSFER_SHIPMENT_DRAFT
+            - TRANSFER_SHIPMENT_DELIVERED
+            - TRANSFER_SHIPMENT_RECEIVED
+            - TRANSFER_SHIPMENT_STOCKED
+            - TRANSFER_SHIPMENT_CANCELLED
+            - TRANSFER_SHIPMENT_ERROR
+          example: TRANSFER_SHIPMENT_CREATED
+          type: string
+        stockReleaseTimeStamp:
+          description: Stock release time stamp date
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        subtype:
+          description: Shipment subtype
+          enum:
+            - COD
+          example: COD
+          type: string
+        totalCartons:
+          description: Total number of cartons
+          example: 2
+          format: int64
+          type: integer
+        transferId:
+          description: Transfer ID for this shipment
+          example: '112345678912340'
+          type: string
+        transferNumber:
+          description: Transfer number for this shipment
+          example: '112345678912340'
+          type: string
+        type:
+          description: Shipment types
+          enum:
+            - STANDARD
+            - RESHIP
+            - RETURN
+            - SCRATCH
+            - PENDING_RETURN
+            - PICKUP
+            - TRANSFER
+          example: TRANSFER
+          type: string
+        updatedAt:
+          description: Updated date
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        vendorId:
+          description: Vendor ID
+          example: '56'
+          type: string
+      required:
+        - shipFrom
+        - shipTo
+        - shipmentNumber
+        - transferId
+        - transferNumber
+      type: object
+    transferShipmentSearchFilter:
+      description: >-
+        The search criteria used to find shipments. To search using a single
+        value, use `valueSearchFilter`. To search using multiple values, use
+        `valuesSearchFilter`.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilter'
+          GT: '#/components/schemas/valueSearchFilter'
+          GTE: '#/components/schemas/valueSearchFilter'
+          IN: '#/components/schemas/valuesSearchFilter'
+          LT: '#/components/schemas/valueSearchFilter'
+          LTE: '#/components/schemas/valueSearchFilter'
+          NEQ: '#/components/schemas/valueSearchFilter'
+          NIN: '#/components/schemas/valuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: >-
+            Filter conditions. <br> EQ (Equal to): Searches for exact match.
+            <br> NEQ (Not equal to): Searches by excluding the specified value.
+            <br> IN: Search for multiple values. <br> NIN (Not IN): Excludes the
+            specified values in the search. LT (Less than): Searches for values
+            that are less than the specified value. GT (Greater than):  Search
+            for values that are greater than the specified value. LTE (Less than
+            or equal to): Searches for values that are less than or equal to the
+            specified value. GTE (Greater than or equal to): Searches for values
+            that are greater than or equal to the specified value.
+          enum:
+            - EQ
+            - NEQ
+            - IN
+            - NIN
+            - LT
+            - GT
+            - LTE
+            - GTE
+          example: LT
+          type: string
+        field:
+          description: Field name
+          example: transferShipment.shipmentNum
+          pattern: ^transferShipment\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: The group name.
+          example: GroupA
+          type: string
+      required:
+        - condition
+        - field
+      type: object
+    transferShipmentsSearchRequest:
+      description: >-
+        An object containing the sort and filter criteria for a transfer
+        shipment search.
+      example:
+        filters:
+          - condition: EQ
+            field: transferShipment.shipmentNum
+            value: Shipment_112255
+          - condition: IN
+            field: transferShipment.cartons.cartonNum
+            values:
+              - Tracking_*
+        sort: '-transferShipment.shipDate'
+      properties:
+        filters:
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/valueSearchFilter'
+              - $ref: '#/components/schemas/valuesSearchFilter'
+          maxItems: 50
+          minItems: 1
+          type: array
+        sort:
+          default: '-transferShipment.shipDate'
+          description: >-
+            Property name on which response needed to be sorted. <p> **Note**:
+            `-` refers to descending and `+` refers to ascending order
+          example: '-transferShipment.shipDate'
+          pattern: >-
+            (^[+-]transferShipment\.[a-zA-Z.\-_]*)(,([+-]transferShipment\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+        - filters
+      type: object
+    updateTransferShipmentRequest:
+      description: An object containing the details to update a transfer shipment request.
+      properties:
+        attributes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example:
+              attribute1: value
+            type: object
+          description: Attributes to save any additional info
+          example:
+            attribute1: value
+          type: object
+        auditLogs:
+          description: Audit logs list
+          items:
+            $ref: '#/components/schemas/shipmentAuditLog'
+          type: array
+        cartons:
+          description: Carton list
+          items:
+            $ref: '#/components/schemas/transferShipmentCarton'
+          type: array
+        deliveredAt:
+          description: Delivered date of shipment
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        masterTrackingNumber:
+          description: Master tracking number
+          example: TX112345678
+          type: string
+        receivedAt:
+          description: Received date of shipment
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        recipient:
+          description: Recipient list
+          items:
+            $ref: '#/components/schemas/shipmentRecipient'
+          type: array
+        shipFrom:
+          $ref: '#/components/schemas/transferShipFrom'
+        shipTo:
+          $ref: '#/components/schemas/transferShipTo'
+        shippedAt:
+          description: Ship date
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        statusCode:
+          description: Transfer Shipment Status
+          enum:
+            - TRANSFER_SHIPMENT_PACKED
+            - TRANSFER_SHIPMENT_SENT
+            - TRANSFER_SHIPMENT_CREATED
+            - TRANSFER_SHIPMENT_DRAFT
+            - TRANSFER_SHIPMENT_DELIVERED
+            - TRANSFER_SHIPMENT_RECEIVED
+            - TRANSFER_SHIPMENT_STOCKED
+            - TRANSFER_SHIPMENT_CANCELLED
+            - TRANSFER_SHIPMENT_ERROR
+          example: TRANSFER_SHIPMENT_CREATED
+          type: string
+        stockReleaseTimeStamp:
+          description: Stock release time stamp date
+          example: '2022-06-06T07:58:30.996Z'
+          format: date-time
+          type: string
+        subtype:
+          description: Shipment subtype
+          enum:
+            - COD
+          example: COD
+          type: string
+        totalCartons:
+          description: Total number of cartons
+          example: 2
+          format: int64
+          type: integer
+        transferId:
+          description: Transfer ID for this shipment
+          example: '112345678912340'
+          type: string
+        transferNumber:
+          description: Transfer number for this shipment
+          example: '112345678912340'
+          type: string
+        type:
+          description: Shipment types
+          enum:
+            - STANDARD
+            - RESHIP
+            - RETURN
+            - SCRATCH
+            - PENDING_RETURN
+            - PICKUP
+            - TRANSFER
+          example: TRANSFER
+          type: string
+        vendorId:
+          description: Vendor ID
+          example: '56'
+          type: string
+      required:
+        - shipFrom
+        - shipTo
+        - transferId
+        - transferNumber
+      type: object
+    valueSearchFilter:
+      allOf:
+        - $ref: '#/components/schemas/shipmentSearchFilter'
+        - properties:
+            value:
+              description: Search criteria using a single value
+              example: ORDER_CREATE
+              oneOf:
+                - description: Target record's non-numeric identifier
+                  example: ORDER_CREATE
+                  type: string
+                - description: Target record's numeric identifier
+                  example: 112233
+                  format: int64
+                  type: number
+                - description: Target record's numeric identifier
+                  example: 1122.33
+                  format: double
+                  type: number
+          type: object
+      description: >-
+        The criteria used to find shipments by a single value. Condition between
+        `field` and `value` is anything except IN and NIN when
+        `valueSearchFilter` is used.
+      required:
+        - condition
+        - field
+      type: object
+    valuesSearchFilter:
+      allOf:
+        - $ref: '#/components/schemas/shipmentSearchFilter'
+        - properties:
+            values:
+              items:
+                description: Search criteria using multiple values
+                example: ORDER_CREATE
+                oneOf:
+                  - description: Target record's non-numeric identifier
+                    example: ORDER_CREATE
+                    type: string
+                  - description: Target record's numeric identifier
+                    example: 112233
+                    format: int64
+                    type: number
+                  - description: Target record's numeric identifier
+                    example: 1122.33
+                    format: double
+                    type: number
+              maxItems: 25
+              minItems: 1
+              type: array
+          type: object
+      description: >-
+        The search criteria when using multiple values. Condition between
+        `field` and `values` is either IN or NIN when `valuesSearchFilter` is
+        used.
+      required:
+        - condition
+        - field
+      type: object
+  securitySchemes:
+    authorization:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about fabric Orders (also called OMS)
+  url: https://developer.fabric.inc/v3/docs/orders-overview
+info:
+  contact:
+    email: support@fabric.inc
+    name: fabric Orders team
+  description: >-
+    fabric **Shipments** API is a multi-tenant service that enables you to
+    manage shipments for existing 'Allocations.' Shipments serve as records of
+    the locations from which an order was fulfilled. Typical user of fabric
+    Shipments service is a Warehouse management service or Point of Sale
+    service. <p> **Note**: Shipments API relies on the Allocation service to
+    send allocation details to external merchant systems after an order is
+    placed. Allocation is the prerequisite for using Shipments API.</p>
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: Orders - Shipments API
+  version: 3.0.0
+  x-audience: external-public
+openapi: 3.0.1
+x-mint:
+  mcp:
+    enabled: true
+paths:
+  /shipments:
+    post:
+      description: >-
+        To use this endpoint an “allocation” must exist for the order that's
+        being shipped. When an order is placed, fabric sends allocation details
+        to external merchant system to create order fulfillment requirement
+        details in an external system. With reference to the allocation that's
+        being shipped, users of this POST API can create  shipment details for
+        allocations. <p> **Note**: Shipment ID generated as part of the response
+        is required for subsequent calls such as Acknowledge shipment (`POST
+        /shipments/{shipmentId}/acknowledge`) and Get shipment (`GET
+        /shipments/{shipmentId}`).</p>
+      operationId: createShipment
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createShipmentRequest'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shipmentResponse'
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create New Shipment
+      tags:
+        - Shipments
+  /shipments/create-order-shipment:
+    post:
+      tags:
+        - Shipments
+      summary: Create Shipment for an Existing Order
+      description: >
+        Creates shipment details for an existing order.
+
+
+        This endpoint can only be used for orders that already exist. When an
+        order is placed, 
+
+        fabric sends allocation details to external merchant systems to define
+        fulfillment 
+
+        requirements. Using the provided allocation reference, this endpoint
+        (POST) creates 
+
+        shipment records associated with that order.
+
+
+        Note:
+
+        - The Shipment ID returned in the response is required for subsequent
+        calls:
+          - Acknowledge shipment: `POST /shipments/{shipmentId}/acknowledge`
+          - Get shipment: `GET /shipments/{shipmentId}`
+      operationId: createShipmentByOrder
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createShipmentByOrderRequest'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shipmentResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                  - type: CLIENT_ERROR
+                    errorCode: SERVICE-4002
+                    message: Invalid value(s) specified for 'requiredField.field3'
+                    errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /shipments/actions/re-ship:
+    post:
+      description: >-
+        Orders may go missing before they're delivered to customers for reasons
+        such as incorrect address, theft, labelling issues, or other reasons.
+        This endpoint triggers reshipment in such cases for the existing
+        location. <p> **Note**: Shipment ID generated as part of the response is
+        required for subsequent calls such as Acknowledge shipment (POST
+        /shipments/{shipmentId}/acknowledge) and Get shipment (GET
+        /shipments/{shipmentId}).</p>
+      operationId: createReshipment
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createShipmentRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Create Re-shipment
+      tags:
+        - Shipments
+  /shipments/actions/update-tracking:
+    post:
+      description: >-
+        The update tracking endpoint creates a new tracking log that can be used
+        to update the order status. The most common application of this endpoint
+        is to connect to external web services or 'adapters' that have been
+        integrated with carrier tracking applications. With this endpoint,
+        fabric Shipment service gets information from carrier tracking
+        applications, and in turn, updates customers about their shipment
+        status.
+      operationId: updateTrackingDetails
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/shipmentTrackingDetail'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shipmentsResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Shipment not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Shipment not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Shipment Tracking
+      tags:
+        - Shipments
+  /shipments/inventory-transfer:
+    post:
+      operationId: createShipment_1
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/transferShipmentRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transferShipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/inventory-transfer/actions/update-tracking:
+    post:
+      operationId: updateTracking
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/shipmentTrackingDetail'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/transferShipmentResponse'
+                type: array
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/inventory-transfer/pack-unpack:
+    post:
+      operationId: packTransferShipment
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/transferShipmentRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transferShipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/inventory-transfer/query:
+    post:
+      operationId: getTransferShipmentByQuery
+      parameters:
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/libQuery'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/libQueryResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/inventory-transfer/search:
+    post:
+      operationId: search
+      parameters:
+        - in: query
+          name: fetchOnlyIds
+          required: false
+          schema:
+            default: false
+            type: boolean
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/transferShipmentsSearchRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/searchResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/inventory-transfer/{transferShipmentId}:
+    get:
+      operationId: get
+      parameters:
+        - in: path
+          name: transferShipmentId
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transferShipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+    put:
+      operationId: update
+      parameters:
+        - in: path
+          name: transferShipmentId
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTransferShipmentRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transferShipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/inventory-transfer/{transferShipmentId}/action/cancel:
+    post:
+      operationId: cancel
+      parameters:
+        - in: path
+          name: transferShipmentId
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transferShipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/inventory-transfer/{transferShipmentId}/action/receiving:
+    post:
+      operationId: receiving
+      parameters:
+        - in: path
+          name: transferShipmentId
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/transferReceivingRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transferShipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/inventory-transfer/{transferShipmentId}/actions/package-tracking-acknowledge:
+    post:
+      operationId: acknowledgeTransferShipmentById
+      parameters:
+        - in: path
+          name: transferShipmentId
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/acknowledgePackageTrackingRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/transferShipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      tags:
+        - transfer-shipment-controller
+  /shipments/search:
+    post:
+      description: >-
+        As merchants, you may want to view shipments of specific statuses,
+        monitor progress of deliveries, and proactively manage situations to
+        ensure timely deliveries. <p> This endpoint enables you to easily search
+        for shipments based on the specified criteria in the request body. You
+        can refine your search by specifying `limit` and `offset`. When they're
+        not specified, by default you will get up to 10 records. In addition,
+        you can `sort` results.</p>
+      operationId: searchShipments
+      parameters:
+        - in: query
+          name: fetchOnlyIds
+          required: false
+          schema:
+            default: false
+            type: boolean
+        - description: >-
+            The number of records to skip before returning all records. For
+            example, `offset=20, limit=10` returns records 21-30.
+          example: 0
+          in: query
+          name: offset
+          schema:
+            default: 0
+            type: number
+        - description: Maximum number of records per page.
+          example: 10
+          in: query
+          name: limit
+          schema:
+            default: 10
+            example: 10
+            type: number
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/shipmentsSearchRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shipmentsSearchResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Find Shipments
+      tags:
+        - Shipments
+  /shipments/{shipmentId}:
+    get:
+      description: >-
+        As merchants, you may want to resolve customer queries related to
+        shipment or track a specific shipment to manage customer expectations
+        with timely communication. <p> This endpoint gets details of a single
+        shipment by ID. You will get `shipmentId` by using the search endpoint,
+        or by referencing a `shipmentId` on a file such as the Invoice.</p>
+      operationId: getShipment
+      parameters:
+        - description: >-
+            24-character system-generated shipment ID. It's generated in the
+            response of Create Shipment - `POST /shipments` endpoint.
+          example: 627963716b19511e8a3a631b
+          in: path
+          name: shipmentId
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shipmentResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Shipment not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Shipment not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Get Shipment by ID
+      tags:
+        - Shipments
+  /shipments/{shipmentIdType}/{shipmentIdValue}:
+    get:
+      tags:
+        - Shipments
+      summary: Get Shipment by Shipmentidtype and Shipmentidvalue
+      description: >
+        Retrieves shipment details by `shipmentIdType` and `shipmentIdValue`.
+
+
+        As a merchant, you may need to review or monitor a shipment to address
+        customer
+
+        inquiries, resolve complaints, or support analytics and reporting. This
+        endpoint
+
+        allows you to access shipment information using the shipment
+        identifiers.
+      operationId: getShipmentByIdAndIdType
+      parameters:
+        - name: shipmentIdType
+          in: path
+          description: >-
+            This field specifies the type of shipment identifier used in the
+            request.
+
+            Valid values:
+              - shipment-number — The merchant-defined shipment number.
+              - shipment-external-id — The merchant-assigned external identifier for the shipment.
+          required: true
+          schema:
+            type: string
+            enum:
+              - shipment-number
+              - shipment-external-id
+          example: shipment-external-id
+        - name: shipmentIdValue
+          in: path
+          description: >-
+            This field specifies the identifier value that corresponds to the
+            type in `shipmentIdType`.
+
+            For example, if `shipmentIdType` is `shipment-number`, then this
+            value must be the merchant-defined shipment number.
+          required: true
+          schema:
+            type: string
+          examples:
+            shipment-number:
+              summary: Merchant-defined Shipment Number
+              value: '217088603'
+            shipment-external-id:
+              summary: Merchant-assigned External Shipment Identifier
+              value: bef5680-u1245678
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shipmentResponse'
+        '400':
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4003
+                message: 'Mandatory param(s): `requiredField1` is/are missing'
+                errors:
+                  - type: CLIENT_ERROR
+                    errorCode: SERVICE-4002
+                    message: Invalid value(s) specified for 'requiredField.field3'
+                    errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders
+        '401':
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: CLIENT_ERROR
+                errorCode: SERVICE-4001
+                message: Unauthorized request
+                errors: []
+                context:
+                  service: orders
+                  endpoint: POST /v3/orders/OrderId_12345
+        '404':
+          description: Not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                message: Order with orderNumber is not found
+                type: CLIENT_ERROR
+        '500':
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              example:
+                type: SERVER_ERROR
+                errorCode: SERVICE-5000
+                message: Internal server error
+                errors: []
+                context:
+                  service: inventories
+                  endpoint: POST /v3/inventories/actions/find-by-geography
+  /shipments/{shipmentId}/acknowledge:
+    post:
+      description: >-
+        For users of fabric Webhook Service, Shipment related events can trigger
+        HTTP callbacks to notify web clients through a merchant-defined URL/URI,
+        typically an API Gateway for a middleware. While the response to fabric
+        Webhook service HTTP call-back may occur, a secondary call-back can use
+        this Acknowledge Shipment endpoint to indicate that a secondary external
+        system has acknowledged this shipment event. Middleware receives the
+        event, transforms it in a suitable format, and sends a success response
+        back to fabric, confirming it received the event. It also sends the
+        transformed event to an external merchant system (typically in XML or
+        JSON).<p>With this endpoint, middleware immediately sends an
+        asynchronous acknowledgement to fabric, based on shipping ID, to
+        indicate whether the call was successful. This acknowledgement is used
+        for learning, auditing, and taking any necessary action.</p>
+      operationId: acknowledgeShipment
+      parameters:
+        - description: >-
+            24-character system-generated shipment ID. It's generated in the
+            response of Create Shipment - `POST /shipments` endpoint.
+          example: 627963716b19511e8a3a631b
+          in: path
+          name: shipmentId
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/shipmentAcknowledge'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/shipmentAcknowledgeResponse'
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Shipment not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Shipment not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Acknowledge Shipment
+      tags:
+        - Shipments
+  /shipments/{shipmentId}/actions/update-gift-cards-status:
+    post:
+      description: >-
+        This endpoint is used to activate gift cards before they're delivered to
+        the customer. Typically used by “adapters” or external web services
+        integrated with gift card applications, so that gift cards can be
+        activated as part of the fabric fulfillment workflow.
+      operationId: updateGiftCardStatus
+      parameters:
+        - description: >-
+            24-character system-generated shipment ID. It's generated in the
+            response of Create Shipment - `POST /shipments` endpoint.
+          example: 627963716b19511e8a3a631b
+          in: path
+          name: shipmentId
+          required: true
+          schema:
+            type: string
+        - $ref: '#/components/parameters/xFabricTenantId'
+        - $ref: '#/components/parameters/xFabricChannelId'
+        - $ref: '#/components/parameters/xFabricRequestId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/giftCardItemsActivationRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/giftCardItem'
+                type: array
+          description: OK
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '400':
+          content:
+            application/json:
+              example:
+                errors:
+                  - message: Invalid request
+                    type: CLIENT_ERROR
+                message: Bad request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Bad request
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '401':
+          content:
+            application/json:
+              example:
+                message: Unauthorized request
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Unauthorized
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '404':
+          content:
+            application/json:
+              example:
+                message: Shipment not found
+                type: CLIENT_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Shipment not found
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+        '500':
+          content:
+            application/json:
+              example:
+                message: Internal server error
+                type: SERVER_ERROR
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+          description: Internal server error
+          headers:
+            x-fabric-request-id:
+              $ref: '#/components/headers/xFabricRequestIdResponseHeader'
+      summary: Update Gift Card Activation Status
+      tags:
+        - Shipments
+security:
+  - authorization: []
+servers:
+  - description: Production
+    url: https://api.fabric.inc/v3
+tags:
+  - description: >-
+      fabric **Shipments** API is a multi-tenant service that enables you to
+      manage shipments for existing 'Allocations.' Shipments serve as records of
+      the locations from which an order was fulfilled. Typical user of fabric
+      Shipments service is a Warehouse management service or Point of Sale
+      service. <p> **Note**: Shipments API relies on the Allocation service to
+      send allocation details to external merchant systems after an order is
+      placed. Allocation is the prerequisite for using Shipments API.</p>
+    name: Shipments

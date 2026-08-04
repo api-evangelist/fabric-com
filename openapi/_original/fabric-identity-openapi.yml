@@ -1,0 +1,285 @@
+openapi: 3.0.0
+info:
+  description: >-
+    fabric **Identity** API is designed to be used by all third-party developers
+    for the purpose of authenticating and obtaining access tokens. These tokens
+    are essential for building e-commerce solutions that seamlessly integrate
+    with fabric services such as Orders, Offers, among others.
+  version: 2.0.0
+  termsOfService: https://fabric.inc/terms-of-use
+  title: Authentication v3
+  contact:
+    email: support@fabric.inc
+  license:
+    name: fabric API License
+    url: https://fabric.inc/api-license
+externalDocs:
+  description: Find out more about Identity
+  url: https://developer.fabric.inc/reference/identity-developer-guide-intro
+servers:
+  - url: https://{customer_name}.login.fabric.inc
+    description: Production
+    variables:
+      customer_name:
+        default: yourcompany
+        description: The customer name as provided by the Support team
+tags:
+  - name: Authentication Endpoints
+    description: >-
+      These endpoints allow apps to authenticate themselves or their end users
+      using fabric Identity. The main objective of these endpoints is to provide
+      access tokens to applications, allowing them to invoke other fabric
+      services such as Orders, Product Catalog, and more.
+paths:
+  /oauth2/default/v1/authorize:
+    get:
+      tags:
+        - Authentication Endpoints
+      summary: Authorize User App with and Without PKCE
+      description: >-
+        Use this endpoint to authenticate a user app using fabric Identity. When
+        calling this endpoint, the immediate response will be a browser redirect
+        to the hosted Login page configured in fabric Identity. After successful
+        authentication of the user on the hosted Login page, fabric Identity
+        will redirect back to the user app using the provided `redirect_uri`.
+        This endpoint supports both authorization code flow with and without
+        Proof of Code Exchange (PKCE). <p> **Note**: This endpoint isn't
+        required for system app authentication (refer to `/token` endpoint
+        instead).</p>
+      operationId: authorizeUserApp
+      parameters:
+        - in: query
+          name: client_id
+          description: Client ID of the user app
+          required: true
+          example: 0oa3asajdykUunEjL697
+          schema:
+            type: string
+        - in: query
+          name: response_type
+          description: >-
+            Type of the response expected. This should always be set to `code`
+            (as per OAuth 2.0 grant type, refer to
+            https://datatracker.ietf.org/doc/html/rfc6749#page-19) for
+            additional info.
+          required: true
+          example: code
+          schema:
+            type: string
+        - in: query
+          name: scope
+          description: >-
+            Scope of the endpoint call. This should always be set to `openid`
+            (as per OpenID Connect standard. Refer to
+            https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
+            for additional info)
+          required: true
+          example: openid
+          schema:
+            type: string
+        - in: query
+          name: redirect_uri
+          description: >-
+            Redirect URI of the user app is where fabric Identity will redirect
+            the user upon successful login. This URI should be hosted by the
+            user app. As part of the redirect, you will receive the auth code
+            (as `code` query parameter) which can then be exchanged for the
+            access token (refer to `/token`).
+          required: true
+          example: http://localhost:8080
+          schema:
+            type: string
+        - in: query
+          name: state
+          description: >-
+            Random string created by the user app. It's used to maintain state
+            between the request and the callback. The `state` helps mitigate
+            Cross-Site Request Forgery (CSRF) when it's cryptographically
+            derived from a browser cookie that signifies the user or session.
+          required: true
+          example: Jvpg3kcl6LL5irKlFZJWSwVTEuV1IB9aOfRdgAkDo0rcE8M5NFFS8Y4f6z6OSTXY
+          schema:
+            type: string
+        - in: query
+          name: code_challenge_method
+          description: >-
+            Required only when using authorization code flow with PKCE. A code
+            challenge method supported by PKCE specification. fabric Identity
+            only supports the value of `S256` (Refer to
+            https://datatracker.ietf.org/doc/html/rfc7636#section-4.2 for
+            additional info). This parameter is mandatory for authorization code
+            flow with PKCE and isn't required for the regular authorization code
+            flow.
+          required: false
+          example: S256
+          schema:
+            type: string
+        - in: query
+          name: code_challenge
+          description: >-
+            Required only when using authorization code flow with PKCE. The code
+            challenge created by the user app as per the specification on PKCE -
+            https://datatracker.ietf.org/doc/html/rfc7636#section-4.2.
+          required: true
+          example: xwVkMxyOHaY7f0yXb8pajRSMa2D1wMTrPuuIohH2PyA
+          schema:
+            type: string
+      responses:
+        '302':
+          description: >-
+            Found. A successful response to this endpoint will re-direct the
+            user to the hosted Login page provided by the fabric Identity. Once
+            the user successfully logs in, fabric Identity would re-direct the
+            client back to the `redirect_uri` hosted on the user app with the
+            authorization code (as query parameter `code`) and the state (as
+            query parameter `state`). The `state` parameter in the callback
+            would be the same value as sent in the request.
+  /oauth2/{authServerId}/v1/token:
+    post:
+      tags:
+        - Authentication Endpoints
+      summary: Fetch Access Token
+      description: >-
+        This endpoint allows user apps and system apps to fetch access tokens.
+        For user apps, use this endpoint after the `/authorize` endpoint and the
+        subsequent callback. For user apps this endpoint supports generation of
+        access token from authorization code or from refresh token, sent in the
+        previous `authorize` endpoint's callback. For system apps this endpoint
+        can directly be used to get an access token, no prior `/authorize` end
+        point call is needed.<p> <b><span style={{color: 'red'}}>NOTE: Fetching
+        a token for a system app via the browser on our developer portal WILL
+        NOT WORK as browser requests to the token endpoint must use
+        PKCE.</span></b> Instead, send the request through a server side/native
+        method and ensure the 'Origin' header isn't present. </p>
+      operationId: getAccessToken
+      parameters:
+        - in: path
+          name: authServerId
+          description: >-
+            Use `default` for user app flows. For system apps, use the
+            tenant-specific server ID provided by fabric Identity (see Getting
+            Started).
+          required: true
+          example: ausovnzzrWlSV68uR696
+          schema:
+            type: string
+        - in: header
+          name: Authorization
+          description: >-
+            Required for user apps with authorization code flow without PKCE and
+            for system apps. Basic authorization header should be created using
+            the client ID and client secret of the app. The value should be
+            derived as `Basic base64encode(client_id:client_secret)`. Refer to
+            https://datatracker.ietf.org/doc/html/rfc2617#section-2 for
+            additional info.
+          required: false
+          example: J88GlXYuhrStpCHNC22hSqGRFe_kQuESkteFTJPJ
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - grant_type
+              properties:
+                client_id:
+                  type: string
+                  description: >-
+                    Required only for user apps and authorization code flow with
+                    PKCE.
+                  example: 0oa3asajdykUunEjL697
+                client_secret:
+                  type: string
+                  description: >-
+                    Required only for user apps and authorization code flow with
+                    PKCE.
+                  example: J88GlXYuhrStpCHNC22hSqGRFe_kQuESkteFTJPJ
+                  format: password
+                redirect_uri:
+                  type: string
+                  description: >-
+                    Required for user apps with both authorization code flow
+                    with and without PKCE. URL encoded `redirect_uri` sent by
+                    the user app in the previous `/authorize` call.
+                  example: http://localhost:8080
+                grant_type:
+                  type: string
+                  example: client_credentials
+                  enum:
+                    - authorization_code
+                    - client_credentials
+                  description: >-
+                    Required for all authentication flows and app types. Set to
+                    `authorization_code` for user apps (for both authorization
+                    code flow with and without PKCE). Set to
+                    `client_credentials` when using for system apps.
+                code_verifier:
+                  type: string
+                  example: 3bc9ba27fbd3eea9a3a6223edd2a7b5c2d30e183361
+                  description: >-
+                    Required only for user apps and authorization code flow with
+                    PKCE. Code verifier using for deriving the `code_challenge`
+                    sent in the `/authorize` call. Refer to
+                    https://datatracker.ietf.org/doc/html/rfc7636#section-4.2
+                    for more details
+                code:
+                  type: string
+                  example: of5rhPdL5xAyp9fCvB4KaMSv_4RveYP5R9RugT0j7Eo
+                  description: >-
+                    Required for user apps with both authorization code flow
+                    with and without PKCE. Authorization code received as part
+                    of the callback response to the `/authorize` call.
+                scope:
+                  type: string
+                  example: s2s
+                  description: >-
+                    Required only for system apps. Value should always be set to
+                    `s2s`.
+                  default: s2s
+      responses:
+        '200':
+          description: Access token response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+components:
+  schemas:
+    TokenResponse:
+      type: object
+      properties:
+        token_type:
+          type: string
+          example: Bearer
+          description: Will always be set to `Bearer`
+        expires_in:
+          type: number
+          example: 600
+          description: >-
+            Describes the time in seconds in which the issued access token
+            expires
+        access_token:
+          type: string
+          example: >-
+            eyJraWQiOiJGRkYtaDJDdDlTXzFqTTFlQUpfdlc1WkJFZmJYRkRBbUlDdGJsTEdMMjBnIiwiYWxnIjoiUlMyNTYifQ.eyJ2ZXIiOjEsImp0aSI6IkFULm54M05TR1FrWDhhVHpQU29xUC1BU0pYTTBjYmJQUVVQdzRrNV96VE5ITk0ub2FycXdpNGEyN3pYSFhHT1UxZDYiLCJpc3MiOiJodHRwczovL3Rlc3Q2LmxvZ2luLWRldi5mYWJyaWMuaW5jL29hdXRoMi9kZWZhdWx0IiwiYXVkIjoiYXBpOi8vZGVmYXVsdCIsImlhdCI6MTY4NDQwOTk2OSwiZXhwIjoxNjg0NDEzNTY5LCJjaWQiOiIwb2E3OXg1MjNlVjNvN1hRSjFkNyIsInVpZCI6IjAwdTdtN3ZvbDc3clE5MlNCMWQ3Iiwic2NwIjpbIm9mZmxpbmVfYWNjZXNzIiwiZW1haWwiLCJvcGVuaWQiXSwiYXV0aF90aW1lIjoxNjg0NDA5OTY5LCJzdWIiOiJwYXQudGVzdDIyMjNAZXhhbXBsZS5jb20iLCJmYWJyaWNVc2VySWQiOiIxMWIzNTIyZC0xMDk5LTQyNGMtYWFlOS0xZTg2MTAxYTIyMmEiLCJ1c2VyUG9vbFR5cGUiOiJjdXN0b21lciIsImFjY291bnRzIjoie1wiNjBjOTE3NTBmYThkM2UwMDA4NTRlOGVhXCI6e1wicm9sZXNcIjpbXCJkZGQwN2UwNS1iZTdhLTQ2MTAtYjhjNC0yMGRmZDJmODhkMzhcIl0sXCJpZFwiOlwiNjBjOTE3NTBmYThkM2UwMDA4NTRlOGVhXCIsXCJuYW1lXCI6XCJ0ZXN0NlwiLFwidGVuYW50SWRcIjpcIjYwYzkxNzUwZmE4ZDNlMDAwODU0ZThlYVwiLFwibG9nb1VybFwiOm51bGx9fSIsImlkZW50aXR5VmVyc2lvbiI6InYyIn0.NxElKcQ-VzYUgn10x8wMgV1CgpF3FRMiCGpvD7W3s2G2wKesFYkhLo6F9HHl4Y0M-u4mObGZR83CV58bO1GvcBh7DIW-lV8S-_k64qAK4WfFWtpQSETMZfmcZ6ouD9fOGGu-RajQe_QbDAoAN1MxdQPpR7R7ZWCX5XCdnrQOJq_j_7HKV_g9HrqEq7yi5fwKENsqirYUQDRa0uLeXu9_-VMBkP-10HmlWqE0e21X8gVMsGpaZ6ppm2oLP6y8idQXA-h9sUygFyXyDk04OGPK3C0Haysuc8w5Fb9KSQ-YzkCwInC0VVLjougKL5P_NSBZEqluBHEHIdkyk6aR8ZX3iA
+          description: >-
+            The access token issued for the logged in user or the app itself.
+            This access token should be used as a bearer token in the
+            `Authorization` header of subsequent fabric API calls.
+        id_token:
+          type: string
+          example: >-
+            eyJraWQiOiJGRkYtaDJDdDlTXzFqTTFlQUpfdlc1WkJFZmJYRkRBbUlDdGJsTEdMMjBnIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIwMHU3bTd2b2w3N3JROTJTQjFkNyIsImVtYWlsIjoicGF0LnRlc3QyMjIzQGV4YW1wbGUuY29tIiwidmVyIjoxLCJpc3MiOiJodHRwczovL3Rlc3Q2LmxvZ2luLWRldi5mYWJyaWMuaW5jL29hdXRoMi9kZWZhdWx0IiwiYXVkIjoiMG9hNzl4NTIzZVYzbzdYUUoxZDciLCJpYXQiOjE2ODQ0MDk5NjksImV4cCI6MTY4NDQxMzU2OSwianRpIjoiSUQuRHNuMkhjUl83Z29GLVlOV3h5RW80TXZRcFRGQjYtNkJuYzRjX3h2SlE4OCIsImFtciI6WyJwd2QiXSwiaWRwIjoiMDBvNXlia2Fmb3U4N3lsTDMxZDciLCJhdXRoX3RpbWUiOjE2ODQ0MDk5NjksImF0X2hhc2giOiJGWktvRG5ZQmFfZnBraEgybzd5bXF3In0.CFNMcmVu9-PAlI3XkqdWXaxIDoZlFkzEFz1dtUdsMbVs47VmOCNAyngAXoPm0a9JFbFkPtw2zQt-nbrIq4Wb8v_MwmIW8s1OO87DXzvPYfW5zGZ7-tJDv0LfbSHp9epnRU7kiZSh5Dg9Uj4LQK6D1sfAIk9NRqPYl2TFapva_0hNTyRGVXlp0hWrZkdBplL1R8aX18dzrbMOuiniLOnfff5KyW7tS7dB9RYLN1uuQYB6dX9QpR5Lxf8I8Hjv3IjC_JXfltzi5hni4i-t36my6d20P-P45H9LYbN1u8T6hTkYA017FJBVWOsFYSh4vZxLlS-3nyMr3rnVpTewRVsTOw
+          description: >-
+            This token certifies that the user or app was indeed authenticated
+            successfully. However, this token isn't to be used when invoking
+            fabric APIs, use access token instead.
+        scope:
+          type: string
+          example: openid profile email
+          description: >-
+            Always set to `openid profile email` as part of the OpenID Connect
+            standard.
