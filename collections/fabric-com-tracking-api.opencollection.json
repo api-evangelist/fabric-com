@@ -1,0 +1,98 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Tracking API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tracking",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Acknowledgement for Package Tracking by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/package-tracking-acknowledge",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "309019176",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint gets acknowledgement of package tracking by order number. <p> **Note**: If you do not have order number, use the corresponding order ID-based endpoint - `PUT /orders/{orderId}/actions/package-tracking-acknowledge`.</p>"
+        },
+        {
+          "info": {
+            "name": "Get Package Tracking Acknowledgement by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/package-tracking-acknowledge",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "as4refar4e309019176",
+                "type": "path",
+                "description": "24-character system-generated ID. It is returned in the response of Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint gets acknowledgement of package tracking by order ID. <p> **Note**: If you do not have order ID, use the corresponding order number-based endpoint - `PUT /orders/order-number/{orderNumber}/actions/package-tracking-acknowledge`.</p>"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

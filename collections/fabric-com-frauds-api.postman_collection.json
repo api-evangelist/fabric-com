@@ -1,0 +1,1975 @@
+{
+  "item": [
+    {
+      "id": "f7eefdd2-9b8a-4417-8657-8e71744c6905",
+      "name": "Frauds",
+      "description": {
+        "content": "These endpoints deal with potential fraud orders.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4cd9191e-a054-44dd-9c62-1870cb3de0c2",
+          "name": "Cancel Fraud Order by Order Number",
+          "request": {
+            "name": "Cancel Fraud Order by Order Number",
+            "description": {
+              "content": "If an order is suspected to be fraudulent, it is immediately placed on hold for verification. After verification, if its confirmed as fraudulent, this endpoint is used to cancel the order by order number. <p> **Note**: If you do not have an order number, use the corresponding order ID-based endpoint - `POST /orders/{orderId}/actions/fraud-cancel`.</p>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "order-number",
+                ":orderNumber",
+                "actions",
+                "fraud-cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "orderNumber",
+                  "description": "(Required) Merchant-defined order identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reasonCode\": \"<string>\",\n  \"attributes\": \"<object>\",\n  \"employeeId\": \"<string>\",\n  \"note\": \"<string>\",\n  \"subReasonCode\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f1194647-3505-49be-b57f-6119256ea50e",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"OK\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c8724991-fca8-46ea-a6cc-722507b948df",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "63239360-ee5e-4502-84b5-c037b6499e43",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bf25f065-4301-4ebf-845f-504ba3b8c7bd",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"An order with the orderNumber specified was not found\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "34d0e94a-9011-4446-8875-e808515b2cac",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8a2e5d7f-e32f-4527-a425-a90745391218",
+          "name": "Release Fraud Order",
+          "request": {
+            "name": "Release Fraud Order",
+            "description": {
+              "content": "If an order is suspected to be fraudulent, it is immediately placed on hold for verification. After verification, if it is confirmed as non-fraudulent, this endpoint is used to release the order from hold, by order number so that it can be processed. <p> **Note**: When you do not have an order number, use the corresponding order ID-based endpoint - `POST /orders/{orderId}/actions/fraud-release`.</p>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                "order-number",
+                ":orderNumber",
+                "actions",
+                "fraud-release"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "orderNumber",
+                  "description": "(Required) Merchant-defined order identifier"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8ce14970-cc17-4611-bf0e-6165778997ce",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"OK\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8c602d1-3ac9-4b2f-9a18-dfa588d3906a",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3cf5da60-949d-42ed-8a69-1fc1d18b1950",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "510d7edb-ef0f-48ed-92d2-65ad2093458b",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"An order with the orderNumber specified was not found\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "52957b8f-ee10-433e-8641-8b813cde5505",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    "order-number",
+                    ":orderNumber",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderNumber",
+                      "description": "(Required) Merchant-defined order identifier"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7c63ef31-11a4-4b99-a4f1-b84fae3bdb13",
+          "name": "Cancel Fraud Order by Order ID",
+          "request": {
+            "name": "Cancel Fraud Order by Order ID",
+            "description": {
+              "content": "If an order is suspected to be fraudulent, it is immediately placed on hold for verification. After verification, if it is confirmed as fraudulent, this endpoint is used to cancel the order. <p> **Note**: If you do not have order ID, use the corresponding order number-based endpoint - `POST - /orders/order-number/{orderNumber}/actions/fraud-cancel` </p>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                ":orderId",
+                "actions",
+                "fraud-cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "orderId",
+                  "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reasonCode\": \"<string>\",\n  \"attributes\": \"<object>\",\n  \"employeeId\": \"<string>\",\n  \"note\": \"<string>\",\n  \"subReasonCode\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "de515c5e-cdcb-4489-8ee8-58d1557f92f3",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"OK\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "807ae4ba-1f43-4063-befb-d33ee5e37fef",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "58f3d8b4-41e0-4462-82c0-84bc77faaba2",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b602b22d-2ecc-46fb-8e20-79a206edc793",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"An order with the orderNumber specified was not found\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "81d5539e-7ad1-4373-bb04-c66864257906",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"reasonCode\": \"Fraudulent order\",\n  \"attributes\": {\n    \"salesRepId\": \"123456789\"\n  },\n  \"employeeId\": \"12312232\",\n  \"note\": \"Fraud cancellation\",\n  \"subReasonCode\": \"Impersonation\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7c950ea4-4f7b-4b79-ace4-283581eb9851",
+          "name": "Release Fraud Order by Order ID",
+          "request": {
+            "name": "Release Fraud Order by Order ID",
+            "description": {
+              "content": "If an order is suspected to be fraudulent, it is immediately placed on hold for verification. After verification, if it is confirmed as non-fraudulent, this endpoint is used to release the order from hold, by order ID, so that it can be processed. <p> **Note**: When you do not have order ID, use the corresponding order number-based endpoint - `POST /orders/order-number/{orderNumber}/actions/fraud-release`.</p>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orders",
+                ":orderId",
+                "actions",
+                "fraud-release"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "orderId",
+                  "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e97b890c-48ac-43d1-85ec-c443657cac6e",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"OK\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "804363dd-cc70-4b43-b7e8-f2ad4777f4e1",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b715cbc1-1d60-4e2e-9688-5dde8b1117b9",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "36539a1e-f7a8-4abc-826c-10ea79cc4cb3",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"An order with the orderNumber specified was not found\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8b7bfb52-a66b-4550-893c-dcf7bb72d223",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orders",
+                    ":orderId",
+                    "actions",
+                    "fraud-release"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "orderId",
+                      "description": "(Required) 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "baf6f8d6-7074-4678-a1e8-e4e8de85c304",
+    "name": "Cart Actions Endpoints Frauds API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)\n\nContact Support:\n Name: Cart Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

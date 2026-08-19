@@ -1,0 +1,282 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Cancellations API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cancellations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Cancel Order by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/cancel",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "123k4h123k",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancels an order when a customer's cancellation request is determined to be eligible.  \nThis endpoint processes the cancellation based on the provided **order number**.  \n\n**Note:**  \n- Use this endpoint only if you have the order number.  \n- If you have the order ID or external order ID instead, use the corresponding \n  identifier-based endpoint: `POST /orders/{orderIdType}/{orderIdValue}/actions/cancel`.\n"
+        },
+        {
+          "info": {
+            "name": "Get Order Cancellation Eligibility by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/check-cancel-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "123k4h123k",
+                "type": "path",
+                "description": "The merchant-defined order identifier."
+              },
+              {
+                "name": "policyName",
+                "value": "",
+                "type": "query",
+                "description": "The merchant-defined cancellation policy. When omitted, the default policy is used."
+              },
+              {
+                "name": "lineItemIds",
+                "value": "",
+                "type": "query",
+                "description": "The line item IDs. If specified, you'll get cancellation eligibility of the given line items. If omitted, you'll get cancellation eligibility of each item in the order."
+              }
+            ]
+          },
+          "docs": "Either customer may initiate cancellation due to an incorrect order placement or as a merchant, you may initiate cancellation due to product unavailability, pricing errors, payment failure, or shipping restrictions. Before processing cancellation, its crucial to determine the eligibility of the cancellation request. <p> This endpoint gets the eligibility of the cancellation request by order number. You can additionally specify `lineItemIds` to get the eligibility of specific line items.</p> <p> "
+        },
+        {
+          "info": {
+            "name": "Cancel Order by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/cancel",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Cancels an order when a customer's cancellation request is determined to be eligible.  \nThis endpoint processes the cancellation based on the provided order identifier.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+        },
+        {
+          "info": {
+            "name": "Check Order Cancellation Eligibility by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/check-cancel-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              },
+              {
+                "name": "policyName",
+                "value": "",
+                "type": "query",
+                "description": "The merchant-defined cancellation policy to use when evaluating eligibility.  \nIf omitted, the default policy is applied.\n"
+              },
+              {
+                "name": "lineItemIds",
+                "value": "",
+                "type": "query",
+                "description": "One or more line item IDs.  \n- If specified, eligibility is checked only for the given line items.  \n- If omitted, eligibility is checked for each item in the order.\n"
+              }
+            ]
+          },
+          "docs": "Determines whether an order is eligible for cancellation.  \n- Customers may initiate cancellations due to incorrect order placement.  \n- Merchants may initiate cancellations due to product unavailability, pricing errors, payment failures, or shipping restrictions.  \n\nYou can also specify `lineItemIds` to check cancellation eligibility for specific line items.  \nIf not provided, eligibility is checked for each item in the order.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order n"
+        },
+        {
+          "info": {
+            "name": "Cancel Order by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/cancel",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "When customers order cancellation request is determined to be eligible, this endpoint processes the cancellation by order ID. <p> **Note**: If you do not have the order number, use the corresponding order number-based endpoint - `POST /orders/order-number/{orderNumber}/actions/cancel`.</p>"
+        },
+        {
+          "info": {
+            "name": "Get Order Cancellation Eligibility by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/check-cancel-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              },
+              {
+                "name": "policyName",
+                "value": "",
+                "type": "query",
+                "description": "Merchant-defined cancellation policy. When omitted, the default policy is considered."
+              },
+              {
+                "name": "lineItemIds",
+                "value": "",
+                "type": "query",
+                "description": "Line item IDs. If specified, gets eligibility of exchange for the given line items. If omitted, gets eligibility of exchange for each item in the order."
+              }
+            ]
+          },
+          "docs": "Determines whether an order is eligible for cancellation.  \n- Customers may initiate cancellation due to incorrect order placement.  \n- Merchants may initiate cancellation due to product unavailability, pricing errors, \n  payment failures, or shipping restrictions.  \n\nThis endpoint checks cancellation eligibility using the **order ID**.  \nYou can also specify `lineItemIds` to check eligibility for specific line items.  \nIf omitted, eligibility is checked for each item in the order.  \n\n**Note:** "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

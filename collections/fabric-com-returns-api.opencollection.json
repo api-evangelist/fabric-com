@@ -1,0 +1,423 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Returns API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Returns",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Submit Return Request by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/submit-return-request",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-external-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "bef5680-u1245678",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submits a return request for an order once it has been determined that the \ncustomer's return request is eligible.  \nThis endpoint processes the return request using the specified order identifier.  \n\n**Note:**  \n- Use this endpoint if you have the order number or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.  \n- If you only have an external order ID, set `orderIdType` to `order-external-id`.\n"
+        },
+        {
+          "info": {
+            "name": "Check Order Exchange Eligibility by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/check-exchange-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-external-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "bef5680-u1245678",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              },
+              {
+                "name": "policyName",
+                "value": "RETURNS_POLICY_1",
+                "type": "query",
+                "description": "The merchant-defined exchange policy to apply.  \nIf omitted, the default policy is used.\n"
+              },
+              {
+                "name": "lineItemId",
+                "value": "62f3dfc438bcab1951be0a19",
+                "type": "query",
+                "description": "A single line item ID.  \n- If specified, eligibility is checked only for that item.  \n- If omitted, eligibility is checked for each item in the order.\n"
+              }
+            ]
+          },
+          "docs": "Determines whether an item or order is eligible for exchange.  \nCustomers may request an exchange due to size, fit, color, or style preferences.  \nThis endpoint verifies eligibility according to your defined business policies.  \n\nYou can also specify a `lineItemId` to check exchange eligibility for a specific \nitem. If omitted, eligibility is checked for each item in the order.  \n\n**Note:**  \n- Use this endpoint if you have the order number or external order ID.  \n- If you only have an order num"
+        },
+        {
+          "info": {
+            "name": "Check Return Eligibility by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/check-return-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-external-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "bef5680-u1245678",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              },
+              {
+                "name": "policyName",
+                "value": "RETURNS_POLICY_1",
+                "type": "query",
+                "description": "The merchant-defined return policy to apply.  \nIf omitted, the default policy is used.\n"
+              },
+              {
+                "name": "lineItemId",
+                "value": "b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569",
+                "type": "query",
+                "description": "A single line item ID.  \n- If specified, eligibility is checked only for that item.  \n- If omitted, eligibility is checked for each item in the order.\n"
+              }
+            ]
+          },
+          "docs": "Determines whether one or more items in an order are eligible for return.  \nCustomers may request a return because items did not meet expectations or \nthey simply changed their mind.  \n\nThis endpoint verifies eligibility according to your defined return policies.  \nYou can also specify a `lineItemId` to check return eligibility for a specific \nitem. If omitted, eligibility is checked for each item in the order.  \n\n**Note:**  \n- Use this endpoint if you have the order number or external order ID."
+        },
+        {
+          "info": {
+            "name": "Get Order Exchange Eligibility by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/check-exchange-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "Order-320000001",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              },
+              {
+                "name": "policyName",
+                "value": "RETURNS_POLICY_1",
+                "type": "query",
+                "description": "Merchant-defined exchange policy. When omitted, the default policy is considered."
+              },
+              {
+                "name": "lineItemId",
+                "value": "62f3dfc438bcab1951be0a19",
+                "type": "query",
+                "description": "Line item ID. If specified, gets exchange eligibility of the given line item. If omitted, gets exchange eligibility of each item in the order."
+              }
+            ]
+          },
+          "docs": "Determines whether an order or specific items within an order are eligible for exchange.  \nCustomers may request an exchange due to size, fit, color, or style preferences.  \nThis endpoint checks exchange eligibility using the **order number**.  \n\nYou can also specify a `lineItemId` to check eligibility for a specific item.  \nIf omitted, eligibility is checked for each item in the order.  \n\n**Note:**  \n- Use this endpoint only if you have the order number.  \n- If you have an order ID instead, use"
+        },
+        {
+          "info": {
+            "name": "Get Return Eligibility by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/check-return-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "Order-320000001",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              },
+              {
+                "name": "policyName",
+                "value": "RETURNS_POLICY_1",
+                "type": "query",
+                "description": "Merchant-defined return policy. When omitted, the default policy is considered."
+              },
+              {
+                "name": "lineItemId",
+                "value": "b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569",
+                "type": "query",
+                "description": "Line item ID. If specified, you'll get the return eligibility of the given line item ID. If omitted, you'll get the return eligibility of each item in the order."
+              }
+            ]
+          },
+          "docs": "Determines whether one or more items in an order are eligible for return.  \nCustomers may request a return if items do not meet expectations or if they \nhave simply changed their mind.  \nThis endpoint checks return eligibility using the **order number**.  \n\nYou can also specify a `lineItemId` to check eligibility for a specific item.  \nIf omitted, eligibility is checked for each item in the order.  \n\n**Note:**  \n- Use this endpoint only if you have the order number.  \n- If you have an order ID i"
+        },
+        {
+          "info": {
+            "name": "Order Return by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/submit-return-request",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "Order-20000001",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "When the customers return request is determined to be eligible, this endpoint is used to process the return request. <p> **Note**: If you do not have the order number, but have order ID, use Return order by order ID endpoint - `POST /orders/{orderId}/actions/submit-return-request`.</p>"
+        },
+        {
+          "info": {
+            "name": "Get Order Exchange Eligibility by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/check-exchange-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              },
+              {
+                "name": "policyName",
+                "value": "RETURNS_POLICY_1",
+                "type": "query",
+                "description": "Merchant-defined exchange policy. When omitted, the default policy is considered."
+              },
+              {
+                "name": "lineItemId",
+                "value": "62f3dfc438bcab1951be0a19",
+                "type": "query",
+                "description": "Line item ID. If specified, gets exchange eligibility of the given line item ID. If omitted, gets exchange eligibility of each item in the order."
+              }
+            ]
+          },
+          "docs": "Customers may want exchange an item because of size, color, or style preferences. Before processing exchange, its crucial to verify whether the item is eligible for exchange as per your policy. <p> This endpoint gets the eligibility of exchange request by order number. You can additionally specify `lineItemId` to get eligibility of a specific item.</p> <p> **Note**: If you do not have the order ID, but have the order number, use the order number-based endpoint - `POST /orders/order-number/{order"
+        },
+        {
+          "info": {
+            "name": "Get Eligibility of Returns for Items in an Order by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/check-return-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              },
+              {
+                "name": "policyName",
+                "value": "RETURNS_POLICY_1",
+                "type": "query",
+                "description": "Merchant-defined return policy. When omitted, the default policy is considered."
+              },
+              {
+                "name": "lineItemId",
+                "value": "b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569",
+                "type": "query",
+                "description": "Line item ID. If specified, gets the return eligibility of the given line item ID. If omitted, gets the return eligibility of each item in the order."
+              }
+            ]
+          },
+          "docs": "Determines whether one or more items in an order are eligible for return.  \nCustomers may request a return if items do not meet expectations or if they \nhave simply changed their mind.  \n\nThis endpoint checks return eligibility using the **order ID**.  \nYou can also specify a `lineItemId` to check eligibility for a specific item.  \nIf omitted, eligibility is checked for each item in the order.  \n\n**Note:**  \n- Use this endpoint only if you have the order ID.  \n- If you have an order number inste"
+        },
+        {
+          "info": {
+            "name": "Order Return by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/submit-return-request",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "When customers return request is found to be eligible, this endpoint submits the return request by order ID. <p> **Note**: If you do not have order ID, use the corresponding order number-based endpoint- `POST /orders/order-number/{orderNumber}/actions/submit-return-request`.</p>"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,798 @@
+{
+  "item": [
+    {
+      "id": "3cfbd81c-25a0-41c9-88a7-17775bb4b617",
+      "name": "Categories",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "567f6027-765f-43d5-998f-6fab2ee3cf40",
+          "name": "Bulk Import Categories",
+          "request": {
+            "name": "Bulk Import Categories",
+            "description": {
+              "content": "Upload a CSV file to import category data for the specified brand/domain. The import is processed asynchronously.\n\n**Expected CSV columns**\n- **name** or **category_name** (required): Category name\n- **parent_id** or **parent_category_id** (optional): Parent category ID\n- **breadcrumb** (optional): Full breadcrumb path\n- **inferred_category** (optional): AI-inferred category\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "categories",
+                "import"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                "key": "domain",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "(Required) CSV file containing categories (e.g. categories.csv)"
+                },
+                {
+                  "key": "name",
+                  "value": "<string>",
+                  "type": "text",
+                  "description": "Human friendly import name"
+                },
+                {
+                  "key": "notify_email",
+                  "value": "true",
+                  "type": "text",
+                  "description": "Send an email when the import completes."
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "78f2ae8d-02e5-4ae0-9605-0f133d1d3c5c",
+              "name": "Import accepted for asynchronous processing",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "(Required) CSV file containing categories (e.g. categories.csv)",
+                        "type": "text/plain"
+                      },
+                      "key": "file",
+                      "value": "<binary>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Human friendly import name",
+                        "type": "text/plain"
+                      },
+                      "key": "name",
+                      "value": "Spring catalog category import",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Send an email when the import completes.",
+                        "type": "text/plain"
+                      },
+                      "key": "notify_email",
+                      "value": "true",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"import_id\": \"a0cf63a0-55b8-4a25-9218-d972d4d65a79\",\n  \"status\": \"PENDING\",\n  \"message\": \"Import queued. Use GET /categories/import/{import_id} to track progress.\",\n  \"created_at\": \"2026-03-12T17:58:13.605818Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c943859f-fbc3-4fbb-93ac-c9df7521b52c",
+              "name": "Bad request - invalid CSV or missing file",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "(Required) CSV file containing categories (e.g. categories.csv)",
+                        "type": "text/plain"
+                      },
+                      "key": "file",
+                      "value": "<binary>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Human friendly import name",
+                        "type": "text/plain"
+                      },
+                      "key": "name",
+                      "value": "Spring catalog category import",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Send an email when the import completes.",
+                        "type": "text/plain"
+                      },
+                      "key": "notify_email",
+                      "value": "true",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    },\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b24ab512-7d8f-40d1-b95c-5e0440619047",
+              "name": "Unauthorized - missing or invalid token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "(Required) CSV file containing categories (e.g. categories.csv)",
+                        "type": "text/plain"
+                      },
+                      "key": "file",
+                      "value": "<binary>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Human friendly import name",
+                        "type": "text/plain"
+                      },
+                      "key": "name",
+                      "value": "Spring catalog category import",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Send an email when the import completes.",
+                        "type": "text/plain"
+                      },
+                      "key": "notify_email",
+                      "value": "true",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    },\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f9db8cd-a759-40b0-817a-196898b5b123",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": {
+                        "content": "(Required) CSV file containing categories (e.g. categories.csv)",
+                        "type": "text/plain"
+                      },
+                      "key": "file",
+                      "value": "<binary>",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Human friendly import name",
+                        "type": "text/plain"
+                      },
+                      "key": "name",
+                      "value": "Spring catalog category import",
+                      "type": "text"
+                    },
+                    {
+                      "description": {
+                        "content": "Send an email when the import completes.",
+                        "type": "text/plain"
+                      },
+                      "key": "notify_email",
+                      "value": "true",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    },\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5877b3a8-bef7-422c-ab1c-00925f8497d1",
+          "name": "Get Category Import Status",
+          "request": {
+            "name": "Get Category Import Status",
+            "description": {
+              "content": "Retrieve the current status and results of a category import created using `POST /api/v2/categories/import`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v2",
+                "categories",
+                "import",
+                ":import_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "import_id",
+                  "description": "(Required) Import ID returned from `POST /api/v2/categories/import`."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                "key": "domain",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "74126ba2-7659-4106-863c-819c5b0dc73f",
+              "name": "Import status",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import",
+                    ":import_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "import_id",
+                      "description": "(Required) Import ID returned from `POST /api/v2/categories/import`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"import_id\": \"a0cf63a0-55b8-4a25-9218-d972d4d65a79\",\n  \"name\": \"tcs_category_test.csv\",\n  \"status\": \"COMPLETED\",\n  \"total_rows\": 333,\n  \"processed_rows\": 333,\n  \"new_count\": 333,\n  \"updated_count\": 0,\n  \"skipped_count\": 0,\n  \"failed_count\": 0,\n  \"input_filename\": \"tcs_category_test.csv\",\n  \"input_file_url\": \"https://example.com/input.csv\",\n  \"error_file_url\": null,\n  \"error_message\": null,\n  \"started_at\": \"2026-03-12T17:58:13.722428Z\",\n  \"completed_at\": \"2026-03-12T17:58:14.564840Z\",\n  \"created_at\": \"2026-03-12T17:58:13.605818Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fe263049-6ab7-4c98-a3e3-8b158d3a2a29",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import",
+                    ":import_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "import_id",
+                      "description": "(Required) Import ID returned from `POST /api/v2/categories/import`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    },\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba72c1ab-c3ff-4956-b14b-6cd7c1425de2",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import",
+                    ":import_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "import_id",
+                      "description": "(Required) Import ID returned from `POST /api/v2/categories/import`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    },\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9a5c2f4f-7bc5-4eae-ba87-5cf3012fbd43",
+              "name": "Import not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import",
+                    ":import_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "import_id",
+                      "description": "(Required) Import ID returned from `POST /api/v2/categories/import`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    },\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b028467f-27f4-4a02-a55b-f827f516e5fd",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v2",
+                    "categories",
+                    "import",
+                    ":import_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "import_id",
+                      "description": "(Required) Import ID returned from `POST /api/v2/categories/import`."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.",
+                    "key": "domain",
+                    "value": "vessel.com"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    },\n    {\n      \"errors\": [\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        },\n        {\n          \"value\": \"<Circular reference to #/components/schemas/errorResponse detected>\"\n        }\n      ],\n      \"message\": \"Bad request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "a8ed140f-278a-40fc-934b-307f4a39d1e2",
+    "name": "Cart Actions Endpoints Categories API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)\n\nContact Support:\n Name: Cart Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

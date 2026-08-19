@@ -1,0 +1,90 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Categories API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Categories",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Bulk Import Categories",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/v2/categories/import",
+            "headers": [
+              {
+                "name": "domain",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "name",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "notify_email",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Upload a CSV file to import category data for the specified brand/domain. The import is processed asynchronously.\n\n**Expected CSV columns**\n- **name** or **category_name** (required): Category name\n- **parent_id** or **parent_category_id** (optional): Parent category ID\n- **breadcrumb** (optional): Full breadcrumb path\n- **inferred_category** (optional): AI-inferred category\n"
+        },
+        {
+          "info": {
+            "name": "Get Category Import Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/v2/categories/import/:import_id",
+            "headers": [
+              {
+                "name": "domain",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "import_id",
+                "value": "",
+                "type": "path",
+                "description": "Import ID returned from `POST /api/v2/categories/import`."
+              }
+            ]
+          },
+          "docs": "Retrieve the current status and results of a category import created using `POST /api/v2/categories/import`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,161 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Inventory Imports API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Inventory Imports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Import Inventory Data",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-imports",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Import inventory data by specifying file name. Successfully uploading the file triggers the import process, which is an event-driven extraction of the file's data to update the respective resource's system."
+        },
+        {
+          "info": {
+            "name": "Get Uploaded Files That Match Specified Criteria",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-imports/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "20",
+                "type": "query",
+                "description": "Number of records to skip before returning records. For example, `offset=20, limit=10` returns records 21-30."
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "Maximum number of records per page"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get uploaded files that match specified criteria. Returned as paginated records."
+        },
+        {
+          "info": {
+            "name": "Get Uploaded File Status and Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/inventory-imports/:importId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              }
+            ],
+            "params": [
+              {
+                "name": "importId",
+                "value": "62ff5c0bec0aed3c86202c32",
+                "type": "path",
+                "description": "Upload file document's unique ID"
+              }
+            ]
+          },
+          "docs": "Get uploaded file status and details by specifying `importId`."
+        },
+        {
+          "info": {
+            "name": "Force Import Halt",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/inventory-imports/:importId/actions/force-trigger",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "importId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Force import halted due to zeroed out Inventories more than threshold"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,992 @@
+{
+  "item": [
+    {
+      "id": "b05f5006-6261-4e96-8498-3db8a817dbac",
+      "name": "Cart Actions",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ac94e351-8687-40e6-96f4-7c272747005a",
+          "name": "Merge Carts",
+          "request": {
+            "name": "Merge Carts",
+            "description": {
+              "content": "This endpoint merges two carts together. Specify one cart in the path parameter and the second cart in the request body.\n\nTo learn more about merge cart behaviors, you can check out the [Merge Cart Behaviors](/v3/cart-and-checkout/api-reference/carts-v3/merge-carts-behaviors) page.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "carts",
+                ":cartId",
+                "actions",
+                "merge"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cartId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": " Unique request ID for tracking.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mergeBehavior\": {\n    \"addresses\": \"<string>\",\n    \"adjustments\": \"<string>\",\n    \"attributes\": \"<string>\",\n    \"coupons\": \"<string>\",\n    \"customerContext\": {\n      \"attributes\": \"<string>\",\n      \"id\": \"<string>\",\n      \"segments\": \"<string>\",\n      \"sessionId\": \"<string>\"\n    },\n    \"fees\": \"<string>\",\n    \"fulfillments\": \"<string>\",\n    \"item\": {\n      \"behavior\": \"<string>\",\n      \"maxQuantity\": \"<string>\",\n      \"quantity\": \"<string>\"\n    }\n  },\n  \"secondaryCartId\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ebe71200-b478-4a84-93b8-82c7d2f13f72",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "merge"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mergeBehavior\": {\n    \"addresses\": \"REFERENCED\",\n    \"adjustments\": \"ALL\",\n    \"attributes\": \"MERGE\",\n    \"coupons\": \"ALL\",\n    \"customerContext\": {\n      \"attributes\": \"MERGE\",\n      \"id\": \"PRIMARY\",\n      \"segments\": \"ALL\",\n      \"sessionId\": \"PRIMARY\"\n    },\n    \"fees\": \"ALL\",\n    \"fulfillments\": \"REFERENCED\",\n    \"item\": {\n      \"behavior\": \"ALL\",\n      \"maxQuantity\": \"<string>\",\n      \"quantity\": \"SUM\"\n    }\n  },\n  \"secondaryCartId\": \"462c08f6-cecb-49fd-84e2-96bfa7b1c4c8\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n  \"attributes\": {\n    \"key_0\": {\n      \"name\": \"wishlist\"\n    },\n    \"key_1\": {\n      \"name\": \"wishlist\"\n    }\n  },\n  \"configuration\": {\n    \"order\": {\n      \"validate\": {\n        \"paymentsRemaining\": \"NONE\",\n        \"taxRemaining\": \"BLOCK\",\n        \"invalidItem\": \"BLOCK\",\n        \"itemOutOfStock\": \"BLOCK\"\n      }\n    },\n    \"product\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\",\n        \"cacheExpiry\": \"WARN\"\n      },\n      \"maxQuantity\": {\n        \"limit\": 100,\n        \"behaviors\": {\n          \"add\": \"REJECT\",\n          \"update\": \"WARN\",\n          \"get\": \"WARN\"\n        }\n      }\n    },\n    \"inventory\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\",\n        \"cacheExpiry\": \"WARN\"\n      },\n      \"check\": \"SKU\"\n    },\n    \"tax\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"cacheExpiry\": \"WARN\"\n      }\n    },\n    \"promotions\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"cacheExpiry\": \"WARN\"\n      }\n    },\n    \"maxQuantity\": {\n      \"limit\": 100,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\"\n      }\n    }\n  },\n  \"customerContext\": {\n    \"id\": \"109840938\",\n    \"segments\": [\n      {\n        \"name\": \"membership\",\n        \"value\": [\n          \"gold\",\n          \"silver\"\n        ]\n      },\n      {\n        \"name\": \"membership\",\n        \"value\": [\n          \"gold\",\n          \"silver\"\n        ]\n      }\n    ],\n    \"attributes\": {\n      \"key_0\": {\n        \"email\": \"test@gmail.com\"\n      },\n      \"key_1\": {\n        \"email\": \"test@gmail.com\"\n      }\n    },\n    \"sessionId\": \"3a5fd2d3-5c96-4e57-b069-7ff2a88c1119\"\n  },\n  \"status\": \"ACTIVE\",\n  \"state\": [\n    {\n      \"resource\": \"CART\",\n      \"resourceId\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n      \"key\": \"MISSING_PAYMENT_DETAILS\",\n      \"description\": \"No payment details have been added to this Cart\"\n    },\n    {\n      \"resource\": \"CART\",\n      \"resourceId\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n      \"key\": \"MISSING_PAYMENT_DETAILS\",\n      \"description\": \"No payment details have been added to this Cart\"\n    }\n  ],\n  \"price\": {\n    \"total\": 800,\n    \"subtotal\": 750,\n    \"tax\": 20,\n    \"fulfillments\": 25,\n    \"discounts\": 10,\n    \"fees\": 5,\n    \"adjustments\": 10\n  },\n  \"promotions\": {\n    \"total\": 32,\n    \"collection\": [\n      {\n        \"id\": \"542ba80a69b8\",\n        \"title\": \"15 Percent All Products\",\n        \"code\": \"15_PERCENT\",\n        \"type\": \"PERCENTAGE\",\n        \"value\": 15,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"cart\"\n          },\n          \"key_1\": {\n            \"source\": \"cart\"\n          }\n        }\n      },\n      {\n        \"id\": \"542ba80a69b8\",\n        \"title\": \"15 Percent All Products\",\n        \"code\": \"15_PERCENT\",\n        \"type\": \"PERCENTAGE\",\n        \"value\": 15,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"cart\"\n          },\n          \"key_1\": {\n            \"source\": \"cart\"\n          },\n          \"key_2\": {\n            \"source\": \"cart\"\n          }\n        }\n      }\n    ]\n  },\n  \"fees\": {\n    \"total\": 5,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"name\": \"Eco Fee\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"taxable\": true,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"eco\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"taxDetails\": {\n          \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n          \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n        }\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"name\": \"Eco Fee\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"taxable\": true,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"eco\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"taxDetails\": {\n          \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n          \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n        }\n      }\n    ]\n  },\n  \"adjustments\": {\n    \"total\": 2,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"reason\": \"Price adjustment from customer representative.\",\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"CSR\"\n          },\n          \"key_1\": {\n            \"source\": \"CSR\"\n          }\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"reason\": \"Price adjustment from customer representative.\",\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"CSR\"\n          },\n          \"key_1\": {\n            \"source\": \"CSR\"\n          },\n          \"key_2\": {\n            \"source\": \"CSR\"\n          }\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      }\n    ]\n  },\n  \"addresses\": {\n    \"a8577d7f0d4d4b228e857b4a2e90dc93\": {\n      \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"name\": {\n        \"first\": \"John\",\n        \"middle\": \"S\",\n        \"last\": \"Doe\"\n      },\n      \"email\": \"john@test.com\",\n      \"phone\": {\n        \"number\": \"123-456-7890\",\n        \"type\": \"MOBILE\"\n      },\n      \"addressLine1\": \"123 Park Road\",\n      \"addressLine2\": \"string\",\n      \"addressLine3\": \"string\",\n      \"addressLine4\": \"string\",\n      \"city\": \"Santa Cruz\",\n      \"region\": \"California\",\n      \"country\": \"USA\",\n      \"postalCode\": \"12345\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n      \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  },\n  \"lineItems\": {\n    \"total\": 100,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"sku\": \"SKU3\",\n        \"refId\": \"41\",\n        \"quantity\": 10,\n        \"priceListId\": \"10001\",\n        \"position\": 1,\n        \"price\": {\n          \"unit\": 10,\n          \"amount\": 100\n        },\n        \"fees\": {\n          \"total\": 5,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"promotions\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"adjustments\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"fulfillment\": {\n          \"id\": \"6d65755f-b1d9-4c9d-bb5b-118d317f8db4\",\n          \"price\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"inventory\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"channels\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"tax\": {\n            \"total\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"collection\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"name\": \"item-custom\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"taxCode\": \"10001\",\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"sku\": \"SKU3\",\n        \"refId\": \"41\",\n        \"quantity\": 10,\n        \"priceListId\": \"10001\",\n        \"position\": 1,\n        \"price\": {\n          \"unit\": 10,\n          \"amount\": 100\n        },\n        \"fees\": {\n          \"total\": 5,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"promotions\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"adjustments\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"fulfillment\": {\n          \"id\": \"6d65755f-b1d9-4c9d-bb5b-118d317f8db4\",\n          \"price\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"inventory\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"channels\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"tax\": {\n            \"total\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"collection\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"name\": \"item-custom\"\n          },\n          \"key_1\": {\n            \"name\": \"item-custom\"\n          },\n          \"key_2\": {\n            \"name\": \"item-custom\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"taxCode\": \"10001\",\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      }\n    ]\n  },\n  \"summary\": {\n    \"totalItems\": 1,\n    \"totalUniqueItems\": 1\n  },\n  \"fulfillments\": {\n    \"d6229cdb0c5b4885b1b213b94d02488e\": {\n      \"id\": \"d6229cdb-0c5b-4885-b1b2-13b94d02488e\",\n      \"type\": \"SHIP_TO\",\n      \"refId\": \"398427903843\",\n      \"attributes\": {\n        \"key_0\": {\n          \"source\": \"store\"\n        },\n        \"key_1\": {\n          \"source\": \"store\"\n        }\n      },\n      \"originAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"destinationAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"locationId\": \"CA\",\n      \"pickupPerson\": {\n        \"primary\": {\n          \"name\": {\n            \"first\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"middle\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"last\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"email\": \"john@test.com\",\n          \"phone\": {\n            \"number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"secondary\": [\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": \"john@test.com\",\n            \"phone\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": \"john@test.com\",\n            \"phone\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"price\": {\n        \"amount\": 12.99\n      },\n      \"promotions\": {\n        \"total\": 15,\n        \"collection\": [\n          {\n            \"id\": \"bb44db95-6fbd-4eed-a1ed-4d99bc91250f\",\n            \"amount\": 15\n          },\n          {\n            \"id\": \"bb44db95-6fbd-4eed-a1ed-4d99bc91250f\",\n            \"amount\": 15\n          }\n        ]\n      },\n      \"fees\": {\n        \"total\": 5,\n        \"collection\": [\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"name\": \"Eco Fee\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"taxable\": true,\n            \"attributes\": {\n              \"source\": \"eco\"\n            },\n            \"tax\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"taxDetails\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"name\": \"Eco Fee\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"taxable\": true,\n            \"attributes\": {\n              \"source\": \"eco\"\n            },\n            \"tax\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"taxDetails\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"adjustments\": {\n        \"total\": 2,\n        \"collection\": [\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"reason\": \"Price adjustment from customer representative.\",\n            \"attributes\": {\n              \"source\": \"CSR\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n          },\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"reason\": \"Price adjustment from customer representative.\",\n            \"attributes\": {\n              \"source\": \"CSR\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n          }\n        ]\n      },\n      \"tax\": {\n        \"total\": 3,\n        \"collection\": [\n          {\n            \"amount\": 3,\n            \"attributes\": {\n              \"rate\": \"5.0\",\n              \"type\": \"COUNTY\"\n            }\n          },\n          {\n            \"amount\": 3,\n            \"attributes\": {\n              \"rate\": \"5.0\",\n              \"type\": \"COUNTY\"\n            }\n          }\n        ]\n      }\n    }\n  },\n  \"coupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"appliedCoupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"notAppliedCoupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"validations\": {\n    \"promotions\": {\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n      \"appliedCoupons\": [\n        \"TEST_COUPON\"\n      ],\n      \"refreshRequired\": false\n    },\n    \"lineItems\": [\n      {\n        \"sku\": \"SKU3\",\n        \"inventory\": {\n          \"channels\": {\n            \"networkCode\": \"ShipToHome\"\n          },\n          \"counters\": {\n            \"backOrder\": 15,\n            \"preOrder\": 100\n          },\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n        }\n      },\n      {\n        \"sku\": \"SKU3\",\n        \"inventory\": {\n          \"channels\": {\n            \"networkCode\": \"ShipToHome\"\n          },\n          \"counters\": {\n            \"backOrder\": 15,\n            \"preOrder\": 100\n          },\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n        }\n      }\n    ],\n    \"product\": {\n      \"availableSkus\": [\n        {\n          \"sku\": \"SKU3\",\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"maxQuantity\": 100\n        },\n        {\n          \"sku\": \"SKU3\",\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"maxQuantity\": 100\n        }\n      ]\n    },\n    \"tax\": {\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  },\n  \"payments\": {\n    \"authorized\": 800,\n    \"collection\": [\n      {\n        \"id\": \"6ef2067a-5d6b-4785-a090-96ea0078220d\",\n        \"provider\": \"verifone\",\n        \"processor\": \"stripe\",\n        \"method\": \"apple pay\",\n        \"methodType\": \"credit card\",\n        \"state\": \"PENDING\",\n        \"authorization\": {\n          \"amount\": 8,\n          \"expiry\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"verifier\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"billToAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"cardDetails\": {\n          \"key_0\": {}\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"gift-card-name\": \"custom name\"\n          },\n          \"key_1\": {\n            \"gift-card-name\": \"custom name\"\n          }\n        }\n      },\n      {\n        \"id\": \"6ef2067a-5d6b-4785-a090-96ea0078220d\",\n        \"provider\": \"verifone\",\n        \"processor\": \"stripe\",\n        \"method\": \"apple pay\",\n        \"methodType\": \"credit card\",\n        \"state\": \"PENDING\",\n        \"authorization\": {\n          \"amount\": 8,\n          \"expiry\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"verifier\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"billToAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"cardDetails\": {\n          \"key_0\": {},\n          \"key_1\": {},\n          \"key_2\": {}\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"gift-card-name\": \"custom name\"\n          },\n          \"key_1\": {\n            \"gift-card-name\": \"custom name\"\n          },\n          \"key_2\": {\n            \"gift-card-name\": \"custom name\"\n          }\n        }\n      }\n    ]\n  },\n  \"channelId\": \"12\",\n  \"currency\": \"USD\",\n  \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n  \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4e52bb15-1936-4ee0-8ac3-cd92e45bcc05",
+              "name": "Client error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "merge"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mergeBehavior\": {\n    \"addresses\": \"REFERENCED\",\n    \"adjustments\": \"ALL\",\n    \"attributes\": \"MERGE\",\n    \"coupons\": \"ALL\",\n    \"customerContext\": {\n      \"attributes\": \"MERGE\",\n      \"id\": \"PRIMARY\",\n      \"segments\": \"ALL\",\n      \"sessionId\": \"PRIMARY\"\n    },\n    \"fees\": \"ALL\",\n    \"fulfillments\": \"REFERENCED\",\n    \"item\": {\n      \"behavior\": \"ALL\",\n      \"maxQuantity\": \"<string>\",\n      \"quantity\": \"SUM\"\n    }\n  },\n  \"secondaryCartId\": \"462c08f6-cecb-49fd-84e2-96bfa7b1c4c8\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"BAD_REQUEST\",\n  \"message\": \"x-fabric-tenant-id is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "51b266b4-a09b-4160-9037-fcaf2d5ea4a6",
+              "name": "Cart not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "merge"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"mergeBehavior\": {\n    \"addresses\": \"REFERENCED\",\n    \"adjustments\": \"ALL\",\n    \"attributes\": \"MERGE\",\n    \"coupons\": \"ALL\",\n    \"customerContext\": {\n      \"attributes\": \"MERGE\",\n      \"id\": \"PRIMARY\",\n      \"segments\": \"ALL\",\n      \"sessionId\": \"PRIMARY\"\n    },\n    \"fees\": \"ALL\",\n    \"fulfillments\": \"REFERENCED\",\n    \"item\": {\n      \"behavior\": \"ALL\",\n      \"maxQuantity\": \"<string>\",\n      \"quantity\": \"SUM\"\n    }\n  },\n  \"secondaryCartId\": \"462c08f6-cecb-49fd-84e2-96bfa7b1c4c8\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CART_NOT_FOUND\",\n  \"message\": \"Cart not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "72eb8642-029e-4313-a73b-733b6a619464",
+          "name": "Delete Cart Attributes",
+          "request": {
+            "name": "Delete Cart Attributes",
+            "description": {
+              "content": "Partially deletes attributes of your choice associated with the corresponding cart.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "carts",
+                ":cartId",
+                "actions",
+                "delete-attributes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cartId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": " Unique request ID for tracking.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attributes\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7aac1ead-6139-4ec4-b097-93ded966ea83",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "delete-attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": [\n    \"test\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n  \"attributes\": {\n    \"key_0\": {\n      \"name\": \"wishlist\"\n    }\n  },\n  \"configuration\": {\n    \"order\": {\n      \"validate\": {\n        \"paymentsRemaining\": \"BLOCK\",\n        \"taxRemaining\": \"NONE\",\n        \"invalidItem\": \"BLOCK\",\n        \"itemOutOfStock\": \"BLOCK\"\n      }\n    },\n    \"product\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\",\n        \"cacheExpiry\": \"WARN\"\n      },\n      \"maxQuantity\": {\n        \"limit\": 100,\n        \"behaviors\": {\n          \"add\": \"REJECT\",\n          \"update\": \"WARN\",\n          \"get\": \"WARN\"\n        }\n      }\n    },\n    \"inventory\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\",\n        \"cacheExpiry\": \"WARN\"\n      },\n      \"check\": \"SKU\"\n    },\n    \"tax\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"cacheExpiry\": \"WARN\"\n      }\n    },\n    \"promotions\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"cacheExpiry\": \"WARN\"\n      }\n    },\n    \"maxQuantity\": {\n      \"limit\": 100,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\"\n      }\n    }\n  },\n  \"customerContext\": {\n    \"id\": \"109840938\",\n    \"segments\": [\n      {\n        \"name\": \"membership\",\n        \"value\": [\n          \"gold\",\n          \"silver\"\n        ]\n      },\n      {\n        \"name\": \"membership\",\n        \"value\": [\n          \"gold\",\n          \"silver\"\n        ]\n      }\n    ],\n    \"attributes\": {\n      \"key_0\": {\n        \"email\": \"test@gmail.com\"\n      }\n    },\n    \"sessionId\": \"3a5fd2d3-5c96-4e57-b069-7ff2a88c1119\"\n  },\n  \"status\": \"ACTIVE\",\n  \"state\": [\n    {\n      \"resource\": \"CART\",\n      \"resourceId\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n      \"key\": \"MISSING_PAYMENT_DETAILS\",\n      \"description\": \"No payment details have been added to this Cart\"\n    },\n    {\n      \"resource\": \"CART\",\n      \"resourceId\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n      \"key\": \"MISSING_PAYMENT_DETAILS\",\n      \"description\": \"No payment details have been added to this Cart\"\n    }\n  ],\n  \"price\": {\n    \"total\": 800,\n    \"subtotal\": 750,\n    \"tax\": 20,\n    \"fulfillments\": 25,\n    \"discounts\": 10,\n    \"fees\": 5,\n    \"adjustments\": 10\n  },\n  \"promotions\": {\n    \"total\": 32,\n    \"collection\": [\n      {\n        \"id\": \"542ba80a69b8\",\n        \"title\": \"15 Percent All Products\",\n        \"code\": \"15_PERCENT\",\n        \"type\": \"PERCENTAGE\",\n        \"value\": 15,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"cart\"\n          }\n        }\n      },\n      {\n        \"id\": \"542ba80a69b8\",\n        \"title\": \"15 Percent All Products\",\n        \"code\": \"15_PERCENT\",\n        \"type\": \"PERCENTAGE\",\n        \"value\": 15,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"cart\"\n          },\n          \"key_1\": {\n            \"source\": \"cart\"\n          }\n        }\n      }\n    ]\n  },\n  \"fees\": {\n    \"total\": 5,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"name\": \"Eco Fee\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"taxable\": true,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"eco\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"taxDetails\": {\n          \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n          \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n        }\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"name\": \"Eco Fee\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"taxable\": true,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"eco\"\n          },\n          \"key_1\": {\n            \"source\": \"eco\"\n          },\n          \"key_2\": {\n            \"source\": \"eco\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"taxDetails\": {\n          \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n          \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n        }\n      }\n    ]\n  },\n  \"adjustments\": {\n    \"total\": 2,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"reason\": \"Price adjustment from customer representative.\",\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"CSR\"\n          },\n          \"key_1\": {\n            \"source\": \"CSR\"\n          }\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"reason\": \"Price adjustment from customer representative.\",\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"CSR\"\n          }\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      }\n    ]\n  },\n  \"addresses\": {\n    \"a8577d7f0d4d4b228e857b4a2e90dc93\": {\n      \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"name\": {\n        \"first\": \"John\",\n        \"middle\": \"S\",\n        \"last\": \"Doe\"\n      },\n      \"email\": \"john@test.com\",\n      \"phone\": {\n        \"number\": \"123-456-7890\",\n        \"type\": \"MOBILE\"\n      },\n      \"addressLine1\": \"123 Park Road\",\n      \"addressLine2\": \"string\",\n      \"addressLine3\": \"string\",\n      \"addressLine4\": \"string\",\n      \"city\": \"Santa Cruz\",\n      \"region\": \"California\",\n      \"country\": \"USA\",\n      \"postalCode\": \"12345\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n      \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  },\n  \"lineItems\": {\n    \"total\": 100,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"sku\": \"SKU3\",\n        \"refId\": \"41\",\n        \"quantity\": 10,\n        \"priceListId\": \"10001\",\n        \"position\": 1,\n        \"price\": {\n          \"unit\": 10,\n          \"amount\": 100\n        },\n        \"fees\": {\n          \"total\": 5,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"promotions\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"adjustments\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"fulfillment\": {\n          \"id\": \"6d65755f-b1d9-4c9d-bb5b-118d317f8db4\",\n          \"price\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"inventory\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"channels\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"tax\": {\n            \"total\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"collection\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"name\": \"item-custom\"\n          },\n          \"key_1\": {\n            \"name\": \"item-custom\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"taxCode\": \"10001\",\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"sku\": \"SKU3\",\n        \"refId\": \"41\",\n        \"quantity\": 10,\n        \"priceListId\": \"10001\",\n        \"position\": 1,\n        \"price\": {\n          \"unit\": 10,\n          \"amount\": 100\n        },\n        \"fees\": {\n          \"total\": 5,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"promotions\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"adjustments\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"fulfillment\": {\n          \"id\": \"6d65755f-b1d9-4c9d-bb5b-118d317f8db4\",\n          \"price\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"inventory\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"channels\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"tax\": {\n            \"total\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"collection\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"name\": \"item-custom\"\n          },\n          \"key_1\": {\n            \"name\": \"item-custom\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"taxCode\": \"10001\",\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      }\n    ]\n  },\n  \"summary\": {\n    \"totalItems\": 1,\n    \"totalUniqueItems\": 1\n  },\n  \"fulfillments\": {\n    \"d6229cdb0c5b4885b1b213b94d02488e\": {\n      \"id\": \"d6229cdb-0c5b-4885-b1b2-13b94d02488e\",\n      \"type\": \"SHIP_TO\",\n      \"refId\": \"398427903843\",\n      \"attributes\": {\n        \"key_0\": {\n          \"source\": \"store\"\n        },\n        \"key_1\": {\n          \"source\": \"store\"\n        },\n        \"key_2\": {\n          \"source\": \"store\"\n        },\n        \"key_3\": {\n          \"source\": \"store\"\n        }\n      },\n      \"originAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"destinationAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"locationId\": \"CA\",\n      \"pickupPerson\": {\n        \"primary\": {\n          \"name\": {\n            \"first\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"middle\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"last\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"email\": \"john@test.com\",\n          \"phone\": {\n            \"number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"secondary\": [\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": \"john@test.com\",\n            \"phone\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": \"john@test.com\",\n            \"phone\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"price\": {\n        \"amount\": 12.99\n      },\n      \"promotions\": {\n        \"total\": 15,\n        \"collection\": [\n          {\n            \"id\": \"bb44db95-6fbd-4eed-a1ed-4d99bc91250f\",\n            \"amount\": 15\n          },\n          {\n            \"id\": \"bb44db95-6fbd-4eed-a1ed-4d99bc91250f\",\n            \"amount\": 15\n          }\n        ]\n      },\n      \"fees\": {\n        \"total\": 5,\n        \"collection\": [\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"name\": \"Eco Fee\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"taxable\": true,\n            \"attributes\": {\n              \"source\": \"eco\"\n            },\n            \"tax\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"taxDetails\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"name\": \"Eco Fee\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"taxable\": true,\n            \"attributes\": {\n              \"source\": \"eco\"\n            },\n            \"tax\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"taxDetails\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"adjustments\": {\n        \"total\": 2,\n        \"collection\": [\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"reason\": \"Price adjustment from customer representative.\",\n            \"attributes\": {\n              \"source\": \"CSR\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n          },\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"reason\": \"Price adjustment from customer representative.\",\n            \"attributes\": {\n              \"source\": \"CSR\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n          }\n        ]\n      },\n      \"tax\": {\n        \"total\": 3,\n        \"collection\": [\n          {\n            \"amount\": 3,\n            \"attributes\": {\n              \"rate\": \"5.0\",\n              \"type\": \"COUNTY\"\n            }\n          },\n          {\n            \"amount\": 3,\n            \"attributes\": {\n              \"rate\": \"5.0\",\n              \"type\": \"COUNTY\"\n            }\n          }\n        ]\n      }\n    }\n  },\n  \"coupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"appliedCoupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"notAppliedCoupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"validations\": {\n    \"promotions\": {\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n      \"appliedCoupons\": [\n        \"TEST_COUPON\"\n      ],\n      \"refreshRequired\": false\n    },\n    \"lineItems\": [\n      {\n        \"sku\": \"SKU3\",\n        \"inventory\": {\n          \"channels\": {\n            \"networkCode\": \"ShipToHome\"\n          },\n          \"counters\": {\n            \"backOrder\": 15,\n            \"preOrder\": 100\n          },\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n        }\n      },\n      {\n        \"sku\": \"SKU3\",\n        \"inventory\": {\n          \"channels\": {\n            \"networkCode\": \"ShipToHome\"\n          },\n          \"counters\": {\n            \"backOrder\": 15,\n            \"preOrder\": 100\n          },\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n        }\n      }\n    ],\n    \"product\": {\n      \"availableSkus\": [\n        {\n          \"sku\": \"SKU3\",\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"maxQuantity\": 100\n        },\n        {\n          \"sku\": \"SKU3\",\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"maxQuantity\": 100\n        }\n      ]\n    },\n    \"tax\": {\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  },\n  \"payments\": {\n    \"authorized\": 800,\n    \"collection\": [\n      {\n        \"id\": \"6ef2067a-5d6b-4785-a090-96ea0078220d\",\n        \"provider\": \"verifone\",\n        \"processor\": \"stripe\",\n        \"method\": \"apple pay\",\n        \"methodType\": \"credit card\",\n        \"state\": \"PENDING\",\n        \"authorization\": {\n          \"amount\": 8,\n          \"expiry\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"verifier\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"billToAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"cardDetails\": {\n          \"key_0\": {}\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"gift-card-name\": \"custom name\"\n          },\n          \"key_1\": {\n            \"gift-card-name\": \"custom name\"\n          }\n        }\n      },\n      {\n        \"id\": \"6ef2067a-5d6b-4785-a090-96ea0078220d\",\n        \"provider\": \"verifone\",\n        \"processor\": \"stripe\",\n        \"method\": \"apple pay\",\n        \"methodType\": \"credit card\",\n        \"state\": \"PENDING\",\n        \"authorization\": {\n          \"amount\": 8,\n          \"expiry\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"verifier\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"billToAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"cardDetails\": {\n          \"key_0\": {},\n          \"key_1\": {},\n          \"key_2\": {}\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"gift-card-name\": \"custom name\"\n          },\n          \"key_1\": {\n            \"gift-card-name\": \"custom name\"\n          },\n          \"key_2\": {\n            \"gift-card-name\": \"custom name\"\n          }\n        }\n      }\n    ]\n  },\n  \"channelId\": \"12\",\n  \"currency\": \"USD\",\n  \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n  \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "916610b7-41a7-497c-a728-730d5b8c5ee9",
+              "name": "Client error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "delete-attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": [\n    \"test\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"BAD_REQUEST\",\n  \"message\": \"x-fabric-tenant-id is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "eda06acd-0e5f-481a-9a5c-347bfb1720dd",
+              "name": "Cart not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "delete-attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": [\n    \"test\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CART_NOT_FOUND\",\n  \"message\": \"Cart not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "165e464f-4277-4b4a-aa2b-e5ae5c312398",
+          "name": "Add Cart Attributes",
+          "request": {
+            "name": "Add Cart Attributes",
+            "description": {
+              "content": "Partially updates attributes of your choice in the cart.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "carts",
+                ":cartId",
+                "actions",
+                "add-attributes"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cartId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": " Unique request ID for tracking.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attributes\": {\n    \"key_0\": \"<object>\",\n    \"key_1\": \"<object>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "db91a9e1-ce99-4d66-a65f-a904209fdde6",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "add-attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {\n    \"key_0\": {\n      \"test\": \"test\"\n    },\n    \"key_1\": {\n      \"test\": \"test\"\n    },\n    \"key_2\": {\n      \"test\": \"test\"\n    },\n    \"key_3\": {\n      \"test\": \"test\"\n    },\n    \"key_4\": {\n      \"test\": \"test\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n  \"attributes\": {\n    \"key_0\": {\n      \"name\": \"wishlist\"\n    },\n    \"key_1\": {\n      \"name\": \"wishlist\"\n    },\n    \"key_2\": {\n      \"name\": \"wishlist\"\n    }\n  },\n  \"configuration\": {\n    \"order\": {\n      \"validate\": {\n        \"paymentsRemaining\": \"NONE\",\n        \"taxRemaining\": \"BLOCK\",\n        \"invalidItem\": \"NONE\",\n        \"itemOutOfStock\": \"NONE\"\n      }\n    },\n    \"product\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\",\n        \"cacheExpiry\": \"WARN\"\n      },\n      \"maxQuantity\": {\n        \"limit\": 100,\n        \"behaviors\": {\n          \"add\": \"REJECT\",\n          \"update\": \"WARN\",\n          \"get\": \"WARN\"\n        }\n      }\n    },\n    \"inventory\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\",\n        \"cacheExpiry\": \"WARN\"\n      },\n      \"check\": \"SKU\"\n    },\n    \"tax\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"cacheExpiry\": \"WARN\"\n      }\n    },\n    \"promotions\": {\n      \"cacheExpiry\": 7776000,\n      \"behaviors\": {\n        \"cacheExpiry\": \"WARN\"\n      }\n    },\n    \"maxQuantity\": {\n      \"limit\": 100,\n      \"behaviors\": {\n        \"add\": \"REJECT\",\n        \"update\": \"WARN\",\n        \"get\": \"WARN\"\n      }\n    }\n  },\n  \"customerContext\": {\n    \"id\": \"109840938\",\n    \"segments\": [\n      {\n        \"name\": \"membership\",\n        \"value\": [\n          \"gold\",\n          \"silver\"\n        ]\n      },\n      {\n        \"name\": \"membership\",\n        \"value\": [\n          \"gold\",\n          \"silver\"\n        ]\n      }\n    ],\n    \"attributes\": {\n      \"key_0\": {\n        \"email\": \"test@gmail.com\"\n      },\n      \"key_1\": {\n        \"email\": \"test@gmail.com\"\n      },\n      \"key_2\": {\n        \"email\": \"test@gmail.com\"\n      }\n    },\n    \"sessionId\": \"3a5fd2d3-5c96-4e57-b069-7ff2a88c1119\"\n  },\n  \"status\": \"ACTIVE\",\n  \"state\": [\n    {\n      \"resource\": \"CART\",\n      \"resourceId\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n      \"key\": \"MISSING_PAYMENT_DETAILS\",\n      \"description\": \"No payment details have been added to this Cart\"\n    },\n    {\n      \"resource\": \"CART\",\n      \"resourceId\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n      \"key\": \"MISSING_PAYMENT_DETAILS\",\n      \"description\": \"No payment details have been added to this Cart\"\n    }\n  ],\n  \"price\": {\n    \"total\": 800,\n    \"subtotal\": 750,\n    \"tax\": 20,\n    \"fulfillments\": 25,\n    \"discounts\": 10,\n    \"fees\": 5,\n    \"adjustments\": 10\n  },\n  \"promotions\": {\n    \"total\": 32,\n    \"collection\": [\n      {\n        \"id\": \"542ba80a69b8\",\n        \"title\": \"15 Percent All Products\",\n        \"code\": \"15_PERCENT\",\n        \"type\": \"PERCENTAGE\",\n        \"value\": 15,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"cart\"\n          },\n          \"key_1\": {\n            \"source\": \"cart\"\n          },\n          \"key_2\": {\n            \"source\": \"cart\"\n          }\n        }\n      },\n      {\n        \"id\": \"542ba80a69b8\",\n        \"title\": \"15 Percent All Products\",\n        \"code\": \"15_PERCENT\",\n        \"type\": \"PERCENTAGE\",\n        \"value\": 15,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"cart\"\n          },\n          \"key_1\": {\n            \"source\": \"cart\"\n          }\n        }\n      }\n    ]\n  },\n  \"fees\": {\n    \"total\": 5,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"name\": \"Eco Fee\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"taxable\": true,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"eco\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"taxDetails\": {\n          \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n          \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n        }\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"name\": \"Eco Fee\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"taxable\": true,\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"eco\"\n          },\n          \"key_1\": {\n            \"source\": \"eco\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"taxDetails\": {\n          \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n          \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n        }\n      }\n    ]\n  },\n  \"adjustments\": {\n    \"total\": 2,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"reason\": \"Price adjustment from customer representative.\",\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"CSR\"\n          },\n          \"key_1\": {\n            \"source\": \"CSR\"\n          },\n          \"key_2\": {\n            \"source\": \"CSR\"\n          }\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"price\": {\n          \"amount\": 12.99\n        },\n        \"reason\": \"Price adjustment from customer representative.\",\n        \"attributes\": {\n          \"key_0\": {\n            \"source\": \"CSR\"\n          }\n        },\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      }\n    ]\n  },\n  \"addresses\": {\n    \"a8577d7f0d4d4b228e857b4a2e90dc93\": {\n      \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"name\": {\n        \"first\": \"John\",\n        \"middle\": \"S\",\n        \"last\": \"Doe\"\n      },\n      \"email\": \"john@test.com\",\n      \"phone\": {\n        \"number\": \"123-456-7890\",\n        \"type\": \"MOBILE\"\n      },\n      \"addressLine1\": \"123 Park Road\",\n      \"addressLine2\": \"string\",\n      \"addressLine3\": \"string\",\n      \"addressLine4\": \"string\",\n      \"city\": \"Santa Cruz\",\n      \"region\": \"California\",\n      \"country\": \"USA\",\n      \"postalCode\": \"12345\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n      \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  },\n  \"lineItems\": {\n    \"total\": 100,\n    \"collection\": [\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"sku\": \"SKU3\",\n        \"refId\": \"41\",\n        \"quantity\": 10,\n        \"priceListId\": \"10001\",\n        \"position\": 1,\n        \"price\": {\n          \"unit\": 10,\n          \"amount\": 100\n        },\n        \"fees\": {\n          \"total\": 5,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"promotions\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"adjustments\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"fulfillment\": {\n          \"id\": \"6d65755f-b1d9-4c9d-bb5b-118d317f8db4\",\n          \"price\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"inventory\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"channels\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"tax\": {\n            \"total\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"collection\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"name\": \"item-custom\"\n          },\n          \"key_1\": {\n            \"name\": \"item-custom\"\n          },\n          \"key_2\": {\n            \"name\": \"item-custom\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"taxCode\": \"10001\",\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      },\n      {\n        \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"sku\": \"SKU3\",\n        \"refId\": \"41\",\n        \"quantity\": 10,\n        \"priceListId\": \"10001\",\n        \"position\": 1,\n        \"price\": {\n          \"unit\": 10,\n          \"amount\": 100\n        },\n        \"fees\": {\n          \"total\": 5,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"promotions\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"adjustments\": {\n          \"total\": 2,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"fulfillment\": {\n          \"id\": \"6d65755f-b1d9-4c9d-bb5b-118d317f8db4\",\n          \"price\": {\n            \"amount\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"inventory\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"channels\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"tax\": {\n            \"total\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"collection\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"name\": \"item-custom\"\n          },\n          \"key_1\": {\n            \"name\": \"item-custom\"\n          }\n        },\n        \"tax\": {\n          \"total\": 3,\n          \"collection\": [\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          ]\n        },\n        \"taxCode\": \"10001\",\n        \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n        \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n      }\n    ]\n  },\n  \"summary\": {\n    \"totalItems\": 1,\n    \"totalUniqueItems\": 1\n  },\n  \"fulfillments\": {\n    \"d6229cdb0c5b4885b1b213b94d02488e\": {\n      \"id\": \"d6229cdb-0c5b-4885-b1b2-13b94d02488e\",\n      \"type\": \"SHIP_TO\",\n      \"refId\": \"398427903843\",\n      \"attributes\": {\n        \"key_0\": {\n          \"source\": \"store\"\n        },\n        \"key_1\": {\n          \"source\": \"store\"\n        },\n        \"key_2\": {\n          \"source\": \"store\"\n        }\n      },\n      \"originAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"destinationAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n      \"locationId\": \"CA\",\n      \"pickupPerson\": {\n        \"primary\": {\n          \"name\": {\n            \"first\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"middle\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"last\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          \"email\": \"john@test.com\",\n          \"phone\": {\n            \"number\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"secondary\": [\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": \"john@test.com\",\n            \"phone\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"name\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"email\": \"john@test.com\",\n            \"phone\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"price\": {\n        \"amount\": 12.99\n      },\n      \"promotions\": {\n        \"total\": 15,\n        \"collection\": [\n          {\n            \"id\": \"bb44db95-6fbd-4eed-a1ed-4d99bc91250f\",\n            \"amount\": 15\n          },\n          {\n            \"id\": \"bb44db95-6fbd-4eed-a1ed-4d99bc91250f\",\n            \"amount\": 15\n          }\n        ]\n      },\n      \"fees\": {\n        \"total\": 5,\n        \"collection\": [\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"name\": \"Eco Fee\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"taxable\": true,\n            \"attributes\": {\n              \"source\": \"eco\"\n            },\n            \"tax\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"taxDetails\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          },\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"name\": \"Eco Fee\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"taxable\": true,\n            \"attributes\": {\n              \"source\": \"eco\"\n            },\n            \"tax\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"taxDetails\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        ]\n      },\n      \"adjustments\": {\n        \"total\": 2,\n        \"collection\": [\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"reason\": \"Price adjustment from customer representative.\",\n            \"attributes\": {\n              \"source\": \"CSR\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n          },\n          {\n            \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n            \"price\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"reason\": \"Price adjustment from customer representative.\",\n            \"attributes\": {\n              \"source\": \"CSR\"\n            },\n            \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n            \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n          }\n        ]\n      },\n      \"tax\": {\n        \"total\": 3,\n        \"collection\": [\n          {\n            \"amount\": 3,\n            \"attributes\": {\n              \"rate\": \"5.0\",\n              \"type\": \"COUNTY\"\n            }\n          },\n          {\n            \"amount\": 3,\n            \"attributes\": {\n              \"rate\": \"5.0\",\n              \"type\": \"COUNTY\"\n            }\n          }\n        ]\n      }\n    }\n  },\n  \"coupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"appliedCoupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"notAppliedCoupons\": [\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    },\n    {\n      \"code\": \"VALID_COUPON\",\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  ],\n  \"validations\": {\n    \"promotions\": {\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n      \"appliedCoupons\": [\n        \"TEST_COUPON\"\n      ],\n      \"refreshRequired\": false\n    },\n    \"lineItems\": [\n      {\n        \"sku\": \"SKU3\",\n        \"inventory\": {\n          \"channels\": {\n            \"networkCode\": \"ShipToHome\"\n          },\n          \"counters\": {\n            \"backOrder\": 15,\n            \"preOrder\": 100\n          },\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n        }\n      },\n      {\n        \"sku\": \"SKU3\",\n        \"inventory\": {\n          \"channels\": {\n            \"networkCode\": \"ShipToHome\"\n          },\n          \"counters\": {\n            \"backOrder\": 15,\n            \"preOrder\": 100\n          },\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n        }\n      }\n    ],\n    \"product\": {\n      \"availableSkus\": [\n        {\n          \"sku\": \"SKU3\",\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"maxQuantity\": 100\n        },\n        {\n          \"sku\": \"SKU3\",\n          \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"maxQuantity\": 100\n        }\n      ]\n    },\n    \"tax\": {\n      \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\"\n    }\n  },\n  \"payments\": {\n    \"authorized\": 800,\n    \"collection\": [\n      {\n        \"id\": \"6ef2067a-5d6b-4785-a090-96ea0078220d\",\n        \"provider\": \"verifone\",\n        \"processor\": \"stripe\",\n        \"method\": \"apple pay\",\n        \"methodType\": \"credit card\",\n        \"state\": \"PENDING\",\n        \"authorization\": {\n          \"amount\": 8,\n          \"expiry\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"verifier\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"billToAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"cardDetails\": {\n          \"key_0\": {},\n          \"key_1\": {}\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"gift-card-name\": \"custom name\"\n          }\n        }\n      },\n      {\n        \"id\": \"6ef2067a-5d6b-4785-a090-96ea0078220d\",\n        \"provider\": \"verifone\",\n        \"processor\": \"stripe\",\n        \"method\": \"apple pay\",\n        \"methodType\": \"credit card\",\n        \"state\": \"PENDING\",\n        \"authorization\": {\n          \"amount\": 8,\n          \"expiry\": \"2024-06-13 16:50:00.682000+00:00\",\n          \"verifier\": {\n            \"type\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            },\n            \"key\": {\n              \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n            }\n          }\n        },\n        \"billToAddress\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n        \"cardDetails\": {\n          \"key_0\": {}\n        },\n        \"attributes\": {\n          \"key_0\": {\n            \"gift-card-name\": \"custom name\"\n          }\n        }\n      }\n    ]\n  },\n  \"channelId\": \"12\",\n  \"currency\": \"USD\",\n  \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n  \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9dd74024-4e7f-4724-b77f-3ffe5580271c",
+              "name": "Client error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "add-attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {\n    \"key_0\": {\n      \"test\": \"test\"\n    },\n    \"key_1\": {\n      \"test\": \"test\"\n    },\n    \"key_2\": {\n      \"test\": \"test\"\n    },\n    \"key_3\": {\n      \"test\": \"test\"\n    },\n    \"key_4\": {\n      \"test\": \"test\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"BAD_REQUEST\",\n  \"message\": \"x-fabric-tenant-id is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bf451b0d-db63-4e83-8e6a-2e8a2b98e914",
+              "name": "Cart not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "actions",
+                    "add-attributes"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {\n    \"key_0\": {\n      \"test\": \"test\"\n    },\n    \"key_1\": {\n      \"test\": \"test\"\n    },\n    \"key_2\": {\n      \"test\": \"test\"\n    },\n    \"key_3\": {\n      \"test\": \"test\"\n    },\n    \"key_4\": {\n      \"test\": \"test\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CART_NOT_FOUND\",\n  \"message\": \"Cart not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "226c9a0b-2863-40b7-b55d-a2f7db9861e3",
+    "name": "Endpoints Cart Actions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)\n\nContact Support:\n Name: Cart Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

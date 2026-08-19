@@ -1,0 +1,207 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Attributes API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Attributes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create, Update and Delete Category Attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-category/v1/category/attribute/bulk",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates, updates and deletes category attributes. The primary purpose is to create and edit the attributes to be assigned to categories. <br /> **Note**: They are generic category attributes and not specific to a category."
+        },
+        {
+          "info": {
+            "name": "Create Update and Delete Item Attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/attribute/bulk",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Item attributes allow you to define specific characteristics for items. Common examples of attributes include size, color, and material. Well-defined attributes are important because they enable item discovery and make catalog management easier. <br /> This endpoint creates and updates item attributes to be assigned later. <br /> **Note**: <br /> 1) You can add and manage unlimited attributes for your items. Once they are created, they appear as a selectable option on product pages. <br /> 2) In"
+        },
+        {
+          "info": {
+            "name": "Create, Update and Delete Attribute Groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/attribute-group",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Using attribute groups, you can group various attributes together to make it easier to manage large volume of item information. <br /> Use this endpoint to create, update, or delete attribute groups. <br /> **Note**: In the context of Product Catalog, attribute group is optional. When created, it must have at least one attribute."
+        },
+        {
+          "info": {
+            "name": "Find Attribute Groups",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/attribute-group/search",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Find attribute groups based on the given search criteria. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`."
+        },
+        {
+          "info": {
+            "name": "Find Attribute Mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/attribute/mapping/search",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Searches for attribute mapping based on the given search criteria. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`."
+        },
+        {
+          "info": {
+            "name": "Create and Update Attribute Mappings",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/attribute/mapping",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set your attribute mapping to begin configuring your catalog. You can update the mappings only if there are no SKUs present in the catalog."
+        },
+        {
+          "info": {
+            "name": "Import Attributes from CSV",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/v2/attributes/import",
+            "headers": [
+              {
+                "name": "domain",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                },
+                {
+                  "name": "name",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Upload a CSV file to import attribute definitions for the specified brand/domain. The import is processed asynchronously.\n\n**Expected CSV columns**\n- **attribute_name** (required): Attribute display name\n- **attribute_key** (optional): Machine-readable key\n- **description** (optional): Attribute description\n- **data_type** (optional): Data type\n- **scope** (optional): Attribute scope\n- **enum_values** (optional): Allowed values, pipe-delimited (e.g. `S|M|L`)\n- **allow_ai_content** (optional): Al"
+        },
+        {
+          "info": {
+            "name": "Get Attribute Import Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/v2/attributes/import/:import_id",
+            "headers": [
+              {
+                "name": "domain",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "import_id",
+                "value": "",
+                "type": "path",
+                "description": "Import ID returned from `POST /v2/attributes/import`."
+              }
+            ]
+          },
+          "docs": "Retrieve the current status and results of an attribute import created using `POST /v2/attributes/import`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

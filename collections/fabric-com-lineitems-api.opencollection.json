@@ -1,0 +1,180 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints LineItems API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "LineItems",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orchestrator/carts/:cartId/items",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cartId",
+                "value": "",
+                "type": "path",
+                "description": "The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Add items to the corresponding cart.\n\nThe Cart ID from the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n"
+        },
+        {
+          "info": {
+            "name": "Update Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.fabric.inc/v3/orchestrator/carts/:cartId/items",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cartId",
+                "value": "",
+                "type": "path",
+                "description": "The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the item information in the corresponding cart.\n\nThe Cart ID from the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n"
+        },
+        {
+          "info": {
+            "name": "Delete Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/orchestrator/carts/:cartId/items",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cartId",
+                "value": "",
+                "type": "path",
+                "description": "The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint."
+              },
+              {
+                "name": "itemId",
+                "value": "",
+                "type": "query",
+                "description": "Item ID of the item to remove."
+              }
+            ]
+          },
+          "docs": "Removes the items from the corresponding cart.\n\nThe Cart ID from the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n"
+        },
+        {
+          "info": {
+            "name": "Split Line Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orchestrator/carts/:cartId/items/:itemId/actions/split",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cartId",
+                "value": "",
+                "type": "path",
+                "description": "The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint."
+              },
+              {
+                "name": "itemId",
+                "value": "",
+                "type": "path",
+                "description": "The unique identifier for the line item that is the target of the split."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Splits the item associated with the corresponding cart into multiple line items based on quantity.\n\nThe Cart ID from the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n\nThe Item ID from the [Create item](/v3/api-reference/carts-v3/items/items) endpoint is used in the path parameter.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

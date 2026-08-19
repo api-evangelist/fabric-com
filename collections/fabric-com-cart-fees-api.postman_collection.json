@@ -1,0 +1,1003 @@
+{
+  "item": [
+    {
+      "id": "168c07e7-b64e-4a7f-9bab-943cfdd73bdd",
+      "name": "Cart Fees",
+      "description": {
+        "content": "Cart fee endpoints are used to add, update and remove fees at the Cart level.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c3036fdb-0593-4461-96be-a1b3d0451f19",
+          "name": "Create Fee",
+          "request": {
+            "name": "Create Fee",
+            "description": {
+              "content": "Creates a fee that is applied to the corresponding cart.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "carts",
+                ":cartId",
+                "fees"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cartId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": " Unique request ID for tracking.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"price\": {\n    \"amount\": \"<number>\"\n  },\n  \"taxDetails\": {\n    \"destinationAddress\": \"<string>\",\n    \"originAddress\": \"<string>\"\n  },\n  \"taxable\": \"<boolean>\",\n  \"attributes\": {\n    \"key_0\": \"<object>\",\n    \"key_1\": \"<object>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "23ac15eb-1742-4386-890d-0e870d8d19b4",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Eco Fee\",\n  \"price\": {\n    \"amount\": 12.99\n  },\n  \"taxDetails\": {\n    \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n    \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n  },\n  \"taxable\": true,\n  \"attributes\": {\n    \"key_0\": {\n      \"source\": \"eco\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n  \"name\": \"Eco Fee\",\n  \"price\": {\n    \"amount\": 12.99\n  },\n  \"taxable\": true,\n  \"attributes\": {\n    \"key_0\": {\n      \"source\": \"eco\"\n    }\n  },\n  \"tax\": {\n    \"total\": 3,\n    \"collection\": [\n      {\n        \"amount\": 3,\n        \"attributes\": {\n          \"key_0\": {\n            \"rate\": \"5.0\",\n            \"type\": \"COUNTY\"\n          },\n          \"key_1\": {\n            \"rate\": \"5.0\",\n            \"type\": \"COUNTY\"\n          },\n          \"key_2\": {\n            \"rate\": \"5.0\",\n            \"type\": \"COUNTY\"\n          }\n        }\n      },\n      {\n        \"amount\": 3,\n        \"attributes\": {\n          \"key_0\": {\n            \"rate\": \"5.0\",\n            \"type\": \"COUNTY\"\n          }\n        }\n      }\n    ]\n  },\n  \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n  \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n  \"taxDetails\": {\n    \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n    \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "41f521c3-98fa-463a-a4bb-05754d9e8da2",
+              "name": "Client error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Eco Fee\",\n  \"price\": {\n    \"amount\": 12.99\n  },\n  \"taxDetails\": {\n    \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n    \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n  },\n  \"taxable\": true,\n  \"attributes\": {\n    \"key_0\": {\n      \"source\": \"eco\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"BAD_REQUEST\",\n  \"message\": \"x-fabric-tenant-id is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bdcd3583-30d6-487a-8c93-1d3e16ef9f69",
+              "name": "Cart or Item not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Eco Fee\",\n  \"price\": {\n    \"amount\": 12.99\n  },\n  \"taxDetails\": {\n    \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n    \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n  },\n  \"taxable\": true,\n  \"attributes\": {\n    \"key_0\": {\n      \"source\": \"eco\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CART_NOT_FOUND\",\n  \"message\": \"Cart not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c844eaaa-e0e2-4522-84b4-976985ff99d3",
+          "name": "Delete Fee",
+          "request": {
+            "name": "Delete Fee",
+            "description": {
+              "content": "Removes a fee from the cart.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n\nThe Fee ID from the [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/delete-fees) endpoint is used in the path parameter.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "carts",
+                ":cartId",
+                "fees",
+                ":feeId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cartId",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "feeId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": " Unique request ID for tracking.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1648c9ef-aeca-4c31-9e4d-c2ba8a226569",
+              "name": "No Content",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees",
+                    ":feeId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "feeId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6a36b7ad-9f79-4587-b6f3-f35d9c3cacc0",
+              "name": "Client error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees",
+                    ":feeId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "feeId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"BAD_REQUEST\",\n  \"message\": \"x-fabric-tenant-id is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fc598c5d-34d9-431b-b846-98adae16a051",
+              "name": "Cart or Item not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees",
+                    ":feeId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "feeId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CART_NOT_FOUND\",\n  \"message\": \"Cart not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1dc1f8a7-1e3a-40e4-a085-0b39ac62e06e",
+          "name": "Update Fee",
+          "request": {
+            "name": "Update Fee",
+            "description": {
+              "content": "Updates a fee in the cart.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n\nThe Fee ID from the [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/delete-fees) endpoint is used in the path parameter.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "carts",
+                ":cartId",
+                "fees",
+                ":feeId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "cartId",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "feeId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": " Unique request ID for tracking.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"price\": {\n    \"amount\": \"<number>\"\n  },\n  \"taxable\": \"<boolean>\",\n  \"attributes\": {\n    \"key_0\": \"<object>\"\n  },\n  \"taxDetails\": {\n    \"destinationAddress\": \"<string>\",\n    \"originAddress\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2e3eac13-c722-4906-8663-c165ad971cef",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees",
+                    ":feeId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "feeId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Eco Fee\",\n  \"price\": {\n    \"amount\": 12.99\n  },\n  \"taxable\": true,\n  \"attributes\": {\n    \"key_0\": {\n      \"source\": \"eco\"\n    },\n    \"key_1\": {\n      \"source\": \"eco\"\n    },\n    \"key_2\": {\n      \"source\": \"eco\"\n    },\n    \"key_3\": {\n      \"source\": \"eco\"\n    }\n  },\n  \"taxDetails\": {\n    \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n    \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93\",\n  \"name\": \"Eco Fee\",\n  \"price\": {\n    \"amount\": 12.99\n  },\n  \"taxable\": true,\n  \"attributes\": {\n    \"key_0\": {\n      \"source\": \"eco\"\n    }\n  },\n  \"tax\": {\n    \"total\": 3,\n    \"collection\": [\n      {\n        \"amount\": 3,\n        \"attributes\": {\n          \"key_0\": {\n            \"rate\": \"5.0\",\n            \"type\": \"COUNTY\"\n          }\n        }\n      },\n      {\n        \"amount\": 3,\n        \"attributes\": {\n          \"key_0\": {\n            \"rate\": \"5.0\",\n            \"type\": \"COUNTY\"\n          }\n        }\n      }\n    ]\n  },\n  \"updatedAt\": \"2024-06-13 16:50:00.682000+00:00\",\n  \"createdAt\": \"2024-06-13 16:50:00.682000+00:00\",\n  \"taxDetails\": {\n    \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n    \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f2873010-ba25-4a19-95be-00639db6a85f",
+              "name": "Client error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees",
+                    ":feeId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "feeId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Eco Fee\",\n  \"price\": {\n    \"amount\": 12.99\n  },\n  \"taxable\": true,\n  \"attributes\": {\n    \"key_0\": {\n      \"source\": \"eco\"\n    },\n    \"key_1\": {\n      \"source\": \"eco\"\n    },\n    \"key_2\": {\n      \"source\": \"eco\"\n    },\n    \"key_3\": {\n      \"source\": \"eco\"\n    }\n  },\n  \"taxDetails\": {\n    \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n    \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"BAD_REQUEST\",\n  \"message\": \"x-fabric-tenant-id is required\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e8ae9cf9-8375-414e-b66b-79ab3d617c40",
+              "name": "Cart or Item not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "carts",
+                    ":cartId",
+                    "fees",
+                    ":feeId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "cartId",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "feeId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required. \n",
+                    "key": "x-fabric-tenant-id",
+                    "value": "617329dfd5288b0011332311"
+                  },
+                  {
+                    "disabled": false,
+                    "description": " Unique request ID for tracking.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is a required field. The default US channel is 12 while the default Canada channel is 11.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Eco Fee\",\n  \"price\": {\n    \"amount\": 12.99\n  },\n  \"taxable\": true,\n  \"attributes\": {\n    \"key_0\": {\n      \"source\": \"eco\"\n    },\n    \"key_1\": {\n      \"source\": \"eco\"\n    },\n    \"key_2\": {\n      \"source\": \"eco\"\n    },\n    \"key_3\": {\n      \"source\": \"eco\"\n    }\n  },\n  \"taxDetails\": {\n    \"destinationAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\",\n    \"originAddress\": \"c86f777b-1885-4ddf-961d-542ba80a69b8\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CART_NOT_FOUND\",\n  \"message\": \"Cart not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "d429ad1e-33d3-4972-ae07-296ae2eee120",
+    "name": "Cart Actions Endpoints Cart Fees API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)\n\nContact Support:\n Name: Cart Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,346 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Actions Endpoints Cart API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Cart",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an Order Draft",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/order-drafts",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an order using the cart ID of the cart that contains the order."
+        },
+        {
+          "info": {
+            "name": "Create an Empty Cart",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/carts",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to create a new cart.\n\n**Default Configurations**: To create a cart with default configurations, send a request with an empty body.\n\n**Provided Configurations**: To create a cart with provided configurations, include the configurations in the request body. To learn more about configuration behaviors, visit the [Configuration Behaviors](/v3/cart-and-checkout/api-reference/carts-v3/configuration-behaviors) page.\n"
+        },
+        {
+          "info": {
+            "name": "Sequence Calling",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/carts/:cartId/sequence",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cartId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to execute multiple cart-related operations with a single request. This allows you to perform various actions such as creating a cart, adding items, and checking out in a single API call.\n\n **Note:** The order of operations matters since IDs are carried over from call to call.\n\n The Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n"
+        },
+        {
+          "info": {
+            "name": "Search for Multiple Carts",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/carts/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns a list of carts based on the search criteria."
+        },
+        {
+          "info": {
+            "name": "Get the Provided Cart",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/carts/:cartId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cartId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Retrieves the cart information corresponding to the provided cart ID.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n"
+        },
+        {
+          "info": {
+            "name": "Update Cart",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.fabric.inc/v3/carts/:cartId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cartId",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the cart information corresponding to the provided cart ID.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n"
+        },
+        {
+          "info": {
+            "name": "Delete Cart",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/carts/:cartId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "cartId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Removes the cart corresponding to the provided cart ID.\n\nThe Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.\n"
+        },
+        {
+          "info": {
+            "name": "Get the Order Draft by the Order Draft ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/order-drafts/:orderDraftId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "orderDraftId",
+                "value": "",
+                "type": "path",
+                "description": "The order draft ID created with [Create an order draft](/v3/cart-and-checkout/api-reference/carts-v3/order-drafts/create-order-drafts) endpoint is used to retrieve the order draft."
+              }
+            ]
+          },
+          "docs": "Retrieves the order draft using the order ID associated with it from [Create an order draft](/v3/cart-and-checkout/api-reference/carts-v3/order-drafts/create-order-drafts) endpoint."
+        },
+        {
+          "info": {
+            "name": "Get the Order Draft by the Order Draft Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/order-drafts/order-number/:orderNumber",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "",
+                "type": "path",
+                "description": "The order draft number created with [Create an order draft](/v3/cart-and-checkout/api-reference/carts-v3/order-drafts/create-order-drafts) endpoint is used to retrieve the order draft."
+              }
+            ]
+          },
+          "docs": "Retrieves the order draft using the order number associated with it from [Create an order draft](/v3/cart-and-checkout/api-reference/carts-v3/order-drafts/create-order-drafts) endpoint."
+        },
+        {
+          "info": {
+            "name": "Get the Order Draft by the Customer ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/order-drafts/customer/:customerId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": ""
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "customerId",
+                "value": "",
+                "type": "path",
+                "description": "The customer ID associated with [Create an order draft](/v3/cart-and-checkout/api-reference/carts-v3/order-drafts/create-order-drafts) endpoint is used to retrieve the order draft."
+              }
+            ]
+          },
+          "docs": "Retrieves the order draft using the customer ID associated with it from [Create an order draft](/v3/cart-and-checkout/api-reference/carts-v3/order-drafts/create-order-drafts) endpoint."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

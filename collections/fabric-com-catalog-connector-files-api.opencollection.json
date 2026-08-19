@@ -1,0 +1,168 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Catalog Connector Files API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Catalog Connector Files",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve an Import Template",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/catalog-connector-templates/actions/generate",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to retrieve the product import template for Catalog Connector in either CSV or JSONL format, based on your preferred data handling method. You can open CSV template in applications, such as Excel or Google Sheets and JSONL template in text editors compatible with JSONL, such as Visual Studio Code. After filling in product data, save the template file with a unique name on your local system."
+        },
+        {
+          "info": {
+            "name": "Retrieve Import and Export History",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/catalog-connector-files",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "ids",
+                "value": "5f328bf0b5f328bf0b5f328b, 1e328bf0b5f328bf0b5f3287",
+                "type": "query",
+                "description": "The 24-character system-generated file ID created using the [Create a File](/v3/api-reference/catalog-connector/files/create-file) endpoint.\n\nDepending on the type of IDs, the array represents the file IDs or job IDs. Specify up to 15 IDs separated by commas. Note the following limitations of using this parameter:\n  - This parameter can't be combined with any other parameters. \n  - Pagination isn't supported when this parameter is specified.\n"
+              },
+              {
+                "name": "fileName",
+                "value": "bulk_import_123345677788999.csv",
+                "type": "query",
+                "description": "Use this endpoint to specify the name of the file you want to retrieve."
+              },
+              {
+                "name": "formatType",
+                "value": "csv",
+                "type": "query",
+                "description": "Depending on the context, it represents the format of the file or template."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Specify the type of operation or job performed when the file was uploaded."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, the system returns records from 21 to 30."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records per page."
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "The sorting criteria. Currently, the supported values are `updatedAt` and `name`. Use `-` for descending order and `+` for ascending."
+              }
+            ]
+          },
+          "docs": "Use this endpoint to access files previously imported to or exported from the Catalog Connector, sorted in chronological order. You can refine the search results by using the following query parameters:\n- `ids`: Provide a comma-separated list of file IDs to retrieve multiple files by their IDs. Note that pagination isn't supported when using this parameter.\n- Format type (`formatType`) :  Specify the format of the file to filter files by format. The options are **CSV** or **JSONL**.\n- Operation "
+        },
+        {
+          "info": {
+            "name": "Create a File Object and Retrieve the File Upload URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/catalog-connector-files",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to retrieve the URL of the AWS S3 location to upload the file that you want to import to the Catalog Connector."
+        },
+        {
+          "info": {
+            "name": "Download a File by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/catalog-connector-files/actions/download",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "fileId",
+                "value": "5f328bf0b5f328bf0b5f328b",
+                "type": "query",
+                "description": "A 24-character system-generated file ID."
+              }
+            ]
+          },
+          "docs": "Use this endpoint to retrieve the URL used to download a previously processed file. You can then make a GET request with this URL to retrieve the products data in CSV or JSONL format.\n<Note> The download link is valid for five minutes. </Note>\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

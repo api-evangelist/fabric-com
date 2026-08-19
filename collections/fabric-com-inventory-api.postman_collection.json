@@ -1,0 +1,2721 @@
+{
+  "item": [
+    {
+      "id": "89b9c443-8ae5-4c50-b047-382c7f7185f3",
+      "name": "Inventory",
+      "description": {
+        "content": "fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "56425281-3cf3-482a-82eb-b51eda5038bb",
+          "name": "Create Inventory",
+          "request": {
+            "name": "Create Inventory",
+            "description": {
+              "content": "Create inventory based on the combination of location number, channel ID, and item ID or SKU.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventories"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"counters\": {\n    \"key_0\": \"<object>\"\n  },\n  \"locationNumber\": \"<integer>\",\n  \"sku\": \"<string>\",\n  \"backorderLimit\": \"<integer>\",\n  \"backorderShipmentAt\": \"<dateTime>\",\n  \"customAttributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"itemId\": \"<integer>\",\n  \"leadTime\": \"<string>\",\n  \"lowStock\": \"<integer>\",\n  \"networkCode\": \"<string>\",\n  \"preorderLimit\": \"<integer>\",\n  \"preorderShipmentAt\": \"<dateTime>\",\n  \"region\": \"<string>\",\n  \"safetyStock\": \"<integer>\",\n  \"status\": \"<string>\",\n  \"type\": \"<string>\",\n  \"vendorId\": \"<string>\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d4333518-a2ab-4786-9596-b281202c6a0a",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    },\n    \"key_1\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"channelId\": \"channel_xyz\",\n  \"counters\": {\n    \"allocated\": 10,\n    \"onHand\": 100,\n    \"shipped\": 20\n  },\n  \"createdAt\": \"2022-08-01 18:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"inventoryId\": \"723910d81723\",\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"locationNumber\": 12345,\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"networkCounters\": {\n    \"softReserve\": 10\n  },\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"sku\": \"SKU1\",\n  \"status\": \"IN_STOCK\",\n  \"type\": \"primary\",\n  \"updatedAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCounters\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  },\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c12a2142-6a4d-4583-a035-e5601e0081d5",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    },\n    \"key_1\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b9f0ed7e-cd16-432c-8f92-6ab5bf311ba7",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    },\n    \"key_1\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "32cb79ec-4602-49c1-ad37-79a926759892",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    },\n    \"key_1\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Following attributes not found:[notFoundAttribute]\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e0ee34c4-30e9-430a-a819-ccc37754fde0",
+              "name": "Conflict",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    },\n    \"key_1\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Inventory with same item ID or SKU, location ID and channel ID already exists\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "16c89e67-c26c-44ca-93fd-49f601e5f2a1",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    },\n    \"key_1\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "723faa83-223e-465f-ac21-b2f5dc1fea8a",
+          "name": "Find Inventories of Specific Items",
+          "request": {
+            "name": "Find Inventories of Specific Items",
+            "description": {
+              "content": "Search for inventories of specific items by SKUs, itemIds, location numbers, and other parameters as specified in the request body. This endpoint retrieves the exact available quantity of the searched inventory.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventories",
+                "actions",
+                "find"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Number of records to be skipped before returning all records. Default is `0` when no value is specified."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Maximum number of records to be returned on a single page. For example, when offset=20 and limit=10, it returns records 21-30 on a single page. Default is `10` when no value is specified."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                "key": "x-fabric-channel-ids",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"itemIds\": [\n    \"<long>\",\n    \"<long>\"\n  ],\n  \"locationNumbers\": [\n    \"<integer>\",\n    \"<integer>\"\n  ],\n  \"locationTypes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"networkCodes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"region\": \"<string>\",\n  \"segments\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"skus\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1928ea89-1588-4967-9f92-08f09c18f0d9",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                    "key": "x-fabric-channel-ids",
+                    "value": "12, 13, 16"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"itemIds\": [\n    127122871,\n    127122871\n  ],\n  \"locationNumbers\": [\n    12,\n    12\n  ],\n  \"locationTypes\": [\n    \"DC\",\n    \"DC\"\n  ],\n  \"networkCodes\": [\n    \"4\",\n    \"4\"\n  ],\n  \"region\": \"North America\",\n  \"segments\": [\n    \"B2B_Special\",\n    \"B2B_Special\"\n  ],\n  \"skus\": [\n    \"SKU1\",\n    \"SKU1\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"backorderLimit\": 50,\n      \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"channelId\": \"channel_xyz\",\n      \"counters\": {\n        \"allocated\": 10,\n        \"onHand\": 100,\n        \"shipped\": 20\n      },\n      \"createdAt\": \"2022-08-01 18:03:28.483000+00:00\",\n      \"customAttributes\": {\n        \"key_0\": \"{\\\"isBopis\\\":true}\"\n      },\n      \"hasInfiniteInventory\": false,\n      \"inventoryId\": \"723910d81723\",\n      \"isNoStock\": false,\n      \"itemId\": 12345,\n      \"leadTime\": \"5 days\",\n      \"locationNumber\": 12345,\n      \"lowStock\": 10,\n      \"networkCode\": \"ShipToHome\",\n      \"networkCounters\": {\n        \"softReserve\": 10\n      },\n      \"preorderLimit\": 40,\n      \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"region\": \"North America\",\n      \"safetyStock\": 10,\n      \"sku\": \"SKU1\",\n      \"status\": \"LOW_STOCK\",\n      \"type\": \"primary\",\n      \"updatedAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"vendorId\": \"vendor1\",\n      \"virtualCounters\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      },\n      \"virtualCountersStatus\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      }\n    },\n    {\n      \"backorderLimit\": 50,\n      \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"channelId\": \"channel_xyz\",\n      \"counters\": {\n        \"allocated\": 10,\n        \"onHand\": 100,\n        \"shipped\": 20\n      },\n      \"createdAt\": \"2022-08-01 18:03:28.483000+00:00\",\n      \"customAttributes\": {\n        \"key_0\": \"{\\\"isBopis\\\":true}\"\n      },\n      \"hasInfiniteInventory\": false,\n      \"inventoryId\": \"723910d81723\",\n      \"isNoStock\": false,\n      \"itemId\": 12345,\n      \"leadTime\": \"5 days\",\n      \"locationNumber\": 12345,\n      \"lowStock\": 10,\n      \"networkCode\": \"ShipToHome\",\n      \"networkCounters\": {\n        \"softReserve\": 10\n      },\n      \"preorderLimit\": 40,\n      \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"region\": \"North America\",\n      \"safetyStock\": 10,\n      \"sku\": \"SKU1\",\n      \"status\": \"PREORDER_STOCK\",\n      \"type\": \"primary\",\n      \"updatedAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"vendorId\": \"vendor1\",\n      \"virtualCounters\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      },\n      \"virtualCountersStatus\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"count\": 1000,\n    \"limit\": 10,\n    \"offset\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ed85117c-74b9-47c6-93e7-e867863b1cbc",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                    "key": "x-fabric-channel-ids",
+                    "value": "12, 13, 16"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"itemIds\": [\n    127122871,\n    127122871\n  ],\n  \"locationNumbers\": [\n    12,\n    12\n  ],\n  \"locationTypes\": [\n    \"DC\",\n    \"DC\"\n  ],\n  \"networkCodes\": [\n    \"4\",\n    \"4\"\n  ],\n  \"region\": \"North America\",\n  \"segments\": [\n    \"B2B_Special\",\n    \"B2B_Special\"\n  ],\n  \"skus\": [\n    \"SKU1\",\n    \"SKU1\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "68eb6ccb-b748-43a2-895e-90773d4df285",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                    "key": "x-fabric-channel-ids",
+                    "value": "12, 13, 16"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"itemIds\": [\n    127122871,\n    127122871\n  ],\n  \"locationNumbers\": [\n    12,\n    12\n  ],\n  \"locationTypes\": [\n    \"DC\",\n    \"DC\"\n  ],\n  \"networkCodes\": [\n    \"4\",\n    \"4\"\n  ],\n  \"region\": \"North America\",\n  \"segments\": [\n    \"B2B_Special\",\n    \"B2B_Special\"\n  ],\n  \"skus\": [\n    \"SKU1\",\n    \"SKU1\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "387cf481-0e15-4776-8122-49f87045c608",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                    "key": "x-fabric-channel-ids",
+                    "value": "12, 13, 16"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"itemIds\": [\n    127122871,\n    127122871\n  ],\n  \"locationNumbers\": [\n    12,\n    12\n  ],\n  \"locationTypes\": [\n    \"DC\",\n    \"DC\"\n  ],\n  \"networkCodes\": [\n    \"4\",\n    \"4\"\n  ],\n  \"region\": \"North America\",\n  \"segments\": [\n    \"B2B_Special\",\n    \"B2B_Special\"\n  ],\n  \"skus\": [\n    \"SKU1\",\n    \"SKU1\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7f7ba37c-54e7-4271-bf58-e256ca0e4bc5",
+          "name": "Adjust Inventory Counters",
+          "request": {
+            "name": "Adjust Inventory Counters",
+            "description": {
+              "content": "With this endpoint, you can modify inventory counters (also known as inventory positions) to maintain accurate inventory records. These counters are adjusted when new inventory is received or when an item is shipped. If the inventory does not exist, an error message will be displayed. An inventory can have multiple counters, and all counters will be updated when this endpoint is used.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventories",
+                "actions",
+                "find-and-adjust-inventory-counters"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"counters\": {\n    \"key_0\": \"<object>\",\n    \"key_1\": \"<object>\"\n  },\n  \"locationNumber\": \"<integer>\",\n  \"sku\": \"<string>\",\n  \"inventoryId\": \"<string>\",\n  \"isNoStock\": \"<boolean>\",\n  \"itemId\": \"<integer>\",\n  \"status\": \"<string>\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0cf74cba-0794-4530-b36c-b4259cbcf71b",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-adjust-inventory-counters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"onHand\": 100\n    },\n    \"key_1\": {\n      \"onHand\": 100\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"inventoryId\": \"723910d81723\",\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"status\": \"<string>\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"channelId\": \"channel_xyz\",\n  \"counters\": {\n    \"allocated\": 10,\n    \"onHand\": 100,\n    \"shipped\": 20\n  },\n  \"createdAt\": \"2022-08-01 18:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"inventoryId\": \"723910d81723\",\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"locationNumber\": 12345,\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"networkCounters\": {\n    \"softReserve\": 10\n  },\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"sku\": \"SKU1\",\n  \"status\": \"IN_STOCK\",\n  \"type\": \"primary\",\n  \"updatedAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCounters\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  },\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5c118285-a42a-4cd3-b429-b13aabbc4d3f",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-adjust-inventory-counters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"onHand\": 100\n    },\n    \"key_1\": {\n      \"onHand\": 100\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"inventoryId\": \"723910d81723\",\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"status\": \"<string>\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "995ff5e1-c744-46fb-8966-102edfb04956",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-adjust-inventory-counters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"onHand\": 100\n    },\n    \"key_1\": {\n      \"onHand\": 100\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"inventoryId\": \"723910d81723\",\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"status\": \"<string>\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2a294911-1afd-4acd-9087-117452584edf",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-adjust-inventory-counters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"onHand\": 100\n    },\n    \"key_1\": {\n      \"onHand\": 100\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"inventoryId\": \"723910d81723\",\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"status\": \"<string>\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"inventory or counter code not found\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "55c79edb-3706-4c05-99d0-d7434846fa88",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-adjust-inventory-counters"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"onHand\": 100\n    },\n    \"key_1\": {\n      \"onHand\": 100\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"inventoryId\": \"723910d81723\",\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"status\": \"<string>\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "76eecde7-94e9-4684-a39e-95a4c3e0b2b3",
+          "name": "Update Inventory by Adding New Property",
+          "request": {
+            "name": "Update Inventory by Adding New Property",
+            "description": {
+              "content": "Add a new property to existing inventory. <p> **Note:** This endpoint does not override all the existing properties; rather it updates inventory by adding new properties or by updating the existing inventory properties that are specified in the request body. Inventory is identified based on the combination of location number, channel ID, and item ID or SKU. </p>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventories",
+                "actions",
+                "find-and-update"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"counters\": {\n    \"key_0\": \"<object>\"\n  },\n  \"locationNumber\": \"<integer>\",\n  \"sku\": \"<string>\",\n  \"backorderLimit\": \"<integer>\",\n  \"backorderShipmentAt\": \"<dateTime>\",\n  \"channelId\": \"<string>\",\n  \"customAttributes\": {\n    \"key_0\": \"<string>\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"isNoStock\": \"<boolean>\",\n  \"itemId\": \"<integer>\",\n  \"leadTime\": \"<string>\",\n  \"lowStock\": \"<integer>\",\n  \"preorderLimit\": \"<integer>\",\n  \"preorderShipmentAt\": \"<dateTime>\",\n  \"region\": \"<string>\",\n  \"safetyStock\": \"<integer>\",\n  \"status\": \"<string>\",\n  \"type\": \"<string>\",\n  \"vendorId\": \"<string>\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "018818c4-f22d-4335-a2c3-89167d37fe70",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-update"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"channelId\": \"channel_xyz\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"channelId\": \"channel_xyz\",\n  \"counters\": {\n    \"allocated\": 10,\n    \"onHand\": 100,\n    \"shipped\": 20\n  },\n  \"createdAt\": \"2022-08-01 18:03:28.483000+00:00\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\",\n    \"key_1\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"inventoryId\": \"723910d81723\",\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"locationNumber\": 12345,\n  \"lowStock\": 10,\n  \"networkCode\": \"ShipToHome\",\n  \"networkCounters\": {\n    \"softReserve\": 10\n  },\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"sku\": \"SKU1\",\n  \"status\": \"IN_STOCK\",\n  \"type\": \"primary\",\n  \"updatedAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCounters\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  },\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a57e66be-08f7-4b9e-8217-5f95ae810ca2",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-update"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"channelId\": \"channel_xyz\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3143a5b6-4292-426f-b7f7-a17bfe9ec92c",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-update"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"channelId\": \"channel_xyz\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b842e569-dee4-4d7e-9e26-aab2e62f30c8",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-update"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"channelId\": \"channel_xyz\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Following attributes not found:[isBopis]\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "012ffc36-e29c-4953-832c-539ee3dd12e2",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-and-update"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"counters\": {\n    \"key_0\": {\n      \"allocated\": 10,\n      \"onHand\": 100,\n      \"shipped\": 20\n    }\n  },\n  \"locationNumber\": 12345,\n  \"sku\": \"SKU1\",\n  \"backorderLimit\": 50,\n  \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"channelId\": \"channel_xyz\",\n  \"customAttributes\": {\n    \"key_0\": \"{\\\"isBopis\\\":true}\"\n  },\n  \"hasInfiniteInventory\": false,\n  \"isNoStock\": false,\n  \"itemId\": 12345,\n  \"leadTime\": \"5 days\",\n  \"lowStock\": 10,\n  \"preorderLimit\": 40,\n  \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n  \"region\": \"North America\",\n  \"safetyStock\": 10,\n  \"status\": \"<string>\",\n  \"type\": \"primary\",\n  \"vendorId\": \"vendor1\",\n  \"virtualCountersStatus\": {\n    \"availableBackorder\": \"<string>\",\n    \"availablePreorder\": \"<string>\",\n    \"availableToPurchase\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "97d65cab-e248-4cd9-9caa-b358d5abcb1f",
+          "name": "Find Inventory of Specific Items in a Specific Region",
+          "request": {
+            "name": "Find Inventory of Specific Items in a Specific Region",
+            "description": {
+              "content": "Search for list of inventories of specific items  in a specific region based on SKUs, postal code, latitude, longitude, and other details of the location as specified in the request body.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventories",
+                "actions",
+                "find-by-geography"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                "key": "x-fabric-channel-ids",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"origin\": {\n    \"city\": \"<string>\",\n    \"countryCode\": \"<string>\",\n    \"distanceUnit\": \"MILE\",\n    \"latitude\": \"<double>\",\n    \"longitude\": \"<double>\",\n    \"maxDistance\": 100,\n    \"minDistance\": 0,\n    \"postalCode\": \"<string>\",\n    \"region\": \"<string>\"\n  },\n  \"locationTypes\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"skus\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cea8ffe1-95e9-4549-8860-aa4177676343",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-by-geography"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                    "key": "x-fabric-channel-ids",
+                    "value": "12, 13, 16"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": {\n    \"city\": \"San Francisco\",\n    \"countryCode\": \"US\",\n    \"distanceUnit\": \"MILE\",\n    \"latitude\": 21.2629852,\n    \"longitude\": -108.7256871,\n    \"maxDistance\": 100,\n    \"minDistance\": 10,\n    \"postalCode\": \"94008\",\n    \"region\": \"New York\"\n  },\n  \"locationTypes\": [\n    \"DC\",\n    \"DC\"\n  ],\n  \"skus\": [\n    \"sku1\",\n    \"sku1\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"inventories\": [\n    {\n      \"backorderLimit\": 50,\n      \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"channelId\": \"channel_xyz\",\n      \"counters\": {\n        \"allocated\": 10,\n        \"onHand\": 100,\n        \"shipped\": 20\n      },\n      \"createdAt\": \"2022-08-01 18:03:28.483000+00:00\",\n      \"customAttributes\": {\n        \"key_0\": \"{\\\"isBopis\\\":true}\",\n        \"key_1\": \"{\\\"isBopis\\\":true}\",\n        \"key_2\": \"{\\\"isBopis\\\":true}\"\n      },\n      \"hasInfiniteInventory\": false,\n      \"inventoryId\": \"723910d81723\",\n      \"isNoStock\": false,\n      \"itemId\": 12345,\n      \"leadTime\": \"5 days\",\n      \"locationNumber\": 12345,\n      \"lowStock\": 10,\n      \"networkCode\": \"ShipToHome\",\n      \"networkCounters\": {\n        \"softReserve\": 10\n      },\n      \"preorderLimit\": 40,\n      \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"region\": \"North America\",\n      \"safetyStock\": 10,\n      \"sku\": \"SKU1\",\n      \"status\": \"IN_STOCK\",\n      \"type\": \"primary\",\n      \"updatedAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"vendorId\": \"vendor1\",\n      \"virtualCounters\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      },\n      \"virtualCountersStatus\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      }\n    },\n    {\n      \"backorderLimit\": 50,\n      \"backorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"channelId\": \"channel_xyz\",\n      \"counters\": {\n        \"allocated\": 10,\n        \"onHand\": 100,\n        \"shipped\": 20\n      },\n      \"createdAt\": \"2022-08-01 18:03:28.483000+00:00\",\n      \"customAttributes\": {\n        \"key_0\": \"{\\\"isBopis\\\":true}\",\n        \"key_1\": \"{\\\"isBopis\\\":true}\",\n        \"key_2\": \"{\\\"isBopis\\\":true}\"\n      },\n      \"hasInfiniteInventory\": false,\n      \"inventoryId\": \"723910d81723\",\n      \"isNoStock\": false,\n      \"itemId\": 12345,\n      \"leadTime\": \"5 days\",\n      \"locationNumber\": 12345,\n      \"lowStock\": 10,\n      \"networkCode\": \"ShipToHome\",\n      \"networkCounters\": {\n        \"softReserve\": 10\n      },\n      \"preorderLimit\": 40,\n      \"preorderShipmentAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"region\": \"North America\",\n      \"safetyStock\": 10,\n      \"sku\": \"SKU1\",\n      \"status\": \"IN_STOCK\",\n      \"type\": \"primary\",\n      \"updatedAt\": \"2022-08-01 20:03:28.483000+00:00\",\n      \"vendorId\": \"vendor1\",\n      \"virtualCounters\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      },\n      \"virtualCountersStatus\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      }\n    }\n  ],\n  \"locations\": [\n    {\n      \"capacity\": {\n        \"allocationPercentage\": 20,\n        \"currentAllocations\": 5,\n        \"infiniteAllocation\": false,\n        \"isCapacityFull\": true,\n        \"maxAllocations\": 30\n      },\n      \"distance\": 12.34,\n      \"locationNumber\": 12345,\n      \"locationType\": \"DC\"\n    },\n    {\n      \"capacity\": {\n        \"allocationPercentage\": 20,\n        \"currentAllocations\": 5,\n        \"infiniteAllocation\": false,\n        \"isCapacityFull\": true,\n        \"maxAllocations\": 30\n      },\n      \"distance\": 12.34,\n      \"locationNumber\": 12345,\n      \"locationType\": \"DC\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1e5f07c6-1112-4d80-8d75-2d57fd2d6e92",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-by-geography"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                    "key": "x-fabric-channel-ids",
+                    "value": "12, 13, 16"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": {\n    \"city\": \"San Francisco\",\n    \"countryCode\": \"US\",\n    \"distanceUnit\": \"MILE\",\n    \"latitude\": 21.2629852,\n    \"longitude\": -108.7256871,\n    \"maxDistance\": 100,\n    \"minDistance\": 10,\n    \"postalCode\": \"94008\",\n    \"region\": \"New York\"\n  },\n  \"locationTypes\": [\n    \"DC\",\n    \"DC\"\n  ],\n  \"skus\": [\n    \"sku1\",\n    \"sku1\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f596d734-4932-4a5f-b7ac-3a6b4deb5096",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-by-geography"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                    "key": "x-fabric-channel-ids",
+                    "value": "12, 13, 16"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": {\n    \"city\": \"San Francisco\",\n    \"countryCode\": \"US\",\n    \"distanceUnit\": \"MILE\",\n    \"latitude\": 21.2629852,\n    \"longitude\": -108.7256871,\n    \"maxDistance\": 100,\n    \"minDistance\": 10,\n    \"postalCode\": \"94008\",\n    \"region\": \"New York\"\n  },\n  \"locationTypes\": [\n    \"DC\",\n    \"DC\"\n  ],\n  \"skus\": [\n    \"sku1\",\n    \"sku1\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "10a55d15-d255-4833-be18-72ad3c15ee78",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "actions",
+                    "find-by-geography"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13. This field is optional. **Note:** Use `xFabricChannelIds` for multiple channels, and `xFabricChannelId` for a single channel.",
+                    "key": "x-fabric-channel-ids",
+                    "value": "12, 13, 16"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"origin\": {\n    \"city\": \"San Francisco\",\n    \"countryCode\": \"US\",\n    \"distanceUnit\": \"MILE\",\n    \"latitude\": 21.2629852,\n    \"longitude\": -108.7256871,\n    \"maxDistance\": 100,\n    \"minDistance\": 10,\n    \"postalCode\": \"94008\",\n    \"region\": \"New York\"\n  },\n  \"locationTypes\": [\n    \"DC\",\n    \"DC\"\n  ],\n  \"skus\": [\n    \"sku1\",\n    \"sku1\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fcf3f380-824e-4dae-b262-2f02359d6e06",
+          "name": "Search for Inventories",
+          "request": {
+            "name": "Search for Inventories",
+            "description": {
+              "content": "Search for inventories based on filter criteria.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventories",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "fetchOnlyIds",
+                  "value": "false"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filters\": [\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\"\n  ],\n  \"sort\": \"-inventory.createdAt\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d238a4b8-21a4-4cdf-a2aa-58765bf7ed99",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchOnlyIds",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"inventory.sku\",\n      \"value\": \"*V3\"\n    },\n    {\n      \"condition\": \"IN\",\n      \"field\": \"inventory.locationNumber\",\n      \"values\": [\n        \"3173*\",\n        \"45213\"\n      ]\n    }\n  ],\n  \"sort\": \"-inventory.createdAt\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"backorderLimit\": 50,\n      \"backorderShipmentAt\": \"2022-08-01T20:03:28.483Z\",\n      \"channelId\": \"channel_xyz\",\n      \"counters\": {\n        \"allocated\": 10,\n        \"onHand\": 100,\n        \"shipped\": 20\n      },\n      \"createdAt\": \"2022-08-01T18:03:28.483Z\",\n      \"customAttributes\": {\n        \"key_0\": \"{\\\"isBopis\\\":true}\",\n        \"key_1\": \"{\\\"isBopis\\\":true}\"\n      },\n      \"hasInfiniteInventory\": false,\n      \"inventoryId\": \"723910d81723\",\n      \"isNoStock\": false,\n      \"itemId\": 12345,\n      \"leadTime\": \"5 days\",\n      \"locationNumber\": 12345,\n      \"lowStock\": 10,\n      \"networkCode\": \"ShipToHome\",\n      \"preorderLimit\": 40,\n      \"preorderShipmentAt\": \"2022-08-01T20:03:28.483Z\",\n      \"region\": \"North America\",\n      \"safetyStock\": 10,\n      \"sku\": \"SKU1\",\n      \"status\": \"PREORDER_STOCK\",\n      \"type\": \"primary\",\n      \"updatedAt\": \"2022-08-01T20:03:28.483Z\",\n      \"vendorId\": \"vendor1\",\n      \"virtualCounters\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      },\n      \"virtualCountersStatus\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      }\n    },\n    {\n      \"backorderLimit\": 50,\n      \"backorderShipmentAt\": \"2022-08-01T20:03:28.483Z\",\n      \"channelId\": \"channel_xyz\",\n      \"counters\": {\n        \"allocated\": 10,\n        \"onHand\": 100,\n        \"shipped\": 20\n      },\n      \"createdAt\": \"2022-08-01T18:03:28.483Z\",\n      \"customAttributes\": {\n        \"key_0\": \"{\\\"isBopis\\\":true}\"\n      },\n      \"hasInfiniteInventory\": false,\n      \"inventoryId\": \"723910d81723\",\n      \"isNoStock\": false,\n      \"itemId\": 12345,\n      \"leadTime\": \"5 days\",\n      \"locationNumber\": 12345,\n      \"lowStock\": 10,\n      \"networkCode\": \"ShipToHome\",\n      \"preorderLimit\": 40,\n      \"preorderShipmentAt\": \"2022-08-01T20:03:28.483Z\",\n      \"region\": \"North America\",\n      \"safetyStock\": 10,\n      \"sku\": \"SKU1\",\n      \"status\": \"LOW_STOCK\",\n      \"type\": \"primary\",\n      \"updatedAt\": \"2022-08-01T20:03:28.483Z\",\n      \"vendorId\": \"vendor1\",\n      \"virtualCounters\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      },\n      \"virtualCountersStatus\": {\n        \"availableBackorder\": \"<string>\",\n        \"availablePreorder\": \"<string>\",\n        \"availableToPurchase\": \"<string>\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"count\": 1000,\n    \"limit\": 10,\n    \"offset\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afc1bce7-3822-4a77-9080-89e31eb5d18d",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchOnlyIds",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"inventory.sku\",\n      \"value\": \"*V3\"\n    },\n    {\n      \"condition\": \"IN\",\n      \"field\": \"inventory.locationNumber\",\n      \"values\": [\n        \"3173*\",\n        \"45213\"\n      ]\n    }\n  ],\n  \"sort\": \"-inventory.createdAt\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "de8fd17d-53fe-40a5-8853-0b5efe58f1d1",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchOnlyIds",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"inventory.sku\",\n      \"value\": \"*V3\"\n    },\n    {\n      \"condition\": \"IN\",\n      \"field\": \"inventory.locationNumber\",\n      \"values\": [\n        \"3173*\",\n        \"45213\"\n      ]\n    }\n  ],\n  \"sort\": \"-inventory.createdAt\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "46c4cbf7-986d-4498-9dc9-f16ff83d1b4f",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventories",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "fetchOnlyIds",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"inventory.sku\",\n      \"value\": \"*V3\"\n    },\n    {\n      \"condition\": \"IN\",\n      \"field\": \"inventory.locationNumber\",\n      \"values\": [\n        \"3173*\",\n        \"45213\"\n      ]\n    }\n  ],\n  \"sort\": \"-inventory.createdAt\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "6aa92f49-dee5-4360-997e-561c502e1246",
+    "name": "Cart Actions Endpoints Inventory API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)\n\nContact Support:\n Name: Cart Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

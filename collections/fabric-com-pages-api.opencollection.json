@@ -1,0 +1,117 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Pages API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Pages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Live Pages for Specified Channels",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/v2/pages/live",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of items to omit before collecting the resulting set"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Total number of results"
+              },
+              {
+                "name": "channels",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of channel IDs"
+              }
+            ]
+          },
+          "docs": "Get a list of all the live pages for the specified channels"
+        },
+        {
+          "info": {
+            "name": "Get Meta Information About Live Pages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/v2/pages/metadata",
+            "params": [
+              {
+                "name": "channels",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of channel IDs"
+              },
+              {
+                "name": "size",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to be returned"
+              },
+              {
+                "name": "startCursor",
+                "value": "",
+                "type": "query",
+                "description": "Record pointer to get items after the specified record"
+              }
+            ]
+          },
+          "docs": "Get all the meta information such as name, url, channels, and SEO fields."
+        },
+        {
+          "info": {
+            "name": "Get Live Page for a Channel by URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/v2/page/live",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "url",
+                "value": "",
+                "type": "query",
+                "description": "Relative page url for which to retrieve the live page version"
+              },
+              {
+                "name": "channels",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of channel IDs"
+              }
+            ]
+          },
+          "docs": "Gets live page for the specified page URL and channel"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,363 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Credits API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Credits",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Credits by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/create-credits",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates credits for an order when you want to issue compensation to a customer.  \nThis endpoint allows you to initiate a credit request using an order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+        },
+        {
+          "info": {
+            "name": "Check Credits Eligibility by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/check-credits-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              }
+            ]
+          },
+          "docs": "Checks whether an order is eligible for credits (for example, gift cards or store credits) \nin scenarios such as damaged products, late deliveries, or other qualifying \nconditions defined by your business policies.  \n\nThis endpoint allows you to verify eligibility using an order identifier, helping \nbusinesses manage credits effectively and provide appropriate compensation to \ncustomers.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you o"
+        },
+        {
+          "info": {
+            "name": "Update Credit Status by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/update-credit-status",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the status of credits associated with an order.  \nThis endpoint can also be used to add notes or update additional \nattributes related to a credit.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+        },
+        {
+          "info": {
+            "name": "Check Credits Eligibility by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/check-credits-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "ORDER000001",
+                "type": "path",
+                "description": "The merchant-defined order identifier provided by the Create Order - `POST /orders` endpoint."
+              }
+            ]
+          },
+          "docs": "When processing refunds, credits such as a gift card may be offered to customers for various reasons such as damaged products, late deliveries, or other qualifying factors as per your policy. <p> This endpoint checks the credits eligibility by order number, allowing you to manage credits effectively and provide appropriate compensation to eligible customers. </p>"
+        },
+        {
+          "info": {
+            "name": "Create Credits by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/create-credits",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The following endpoint is used to create credits using an order number."
+        },
+        {
+          "info": {
+            "name": "Update Credit Status by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/update-credit-status",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The update credit status endpoint is used to update the credits status, notes, and additional credit attributes."
+        },
+        {
+          "info": {
+            "name": "Check Credits Eligibility by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/check-credits-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              }
+            ]
+          },
+          "docs": "In case of refund scenarios, credits such as gift card may be offered to customers for various reasons such as damaged products, later deliveries, or other qualifying factors as per your policy. <p> This endpoint checks the credits eligibility by order ID, allowing businesses to manage credits effectively and provide appropriate compensation to eligible customers.</p>"
+        },
+        {
+          "info": {
+            "name": "Create Credits by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/create-credits",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to create credits by order ID."
+        },
+        {
+          "info": {
+            "name": "Update Credits by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/update-credit-status",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to update the credit status, as well as to add any associated notes and additional attributes."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

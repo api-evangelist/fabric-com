@@ -1,0 +1,196 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Catalog Connector Operations by Product ID API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Catalog Connector Operations by Product ID",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Add a Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/catalog-connector/products",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "locale",
+                "value": "en-US",
+                "type": "query",
+                "description": "The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to add a single product to Catalog Connector. You must specify the `locale` in the query parameter and the product data in the request body. Only `sku` is mandatory for product data. Optionally, you can specify the `type` as item, variant, or bundle. The default setting for `type` is item.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve a Product by Product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/catalog-connector/products/:productId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "productId",
+                "value": "6482b9524ffa4978fd9cbf5c",
+                "type": "path",
+                "description": "The UUID of the product."
+              },
+              {
+                "name": "locale",
+                "value": "en-US",
+                "type": "query",
+                "description": "The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+              },
+              {
+                "name": "excludeBundleProducts",
+                "value": "false",
+                "type": "query",
+                "description": "A flag indicating whether the products associated with a bundle should be excluded from the response. Set it to `true` to exclude products of a bundle and `false` to include them in the response."
+              },
+              {
+                "name": "excludeCollections",
+                "value": "false",
+                "type": "query",
+                "description": "A flag indicating whether the collections should be excluded from the response. Set it to `true` to exclude collections and `false` to include them in the response."
+              },
+              {
+                "name": "excludeCategories",
+                "value": "false",
+                "type": "query",
+                "description": "A flag indicating whether the categories should be excluded from the response. Set it to `true` to exclude categories and `false` to include them in the response."
+              },
+              {
+                "name": "excludeAttributes",
+                "value": "false",
+                "type": "query",
+                "description": "A flag indicating whether attributes should be excluded from the response. Set it to `true` to exclude attributes and `false` to include them in the response."
+              },
+              {
+                "name": "excludeVariants",
+                "value": "false",
+                "type": "query",
+                "description": "A flag indicating whether item variants should be excluded from the response. Set it to `true` to exclude variants and `false` to include them in the response."
+              }
+            ]
+          },
+          "docs": "Use this endpoint to retrieve a single product by its `productId`. \nYou must specify the query parameters `productId` and `locale`. \nOptionally, you can set the following query parameters to `true` to refine the search results:\n  - `excludeBundleProducts`: Exclude bundled products from the response.\n  - `excludeCollections`: Exclude collections from the response.\n  - `excludeCategories`: Exclude categories from the response.\n  - `excludeAttributes`: Exclude attributes from the response. \n  - `ex"
+        },
+        {
+          "info": {
+            "name": "Update a Product by Product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/catalog-connector/products/:productId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "productId",
+                "value": "6482b9524ffa4978fd9cbf5c",
+                "type": "path",
+                "description": "The UUID of the product."
+              },
+              {
+                "name": "locale",
+                "value": "en-US",
+                "type": "query",
+                "description": "The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to update a single product by its `productId`. \nYou can update the product's details, such as its name, category details, product images, attributes, and collections. However, you can't update the productId.\nThe new data completely replaces the existing data.\n\nIf you don't have the `productId`, use one of the corresponding endpoints:\n  - [Update a product by SKU](/v3/api-reference/catalog-connector/operations/product-operations/update-by-product).\n  - [Update a product by item "
+        },
+        {
+          "info": {
+            "name": "Delete a Product by Product ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.fabric.inc/v3/catalog-connector/products/:productId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "productId",
+                "value": "6482b9524ffa4978fd9cbf5c",
+                "type": "path",
+                "description": "The UUID of the product."
+              },
+              {
+                "name": "locale",
+                "value": "en-US",
+                "type": "query",
+                "description": "The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+              }
+            ]
+          },
+          "docs": "Use this endpoint to delete a single product by its `productId`. \nIf you don't have the `productId`, use one of the endpoints to delete the product:\n  - [Delete a product by SKU](/v3/api-reference/catalog-connector/operations/sku-operations/delete-with-sku).\n  - [Delete a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/delete-by-item).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

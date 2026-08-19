@@ -1,0 +1,1801 @@
+{
+  "item": [
+    {
+      "id": "7e52b026-a6ab-4a78-bb5c-f7a98ea66393",
+      "name": "Catalog Connector Operations by SKU",
+      "description": {
+        "content": "Supports product operations based on SKU.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "7acad829-9c68-4259-a9f7-a06d99d52e99",
+          "name": "Retrieve a Product by SKU",
+          "request": {
+            "name": "Retrieve a Product by SKU",
+            "description": {
+              "content": "Use this endpoint to retrieve a single product by its SKU. You must specify the query parameters `sku` and `locale` to corresponding to the product. Optionally, you can set the following query parameters to `true` to refine the search results:\n  - `excludeBundleProducts`: Exclude bundled products from the response.\n  - `excludeCollections`: Exclude collections from the response.\n  - `excludeCategories`: Exclude categories from the response.\n  - `excludeAttributes`: Exclude attributes from the response. \n  - `excludeVariants`: Exclude variants from the response. \n\nIf you don't have the product SKU, use one of the endpoints to retrieve the product: \n    - [Retrieve a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/retrieve-by-product). \n    - [Retrieve a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/retrieve-by-item).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "catalog-connector",
+                "products",
+                "skus",
+                ":skuId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "locale",
+                  "value": "<string>",
+                  "description": "(Required) The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "excludeBundleProducts",
+                  "value": "<boolean>",
+                  "description": "A flag indicating whether the products associated with a bundle should be excluded from the response. Set it to `true` to exclude products of a bundle and `false` to include them in the response."
+                },
+                {
+                  "disabled": false,
+                  "key": "excludeCollections",
+                  "value": "<boolean>",
+                  "description": "A flag indicating whether the collections should be excluded from the response. Set it to `true` to exclude collections and `false` to include them in the response."
+                },
+                {
+                  "disabled": false,
+                  "key": "excludeCategories",
+                  "value": "<boolean>",
+                  "description": "A flag indicating whether the categories should be excluded from the response. Set it to `true` to exclude categories and `false` to include them in the response."
+                },
+                {
+                  "disabled": false,
+                  "key": "excludeAttributes",
+                  "value": "<boolean>",
+                  "description": "A flag indicating whether attributes should be excluded from the response. Set it to `true` to exclude attributes and `false` to include them in the response."
+                },
+                {
+                  "disabled": false,
+                  "key": "excludeVariants",
+                  "value": "<boolean>",
+                  "description": "A flag indicating whether item variants should be excluded from the response. Set it to `true` to exclude variants and `false` to include them in the response."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "skuId",
+                  "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c79bc6c9-2938-4144-ba37-ceefd1d71f78",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "excludeBundleProducts",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCollections",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCategories",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeAttributes",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeVariants",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"sku\": \"NIKE237765\",\n  \"productName\": \"Nike runner shoes\",\n  \"id\": \"6482b9524ffa4978fd9cbf5c\",\n  \"itemId\": 2700537,\n  \"categoryName\": \"Sport Shoes\",\n  \"categoryId\": \"648014741adc8a9de14e1a68\",\n  \"images\": [\n    \"https://myawsomestore.com/is/image/nike/8801290_s7\"\n  ],\n  \"attributes\": [\n    {\n      \"name\": \"Color\",\n      \"value\": \"black\",\n      \"id\": \"6480216349256438cb7d53b5\",\n      \"type\": \"TEXT\"\n    },\n    {\n      \"name\": \"Wide Fit\",\n      \"value\": false,\n      \"id\": \"640db94f9fc28b255d155a42\",\n      \"type\": \"BOOLEAN\"\n    }\n  ],\n  \"type\": \"ITEM\",\n  \"variants\": [\n    {\n      \"sku\": \"NIKE237766\",\n      \"productName\": \"Nike runner white shoes\",\n      \"id\": \"648aa9280d7b561b4663038c\",\n      \"itemId\": 2700538,\n      \"images\": [\n        \"https://myawsomestore.com/is/image/nike/8801291_s7\"\n      ],\n      \"attributes\": [\n        {\n          \"name\": \"Color\",\n          \"value\": \"White\",\n          \"id\": \"6480216349256438cb7d53b5\",\n          \"type\": \"TEXT\"\n        },\n        {\n          \"name\": \"Wide Fit\",\n          \"value\": true,\n          \"id\": \"640db94f9fc28b255d155a42\",\n          \"type\": \"BOOLEAN\"\n        }\n      ],\n      \"createdAt\": \"2021-12-13 13:56:09.006000+00:00\",\n      \"updatedAt\": \"2021-12-13 13:56:09.006000+00:00\"\n    }\n  ],\n  \"categories\": [\n    {\n      \"name\": \"Sport Shoes\",\n      \"id\": \"648014741adc8a9de14e1a68\",\n      \"isRoot\": false,\n      \"attributes\": [\n        {\n          \"name\": \"Fit\",\n          \"value\": \"Relaxed Fit\",\n          \"id\": \"648014741adc8a9de14e1a00\",\n          \"type\": \"TEXT\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Shoes\",\n      \"id\": \"648aa9258fdef29675dbce42\",\n      \"isRoot\": true,\n      \"attributes\": [\n        {\n          \"name\": \"Material\",\n          \"value\": \"Mesh\"\n        }\n      ]\n    }\n  ],\n  \"collections\": [\n    {\n      \"name\": \"Flash sale\",\n      \"id\": \"648055dff4aa98d6c43e02da\",\n      \"hierarchy\": [\n        {\n          \"name\": \"Flash Sale\",\n          \"id\": \"648055dff4aa98d6c43e02da\",\n          \"isRoot\": false,\n          \"attributes\": [\n            {\n              \"name\": \"Duration\",\n              \"value\": 600,\n              \"type\": \"NUMBER\"\n            }\n          ]\n        },\n        {\n          \"name\": \"Sales\",\n          \"id\": \"648055e0f4aa98d6c43e02f7\",\n          \"isRoot\": true\n        }\n      ]\n    }\n  ],\n  \"createdAt\": \"2021-12-13 13:56:09.006000+00:00\",\n  \"updatedAt\": \"2021-12-13 13:56:09.006000+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9800141d-8d26-4806-aca6-c6fd25d51c99",
+              "name": "Request is invalid or malformed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "excludeBundleProducts",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCollections",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCategories",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeAttributes",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeVariants",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Request is invalid\",\n  \"type\": \"Bad request\",\n  \"errors\": [\n    {\n      \"type\": \"CLIENT_ERROR\",\n      \"message\": \"Invalid request. Unable to find/create product\"\n    },\n    {\n      \"type\": \"CLIENT_ERROR\",\n      \"message\": \"Invalid request. Unable to find/create product\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "10a73f9d-5320-404c-b5ef-4e352a8f6297",
+              "name": "The requester is unauthorized.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "excludeBundleProducts",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCollections",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCategories",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeAttributes",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeVariants",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"UNAUTHORIZED_ERROR\",\n  \"message\": \"Requester is unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d13d7540-2d4d-4273-a5c8-c0aa75eb8e6b",
+              "name": "The user isn't allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "excludeBundleProducts",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCollections",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCategories",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeAttributes",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeVariants",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"User does not have the required permission\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8abbf351-48b8-4c33-87e2-f9383c1239ca",
+              "name": "The requested entity isn't found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "excludeBundleProducts",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCollections",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCategories",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeAttributes",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeVariants",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"NOT_FOUND\",\n  \"message\": \"Resource not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e126fd39-60ff-489e-8219-6fde6028d135",
+              "name": "The payload limit is exceeded. It should be less than 10MB.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "excludeBundleProducts",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCollections",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCategories",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeAttributes",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeVariants",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Request Entity Too Large",
+              "code": 413,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"PAYLOAD_LIMIT_EXCEEDED_ERROR\",\n  \"message\": \"Payload exceeds maximum configured size\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "672fcf09-c825-44f2-a2f8-fcce4e310c03",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    },
+                    {
+                      "key": "excludeBundleProducts",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCollections",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeCategories",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeAttributes",
+                      "value": "false"
+                    },
+                    {
+                      "key": "excludeVariants",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"SERVER_ERROR\",\n  \"message\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "67787219-2532-4850-88c1-2d8995d48f3c",
+          "name": "Update a Product by SKU",
+          "request": {
+            "name": "Update a Product by SKU",
+            "description": {
+              "content": "Use this endpoint to update details of a product by its SKU. You can update details of the product, such as the product name, category details, product images, attributes, and collections. The new data replaces the existing data. Note that you can't update the SKU.\n  \nIf you don't have the product SKU, use one of the endpoints update the product details:\n  - [Update a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/update-by-product). \n  - [Update a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/update-by-item).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "catalog-connector",
+                "products",
+                "skus",
+                ":skuId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "locale",
+                  "value": "<string>",
+                  "description": "(Required) The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "skuId",
+                  "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"<string>\",\n  \"variants\": [\n    {\n      \"sku\": \"<string>\",\n      \"id\": \"<string>\",\n      \"itemId\": \"<integer>\",\n      \"productName\": \"<string>\",\n      \"images\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ],\n      \"attributes\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ],\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\"\n    },\n    {\n      \"sku\": \"<string>\",\n      \"id\": \"<string>\",\n      \"itemId\": \"<integer>\",\n      \"productName\": \"<string>\",\n      \"images\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ],\n      \"attributes\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ],\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\"\n    }\n  ],\n  \"categoryName\": \"<string>\",\n  \"categoryId\": \"<string>\",\n  \"categories\": [\n    {\n      \"id\": \"<string>\",\n      \"name\": \"<string>\",\n      \"isRoot\": \"<boolean>\",\n      \"attributes\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ]\n    },\n    {\n      \"id\": \"<string>\",\n      \"name\": \"<string>\",\n      \"isRoot\": \"<boolean>\",\n      \"attributes\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ]\n    }\n  ],\n  \"collections\": [\n    {\n      \"name\": \"<string>\",\n      \"id\": \"<string>\",\n      \"hierarchy\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ]\n    },\n    {\n      \"name\": \"<string>\",\n      \"id\": \"<string>\",\n      \"hierarchy\": [\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      ]\n    }\n  ],\n  \"productName\": \"<string>\",\n  \"images\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"attributes\": [\n    {\n      \"name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"value\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    },\n    {\n      \"name\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"value\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"id\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      },\n      \"type\": {\n        \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n      }\n    }\n  ],\n  \"createdAt\": \"<dateTime>\",\n  \"updatedAt\": \"<dateTime>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "209f7020-cda5-4779-b232-3a4af217ce13",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"sku\": \"NIKE237765\",\n  \"productName\": \"Nike runner shoes\",\n  \"id\": \"6482b9524ffa4978fd9cbf5c\",\n  \"itemId\": 2700537,\n  \"categoryName\": \"Sport Shoes\",\n  \"categoryId\": \"648014741adc8a9de14e1a68\",\n  \"images\": [\n    \"https://myawsomestore.com/is/image/nike/8801290_s7\"\n  ],\n  \"attributes\": [\n    {\n      \"name\": \"Color\",\n      \"value\": \"black\",\n      \"id\": \"6480216349256438cb7d53b5\",\n      \"type\": \"TEXT\"\n    },\n    {\n      \"name\": \"Wide Fit\",\n      \"value\": false,\n      \"id\": \"640db94f9fc28b255d155a42\",\n      \"type\": \"BOOLEAN\"\n    }\n  ],\n  \"type\": \"ITEM\",\n  \"variants\": [\n    {\n      \"sku\": \"NIKE237766\",\n      \"productName\": \"Nike runner white shoes\",\n      \"id\": \"648aa9280d7b561b4663038c\",\n      \"itemId\": 2700538,\n      \"images\": [\n        \"https://myawsomestore.com/is/image/nike/8801291_s7\"\n      ],\n      \"attributes\": [\n        {\n          \"name\": \"Color\",\n          \"value\": \"White\",\n          \"id\": \"6480216349256438cb7d53b5\",\n          \"type\": \"TEXT\"\n        },\n        {\n          \"name\": \"Wide Fit\",\n          \"value\": true,\n          \"id\": \"640db94f9fc28b255d155a42\",\n          \"type\": \"BOOLEAN\"\n        }\n      ],\n      \"createdAt\": \"2021-12-13 13:56:09.006000+00:00\",\n      \"updatedAt\": \"2021-12-13 13:56:09.006000+00:00\"\n    }\n  ],\n  \"categories\": [\n    {\n      \"name\": \"Sport Shoes\",\n      \"id\": \"648014741adc8a9de14e1a68\",\n      \"isRoot\": false,\n      \"attributes\": [\n        {\n          \"name\": \"Fit\",\n          \"value\": \"Relaxed Fit\",\n          \"id\": \"648014741adc8a9de14e1a00\",\n          \"type\": \"TEXT\"\n        }\n      ]\n    },\n    {\n      \"name\": \"Shoes\",\n      \"id\": \"648aa9258fdef29675dbce42\",\n      \"isRoot\": true,\n      \"attributes\": [\n        {\n          \"name\": \"Material\",\n          \"value\": \"Mesh\"\n        }\n      ]\n    }\n  ],\n  \"collections\": [\n    {\n      \"name\": \"Flash sale\",\n      \"id\": \"648055dff4aa98d6c43e02da\",\n      \"hierarchy\": [\n        {\n          \"name\": \"Flash Sale\",\n          \"id\": \"648055dff4aa98d6c43e02da\",\n          \"isRoot\": false,\n          \"attributes\": [\n            {\n              \"name\": \"Duration\",\n              \"value\": 600,\n              \"type\": \"NUMBER\"\n            }\n          ]\n        },\n        {\n          \"name\": \"Sales\",\n          \"id\": \"648055e0f4aa98d6c43e02f7\",\n          \"isRoot\": true\n        }\n      ]\n    }\n  ],\n  \"createdAt\": \"2021-12-13 13:56:09.006000+00:00\",\n  \"updatedAt\": \"2021-12-13 13:56:09.006000+00:00\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "25cde15d-2840-4e07-9cc5-35fe2ab9f17b",
+              "name": "Request is invalid or malformed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Request is invalid\",\n  \"type\": \"Bad request\",\n  \"errors\": [\n    {\n      \"type\": \"CLIENT_ERROR\",\n      \"message\": \"Invalid request. Unable to find/create product\"\n    },\n    {\n      \"type\": \"CLIENT_ERROR\",\n      \"message\": \"Invalid request. Unable to find/create product\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "277e0933-4ba3-4d1c-98f7-657bffc9f8bb",
+              "name": "The requester is unauthorized.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"UNAUTHORIZED_ERROR\",\n  \"message\": \"Requester is unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f24d462-5530-4136-b19f-4e659e4c0225",
+              "name": "The user isn't allowed to perform this action.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"User does not have the required permission\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "16ddaa22-fad3-40e8-ae01-7efb02a6c7db",
+              "name": "The requested entity isn't found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"NOT_FOUND\",\n  \"message\": \"Resource not found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f2a112df-f19b-431a-8d0a-0c3297475817",
+              "name": "The payload limit is exceeded. It should be less than 10MB.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Request Entity Too Large",
+              "code": 413,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"PAYLOAD_LIMIT_EXCEEDED_ERROR\",\n  \"message\": \"Payload exceeds maximum configured size\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "58fe82d6-c31e-4b4f-bf3b-1e587d9cce4a",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"SERVER_ERROR\",\n  \"message\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0c0b8d30-a35c-4b2e-a545-1e015ea49ada",
+          "name": "Delete a Product by SKU",
+          "request": {
+            "name": "Delete a Product by SKU",
+            "description": {
+              "content": "Use this endpoint to delete a single product by using its SKU. \n\nIf you don't have the product SKU, use one of the endpoints to delete the product: \n - [Delete a product by product ID](/v3/api-reference/catalog-connector/operations/product-operations/delete-by-product).\n - [Delete a product by item ID](/v3/api-reference/catalog-connector/operations/item-operations/delete-by-item).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "catalog-connector",
+                "products",
+                "skus",
+                ":skuId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "locale",
+                  "value": "<string>",
+                  "description": "(Required) The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "skuId",
+                  "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "38fd8872-d858-4cef-ab70-2f70b7c80fb5",
+              "name": "No Content",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a692872f-43cc-4920-b30d-0308d1c1646c",
+              "name": "Request is invalid or malformed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Request is invalid\",\n  \"type\": \"Bad request\",\n  \"errors\": [\n    {\n      \"type\": \"CLIENT_ERROR\",\n      \"message\": \"Invalid request. Unable to find/create product\"\n    },\n    {\n      \"type\": \"CLIENT_ERROR\",\n      \"message\": \"Invalid request. Unable to find/create product\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2a6e1ea8-33fd-43c7-a745-2e05c448828c",
+              "name": "The requester is unauthorized.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"UNAUTHORIZED_ERROR\",\n  \"message\": \"Requester is unauthorized\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9509d809-f348-4ee1-9dcc-1f77e2e3afbf",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "catalog-connector",
+                    "products",
+                    "skus",
+                    ":skuId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "locale",
+                      "value": "en-US"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "skuId",
+                      "description": "(Required) The Stock Keeping Unit (SKU) of a product provided by the merchant."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"SERVER_ERROR\",\n  \"message\": \"Internal Server Error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "a9ca5e3b-fdc1-42f0-9699-32fd609c491a",
+    "name": "Cart Actions Endpoints Catalog Connector Operations by SKU API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)\n\nContact Support:\n Name: Cart Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

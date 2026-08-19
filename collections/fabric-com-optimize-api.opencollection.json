@@ -1,0 +1,138 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Optimize API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Optimize",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Upload a Catalog Artifact",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/v2/optimize/artifacts",
+            "headers": [
+              {
+                "name": "domain",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Uploads a catalog CSV as multipart form data and returns an `artifact_id` for use when starting an optimization workflow.\n\nThe HTTP client must set the `Content-Type: multipart/form-data` header with the appropriate boundary; the header should not be set manually. The `domain` header is required and must be a brand domain (for example, `vessel.com`) that the authenticated principal is authorized to access.\n\nEach request creates a new artifact, even when the file content is identical to a previou"
+        },
+        {
+          "info": {
+            "name": "Retrieve Artifact Metadata and Download URL",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/v2/optimize/artifacts/:artifact_id",
+            "headers": [
+              {
+                "name": "domain",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "artifact_id",
+                "value": "",
+                "type": "path",
+                "description": "Artifact identifier returned by `POST /v2/optimize/artifacts`."
+              },
+              {
+                "name": "expires_seconds",
+                "value": "",
+                "type": "query",
+                "description": "Lifetime of the signed `download_url` in seconds. Minimum 60, maximum 3600, default 900."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns metadata for a previously uploaded artifact along with a short-lived signed `download_url` for retrieving the original file contents. This endpoint supports inspection, auditing, and re-download of an artifact prior to starting a workflow.\n\nThe `download_url` is a presigned URL that remains valid until `download_url_expires_at`. After expiry, call this endpoint again to obtain a new URL.\n"
+        },
+        {
+          "info": {
+            "name": "Create an Optimization Workflow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/v2/optimize/workflows",
+            "headers": [
+              {
+                "name": "domain",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates an optimization workflow that processes a previously uploaded artifact. Provide the `artifact_id` returned by `POST /v2/optimize/artifacts` as `input.artifact.artifact_id`.\n\nWorkflows run in supervised mode by default. The workflow pauses at human-in-the-loop review gates that allow reviewers to approve taxonomy mappings, sample enrichments, and the final publish step.\n\n**Review gates are approved in the CommerceOS web application, not through the API.** When a workflow reaches `status: "
+        },
+        {
+          "info": {
+            "name": "Retrieve Optimization Workflow Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/v2/optimize/workflows/:workflow_id",
+            "headers": [
+              {
+                "name": "domain",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "workflow_id",
+                "value": "",
+                "type": "path",
+                "description": "Workflow identifier returned by `POST /v2/optimize/workflows`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the current state of an optimization workflow, including `status`, `current_step`, `current_hitl_gate` (when the workflow is paused at a review gate), per-phase progress, and aggregated review and reviewer summaries.\n\nPoll this endpoint to track a workflow through its lifecycle. A `401` response indicates that the access token has expired; re-authenticate and retry the request.\n\nThe `status` value progresses through `PENDING`, then `RUNNING` or `IN_PROGRESS`, then `REVIEW_PENDING` when p"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,590 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Orders API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create New Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This endpoint creates a new order in the fabric Orders (OMS) system, regardless of whether it originates from fabric CnC service or an external system. The response includes an order ID, which is required for subsequent calls such as updating pickup information, getting order details, verifying eligibility for order cancellations, returns, exchanges, as well as creating appeasements, and processing order returns, cancellations, and exchanges."
+        },
+        {
+          "info": {
+            "name": "Update an Order’s Status with State Transition",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdentifierType/:orderIdentifierValue/actions/update-status",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdentifierType",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The type of identifier used to locate the order. Supported values are `order-id`, `order-number`, and `order-external-id`."
+              },
+              {
+                "name": "orderIdentifierValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the order identifier corresponding to the specified `orderIdentifierType`."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Performs a state transition on an order using the order state machine. The provided status code must correspond to a valid action available from the order’s current state. Orders that are already in or beyond the **ORDER_ALLOCATED** state cannot be updated using this endpoint."
+        },
+        {
+          "info": {
+            "name": "Update Order Fees and Taxes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdentifierType/:orderIdentifierValue/actions/update-fees-and-taxes",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdentifierType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of identifier used to locate the order. Supported values: `order-id`, `order-number`, `order-external-id`."
+              },
+              {
+                "name": "orderIdentifierValue",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "The value of the order identifier that corresponds to `orderIdentifierType`."
+              },
+              {
+                "name": "overrideAllArrayFields",
+                "value": "true",
+                "type": "query",
+                "description": "Controls how array fields in the request body are applied. When true, arrays provided in the payload replace the existing arrays on the order. When false, array updates are merged/partially applied based on the service's update behavior."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Recalculates and updates fee and tax totals for an existing order. The request payload allows you to provide updated fee and tax values at the order, item, and ship-to levels. Only fields included in the payload are applied. Use `overrideAllArrayFields` to control whether array fields in the payload replace the existing arrays or are merged."
+        },
+        {
+          "info": {
+            "name": "Update a Ship-to Address for a Specific Shiptoid",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdentifierType/:orderIdentifierValue/ship-info/:shipToId/ship-to-address",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdentifierType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of identifier used to locate the order. Supported values: `order-id`, `order-number`, `order-external-id`."
+              },
+              {
+                "name": "orderIdentifierValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the order identifier that corresponds to the `orderIdentifierType`."
+              },
+              {
+                "name": "shipToId",
+                "value": "b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569",
+                "type": "path",
+                "description": "Unique identifier (UUID) of the ship-to location within the order (`shipInfo`)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the ship-to address for a specific `shipToId` on an order. Only the address fields present in the payload are updated. If address enrichment (for example Google Maps) is configured, address validation and automatic latitude/longitude enrichment may run. If you are using Geography and Zones, the fulfillment zone is updated and a soft reservation is triggered to move inventory to the correct network."
+        },
+        {
+          "info": {
+            "name": "Update Bill-to Address for a Specific Payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdentifierType/:orderIdentifierValue/payments/:paymentCounter/bill-to-address",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdentifierType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of identifier used to locate the order. Supported values: `order-id`, `order-number`, `order-external-id`."
+              },
+              {
+                "name": "orderIdentifierValue",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "The value of the order identifier that corresponds to `orderIdentifierType`."
+              },
+              {
+                "name": "paymentCounter",
+                "value": "1",
+                "type": "path",
+                "description": "The sequential counter identifying the specific payment within the order (used to select which payment's bill-to address to update)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the bill-to address for a specific payment on an order, identified by `paymentCounter`. Only address fields included in the payload are updated."
+        },
+        {
+          "info": {
+            "name": "Add a Payment Log Entry for a Specific Payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdentifierType/:orderIdentifierValue/payments/:paymentCounter/payment-logs",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdentifierType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of identifier used to locate the order. Supported values: `order-id`, `order-number`, `order-external-id`."
+              },
+              {
+                "name": "orderIdentifierValue",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "The value of the order identifier that corresponds to `orderIdentifierType`."
+              },
+              {
+                "name": "paymentCounter",
+                "value": "1",
+                "type": "path",
+                "description": "The sequential counter identifying the specific payment within the order (used to select which payment to attach the log to)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Adds a new payment log entry to the logs for a specific payment on an order, identified by `paymentCounter`. Payment logs capture when a payment is charged or credited, and include provider response details and metadata. Only fields present in the payload are applied."
+        },
+        {
+          "info": {
+            "name": "Update Order Attributes by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/update-attributes",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates order attributes, typically used by the integration layer to modify \nor synchronize external system–related information.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+        },
+        {
+          "info": {
+            "name": "Update Customer Details for Given Order Ids",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/actions/update-customer",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "In many scenarios, customer details may change over time. For example, a customer might change their email, phone, or company affiliation. <p> By providing the order IDs and the updated customer details, this endpoint facilitates updating customer info for the given order IDs. This ensures order-related communication reaches the customer and they get timely customer service. </p>"
+        },
+        {
+          "info": {
+            "name": "Get Order by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "Order-320000001",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              }
+            ]
+          },
+          "docs": "As a merchant, you may need to review or monitor an order to answer customer inquiries, resolve a complaint or for analytics and reporting. With this endpoint, you can get order details by order number. <p> **Note**: If you do not have the order number, use the corresponding order ID-based endpoint - `GET /orders/{orderId}`. </p>"
+        },
+        {
+          "info": {
+            "name": "Update Shipping Information for an Existing Order by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/update-attributes",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "Order-320000001",
+                "type": "path",
+                "description": "The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The following endpoint is used to update attributes by order number."
+        },
+        {
+          "info": {
+            "name": "Search for Orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "offset",
+                "value": "0",
+                "type": "query",
+                "description": "Number of records to skip before returning records. For example, When `offset=20`, `limit=10` returns records 21-30."
+              },
+              {
+                "name": "limit",
+                "value": "10",
+                "type": "query",
+                "description": "Maximum number of records per page"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Search and retrieve orders using filter parameters such as order `type`, status, date range, and more. This endpoint allows customers and merchants to query past orders for review, analysis, or support. <p> Filters must be provided in the request body. You can paginate results using `offset` and `limit`. If pagination parameters are not specified, the default response returns up to 10 orders. </p>"
+        },
+        {
+          "info": {
+            "name": "Get Order by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/orders/:orderId",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order endpoint - `POST /orders`."
+              }
+            ]
+          },
+          "docs": "As a merchant, you may need to review or monitor an order to answer customer inquiries, resolve a complaint, or for analytics and reporting. With this endpoint, you can get order details by order ID. <p> **Note**: If you do not have the order ID, use the corresponding order number-based endpoint - `GET /orders/order-number/{orderNumber}`.</p>"
+        },
+        {
+          "info": {
+            "name": "Update Order Attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/update-attributes",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "123k4h123k",
+                "type": "path",
+                "description": "The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "The update attributes endpoint is used to update order attributes using the order ID. Attributes can be updated in the integration layer to modify external system related information."
+        },
+        {
+          "info": {
+            "name": "Updates Order Pick-up Details",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/ship-info/:shipToId/pickup",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              },
+              {
+                "name": "shipToId",
+                "value": "b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569",
+                "type": "path",
+                "description": "Unique ID for the given `shipInfo`"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Customers can choose to either have their order delivered to them or opt to pick up from a store or warehouse. In a Buy Online Pickup in Store (BOPIS) scenario, there may be situations when the primary pickup person has changed. <p> This endpoint allows for the updating pickup person details in BOPIS, ensuring that the most up-to-date information is available.</p>"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

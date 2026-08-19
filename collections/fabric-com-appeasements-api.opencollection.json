@@ -1,0 +1,246 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Appeasements API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Appeasements",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an Appeasement by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/create-appeasement",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an appeasement (such as a partial refund or credit) when a customer is dissatisfied \nwith their shopping experience. This endpoint allows you to initiate an appeasement \nrequest by providing an order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, you can still use this endpoint by setting `orderIdType` to `order-number`.\n"
+        },
+        {
+          "info": {
+            "name": "Check Appeasement Eligibility by Order Identifier",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderIdType/:orderIdValue/actions/check-appeasement-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderIdType",
+                "value": "order-id",
+                "type": "path",
+                "description": "The type of order identifier used to locate the order.  \nSupported values:  \n- `order-id`  \n- `order-number`  \n- `order-external-id`\n"
+              },
+              {
+                "name": "orderIdValue",
+                "value": "ORDER0001",
+                "type": "path",
+                "description": "The value of the specified order identifier."
+              }
+            ]
+          },
+          "docs": "Checks whether a given order is eligible for an appeasement (such as a partial refund or credit).  \nThis endpoint evaluates eligibility based on the provided order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+        },
+        {
+          "info": {
+            "name": "Check Appeasement Eligibility by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/check-appeasement-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "ORDER0000111",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              }
+            ]
+          },
+          "docs": "This endpoint checks for the appeasement eligibility of an order by order number."
+        },
+        {
+          "info": {
+            "name": "Create Appeasement by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/create-appeasement",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "123k4h123k",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "When customer is dissatisfied with their shopping experience, you may want to offer an appeasement amount to keep them happy. <p> This endpoint is used to create appeasement request by order number.</p> <p> **Note**: If you do not have an order number, use the corresponding order ID-based endpoint - `POST /orders/{orderId}/actions/create-appeasement`</p>"
+        },
+        {
+          "info": {
+            "name": "Check Appeasement Eligibility by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/check-appeasement-eligibility",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "ORDER0000111",
+                "type": "path",
+                "description": "The merchant-defined order identifier provided during the Create Order - `POST /orders` endpoint."
+              }
+            ]
+          },
+          "docs": "This endpoint checks for the appeasement eligibility of an order by orderId."
+        },
+        {
+          "info": {
+            "name": "Create Appeasement by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/create-appeasement",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated ID. It is returned in the response of Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "When customer is dissatisfied with their shopping experience, you may want to offer an appeasements amount such as partial refund to keep them happy. <p> This endpoint is used to create appeasement request by order ID </p> <p>. **Note**: If you do not have an order ID, but have an order number, use the order number-based endpoint - `POST /orders/order-number/{orderNumber}/actions/create-appeasement`.</p>"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

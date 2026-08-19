@@ -1,0 +1,133 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Catalog Connector Jobs API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Catalog Connector Jobs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Export Products",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/catalog-connector-jobs/actions/export",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Use this endpoint to start an internal job to export products from Catalog Connector. \nSpecify the `formatType` query parameter to export data in either CSV or JSONL format. In the request body, provide the `ids` of all products to be exported, the product type, and the locale.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve Jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/catalog-connector-jobs",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "ids",
+                "value": "5f328bf0b5f328bf0b5f328b, 1e328bf0b5f328bf0b5f3287",
+                "type": "query",
+                "description": "The 24-character system-generated file ID created using the [Create a File](/v3/api-reference/catalog-connector/files/create-file) endpoint.\n\nDepending on the type of IDs, the array represents the file IDs or job IDs. Specify up to 15 IDs separated by commas. Note the following limitations of using this parameter:\n  - This parameter can't be combined with any other parameters. \n  - Pagination isn't supported when this parameter is specified.\n"
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "Specify the type of operation or job performed when the file was uploaded."
+              },
+              {
+                "name": "inputFileIds",
+                "value": "87328bf0b5f328bf0b5f328b, 9f328bf0b5f328bf0b5f3258",
+                "type": "query",
+                "description": "The file IDs specified in the request. You can specify up to 15 file IDs separated by commas. - This parameter can only be combined with the query parameter `lastJobOnly`. - Pagination isn't supported when this is specified."
+              },
+              {
+                "name": "lastJobOnly",
+                "value": "true",
+                "type": "query",
+                "description": "A flag indicating whether the response should be based only on the last job. Set it to `true` to show response based on the last job and `false` to include response based on all jobs that meet the criteria. This is only applicable with `type` and `inputFileIds`."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, the system returns records from 21 to 30."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The maximum number of records per page."
+              }
+            ]
+          },
+          "docs": "Use this endpoint to retrieve a paginated list of import and export jobs related to Catalog Connector.\nThe following constraints apply when using the query parameters:\n  - The query parameter job `ids` can't be combined with any other query parameters.\n  - The query parameter `inputFileIds` can only be combined with the query parameter `lastJobOnly`. \n  - Pagination isn't supported when `ids` or `inputFileIds` is specified.\n"
+        },
+        {
+          "info": {
+            "name": "Search Jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/catalog-connector-jobs/search",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a paginated list of jobs related to products and collections by specifying the request body. You need to specify the criteria for the search such as job `id`, `type`, `status`, `collectionId`, or `inputFileId`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

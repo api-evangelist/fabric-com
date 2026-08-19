@@ -1,0 +1,338 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Bulk Import API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Bulk Import",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Generate CSV Template for Categories",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/api-category/v1/category/bulk/template",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Generates CSV template to bulk upload categories."
+        },
+        {
+          "info": {
+            "name": "Generate S3 Bucket URL for Categories Import",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-category/v1/upload-url",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generates S3 bucket URL to upload categories using CSV file. Follow these steps to bulk upload categories using CSV: <br /> 1) Download the template using *GET /api-category/v1/category/bulk/template* <br /> 2) Upload the URL using *POST /api-category/v1/upload-url*<br /> 3) Open the URL from the response of the above endpoint (*POST /api-category/v1/upload-url*), change the method to PUT, update **binary** in the requestBody type to view the select file option and upload a CSV from local system"
+        },
+        {
+          "info": {
+            "name": "Get Imported Files for Categories",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-category/v1/category/file/search",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Gets a list of files used for importing categories, along with their current statuses. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`."
+        },
+        {
+          "info": {
+            "name": "Get File Upload Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/api-category/v1/category/bulk/file/:fileId/status",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "fileId",
+                "value": "626c3c28e041b10009810b21",
+                "type": "path",
+                "description": "24-character system-generated file ID"
+              }
+            ]
+          },
+          "docs": "Gets file upload status by file ID."
+        },
+        {
+          "info": {
+            "name": "Generate CSV Template File for Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/bulk/template/:accountId/:nodeId",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Account ID"
+              },
+              {
+                "name": "nodeId",
+                "value": "6131f771d4a7fa4314e45ebd",
+                "type": "path",
+                "description": "A 24-character system-generated category ID"
+              }
+            ]
+          },
+          "docs": "Generates CSV template to upload items for a specific category."
+        },
+        {
+          "info": {
+            "name": "Generate S3 Bucket URL for Item Import",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/upload-url",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generates S3 bucket URL to upload items using CSV file. Follow these steps for bulk upload using CSV: <br /> 1) Download the template using *GET /api-product/v1/product/bulk/template/:accountid/:nodeId* <br /> 2) Upload the url using *POST /api-product/v1/upload-url*<br /> 3) Open the URL from the response of the above endpoint (*POST /api-product/v1/upload-url*), change the method to PUT, update **binary** in the requestBody type to view the select file option and upload a CSV from local system"
+        },
+        {
+          "info": {
+            "name": "Get Imported Files for Items",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/file/search",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Gets a list of files used to import items, along with their current statuses. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`."
+        },
+        {
+          "info": {
+            "name": "Generate CSV Template for Bundles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/bulk/template/bundle/:accountId/:nodeId",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "accountId",
+                "value": "",
+                "type": "path",
+                "description": "Account ID"
+              },
+              {
+                "name": "nodeId",
+                "value": "6131f771d4a7fa4314e45ebd",
+                "type": "path",
+                "description": "A 24-character system-generated category ID"
+              }
+            ]
+          },
+          "docs": "Generates CSV template to upload bundles for a specific category."
+        },
+        {
+          "info": {
+            "name": "Generate S3 Bucket URL for Bundle Import",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/upload-url/bundle",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generates S3 bucket URL to upload item bundles using CSV file"
+        },
+        {
+          "info": {
+            "name": "Get Imported Files for Bundles",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/file/bundle/search",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Gets a list of files used to import bundles, along with their current statuses. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`."
+        },
+        {
+          "info": {
+            "name": "Generate CSV Template for Item Attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/bulk/template/attribute",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Generates CSV template to upload item attributes. "
+        },
+        {
+          "info": {
+            "name": "Generate S3 Bucket URL for Item Attribute Import",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/upload-url/attribute",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generates S3 bucket URL to upload item attribute using CSV file"
+        },
+        {
+          "info": {
+            "name": "Get Imported Files for Item Attributes",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/file/attribute/search",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Gets a list of files used to import item attributes, along with their current statuses. You will get a paginated response, which you can narrow down using filter criteria such as `page` and `size`."
+        },
+        {
+          "info": {
+            "name": "Get File Upload Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.fabric.inc/v3/api-product/v1/product/bulk/file/:fileId/status",
+            "headers": [
+              {
+                "name": "x-site-context",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "fileId",
+                "value": "626c3c28e041b10009810b21",
+                "type": "path",
+                "description": "A 24-character system-generated file ID"
+              }
+            ]
+          },
+          "docs": "Gets file upload status by using file ID"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

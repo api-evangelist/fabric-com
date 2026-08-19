@@ -1,0 +1,3303 @@
+{
+  "item": [
+    {
+      "id": "493290d5-fa53-48b1-854d-1fecf75571d6",
+      "name": "Customer Profile",
+      "description": {
+        "content": "These endpoints provide the features for store admins to create and manage customers' details.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b6185f95-43a3-47c2-84c6-9d7beb590fd6",
+          "name": "Add a New Customer",
+          "request": {
+            "name": "Add a New Customer",
+            "description": {
+              "content": "Using this endpoint, you can add a new customer to the system. The response includes an `id` which is required in subsequent calls, such as `GET /customers/{customerId}`, `PUT /customers/{customerId}`, `PATCH /customers/{customerId}`, and more. <br /> When `externalId` is specified, the customers have the ability to manage their own details through the storefront UI.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "Customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A UUID of the request.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"firstName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"title\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"suffix\": \"<string>\"\n  },\n  \"emailAddress\": \"<email>\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"<string>\"\n  },\n  \"externalId\": \"<string>\",\n  \"additionalAttributes\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a55b6c44-2725-4746-bf64-c6005527d357",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"firstName\": \"Pat\",\n    \"lastName\": \"Doe\",\n    \"title\": \"Dr.\",\n    \"middleName\": \"E\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"type\": \"shopper\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"61df41892bf06d00092d0d8a\",\n  \"isDeleted\": false,\n  \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n  \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n  \"name\": {\n    \"firstName\": \"Pat\",\n    \"lastName\": \"Doe\",\n    \"title\": \"Dr.\",\n    \"middleName\": \"E\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"status\": \"ACTIVE\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  },\n  \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7985b01f-a26a-47a0-bddc-683f8ea3705e",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"firstName\": \"Pat\",\n    \"lastName\": \"Doe\",\n    \"title\": \"Dr.\",\n    \"middleName\": \"E\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"type\": \"shopper\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INVALID_ACCOUNT_PROVIDED\",\n  \"message\": \"Invalid account provided for the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a93625ea-5a3e-450f-a12f-0d4082fb45fa",
+              "name": "Forbidden Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"firstName\": \"Pat\",\n    \"lastName\": \"Doe\",\n    \"title\": \"Dr.\",\n    \"middleName\": \"E\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"type\": \"shopper\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "def10432-5c9b-40fd-be70-cdb0695b1341",
+              "name": "The request is received but an internal error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"firstName\": \"Pat\",\n    \"lastName\": \"Doe\",\n    \"title\": \"Dr.\",\n    \"middleName\": \"E\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"type\": \"shopper\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e6dce689-7f75-47fd-b8bb-cfca3775db26",
+          "name": "Get Customers",
+          "request": {
+            "name": "Get Customers",
+            "description": {
+              "content": "Use this endpoint to get a paginated list of customers. <br /> By specifying the query parameters `offset` and `limit`, you can narrow down the search results. You can also `sort` the results in an ascending or descending order. Additionally, with the `isDeleted` query parameter, you can filter for either deleted or non-deleted customers. When no query parameter is specified, by default, you get up to 10 records.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "Customers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "The number of records to skip before returning records. For example, when offset is 20 and limit's 10, this endpoint returns records from 21 to 30."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "The maximum number of records in a single page."
+                },
+                {
+                  "disabled": false,
+                  "key": "sort",
+                  "value": "<string>",
+                  "description": "The criteria to sort results, where `-` indicates a descending order and `+` indicates an ascending order. You can apply sorting to the following fields - `createdAt`, `updatedAt`, `firstName`, `lastName`, `emailAddress` and `status`."
+                },
+                {
+                  "disabled": false,
+                  "key": "isDeleted",
+                  "value": "<boolean>",
+                  "description": "A flag indicating whether only the deleted customers need to be included. Set to `true` to include only the deleted customers and `false` to exclude deleted customers."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A UUID of the request.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "16865c11-c84d-4bae-a09a-7f6a2e122409",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "2"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "-updatedAt"
+                    },
+                    {
+                      "key": "isDeleted",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"query\": {\n    \"offset\": 0,\n    \"limit\": 20,\n    \"count\": 100\n  },\n  \"data\": [\n    {\n      \"id\": \"61df41892bf06d00092d0d8a\",\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"name\": {\n        \"firstName\": \"Pat\",\n        \"lastName\": \"Doe\",\n        \"title\": \"Dr.\",\n        \"middleName\": \"E\",\n        \"suffix\": \"Jr.\"\n      },\n      \"emailAddress\": \"test@example.com\",\n      \"status\": \"ACTIVE\",\n      \"phone\": {\n        \"number\": \"<string>\",\n        \"type\": \"MOBILE\"\n      },\n      \"externalId\": \"1231012312-312-31231asda\",\n      \"additionalAttributes\": {\n        \"middleName\": \"user\"\n      },\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    },\n    {\n      \"id\": \"61df41892bf06d00092d0d8a\",\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"name\": {\n        \"firstName\": \"Pat\",\n        \"lastName\": \"Doe\",\n        \"title\": \"Dr.\",\n        \"middleName\": \"E\",\n        \"suffix\": \"Jr.\"\n      },\n      \"emailAddress\": \"test@example.com\",\n      \"status\": \"ACTIVE\",\n      \"phone\": {\n        \"number\": \"<string>\",\n        \"type\": \"MOBILE\"\n      },\n      \"externalId\": \"1231012312-312-31231asda\",\n      \"additionalAttributes\": {\n        \"middleName\": \"user\"\n      },\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1794310d-d1a1-4e07-928b-18182b1f1a0d",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "2"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "-updatedAt"
+                    },
+                    {
+                      "key": "isDeleted",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INVALID_ACCOUNT_PROVIDED\",\n  \"message\": \"Invalid account provided for the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7de3e6c4-ab93-476b-b40d-51e50cc7cc42",
+              "name": "Forbidden Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "2"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "-updatedAt"
+                    },
+                    {
+                      "key": "isDeleted",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "992b1058-4204-4fcf-be1f-da4feb71cd16",
+              "name": "The request is received but an internal error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "Customers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "0"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "2"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "-updatedAt"
+                    },
+                    {
+                      "key": "isDeleted",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0d511c45-b2b1-4706-8679-fc8d163994a7",
+          "name": "Get Customer Details",
+          "request": {
+            "name": "Get Customer Details",
+            "description": {
+              "content": "Using this endpoint, you can get details of a single customer by `customerId`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":customerId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "customerId",
+                  "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A UUID of the request.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "de106e17-35cd-4f9e-99d3-9facfb455ba6",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"61df41892bf06d00092d0d8a\",\n  \"isDeleted\": false,\n  \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n  \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n  \"name\": {\n    \"firstName\": \"Pat\",\n    \"lastName\": \"Doe\",\n    \"title\": \"Dr.\",\n    \"middleName\": \"E\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"status\": \"ACTIVE\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  },\n  \"deletedAt\": \"2023-08-30T23:20:42.822Z\",\n  \"defaultAddress\": [\n    {\n      \"id\": \"61604a30fdfacd0009816e44\",\n      \"address\": {\n        \"type\": \"BILLING\",\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Doe\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"string\",\n        \"county\": \"King County\",\n        \"country\": \"US\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"additionalAttributes\": {\n        \"landmark\": \"Beach\"\n      },\n      \"isDefault\": false,\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    },\n    {\n      \"id\": \"61604a30fdfacd0009816e44\",\n      \"address\": {\n        \"type\": \"BILLING\",\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Doe\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"string\",\n        \"county\": \"King County\",\n        \"country\": \"US\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"additionalAttributes\": {\n        \"landmark\": \"Beach\"\n      },\n      \"isDefault\": false,\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c51da486-c623-4a25-8f30-ce485fb267c3",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INVALID_ACCOUNT_PROVIDED\",\n  \"message\": \"Invalid account provided for the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cc8307c6-ad2e-4502-9c28-c75460fe9ec0",
+              "name": "Forbidden Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "850f03b3-eb05-430c-b38c-51898cd6ab31",
+              "name": "The resource isn't found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CUSTOMER_NOT_FOUND\",\n  \"message\": \"Data with the given identifier isn't found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "700a72a1-21be-4bc8-821c-9fc7c17aa4a3",
+              "name": "The request is received but an internal error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cdeff3f9-1be5-402a-a7a2-48314ed2485f",
+          "name": "Update Customer Details",
+          "request": {
+            "name": "Update Customer Details",
+            "description": {
+              "content": "Using this endpoint, you can update details of an existing customer by `customerId`. <br /> This endpoint replaces the existing details of the customer. If you want to make only a partial update, without replacing the entire details, use the `PATCH /customers/{customerId}` endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":customerId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "customerId",
+                  "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A UUID of the request.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"title\": \"<string>\",\n    \"firstName\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"suffix\": \"<string>\"\n  },\n  \"emailAddress\": \"<email>\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"<string>\"\n  },\n  \"externalId\": \"<string>\",\n  \"additionalAttributes\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "56ac927c-6e2f-4340-94c3-0381d5fd3360",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"61df41892bf06d00092d0d8a\",\n  \"isDeleted\": false,\n  \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n  \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n  \"name\": {\n    \"firstName\": \"Pat\",\n    \"lastName\": \"Doe\",\n    \"title\": \"Dr.\",\n    \"middleName\": \"E\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"status\": \"ACTIVE\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  },\n  \"deletedAt\": \"2023-08-30T23:20:42.822Z\",\n  \"defaultAddress\": [\n    {\n      \"id\": \"61604a30fdfacd0009816e44\",\n      \"address\": {\n        \"type\": \"BILLING\",\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Doe\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"string\",\n        \"county\": \"King County\",\n        \"country\": \"US\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"additionalAttributes\": {\n        \"landmark\": \"Beach\"\n      },\n      \"isDefault\": false,\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    },\n    {\n      \"id\": \"61604a30fdfacd0009816e44\",\n      \"address\": {\n        \"type\": \"BILLING\",\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Doe\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"string\",\n        \"county\": \"King County\",\n        \"country\": \"US\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"additionalAttributes\": {\n        \"landmark\": \"Beach\"\n      },\n      \"isDefault\": false,\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "913b7bf6-4acb-4430-941f-a0afe3b5a285",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INVALID_ACCOUNT_PROVIDED\",\n  \"message\": \"Invalid account provided for the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "134db511-6874-4982-97ca-b32cea464590",
+              "name": "Forbidden Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ecd1d143-7362-45a0-87de-41311cf7abf1",
+              "name": "The resource isn't found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CUSTOMER_NOT_FOUND\",\n  \"message\": \"Data with the given identifier isn't found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e4010b64-27a0-4589-a684-8ff0206788b1",
+              "name": "The request is received but an internal error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "97bcbf71-0855-4898-b0e5-28a9e73c610d",
+          "name": "Partially Update Customer Details",
+          "request": {
+            "name": "Partially Update Customer Details",
+            "description": {
+              "content": "Using this endpoint, you can partially update details of a customer by `customerId`. To fully replace the details of an existing customer, use the `PUT /customers/{customerId}` endpoint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":customerId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "customerId",
+                  "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A UUID of the request.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PATCH",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": {\n    \"title\": \"<string>\",\n    \"firstName\": \"<string>\",\n    \"middleName\": \"<string>\",\n    \"lastName\": \"<string>\",\n    \"suffix\": \"<string>\"\n  },\n  \"emailAddress\": \"<email>\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"<string>\"\n  },\n  \"externalId\": \"<string>\",\n  \"additionalAttributes\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fefe2c90-8ffe-4387-bdd5-73b0712c1056",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"61df41892bf06d00092d0d8a\",\n  \"isDeleted\": false,\n  \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n  \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n  \"name\": {\n    \"firstName\": \"Pat\",\n    \"lastName\": \"Doe\",\n    \"title\": \"Dr.\",\n    \"middleName\": \"E\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"status\": \"ACTIVE\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  },\n  \"deletedAt\": \"2023-08-30T23:20:42.822Z\",\n  \"defaultAddress\": [\n    {\n      \"id\": \"61604a30fdfacd0009816e44\",\n      \"address\": {\n        \"type\": \"BILLING\",\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Doe\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"string\",\n        \"county\": \"King County\",\n        \"country\": \"US\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"additionalAttributes\": {\n        \"landmark\": \"Beach\"\n      },\n      \"isDefault\": false,\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    },\n    {\n      \"id\": \"61604a30fdfacd0009816e44\",\n      \"address\": {\n        \"type\": \"BILLING\",\n        \"addressLine1\": \"123 Main St.\",\n        \"addressLine2\": \"Suite 100\",\n        \"addressLine3\": \"Seventh floor\",\n        \"addressLine4\": \"Attention: Pat E. Doe\",\n        \"city\": \"Seattle\",\n        \"region\": \"WA\",\n        \"postalCode\": \"string\",\n        \"county\": \"King County\",\n        \"country\": \"US\",\n        \"latitude\": 47.6205,\n        \"longitude\": -122.3493\n      },\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"additionalAttributes\": {\n        \"landmark\": \"Beach\"\n      },\n      \"isDefault\": false,\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5e4c10f1-f63e-41ef-a9d9-f62cfd774d1a",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INVALID_ACCOUNT_PROVIDED\",\n  \"message\": \"Invalid account provided for the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ca4ff316-0e0e-4752-8365-181a313835ea",
+              "name": "Forbidden Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9a680703-0dac-481f-89b5-907e2b6933b3",
+              "name": "The resource isn't found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CUSTOMER_NOT_FOUND\",\n  \"message\": \"Data with the given identifier isn't found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0e05d14c-86de-4d10-b46a-57dba2fb8391",
+              "name": "The request is received but an internal error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": {\n    \"title\": \"Dr.\",\n    \"firstName\": \"Pat\",\n    \"middleName\": \"E\",\n    \"lastName\": \"Kake\",\n    \"suffix\": \"Jr.\"\n  },\n  \"emailAddress\": \"test@example.com\",\n  \"phone\": {\n    \"number\": \"<string>\",\n    \"type\": \"MOBILE\"\n  },\n  \"externalId\": \"1231012312-312-31231asda\",\n  \"additionalAttributes\": {\n    \"middleName\": \"user\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "502946e6-3f79-4251-ab54-cede36365f49",
+          "name": "Delete Customer",
+          "request": {
+            "name": "Delete Customer",
+            "description": {
+              "content": "With this endpoint, you can delete an existing customer data by `customerId`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":customerId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "customerId",
+                  "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A UUID of the request.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8e7f01fb-39c9-4b35-a32a-e2d616e4ad91",
+              "name": "Delete customer response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CUSTOMER_DELETED_SUCCESSFULLY\",\n  \"message\": \"Customer deleted successfully\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "66bbecea-de4b-478a-8949-3dac43ad98fe",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INVALID_ACCOUNT_PROVIDED\",\n  \"message\": \"Invalid account provided for the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c63d8639-aeca-462f-81bb-dc8426a63370",
+              "name": "Forbidden Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7ce5303f-693e-4630-8bf7-25e9983c4f50",
+              "name": "The resource isn't found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CUSTOMER_NOT_FOUND\",\n  \"message\": \"Data with the given identifier isn't found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8810f38b-8151-45cd-8adc-118084d4cacf",
+              "name": "The request is received but an internal error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "85a29e3b-951f-41b7-ad2b-c93182498405",
+          "name": "Update Customer Status",
+          "request": {
+            "name": "Update Customer Status",
+            "description": {
+              "content": "With this endpoint, you can update the account status of an existing customer by `customerId`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                ":customerId",
+                "actions",
+                "update-status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "customerId",
+                  "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A UUID of the request.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b8597a94-c320-4c1c-bcfa-b4719c513c11",
+              "name": "Customer status update response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId",
+                    "actions",
+                    "update-status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CUSTOMER_STATUS_UPDATE_SUCCESS\",\n  \"message\": \"Customer status updated successfully\",\n  \"status\": \"ACTIVE\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ef30f934-c50e-4f3f-afde-3bed79db5b7c",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId",
+                    "actions",
+                    "update-status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INVALID_ACCOUNT_PROVIDED\",\n  \"message\": \"Invalid account provided for the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "908b333b-cb65-4c9f-b5e9-bef5f005bd42",
+              "name": "Forbidden Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId",
+                    "actions",
+                    "update-status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "386ff340-e367-43fc-9677-6facf8afbee8",
+              "name": "The resource isn't found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId",
+                    "actions",
+                    "update-status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"CUSTOMER_NOT_FOUND\",\n  \"message\": \"Data with the given identifier isn't found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b98a50ba-d4a5-4ea9-a4c3-ce250d9e531b",
+              "name": "The request is received but an internal error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    ":customerId",
+                    "actions",
+                    "update-status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "customerId",
+                      "description": "(Required) A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bfc52e35-72eb-4bab-b714-8ff1ff04f0ba",
+          "name": "Search for Customer",
+          "request": {
+            "name": "Search for Customer",
+            "description": {
+              "content": "Using this endpoint, you can search for customers based on filter conditions. By specifying `offset` and `limit`, you can narrow down your search results. In addition, using the `isDelete` property in the request body, you can filter for either deleted or non-deleted customers.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "customers",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "A UUID of the request.",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"match\": {\n    \"id\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    \"firstName\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    \"lastName\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    \"emailAddress\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    \"externalId\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    \"createdAt\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\",\n      \"startCreatedAt\": \"<string>\",\n      \"endCreatedAt\": \"<string>\"\n    },\n    \"updatedAt\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\",\n      \"startUpdatedAt\": \"<string>\",\n      \"endUpdatedAt\": \"<string>\"\n    },\n    \"deletedAt\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\",\n      \"startDeletedAt\": \"<string>\",\n      \"endDeletedAt\": \"<string>\"\n    },\n    \"status\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    \"additionalAttributes\": {\n      \"op\": \"<string>\",\n      \"value\": \"<string>\"\n    },\n    \"isDeleted\": \"<boolean>\"\n  },\n  \"sort\": \"<string>\",\n  \"offset\": 0,\n  \"limit\": 20\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c5bfd8c4-b732-4fd3-99f6-1cb57011ae0c",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"match\": {\n    \"id\": {\n      \"op\": \"IN\",\n      \"value\": \"61df41892bf06d00092d0d8a\"\n    },\n    \"firstName\": {\n      \"op\": \"IN\",\n      \"value\": \"Pat\"\n    },\n    \"lastName\": {\n      \"op\": \"IN\",\n      \"value\": \"Kake\"\n    },\n    \"emailAddress\": {\n      \"op\": \"IN\",\n      \"value\": \"pat.kake@example.com\"\n    },\n    \"externalId\": {\n      \"op\": \"IN\",\n      \"value\": \"1231012312-312-31231asda\"\n    },\n    \"createdAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"updatedAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"deletedAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"status\": {\n      \"op\": \"IN\",\n      \"value\": \"ACTIVE\"\n    },\n    \"additionalAttributes\": {\n      \"op\": \"IN\",\n      \"value\": \"beach\"\n    },\n    \"isDeleted\": false\n  },\n  \"sort\": \"+firstName,-createdAt\",\n  \"offset\": 0,\n  \"limit\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"query\": {\n    \"offset\": 0,\n    \"limit\": 20,\n    \"count\": 100\n  },\n  \"data\": [\n    {\n      \"id\": \"61df41892bf06d00092d0d8a\",\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"name\": {\n        \"firstName\": \"Pat\",\n        \"lastName\": \"Doe\",\n        \"title\": \"Dr.\",\n        \"middleName\": \"E\",\n        \"suffix\": \"Jr.\"\n      },\n      \"emailAddress\": \"test@example.com\",\n      \"status\": \"ACTIVE\",\n      \"phone\": {\n        \"number\": \"<string>\",\n        \"type\": \"MOBILE\"\n      },\n      \"externalId\": \"1231012312-312-31231asda\",\n      \"additionalAttributes\": {\n        \"middleName\": \"user\"\n      },\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    },\n    {\n      \"id\": \"61df41892bf06d00092d0d8a\",\n      \"isDeleted\": false,\n      \"createdAt\": \"2023-08-30T23:20:42.822Z\",\n      \"updatedAt\": \"2023-08-30T23:20:42.822Z\",\n      \"name\": {\n        \"firstName\": \"Pat\",\n        \"lastName\": \"Doe\",\n        \"title\": \"Dr.\",\n        \"middleName\": \"E\",\n        \"suffix\": \"Jr.\"\n      },\n      \"emailAddress\": \"test@example.com\",\n      \"status\": \"ACTIVE\",\n      \"phone\": {\n        \"number\": \"<string>\",\n        \"type\": \"MOBILE\"\n      },\n      \"externalId\": \"1231012312-312-31231asda\",\n      \"additionalAttributes\": {\n        \"middleName\": \"user\"\n      },\n      \"deletedAt\": \"2023-08-30T23:20:42.822Z\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "960c0b9b-2783-44c0-ac5e-1fd38b5c5a80",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"match\": {\n    \"id\": {\n      \"op\": \"IN\",\n      \"value\": \"61df41892bf06d00092d0d8a\"\n    },\n    \"firstName\": {\n      \"op\": \"IN\",\n      \"value\": \"Pat\"\n    },\n    \"lastName\": {\n      \"op\": \"IN\",\n      \"value\": \"Kake\"\n    },\n    \"emailAddress\": {\n      \"op\": \"IN\",\n      \"value\": \"pat.kake@example.com\"\n    },\n    \"externalId\": {\n      \"op\": \"IN\",\n      \"value\": \"1231012312-312-31231asda\"\n    },\n    \"createdAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"updatedAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"deletedAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"status\": {\n      \"op\": \"IN\",\n      \"value\": \"ACTIVE\"\n    },\n    \"additionalAttributes\": {\n      \"op\": \"IN\",\n      \"value\": \"beach\"\n    },\n    \"isDeleted\": false\n  },\n  \"sort\": \"+firstName,-createdAt\",\n  \"offset\": 0,\n  \"limit\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INVALID_ACCOUNT_PROVIDED\",\n  \"message\": \"Invalid account provided for the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f6fbabee-4934-420c-913b-4ff6ade38aaf",
+              "name": "Forbidden Request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"match\": {\n    \"id\": {\n      \"op\": \"IN\",\n      \"value\": \"61df41892bf06d00092d0d8a\"\n    },\n    \"firstName\": {\n      \"op\": \"IN\",\n      \"value\": \"Pat\"\n    },\n    \"lastName\": {\n      \"op\": \"IN\",\n      \"value\": \"Kake\"\n    },\n    \"emailAddress\": {\n      \"op\": \"IN\",\n      \"value\": \"pat.kake@example.com\"\n    },\n    \"externalId\": {\n      \"op\": \"IN\",\n      \"value\": \"1231012312-312-31231asda\"\n    },\n    \"createdAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"updatedAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"deletedAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"status\": {\n      \"op\": \"IN\",\n      \"value\": \"ACTIVE\"\n    },\n    \"additionalAttributes\": {\n      \"op\": \"IN\",\n      \"value\": \"beach\"\n    },\n    \"isDeleted\": false\n  },\n  \"sort\": \"+firstName,-createdAt\",\n  \"offset\": 0,\n  \"limit\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"REQUEST_DENIED\",\n  \"message\": \"Forbidden\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2317cb14-6bae-4a09-b205-a654c1bd47e5",
+              "name": "The request is received but an internal error occurred",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "customers",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "517fa9dfd42d8b00g1o3k312"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "A UUID of the request.",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"match\": {\n    \"id\": {\n      \"op\": \"IN\",\n      \"value\": \"61df41892bf06d00092d0d8a\"\n    },\n    \"firstName\": {\n      \"op\": \"IN\",\n      \"value\": \"Pat\"\n    },\n    \"lastName\": {\n      \"op\": \"IN\",\n      \"value\": \"Kake\"\n    },\n    \"emailAddress\": {\n      \"op\": \"IN\",\n      \"value\": \"pat.kake@example.com\"\n    },\n    \"externalId\": {\n      \"op\": \"IN\",\n      \"value\": \"1231012312-312-31231asda\"\n    },\n    \"createdAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"updatedAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"deletedAt\": {\n      \"op\": \"LTE\",\n      \"value\": \"2023-08-30T23:20:42.822Z\"\n    },\n    \"status\": {\n      \"op\": \"IN\",\n      \"value\": \"ACTIVE\"\n    },\n    \"additionalAttributes\": {\n      \"op\": \"IN\",\n      \"value\": \"beach\"\n    },\n    \"isDeleted\": false\n  },\n  \"sort\": \"+firstName,-createdAt\",\n  \"offset\": 0,\n  \"limit\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"INTERNAL_SERVER_ERROR\",\n  \"message\": \"Internal server error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "bb52bf52-ec0e-410d-bc0a-2b3dcd16f811",
+    "name": "Cart Actions Endpoints Customer Profile API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)\n\nContact Support:\n Name: Cart Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}

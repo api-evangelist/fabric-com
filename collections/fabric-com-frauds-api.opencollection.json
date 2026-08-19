@@ -1,0 +1,164 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cart Actions Endpoints Frauds API",
+    "version": "3.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Frauds",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Cancel Fraud Order by Order Number",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/fraud-cancel",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "123k4h123k",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "If an order is suspected to be fraudulent, it is immediately placed on hold for verification. After verification, if its confirmed as fraudulent, this endpoint is used to cancel the order by order number. <p> **Note**: If you do not have an order number, use the corresponding order ID-based endpoint - `POST /orders/{orderId}/actions/fraud-cancel`.</p>"
+        },
+        {
+          "info": {
+            "name": "Release Fraud Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/order-number/:orderNumber/actions/fraud-release",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderNumber",
+                "value": "123k4h123k",
+                "type": "path",
+                "description": "Merchant-defined order identifier"
+              }
+            ]
+          },
+          "docs": "If an order is suspected to be fraudulent, it is immediately placed on hold for verification. After verification, if it is confirmed as non-fraudulent, this endpoint is used to release the order from hold, by order number so that it can be processed. <p> **Note**: When you do not have an order number, use the corresponding order ID-based endpoint - `POST /orders/{orderId}/actions/fraud-release`.</p>"
+        },
+        {
+          "info": {
+            "name": "Cancel Fraud Order by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/fraud-cancel",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "If an order is suspected to be fraudulent, it is immediately placed on hold for verification. After verification, if it is confirmed as fraudulent, this endpoint is used to cancel the order. <p> **Note**: If you do not have order ID, use the corresponding order number-based endpoint - `POST - /orders/order-number/{orderNumber}/actions/fraud-cancel` </p>"
+        },
+        {
+          "info": {
+            "name": "Release Fraud Order by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.fabric.inc/v3/orders/:orderId/actions/fraud-release",
+            "headers": [
+              {
+                "name": "x-fabric-tenant-id",
+                "value": "5f328bf0b5f328bf0b5f328b"
+              },
+              {
+                "name": "x-fabric-channel-id",
+                "value": "12"
+              },
+              {
+                "name": "x-fabric-request-id",
+                "value": "263e731c-45c8-11ed-b878-0242ac120002"
+              }
+            ],
+            "params": [
+              {
+                "name": "orderId",
+                "value": "5349b4ddd2781d08c09890f4",
+                "type": "path",
+                "description": "24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint"
+              }
+            ]
+          },
+          "docs": "If an order is suspected to be fraudulent, it is immediately placed on hold for verification. After verification, if it is confirmed as non-fraudulent, this endpoint is used to release the order from hold, by order ID, so that it can be processed. <p> **Note**: When you do not have order ID, use the corresponding order number-based endpoint - `POST /orders/order-number/{orderNumber}/actions/fraud-release`.</p>"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

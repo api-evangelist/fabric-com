@@ -1,0 +1,1720 @@
+{
+  "item": [
+    {
+      "id": "9d4495c8-2e28-4d24-80cb-2f48675427a3",
+      "name": "Inventory Imports",
+      "description": {
+        "content": "Inventory Imports endpoints let you upload and download inventory details, in bulk, using a CSV file to and from AWS (Amazon Web Service) server presigned S3 URL that is generated from the Order service",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ad3d9a3c-99b5-4b6f-a4b7-3c76fb521eb9",
+          "name": "Import Inventory Data",
+          "request": {
+            "name": "Import Inventory Data",
+            "description": {
+              "content": "Import inventory data by specifying file name. Successfully uploading the file triggers the import process, which is an event-driven extraction of the file's data to update the respective resource's system.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventory-imports"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "*/*"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fileName\": \"<string>\",\n  \"type\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "51396ccb-3509-4879-9a6a-7d5b688d5464",
+              "name": "Created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "*/*"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fileName\": \"import-file.csv\",\n  \"type\": \"INVENTORY\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "body": "{\n  \"createdAt\": \"2022-08-01T18:03:28.483Z\",\n  \"importId\": \"62ff5c0bec0aed3c86202c32\",\n  \"uploadFileUrl\": \"https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2\",\n  \"attributes\": {\n    \"attribute\": \"12345\"\n  },\n  \"fileName\": \"orderUpload.csv\",\n  \"statusCode\": \"INITIATED\",\n  \"type\": \"INVENTORY\",\n  \"updatedAt\": \"2022-08-01T20:03:28.483Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b510d73d-1a9c-4831-8da7-cf882216de4a",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fileName\": \"import-file.csv\",\n  \"type\": \"INVENTORY\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8b297d02-a7f7-4ef7-97d9-9c09c96c8c0a",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fileName\": \"import-file.csv\",\n  \"type\": \"INVENTORY\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "579fd9d8-7f39-4ff6-88fa-cd95e716b9c0",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "*/*"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fileName\": \"import-file.csv\",\n  \"type\": \"INVENTORY\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "body": "{\n  \"message\": \"Not found\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ec4dee0f-ff3c-4329-9a43-aadcac44d0ea",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fileName\": \"import-file.csv\",\n  \"type\": \"INVENTORY\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "10eef7f4-fd8f-4d84-a7f9-9435dd5db0a7",
+          "name": "Get Uploaded Files That Match Specified Criteria",
+          "request": {
+            "name": "Get Uploaded Files That Match Specified Criteria",
+            "description": {
+              "content": "Get uploaded files that match specified criteria. Returned as paginated records.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventory-imports",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "offset",
+                  "value": "0",
+                  "description": "Number of records to skip before returning records. For example, `offset=20, limit=10` returns records 21-30."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Maximum number of records per page"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "*/*"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"filters\": [\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\",\n    \"<object>\"\n  ],\n  \"sort\": \"-import.createdAt\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c1001153-ccfa-49ea-931f-402ef7894854",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "20"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "*/*"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    }\n  ],\n  \"sort\": \"+import.createdAt\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"createdAt\": \"2022-08-01T18:03:28.483Z\",\n      \"importId\": \"62ff5c0bec0aed3c86202c32\",\n      \"attributes\": {\n        \"attribute\": \"12345\"\n      },\n      \"errorFileUrl\": \"https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2\",\n      \"fileName\": \"orderUpload.csv\",\n      \"finishedAt\": \"2022-08-01T18:03:28.483Z\",\n      \"importCount\": {\n        \"error\": 2000,\n        \"processed\": 8000,\n        \"uploaded\": 10000\n      },\n      \"originalFileUrl\": \"https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2\",\n      \"statusCode\": \"INITIATED\",\n      \"type\": \"INVENTORY\",\n      \"updatedAt\": \"2022-08-01T20:03:28.483Z\"\n    },\n    {\n      \"createdAt\": \"2022-08-01T18:03:28.483Z\",\n      \"importId\": \"62ff5c0bec0aed3c86202c32\",\n      \"attributes\": {\n        \"attribute\": \"12345\"\n      },\n      \"errorFileUrl\": \"https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2\",\n      \"fileName\": \"orderUpload.csv\",\n      \"finishedAt\": \"2022-08-01T18:03:28.483Z\",\n      \"importCount\": {\n        \"error\": 2000,\n        \"processed\": 8000,\n        \"uploaded\": 10000\n      },\n      \"originalFileUrl\": \"https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2\",\n      \"statusCode\": \"INITIATED\",\n      \"type\": \"INVENTORY\",\n      \"updatedAt\": \"2022-08-01T20:03:28.483Z\"\n    }\n  ],\n  \"pagination\": {\n    \"count\": 1000,\n    \"limit\": 10,\n    \"offset\": 1\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "359af8ab-a41e-4d06-9f61-f86fe1b3ba28",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "20"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    }\n  ],\n  \"sort\": \"+import.createdAt\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bab48f0b-9354-4c41-973e-11d2aec4f583",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "20"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    }\n  ],\n  \"sort\": \"+import.createdAt\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "baf01b9f-b2ee-45be-a8b2-5c402d8f22e2",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "offset",
+                      "value": "20"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"filters\": [\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    },\n    {\n      \"condition\": \"EQ\",\n      \"field\": \"import.events\",\n      \"group\": \"GroupA\",\n      \"values\": [\n        \"ORDER_CREATE\"\n      ]\n    }\n  ],\n  \"sort\": \"+import.createdAt\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "581345f0-de51-4d94-9c7a-d3b93f957362",
+          "name": "Get Uploaded File Status and Details",
+          "request": {
+            "name": "Get Uploaded File Status and Details",
+            "description": {
+              "content": "Get uploaded file status and details by specifying `importId`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventory-imports",
+                ":importId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "importId",
+                  "description": "(Required) Upload file document's unique ID"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "*/*"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a19f22eb-c3d6-4b74-bb5e-d6c1c4e3f579",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) Upload file document's unique ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "*/*"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "body": "{\n  \"createdAt\": \"2022-08-01T18:03:28.483Z\",\n  \"importId\": \"62ff5c0bec0aed3c86202c32\",\n  \"attributes\": {\n    \"attribute\": \"12345\"\n  },\n  \"errorFileUrl\": \"https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2\",\n  \"fileName\": \"orderUpload.csv\",\n  \"finishedAt\": \"2022-08-01T18:03:28.483Z\",\n  \"importCount\": {\n    \"error\": 2000,\n    \"processed\": 8000,\n    \"uploaded\": 10000\n  },\n  \"originalFileUrl\": \"https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2\",\n  \"statusCode\": \"INITIATED\",\n  \"type\": \"INVENTORY\",\n  \"updatedAt\": \"2022-08-01T20:03:28.483Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ef69cdaa-c8fd-4570-8e9f-9cb7319abc6c",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) Upload file document's unique ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0c7b2eae-154a-49bd-a83e-63899d5ba3a4",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) Upload file document's unique ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afc9f359-c8cb-4ca3-90fc-1c132c6f1fc3",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) Upload file document's unique ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "*/*"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "*/*"
+                }
+              ],
+              "body": "{\n  \"message\": \"Not found\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d264d1b4-cfbf-4374-b056-0387ac197037",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) Upload file document's unique ID"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "95d44ca6-76ab-46ef-aae5-ff02132f5144",
+          "name": "Force Import Halt",
+          "request": {
+            "name": "Force Import Halt",
+            "description": {
+              "content": "Force import halted due to zeroed out Inventories more than threshold",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "inventory-imports",
+                ":importId",
+                "actions",
+                "force-trigger"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "importId",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                "key": "x-fabric-tenant-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                "key": "x-fabric-channel-id",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Unique request ID",
+                "key": "x-fabric-request-id",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "833616c0-d5ec-40c0-929a-3a6f15ddb35b",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId",
+                    "actions",
+                    "force-trigger"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "15659488-2a73-4876-a74b-353049e02c95",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId",
+                    "actions",
+                    "force-trigger"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": [\n    {\n      \"message\": \"Invalid request\",\n      \"type\": \"CLIENT_ERROR\"\n    }\n  ],\n  \"message\": \"Bad request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "38b2243b-1a54-40de-83ce-8fd5f6f4a5c3",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId",
+                    "actions",
+                    "force-trigger"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Unauthorized request\",\n  \"type\": \"CLIENT_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4c086904-91d4-4e86-accc-fc2fa2446edd",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "inventory-imports",
+                    ":importId",
+                    "actions",
+                    "force-trigger"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "importId",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.",
+                    "key": "x-fabric-tenant-id",
+                    "value": "5f328bf0b5f328bf0b5f328b"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "(Required) x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.",
+                    "key": "x-fabric-channel-id",
+                    "value": "12"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Unique request ID",
+                    "key": "x-fabric-request-id",
+                    "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Unique request ID",
+                  "key": "x-fabric-request-id",
+                  "value": "263e731c-45c8-11ed-b878-0242ac120002"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Internal server error\",\n  \"type\": \"SERVER_ERROR\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.fabric.inc/v3",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "a49d3ef0-ee82-4c88-8b30-bd39c627276f",
+    "name": "Cart Actions Endpoints Inventory Imports API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)\n\nContact Support:\n Name: Cart Support\n Email: support.cnc@fabric.inc",
+      "type": "text/plain"
+    }
+  }
+}
