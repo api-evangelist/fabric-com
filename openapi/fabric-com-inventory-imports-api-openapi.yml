@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Inventory Imports API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: fabric Orders Team
+  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: fabric Inventory Inventory Imports API
   version: 3.0.0
+  x-audience: external-public
 servers:
-- url: https://api.fabric.inc/v3
+- description: Production
+  url: https://api.fabric.inc/v3
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - description: Inventory Imports endpoints let you upload and download inventory details, in bulk, using a CSV file to and from AWS (Amazon Web Service) server presigned S3 URL that is generated from the Order service
   name: Inventory Imports
@@ -321,6 +324,145 @@ paths:
       - Inventory Imports
 components:
   schemas:
+    importCount:
+      description: Import count object
+      properties:
+        error:
+          description: Total rows with errors in the file
+          example: 2000
+          format: int32
+          type: integer
+        processed:
+          description: Total rows processed in the file. `processed` = `uploaded` - `error` **Note:** Rows that are not formatted according to system requirements will not be imported.
+          example: 8000
+          format: int32
+          type: integer
+        uploaded:
+          description: Total rows in the file
+          example: 10000
+          format: int32
+          type: integer
+      type: object
+    searchResponse:
+      description: Search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/inventoryImportStatusResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    inventoryImportsSearchFilter:
+      description: An object containing the inventory import search filter that was.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/singleValueSearchFilter'
+          GT: '#/components/schemas/singleValueSearchFilter'
+          GTE: '#/components/schemas/singleValueSearchFilter'
+          IN: '#/components/schemas/multipleValuesSearchFilter'
+          LT: '#/components/schemas/singleValueSearchFilter'
+          LTE: '#/components/schemas/singleValueSearchFilter'
+          NEQ: '#/components/schemas/singleValueSearchFilter'
+          NIN: '#/components/schemas/multipleValuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: Search condition to apply filter
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: import.events
+          pattern: ^import\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: Group name
+          example: GroupA
+          type: string
+      required:
+      - condition
+      - field
+      type: object
+    inventoryImportRequest:
+      description: An object containing the inventory import request details.
+      properties:
+        fileName:
+          description: Uploaded file name
+          example: import-file.csv
+          type: string
+        type:
+          enum:
+          - INVENTORY
+          - INVENTORY_COUNTERS
+          example: INVENTORY
+          type: string
+      required:
+      - fileName
+      - type
+      type: object
+    inventoryImportResponse:
+      description: An object containing the inventory import response details.
+      properties:
+        attributes:
+          description: A custom attribute placeholder.
+          example:
+            attribute: '12345'
+          type: object
+        createdAt:
+          description: Time of import request
+          example: '2022-08-01T18:03:28.483Z'
+          format: date-time
+          type: string
+        fileName:
+          description: Uploaded file name
+          example: orderUpload.csv
+          type: string
+        importId:
+          description: Imported file's unique ID
+          example: 62ff5c0bec0aed3c86202c32
+          type: string
+        statusCode:
+          description: Uploaded file's current status
+          enum:
+          - INITIATED
+          - PROCESSING
+          - COMPLETED
+          - SYSTEM_ERROR
+          example: INITIATED
+          type: string
+        type:
+          description: Import file type
+          enum:
+          - INVENTORY
+          - INVENTORY_COUNTERS
+          example: INVENTORY
+          type: string
+        updatedAt:
+          description: Date and time record was last modified
+          example: '2022-08-01T20:03:28.483Z'
+          format: date-time
+          type: string
+        uploadFileUrl:
+          description: Uploaded file's path (including security token) generated by the system and returned in the response of the `Create import request` endpoint.
+          example: https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2
+          type: string
+      required:
+      - createdAt
+      - importId
+      - uploadFileUrl
+      type: object
     multipleValuesSearchFilter:
       allOf:
       - $ref: '#/components/schemas/inventoryImportsSearchFilter'
@@ -376,169 +518,6 @@ components:
       required:
       - condition
       - field
-      type: object
-    inventoryImportRequest:
-      description: An object containing the inventory import request details.
-      properties:
-        fileName:
-          description: Uploaded file name
-          example: import-file.csv
-          type: string
-        type:
-          enum:
-          - INVENTORY
-          - INVENTORY_COUNTERS
-          example: INVENTORY
-          type: string
-      required:
-      - fileName
-      - type
-      type: object
-    pagination:
-      description: Pagination response
-      properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
-    inventoryImportResponse:
-      description: An object containing the inventory import response details.
-      properties:
-        attributes:
-          description: A custom attribute placeholder.
-          example:
-            attribute: '12345'
-          type: object
-        createdAt:
-          description: Time of import request
-          example: '2022-08-01T18:03:28.483Z'
-          format: date-time
-          type: string
-        fileName:
-          description: Uploaded file name
-          example: orderUpload.csv
-          type: string
-        importId:
-          description: Imported file's unique ID
-          example: 62ff5c0bec0aed3c86202c32
-          type: string
-        statusCode:
-          description: Uploaded file's current status
-          enum:
-          - INITIATED
-          - PROCESSING
-          - COMPLETED
-          - SYSTEM_ERROR
-          example: INITIATED
-          type: string
-        type:
-          description: Import file type
-          enum:
-          - INVENTORY
-          - INVENTORY_COUNTERS
-          example: INVENTORY
-          type: string
-        updatedAt:
-          description: Date and time record was last modified
-          example: '2022-08-01T20:03:28.483Z'
-          format: date-time
-          type: string
-        uploadFileUrl:
-          description: Uploaded file's path (including security token) generated by the system and returned in the response of the `Create import request` endpoint.
-          example: https://example.com/tenant/import/bulk/1654680575676.csv?X-Amz-Security-Token=IQoJb3JpZ2
-          type: string
-      required:
-      - createdAt
-      - importId
-      - uploadFileUrl
-      type: object
-    inventoryImportsSearchFilter:
-      description: An object containing the inventory import search filter that was.
-      discriminator:
-        mapping:
-          EQ: '#/components/schemas/singleValueSearchFilter'
-          GT: '#/components/schemas/singleValueSearchFilter'
-          GTE: '#/components/schemas/singleValueSearchFilter'
-          IN: '#/components/schemas/multipleValuesSearchFilter'
-          LT: '#/components/schemas/singleValueSearchFilter'
-          LTE: '#/components/schemas/singleValueSearchFilter'
-          NEQ: '#/components/schemas/singleValueSearchFilter'
-          NIN: '#/components/schemas/multipleValuesSearchFilter'
-        propertyName: condition
-      properties:
-        condition:
-          default: EQ
-          description: Search condition to apply filter
-          enum:
-          - EQ
-          - NEQ
-          - IN
-          - NIN
-          - LT
-          - GT
-          - LTE
-          - GTE
-          example: EQ
-          type: string
-        field:
-          description: Field name
-          example: import.events
-          pattern: ^import\.[a-zA-Z.\-_]*
-          type: string
-        group:
-          default: Default
-          description: Group name
-          example: GroupA
-          type: string
-      required:
-      - condition
-      - field
-      type: object
-    importCount:
-      description: Import count object
-      properties:
-        error:
-          description: Total rows with errors in the file
-          example: 2000
-          format: int32
-          type: integer
-        processed:
-          description: Total rows processed in the file. `processed` = `uploaded` - `error` **Note:** Rows that are not formatted according to system requirements will not be imported.
-          example: 8000
-          format: int32
-          type: integer
-        uploaded:
-          description: Total rows in the file
-          example: 10000
-          format: int32
-          type: integer
-      type: object
-    searchResponse:
-      description: Search response
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/inventoryImportStatusResponse'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
       type: object
     inventoryImportStatusResponse:
       description: An object containing the inventory import status response details.
@@ -642,7 +621,47 @@ components:
           example: CLIENT_ERROR
           type: string
       type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
   parameters:
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricChannelIdOptional:
+      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: false
+      schema:
+        type: string
     xFabricTenantId:
       description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
       example: 5f328bf0b5f328bf0b5f328b
@@ -659,22 +678,6 @@ components:
       required: true
       schema:
         type: string
-    xFabricChannelIdOptional:
-      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: false
-      schema:
-        type: string
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
   headers:
     xFabricRequestIdResponseHeader:
       description: Unique request ID
@@ -683,10 +686,13 @@ components:
       schema:
         type: string
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    authorization:
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about fabric Inventory
+  url: https://developer.fabric.inc/v3/docs/orders-inventory
+x-mint:
+  mcp:
+    enabled: true

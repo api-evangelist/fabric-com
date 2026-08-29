@@ -1,18 +1,15 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Pages API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  version: 2.0.0
+  description: fabric's Experiences (formerly known as XM) enables you to design, implement, and optimize omnichannel e-commerce experiences, without having to code. With XM, you can easily add parent and child categories through our intuitive UI to create your website navigation, and seamlessly integrate with our APIs    for dynamic navigation rendering on your store front. In addition, developers can implement agile design by creating reusable design components and use one set of data and APIs for every channel.
+  title: Experiences v2 (XM v2) Pages API
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
   license:
-    name: fabric API License
+    name: fabric Inc
     url: https://fabric.inc/api-license
-  version: 3.0.0
 servers:
-- url: https://api.fabric.inc/v3
-security:
-- bearerAuth: []
+- url: https://cdn.xm.fabric.inc/api
 tags:
 - name: Pages
   description: XM Pages API allows you to fetch all the live pages, or a live page by a specific URL
@@ -521,57 +518,105 @@ paths:
                 message: An internal error occurred. If the issue persists please contact support@fabric.inc.
 components:
   schemas:
-    PageVersion:
+    Error:
       type: object
-      description: Version details
+      description: Server error response object
       properties:
-        _id:
+        code:
           type: string
-          description: Database ID associated with the version
-        isArchived:
-          type: boolean
-          description: True = version is archived <br /> false = version is not archived
-        channel:
-          type: array
-          description: Deprecated field holding channel information
-          items:
-            type: integer
-            description: Channel identifier
-        channels:
-          type: array
-          description: Channel IDs associated with the version
-          items:
-            type: string
-            description: Channel ID associated with the version
-        status:
+          description: Code associated with the type of server error
+        message:
           type: string
-          description: Current status of the version
-        endDate:
-          type: string
-          description: Ending timestamp of page. That is Date and time when the version will no longer be live
-          format: date-time
-        pageId:
-          type: string
-          description: Database ID of the page associated with the version
+          description: Message associated with the server error
+      required:
+      - code
+      - message
+    Page:
+      type: object
+      description: Page details
+      properties:
         name:
           type: string
-          description: Version name
-        description:
+          description: Page name
+        pageUrl:
           type: string
-          description: Version description
-        components:
-          $ref: '#/components/schemas/Components'
-        versionId:
-          type: integer
-          description: Version ID
+          description: Relative page URL
         createdAt:
           type: string
           format: date-time
-          description: Timestamp of version creation
+          description: Timestamp of page creation
         updatedAt:
           type: string
           format: date-time
-          description: Timestamp on when version was last updated
+          description: Timestamp of when page was last updated
+        isActive:
+          type: boolean
+          description: True = page is active <br /> false = page is not active
+        isArchived:
+          type: boolean
+          description: True = page is archived <br /> false = page is not archived
+        pageId:
+          type: integer
+          description: Page ID
+        channels:
+          type: array
+          description: Channel IDs associated with the page
+          items:
+            type: string
+            description: Channel ID associated with the page
+        seoFields:
+          $ref: '#/components/schemas/SeoFields'
+        typeName:
+          type: string
+          description: Name of the page type of page (optional)
+        typeUrl:
+          type: string
+          description: URL of the page type of page (optional)
+        _id:
+          type: string
+          description: Database ID associated with the page
+        __v:
+          type: integer
+          description: VersionKey associated with the page
+        channel:
+          type: array
+          description: deprecated field holding channel information
+          items:
+            type: integer
+            description: Channel identifier
+    PageMetaData:
+      type: object
+      description: Page metadata
+      properties:
+        id:
+          type: string
+          description: Page ID
+        name:
+          type: string
+          description: Page name
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the page was last updated
+        publishedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when page was last published
+        metadata:
+          type: object
+          description: Page metadata
+          properties:
+            url:
+              type: string
+              description: Page URL
+            channels:
+              type: array
+              description: Page channels
+              items:
+                type: string
+                description: Channel identifier
+            seoFields:
+              $ref: '#/components/schemas/SeoFields'
     Components:
       type: array
       description: List of components
@@ -635,110 +680,54 @@ components:
         _id:
           type: string
           description: Virtual ID associated with the SEO field
-    PageMetaData:
+    PageVersion:
       type: object
-      description: Page metadata
+      description: Version details
       properties:
-        id:
-          type: string
-          description: Page ID
-        name:
-          type: string
-          description: Page name
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the page was last updated
-        publishedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when page was last published
-        metadata:
-          type: object
-          description: Page metadata
-          properties:
-            url:
-              type: string
-              description: Page URL
-            channels:
-              type: array
-              description: Page channels
-              items:
-                type: string
-                description: Channel identifier
-            seoFields:
-              $ref: '#/components/schemas/SeoFields'
-    Page:
-      type: object
-      description: Page details
-      properties:
-        name:
-          type: string
-          description: Page name
-        pageUrl:
-          type: string
-          description: Relative page URL
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of page creation
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when page was last updated
-        isActive:
-          type: boolean
-          description: True = page is active <br /> false = page is not active
-        isArchived:
-          type: boolean
-          description: True = page is archived <br /> false = page is not archived
-        pageId:
-          type: integer
-          description: Page ID
-        channels:
-          type: array
-          description: Channel IDs associated with the page
-          items:
-            type: string
-            description: Channel ID associated with the page
-        seoFields:
-          $ref: '#/components/schemas/SeoFields'
-        typeName:
-          type: string
-          description: Name of the page type of page (optional)
-        typeUrl:
-          type: string
-          description: URL of the page type of page (optional)
         _id:
           type: string
-          description: Database ID associated with the page
-        __v:
-          type: integer
-          description: VersionKey associated with the page
+          description: Database ID associated with the version
+        isArchived:
+          type: boolean
+          description: True = version is archived <br /> false = version is not archived
         channel:
           type: array
-          description: deprecated field holding channel information
+          description: Deprecated field holding channel information
           items:
             type: integer
             description: Channel identifier
-    Error:
-      type: object
-      description: Server error response object
-      properties:
-        code:
+        channels:
+          type: array
+          description: Channel IDs associated with the version
+          items:
+            type: string
+            description: Channel ID associated with the version
+        status:
           type: string
-          description: Code associated with the type of server error
-        message:
+          description: Current status of the version
+        endDate:
           type: string
-          description: Message associated with the server error
-      required:
-      - code
-      - message
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+          description: Ending timestamp of page. That is Date and time when the version will no longer be live
+          format: date-time
+        pageId:
+          type: string
+          description: Database ID of the page associated with the version
+        name:
+          type: string
+          description: Version name
+        description:
+          type: string
+          description: Version description
+        components:
+          $ref: '#/components/schemas/Components'
+        versionId:
+          type: integer
+          description: Version ID
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of version creation
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp on when version was last updated

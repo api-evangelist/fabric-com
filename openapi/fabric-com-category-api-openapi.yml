@@ -1,18 +1,16 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Category API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  title: Product Catalog Category API
+  description: 'As brands and retailers grow, they often expand their item catalogs, resulting in the need to enrich and manage more product (commonly referred to as item in fabric) data. fabric Product Catalog alleviates the burden of managing large amounts of item data by means of a central storage repository. fabric Product Catalog helps you with improved data quality, consistent customer experience, reduced time to market, easy integration with external systems, reduced management costs and risks, faster and easier updates, and easy scaling. You can create, import, enrich, validate, distribute, and manage complex item information, centrally. As a result, you deliver product experiences that drive sales through every channel. <br /> <br /> During onboarding, you are given the necessary credentials to access Product Catalog - Copilot UI, APIs, or both. As a prerequisite, you create the items to be sold, identify their unique as well as common properties, and envision their organization into categories and sub categories. A basic workflow is: <br /> 1) **Create item attributes** using POST /api-product/v1/product/attribute/bulk. <br /> 2) **Update attribute mapping** using POST /api-product/v1/product/attribute/mapping <br /> 3) **Create Primary category** using the POST /api-category/v1/category to create the original organizational structure. <br /> 4) **Assign item attributes** to Primary category using POST /api-category/v1/category/item-attribute. <br /> 5) **Create items** using POST /api-product/v1/product/bulk/insert. <br /> 6) **Create Alternate category**, for distribution management and fulfilling various merchandising objectives.'
+  version: 2.0.0
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
-  version: 3.0.0
 servers:
-- url: https://api.fabric.inc/v3
-security:
-- bearerAuth: []
+- url: https://live.copilot.fabric.inc
+  description: Production
 tags:
 - name: Category
   description: 'Categories (also called hierarchies or nodes) are hierarchical structures to organize items and services into intuitive groups. Organizing items in this way simplifies item discovery and lifecycle management. There are two types of categories - **Primary** and **Alternate**. They enable you to create, organize, and distribute item data.  - Primary category is the original catalog tree with nested levels of categories that place each item where it belongs, within a category. For example, `Computers` is a parent category with `Laptops` and `Desktops` as children categories, and `MacBook Pro` is an item within `Laptops`. This organization can be represented as Computers > Laptops > MacBook Pro.  - Alternate categories serve as alternate organizations of the Primary category. Their main purpose is distribution management by displaying items on your website based on separate browsing structure configurations you set to help you achieve various merchandizing objectives, such as organizational requirements, multi-regional assortments, multi-channel assortments, and collections. For example, a company that sells, repairs, and supports computers and related items and services will have a Primary category containing a full list of their SKUs. However, this Primary category is not granular enough to use on their storefront. Hence, multiple Alternate hierarchies are created to target specific shopper segment experiences. For laptop consumers they''ll have one Alternate category, which lists all the laptops and PCs. For large businesses they''ll have  another Alternate category, which lists all commercial laptops, PCs, printers, and servers. Both of the Alternate categories act as filters of the Primary category, tailored to the purpose of that merchandising strategy.  **Category**, a subset of Product Catalog endpoints, aims to simplify catalog management by letting you create, update, and get one or more categories, category attributes, and item attributes. In addition, you can add and update category sources, source exclusions, and item attribute conditions.   **Note**: The root name of primary category is PRIMARY, and it cannot be changed.'
@@ -956,180 +954,17 @@ paths:
                 $ref: '#/components/schemas/ServerError'
 components:
   schemas:
-    ModifyCategory:
-      type: object
-      properties:
-        id:
-          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-          type: string
-          example: 6170135a49b4af38190970fe
-        nodeId:
-          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-          type: number
-          example: 12
-        name:
-          description: Category name
-          type: string
-          example: Furniture
-        createdOn:
-          description: Time of category creation (UTC format)
-          type: string
-          example: '2021-12-01T00:00:00.000Z'
-        modifiedOn:
-          description: Time when category was last updated (UTC format)
-          type: string
-          example: '2021-12-01T00:00:00.000Z'
-        attributes:
-          type: array
-          items:
-            type: object
-            properties: {}
-        children:
-          type: array
-          items:
-            type: object
-            properties: {}
-        breadcrumbs:
-          description: Path of categories leading to root of category
-          type: array
-          items:
-            type: object
-            properties: {}
-    CategoryTree:
-      type: object
-      properties:
-        id:
-          description: A 24-character system-generated category ID
-          type: string
-          example: 6196b45b5cb04b7ce167cb46
-        nodeId:
-          description: Numeric category ID
-          type: number
-          example: 16
-        name:
-          description: Category name
-          type: string
-          example: PCs
-        hierarchy:
-          type: string
-          enum:
-          - PRIMARY
-          - ALTERNATE
-          example: ALTERNATE
-          description: Category type
-        isActive:
-          description: 'true: Category is Active <br /> false: Category is Inactive <br /> **Note**: Inactive status is not applicable for Primary category.'
-          type: boolean
-          example: true
-        attributes:
-          description: Details of attributes belonging to this category
-          type: array
-          items:
-            $ref: '#/components/schemas/Attribute'
-        children:
-          description: Children categories of this category
-          type: array
-          items:
-            $ref: '#/components/schemas/CategoryChild'
-        createdOn:
-          type: string
-          example: '2022-03-09T23:37:54.086Z'
-          description: Time of category creation (UTC format)
-        modifiedOn:
-          type: string
-          example: '2022-03-09T23:37:54.086Z'
-          description: Time when category was last updated (UTC format)
-    SKUPage:
-      type: object
-      properties:
-        totalSize:
-          description: Total number of records
-          type: number
-          example: 3
-        pageSize:
-          description: Number of records (SKUs) per page
-          type: number
-          example: 10
-        pages:
-          description: Number of pages for the given `pageSize`
-          type: number
-          example: 1
-        id:
-          type: string
-          example: 6196b45b5cb04b7ce167cb46
-          description: A 24-character system-generated category ID
-        nodeId:
-          type: number
-          example: 2
-          description: Numeric category ID
-        name:
-          type: string
-          example: electronics
-          description: Numeric category ID
-        skus:
-          description: SKUs of items belonging to this category.
-          type: array
-          example:
-          - mobo12001
-          - mobo12002
-          - mobo12003
-          items:
-            type: string
-    BulkUpsertCategoryResponse:
-      type: object
-      properties:
-        success:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                description: 24-character system-generated category ID
-                type: string
-                example: 611686da50fb7e0c5df78c2e
-              name:
-                type: string
-                description: Category name
-                example: Sofa
-              parentId:
-                type: string
-                description: 24-character system-generated parent category ID
-                example: 63ea48368da1ae00089b7052
-              nodeId:
-                type: number
-                description: Category ID
-                example: 12
-              message:
-                type: string
-                example: Categories upserted successfully
-        failed:
-          type: array
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                example: testNodeChild
-                description: Category name
-              parentNodeName:
-                type: string
-                example: PRIMARY->testNode
-                description: Parent category name
-              message:
-                type: string
-                example: Parent node not found
-                description: Error message
-    ClientError:
+    ServerError:
       type: object
       properties:
         code:
-          description: Error code for machine consumption
+          description: Error code
           type: string
-          example: 400
+          example: 500
         message:
           description: Human-readable error description
           type: string
-          example: Client error
+          example: An internal error occurred. If the issue persists please contact support@fabric.inc.
     AttributePage:
       type: object
       properties:
@@ -1160,234 +995,19 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attribute'
-    CategoryItemAttribute:
+    CategoryAttributeMatch:
       type: object
       properties:
         id:
-          description: A 24-character system-generated attribute ID
+          description: 24-character system-generated attribute ID
           type: string
-          example: 61ba11691a29d52cb2842541
+          example: 6196b44a5cb04b7ce167cb34
         name:
           description: Attribute name
           type: string
-          example: published
-        type:
-          description: Attribute type
-          type: string
-          enum:
-          - TEXT
-          - BOOLEAN
-          - SERIAL
-          - DECIMAL
-          - INTEGER
-          - DATETIME
-          example: BOOLEAN
-        required:
-          type: boolean
-          example: false
-          description: 'true: Attribute is mandatory <br /> false: Attribute is optional'
-    Breadcrumbs:
-      type: object
-      properties:
-        id:
-          description: A 24-character system-generated category ID
-          type: string
-          example: 6196b44a5cb04b7ce167cb34
-        nodeId:
-          type: number
-          example: 10
-          description: Numeric category ID
-        name:
-          description: Category name
-          type: string
-          example: Computers
-        level:
-          description: Depth below the root of the tree
-          type: number
-          example: 0
-        hierarchy:
-          description: Category type
-          type: string
-          enum:
-          - PRIMARY
-          - ALTERNATE
-          example: ALTERNATE
-        isActive:
-          description: 'true: Category is Active <br /> false: Category is Inactive <br /> **Note**: Inactive status is not applicable for Primary category.'
-          type: boolean
-          example: true
-        createdOn:
-          type: string
-          example: '2022-03-09T23:37:54.086Z'
-          description: Time of category creation (UTC format)
-        modifiedOn:
-          type: string
-          example: '2022-03-09T23:37:54.086Z'
-          description: Time when category was last updated (UTC format)
-    manageCategoryAttributesRequest:
-      type: object
-      properties:
-        attributes:
-          type: array
-          items:
-            type: object
-            required:
-            - action
-            - attributeId
-            properties:
-              action:
-                type: string
-                description: Assign or unassign category attributes
-                example: SET
-                enum:
-                - SET
-                - UNSET
-              id:
-                type: string
-                description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-                example: 6196b45b5cb04b7ce167cb46
-              nodeId:
-                type: number
-                description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-                example: 25
-              attributeId:
-                type: string
-                description: A 24-character system-generated attribute ID
-                example: 609ac75051f11a0007cf38b3
-              value:
-                oneOf:
-                - type: boolean
-                - type: number
-                - type: string
-    BulkUpsertCategory:
-      type: array
-      items:
-        type: object
-        required:
-        - name
-        - parentNodeName
-        properties:
-          name:
-            description: Category name to upsert
-            type: string
-            example: Sofa
-          parentNodeName:
-            description: Parent Category breadcrumb starting from **PRIMARY** which is the name of root node
-            type: string
-            example: PRIMARY->Furniture
-          order:
-            description: Order in which category will be displayed in Product Catalog in Copilot.
-            type: number
-            example: 2
-    ModifyCategoryItemAttributesRequest:
-      type: object
-      required:
-      - itemAttributes
-      properties:
-        id:
-          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-          type: string
-          example: 619a8ba6f1875f6dbcaf0521
-        nodeId:
-          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-          type: number
-          example: 25
-        itemAttributes:
-          description: Item attributes within a category
-          type: array
-          items:
-            type: object
-            required:
-            - action
-            - attributeId
-            properties:
-              action:
-                type: string
-                enum:
-                - SET
-                - UNSET
-                description: Action type
-              attributeId:
-                type: string
-                example: 609ac75051f11a0007cf38b3
-                description: A 24-character system-generated attribute ID
-              mandatory:
-                type: boolean
-                example: false
-                description: 'true: Attribute is mandatory <br /> false: Attribute is optional'
-    findCategoryRequest:
-      type: object
-      properties:
-        include:
-          type: object
-          description: Inclusion criteria
-          properties:
-            children:
-              description: 'true: Include children in the response <br /> false: Exclude children from response'
-              example: false
-              type: boolean
-            itemAttributes:
-              description: 'true: Include item attributes in the response <br /> false: Exclude item attributes from the response'
-              example: false
-              type: boolean
-            nodeAttributes:
-              description: 'true: Include category attributes in the response <br /> false: Exclude category attributes from the response'
-              example: false
-              type: boolean
-            filters:
-              description: 'true: Include attributes in the response <br /> false: Exclude attributes from the response'
-              example: false
-              type: boolean
-            sources:
-              description: 'true: Include sources in the response <br /> false: Exclude sources from the response'
-              example: false
-              type: boolean
-            statuses:
-              description: 'true: Include statuses in the response <br /> false: Exclude statuses from the response'
-              example: true
-              type: boolean
-        type:
-          description: Category type. The primary hierarchy contains all branches, whereas alternate hierarchies exist to export alternate organizations of the primary hierarchy. If omitted `ALTERNATE` is considered by default.
-          example: ALTERNATE
-          type: string
-          enum:
-          - PRIMARY
-          - ALTERNATE
-        status:
-          description: Category status. Only ALTERNATE Hierarchies can be filtered using this paramater. If omitted `ACTIVE` status is considered by default.
-          example: ALL
-          type: string
-          enum:
-          - ACTIVE
-          - INACTIVE
-          - ALL
-        page:
-          description: Number of pages in the response.
-          type: number
-          example: 1
-        size:
-          description: Number of categories per page.
-          type: number
-          example: 10
-        match:
-          type: object
-          properties:
-            attribute:
-              $ref: '#/components/schemas/CategoryAttributeMatch'
-            and:
-              type: array
-              items:
-                type: object
-                properties:
-                  attribute:
-                    $ref: '#/components/schemas/CategoryAttributeMatch'
-            or:
-              type: array
-              items:
-                type: object
-                properties:
-                  attribute:
-                    $ref: '#/components/schemas/CategoryAttributeMatch'
+          example: Category Code
+        value:
+          $ref: '#/components/schemas/CategoryAttributeMatchValue'
     CategoryChild:
       type: object
       properties:
@@ -1414,7 +1034,23 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CategoryChild'
-    CategorySingle:
+    CategoryItemAttributeConditions:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 619a8ba6f1875f6dbcaf0521
+          description: A 24-character system-generated category ID
+        nodeId:
+          type: number
+          example: 25
+          description: Numeric category ID
+        itemAttributeConditions:
+          type: array
+          items:
+            type: object
+            properties: {}
+    CategoryAttributes:
       type: object
       properties:
         id:
@@ -1422,128 +1058,48 @@ components:
           type: string
           example: 6196b45b5cb04b7ce167cb46
         nodeId:
-          description: Numeric category ID
           type: number
-          example: 16
+          example: 25
+          description: Numeric category ID
         name:
           description: Category name
           type: string
-          example: PCs
-        hierarchy:
-          description: Category type
-          type: string
-          enum:
-          - PRIMARY
-          - ALTERNATE
-          example: ALTERNATE
-        isActive:
-          description: 'true: Category is Active <br /> false: Category is Inactive <br /> **Note**: Inactive status is not applicable for Primary category.'
-          type: boolean
-          example: true
-        breadcrumbs:
-          description: Path of categories leading to root of categories
-          type: array
-          items:
-            $ref: '#/components/schemas/Breadcrumbs'
+          example: notes
         attributes:
-          description: Attributes belonging to this category
+          description: Attributes and their details
           type: array
           items:
-            $ref: '#/components/schemas/Attribute'
-        children:
-          description: Children categories of this category
-          type: array
-          items:
-            $ref: '#/components/schemas/CategoryChild'
-        createdOn:
-          type: string
-          example: '2022-03-09T23:37:54.086Z'
-          description: Time of category creation (UTC format)
-        modifiedOn:
-          type: string
-          description: Time when category was last updated (UTC format)
-          example: '2022-03-09T23:37:54.086Z'
-    CategoryItemAttributeConditionsRequest:
+            $ref: '#/components/schemas/CategoryAttribute'
+    NodeSourcesAndExclusionsRequest:
       type: object
-      required:
-      - itemAttributes
       properties:
         id:
-          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
           type: string
-          example: 6196b45b5cb04b7ce167cb46
+          example: 6170135a49b4af38190970fe
+          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
         nodeId:
-          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
           type: number
-          example: 25
-        itemAttributeConditions:
-          description: Details of conditions set or unset
+          example: 12
+          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+        sourceExclusions:
           type: array
           items:
             type: object
-            required:
-            - action
-            - attributeId
             properties:
+              id:
+                type: string
+                example: 61701259125b7225cbfb21b9
+                description: A 24-character system-generated category ID
+              nodeId:
+                type: number
+                example: 12
+                description: Numeric category ID
               action:
                 type: string
                 enum:
                 - SET
                 - UNSET
                 description: Action type
-              attributeId:
-                type: string
-                example: 609ac75051f11a0007cf38b3
-                description: A 24-character system-generated attribute ID
-              condition:
-                type: object
-                required:
-                - type
-                properties:
-                  type:
-                    description: Applicable criteria
-                    type: string
-                    enum:
-                    - 'YES'
-                    - 'NO'
-                    - CONTAINS
-                    - DOES_NOT_CONTAIN
-                    - IS_EXACT_MATCH
-                    - IS_EQUAL_TO
-                    - IS_GREATER_THAN
-                    - IS_LESS_THAN
-                    - INCLUDES
-                    - EXCLUDES
-                    example: CONTAINS
-                  value:
-                    type: string
-                    example: shoe
-                    description: Value corresponding to condition `type`
-    CategoryAttribute:
-      type: object
-      properties:
-        id:
-          description: A 24-character system-generated attribute ID
-          type: string
-          example: 61ba11481a29d52cb284252f
-        name:
-          description: Attribute name
-          type: string
-          example: active
-        type:
-          description: Attribute type
-          type: string
-          example: BOOLEAN
-          enum:
-          - TEXT
-          - BOOLEAN
-          - SERIAL
-          - DECIMAL
-          - INTEGER
-          - DATETIME
-        value:
-          example: true
-          description: Value corresponding to `type`
     manageItemAttributesResponse:
       type: object
       properties:
@@ -1618,26 +1174,46 @@ components:
                         description:
                           type: string
                           description: Node doesn't exists in node collection
-    CategoryAttributes:
+    GetCategoryItemAttributes:
       type: object
       properties:
-        id:
-          description: A 24-character system-generated category ID
-          type: string
-          example: 6196b45b5cb04b7ce167cb46
-        nodeId:
+        totalSize:
+          description: Total number of records
           type: number
-          example: 25
-          description: Numeric category ID
-        name:
-          description: Category name
-          type: string
-          example: notes
-        attributes:
-          description: Attributes and their details
+          example: 100
+        pageSize:
+          description: Number of records in a page
+          type: number
+          example: 10
+        pages:
+          description: Number of pages for the given `pageSize`
+          type: number
+          example: 10
+        itemAttributes:
           type: array
           items:
-            $ref: '#/components/schemas/CategoryAttribute'
+            type: object
+            properties:
+              id:
+                description: A 24-character system-generated attribute ID
+                type: string
+                example: 61701259125b7225cbfb21b9
+              mapping:
+                description: If this attribute is mapped to one of the standard names used by Product Catalog, this is the name the attribute is mapped to.
+                type: string
+                example: image
+              name:
+                description: Attribute name
+                type: string
+                example: picture
+              type:
+                description: Attribute type
+                type: string
+                example: TEXT
+              required:
+                description: 'true: Attribute is mandatory <br /> false: Attribute is optional'
+                type: boolean
+                example: true
     ModifyCategoryRequest:
       type: object
       required:
@@ -1659,99 +1235,6 @@ components:
           description: Position of this category amongst sibling categories within the same parent category
           type: number
           example: 3
-    manageItemAttributesRequest:
-      type: object
-      properties:
-        attributes:
-          type: array
-          items:
-            type: object
-            required:
-            - action
-            - attributeId
-            properties:
-              action:
-                type: string
-                description: Assign or unassign item attributes
-                example: SET
-                enum:
-                - SET
-                - UNSET
-              id:
-                type: string
-                description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-                example: 6196b45b5cb04b7ce167cb46
-              nodeId:
-                type: number
-                description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-                example: 25
-              attributeId:
-                type: string
-                description: A 24-character system-generated attribute ID
-                example: 609ac75051f11a0007cf38b3
-              mandatory:
-                type: boolean
-                description: 'true: Attribute is mandatory <br /> false: Attribute is optional'
-                example: false
-    Attribute:
-      type: object
-      properties:
-        id:
-          description: A 24-character system-generated attribute ID
-          type: string
-          example: 619a8ba6f1875f6dbcaf0521
-        name:
-          description: Attribute name
-          type: string
-          example: notes
-        description:
-          type: string
-          description: Attribute description
-          example: Notes for this particular category.
-        type:
-          type: string
-          enum:
-          - TEXT
-          - BOOLEAN
-          - SERIAL
-          - DECIMAL
-          - INTEGER
-          - DATETIME
-          example: TEXT
-        value:
-          type: string
-          example: Unable to fulfill demand.
-          description: Value corresponding to `type`
-    CategoryPage:
-      type: object
-      properties:
-        totalSize:
-          description: Total number of records (categories)
-          type: number
-          example: 100
-        pageSize:
-          description: Number of records (categories) per page
-          type: number
-          example: 10
-        pages:
-          description: Number of pages for the given `pageSize`
-          type: number
-          example: 10
-        categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/CategorySingle'
-    ServerError:
-      type: object
-      properties:
-        code:
-          description: Error code
-          type: string
-          example: 500
-        message:
-          description: Human-readable error description
-          type: string
-          example: An internal error occurred. If the issue persists please contact support@fabric.inc.
     NodeSources:
       type: object
       properties:
@@ -1800,239 +1283,74 @@ components:
                 type: string
                 example: PRIMARY/Furniture/Chairs
                 description: Path of categories leading to source category
-    CategoryItemAttributes:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 619a8ba6f1875f6dbcaf0521
-          description: A 24-character system-generated category ID
-        nodeId:
-          type: number
-          example: 25
-          description: Numeric category ID
-        name:
-          type: string
-          example: electronics
-          description: Category name
-        itemAttributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/CategoryItemAttribute'
-    CategoryItemAttributeConditions:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 619a8ba6f1875f6dbcaf0521
-          description: A 24-character system-generated category ID
-        nodeId:
-          type: number
-          example: 25
-          description: Numeric category ID
-        itemAttributeConditions:
-          type: array
-          items:
-            type: object
-            properties: {}
-    NodeSourceExclusions:
+    BulkUpsertCategory:
+      type: array
+      items:
+        type: object
+        required:
+        - name
+        - parentNodeName
+        properties:
+          name:
+            description: Category name to upsert
+            type: string
+            example: Sofa
+          parentNodeName:
+            description: Parent Category breadcrumb starting from **PRIMARY** which is the name of root node
+            type: string
+            example: PRIMARY->Furniture
+          order:
+            description: Order in which category will be displayed in Product Catalog in Copilot.
+            type: number
+            example: 2
+    CategoryPage:
       type: object
       properties:
         totalSize:
-          description: Total number of records
+          description: Total number of records (categories)
           type: number
           example: 100
         pageSize:
-          description: Number of records (categories) in a page
+          description: Number of records (categories) per page
           type: number
           example: 10
         pages:
           description: Number of pages for the given `pageSize`
           type: number
           example: 10
-        id:
-          type: string
-          example: 6170135a49b4af38190970fe
-          description: A 24-character system-generated category ID.
-        nodeId:
-          type: number
-          example: 12
-          description: Numeric category ID
-        name:
-          type: string
-          example: Furniture
-          description: Category name
-        sourceExclusions:
+        categories:
           type: array
           items:
-            type: object
-            properties:
-              id:
-                type: string
-                example: 61701259125b7225cbfb21b9
-                description: A 24-character system-generated category ID
-              nodeId:
-                type: number
-                example: 12
-                description: Numeric category ID
-              name:
-                type: string
-                example: picture
-                description: Category name
-              breadcrumbString:
-                type: string
-                example: PRIMARY/Furniture/Chairs
-                description: Path leading to source of category
-    GetCategoryItemAttributes:
-      type: object
-      properties:
-        totalSize:
-          description: Total number of records
-          type: number
-          example: 100
-        pageSize:
-          description: Number of records in a page
-          type: number
-          example: 10
-        pages:
-          description: Number of pages for the given `pageSize`
-          type: number
-          example: 10
-        itemAttributes:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                description: A 24-character system-generated attribute ID
-                type: string
-                example: 61701259125b7225cbfb21b9
-              mapping:
-                description: If this attribute is mapped to one of the standard names used by Product Catalog, this is the name the attribute is mapped to.
-                type: string
-                example: image
-              name:
-                description: Attribute name
-                type: string
-                example: picture
-              type:
-                description: Attribute type
-                type: string
-                example: TEXT
-              required:
-                description: 'true: Attribute is mandatory <br /> false: Attribute is optional'
-                type: boolean
-                example: true
-    ModifyCategoryAttributesRequest:
-      type: object
-      required:
-      - attributes
-      properties:
-        id:
-          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-          type: string
-          example: 6196b45b5cb04b7ce167cb46
-        nodeId:
-          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-          type: number
-          example: 25
-        attributes:
-          description: Details of category attributes
-          type: array
-          items:
-            type: object
-            required:
-            - action
-            - attributeId
-            properties:
-              action:
-                type: string
-                enum:
-                - SET
-                - UNSET
-                description: Action type
-              attributeId:
-                type: string
-                example: 609ac75051f11a0007cf38b3
-                description: A 24-character system-generated attribute ID
-              value:
-                oneOf:
-                - type: boolean
-                - type: number
-                - type: string
-    NodeSourcesAndExclusionsRequest:
+            $ref: '#/components/schemas/CategorySingle'
+    Attribute:
       type: object
       properties:
         id:
+          description: A 24-character system-generated attribute ID
           type: string
-          example: 6170135a49b4af38190970fe
-          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-        nodeId:
-          type: number
-          example: 12
-          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-        sourceExclusions:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                example: 61701259125b7225cbfb21b9
-                description: A 24-character system-generated category ID
-              nodeId:
-                type: number
-                example: 12
-                description: Numeric category ID
-              action:
-                type: string
-                enum:
-                - SET
-                - UNSET
-                description: Action type
-    ModifyNodeSourcesRequest:
-      type: object
-      properties:
-        id:
-          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-          type: string
-          example: 6170135a49b4af38190970fe
-        nodeId:
-          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
-          type: number
-          example: 12
-        sources:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                example: 61701259125b7225cbfb21b9
-                description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifiers of a category and one of them must be specified.
-              nodeId:
-                type: number
-                description: Numeric category ID. `nodeId` and `id` are the two identifiers of a category and one of them must be specified.
-                example: 24
-              action:
-                type: string
-                enum:
-                - SET
-                - UNSET
-                description: Action type
-    CategoryAttributeMatch:
-      type: object
-      properties:
-        id:
-          description: 24-character system-generated attribute ID
-          type: string
-          example: 6196b44a5cb04b7ce167cb34
+          example: 619a8ba6f1875f6dbcaf0521
         name:
           description: Attribute name
           type: string
-          example: Category Code
+          example: notes
+        description:
+          type: string
+          description: Attribute description
+          example: Notes for this particular category.
+        type:
+          type: string
+          enum:
+          - TEXT
+          - BOOLEAN
+          - SERIAL
+          - DECIMAL
+          - INTEGER
+          - DATETIME
+          example: TEXT
         value:
-          $ref: '#/components/schemas/CategoryAttributeMatchValue'
+          type: string
+          example: Unable to fulfill demand.
+          description: Value corresponding to `type`
     manageCategoryAttributesResponse:
       type: object
       properties:
@@ -2109,47 +1427,32 @@ components:
                         description:
                           type: string
                           description: Node does not exists
-    CreateCategoryRequest:
+    CategoryItemAttribute:
       type: object
-      required:
-      - name
       properties:
-        name:
-          description: Category name
+        id:
+          description: A 24-character system-generated attribute ID
           type: string
-          example: notes
-        active:
-          description: 'true: Category is Active <br /> false: Category is Inactive <br /> **Note**: When `type` is Primary, `status` must be Active. Inactive status is not applicable for Primary category.'
-          type: boolean
-          example: true
-        parentNodeId:
-          description: Numeric ID of parent category. If omitted, new category is created under the root category.
-          type: number
-          example: 1
-        order:
-          description: 'The order in which this child category appears among the sibling categories (of the same parent). <br /> **Note**: <br /> 1) Applicable only for children categories. <br /> 2) Order 0 means this child category appears at the beginning of other sibling categories. <br /> 3) Unless order is specified, the child category appears at the end.'
-          type: number
-          example: 3
+          example: 61ba11691a29d52cb2842541
+        name:
+          description: Attribute name
+          type: string
+          example: published
         type:
+          description: Attribute type
           type: string
           enum:
-          - ALTERNATE
-          - PRIMARY
-          description: Category type. Specify this field to create a new root category. Applicable only if `parentNodeId` is omitted.
-    CategoryAttributeMatchValue:
-      type: object
-      properties:
-        exact:
-          description: Exact value to match
-          oneOf:
-          - type: string
-          - type: integer
-          - type: boolean
-          example: '1234'
-        contains:
-          description: Value to match as a substring
-          type: string
-          example: '1234'
+          - TEXT
+          - BOOLEAN
+          - SERIAL
+          - DECIMAL
+          - INTEGER
+          - DATETIME
+          example: BOOLEAN
+        required:
+          type: boolean
+          example: false
+          description: 'true: Attribute is mandatory <br /> false: Attribute is optional'
     GetCategoryItemAttributeConditions:
       type: object
       properties:
@@ -2181,6 +1484,219 @@ components:
           items:
             type: object
             properties: {}
+    ModifyNodeSourcesRequest:
+      type: object
+      properties:
+        id:
+          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: string
+          example: 6170135a49b4af38190970fe
+        nodeId:
+          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: number
+          example: 12
+        sources:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 61701259125b7225cbfb21b9
+                description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifiers of a category and one of them must be specified.
+              nodeId:
+                type: number
+                description: Numeric category ID. `nodeId` and `id` are the two identifiers of a category and one of them must be specified.
+                example: 24
+              action:
+                type: string
+                enum:
+                - SET
+                - UNSET
+                description: Action type
+    CategoryItemAttributes:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 619a8ba6f1875f6dbcaf0521
+          description: A 24-character system-generated category ID
+        nodeId:
+          type: number
+          example: 25
+          description: Numeric category ID
+        name:
+          type: string
+          example: electronics
+          description: Category name
+        itemAttributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryItemAttribute'
+    CategoryTree:
+      type: object
+      properties:
+        id:
+          description: A 24-character system-generated category ID
+          type: string
+          example: 6196b45b5cb04b7ce167cb46
+        nodeId:
+          description: Numeric category ID
+          type: number
+          example: 16
+        name:
+          description: Category name
+          type: string
+          example: PCs
+        hierarchy:
+          type: string
+          enum:
+          - PRIMARY
+          - ALTERNATE
+          example: ALTERNATE
+          description: Category type
+        isActive:
+          description: 'true: Category is Active <br /> false: Category is Inactive <br /> **Note**: Inactive status is not applicable for Primary category.'
+          type: boolean
+          example: true
+        attributes:
+          description: Details of attributes belonging to this category
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+        children:
+          description: Children categories of this category
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryChild'
+        createdOn:
+          type: string
+          example: '2022-03-09T23:37:54.086Z'
+          description: Time of category creation (UTC format)
+        modifiedOn:
+          type: string
+          example: '2022-03-09T23:37:54.086Z'
+          description: Time when category was last updated (UTC format)
+    manageCategoryAttributesRequest:
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            type: object
+            required:
+            - action
+            - attributeId
+            properties:
+              action:
+                type: string
+                description: Assign or unassign category attributes
+                example: SET
+                enum:
+                - SET
+                - UNSET
+              id:
+                type: string
+                description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+                example: 6196b45b5cb04b7ce167cb46
+              nodeId:
+                type: number
+                description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+                example: 25
+              attributeId:
+                type: string
+                description: A 24-character system-generated attribute ID
+                example: 609ac75051f11a0007cf38b3
+              value:
+                oneOf:
+                - type: boolean
+                - type: number
+                - type: string
+    CategorySingle:
+      type: object
+      properties:
+        id:
+          description: A 24-character system-generated category ID
+          type: string
+          example: 6196b45b5cb04b7ce167cb46
+        nodeId:
+          description: Numeric category ID
+          type: number
+          example: 16
+        name:
+          description: Category name
+          type: string
+          example: PCs
+        hierarchy:
+          description: Category type
+          type: string
+          enum:
+          - PRIMARY
+          - ALTERNATE
+          example: ALTERNATE
+        isActive:
+          description: 'true: Category is Active <br /> false: Category is Inactive <br /> **Note**: Inactive status is not applicable for Primary category.'
+          type: boolean
+          example: true
+        breadcrumbs:
+          description: Path of categories leading to root of categories
+          type: array
+          items:
+            $ref: '#/components/schemas/Breadcrumbs'
+        attributes:
+          description: Attributes belonging to this category
+          type: array
+          items:
+            $ref: '#/components/schemas/Attribute'
+        children:
+          description: Children categories of this category
+          type: array
+          items:
+            $ref: '#/components/schemas/CategoryChild'
+        createdOn:
+          type: string
+          example: '2022-03-09T23:37:54.086Z'
+          description: Time of category creation (UTC format)
+        modifiedOn:
+          type: string
+          description: Time when category was last updated (UTC format)
+          example: '2022-03-09T23:37:54.086Z'
+    SKUPage:
+      type: object
+      properties:
+        totalSize:
+          description: Total number of records
+          type: number
+          example: 3
+        pageSize:
+          description: Number of records (SKUs) per page
+          type: number
+          example: 10
+        pages:
+          description: Number of pages for the given `pageSize`
+          type: number
+          example: 1
+        id:
+          type: string
+          example: 6196b45b5cb04b7ce167cb46
+          description: A 24-character system-generated category ID
+        nodeId:
+          type: number
+          example: 2
+          description: Numeric category ID
+        name:
+          type: string
+          example: electronics
+          description: Numeric category ID
+        skus:
+          description: SKUs of items belonging to this category.
+          type: array
+          example:
+          - mobo12001
+          - mobo12002
+          - mobo12003
+          items:
+            type: string
     NodeSourcesAndExclusions:
       type: object
       properties:
@@ -2230,14 +1746,489 @@ components:
                 type: string
                 example: PRIMARY/Furniture/Chairs
                 description: Path of categories leading to root of categories
+    CreateCategoryRequest:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          description: Category name
+          type: string
+          example: notes
+        active:
+          description: 'true: Category is Active <br /> false: Category is Inactive <br /> **Note**: When `type` is Primary, `status` must be Active. Inactive status is not applicable for Primary category.'
+          type: boolean
+          example: true
+        parentNodeId:
+          description: Numeric ID of parent category. If omitted, new category is created under the root category.
+          type: number
+          example: 1
+        order:
+          description: 'The order in which this child category appears among the sibling categories (of the same parent). <br /> **Note**: <br /> 1) Applicable only for children categories. <br /> 2) Order 0 means this child category appears at the beginning of other sibling categories. <br /> 3) Unless order is specified, the child category appears at the end.'
+          type: number
+          example: 3
+        type:
+          type: string
+          enum:
+          - ALTERNATE
+          - PRIMARY
+          description: Category type. Specify this field to create a new root category. Applicable only if `parentNodeId` is omitted.
+    CategoryAttributeMatchValue:
+      type: object
+      properties:
+        exact:
+          description: Exact value to match
+          oneOf:
+          - type: string
+          - type: integer
+          - type: boolean
+          example: '1234'
+        contains:
+          description: Value to match as a substring
+          type: string
+          example: '1234'
+    ClientError:
+      type: object
+      properties:
+        code:
+          description: Error code for machine consumption
+          type: string
+          example: 400
+        message:
+          description: Human-readable error description
+          type: string
+          example: Client error
+    findCategoryRequest:
+      type: object
+      properties:
+        include:
+          type: object
+          description: Inclusion criteria
+          properties:
+            children:
+              description: 'true: Include children in the response <br /> false: Exclude children from response'
+              example: false
+              type: boolean
+            itemAttributes:
+              description: 'true: Include item attributes in the response <br /> false: Exclude item attributes from the response'
+              example: false
+              type: boolean
+            nodeAttributes:
+              description: 'true: Include category attributes in the response <br /> false: Exclude category attributes from the response'
+              example: false
+              type: boolean
+            filters:
+              description: 'true: Include attributes in the response <br /> false: Exclude attributes from the response'
+              example: false
+              type: boolean
+            sources:
+              description: 'true: Include sources in the response <br /> false: Exclude sources from the response'
+              example: false
+              type: boolean
+            statuses:
+              description: 'true: Include statuses in the response <br /> false: Exclude statuses from the response'
+              example: true
+              type: boolean
+        type:
+          description: Category type. The primary hierarchy contains all branches, whereas alternate hierarchies exist to export alternate organizations of the primary hierarchy. If omitted `ALTERNATE` is considered by default.
+          example: ALTERNATE
+          type: string
+          enum:
+          - PRIMARY
+          - ALTERNATE
+        status:
+          description: Category status. Only ALTERNATE Hierarchies can be filtered using this paramater. If omitted `ACTIVE` status is considered by default.
+          example: ALL
+          type: string
+          enum:
+          - ACTIVE
+          - INACTIVE
+          - ALL
+        page:
+          description: Number of pages in the response.
+          type: number
+          example: 1
+        size:
+          description: Number of categories per page.
+          type: number
+          example: 10
+        match:
+          type: object
+          properties:
+            attribute:
+              $ref: '#/components/schemas/CategoryAttributeMatch'
+            and:
+              type: array
+              items:
+                type: object
+                properties:
+                  attribute:
+                    $ref: '#/components/schemas/CategoryAttributeMatch'
+            or:
+              type: array
+              items:
+                type: object
+                properties:
+                  attribute:
+                    $ref: '#/components/schemas/CategoryAttributeMatch'
+    NodeSourceExclusions:
+      type: object
+      properties:
+        totalSize:
+          description: Total number of records
+          type: number
+          example: 100
+        pageSize:
+          description: Number of records (categories) in a page
+          type: number
+          example: 10
+        pages:
+          description: Number of pages for the given `pageSize`
+          type: number
+          example: 10
+        id:
+          type: string
+          example: 6170135a49b4af38190970fe
+          description: A 24-character system-generated category ID.
+        nodeId:
+          type: number
+          example: 12
+          description: Numeric category ID
+        name:
+          type: string
+          example: Furniture
+          description: Category name
+        sourceExclusions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 61701259125b7225cbfb21b9
+                description: A 24-character system-generated category ID
+              nodeId:
+                type: number
+                example: 12
+                description: Numeric category ID
+              name:
+                type: string
+                example: picture
+                description: Category name
+              breadcrumbString:
+                type: string
+                example: PRIMARY/Furniture/Chairs
+                description: Path leading to source of category
+    ModifyCategory:
+      type: object
+      properties:
+        id:
+          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: string
+          example: 6170135a49b4af38190970fe
+        nodeId:
+          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: number
+          example: 12
+        name:
+          description: Category name
+          type: string
+          example: Furniture
+        createdOn:
+          description: Time of category creation (UTC format)
+          type: string
+          example: '2021-12-01T00:00:00.000Z'
+        modifiedOn:
+          description: Time when category was last updated (UTC format)
+          type: string
+          example: '2021-12-01T00:00:00.000Z'
+        attributes:
+          type: array
+          items:
+            type: object
+            properties: {}
+        children:
+          type: array
+          items:
+            type: object
+            properties: {}
+        breadcrumbs:
+          description: Path of categories leading to root of category
+          type: array
+          items:
+            type: object
+            properties: {}
+    CategoryAttribute:
+      type: object
+      properties:
+        id:
+          description: A 24-character system-generated attribute ID
+          type: string
+          example: 61ba11481a29d52cb284252f
+        name:
+          description: Attribute name
+          type: string
+          example: active
+        type:
+          description: Attribute type
+          type: string
+          example: BOOLEAN
+          enum:
+          - TEXT
+          - BOOLEAN
+          - SERIAL
+          - DECIMAL
+          - INTEGER
+          - DATETIME
+        value:
+          example: true
+          description: Value corresponding to `type`
+    BulkUpsertCategoryResponse:
+      type: object
+      properties:
+        success:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: 24-character system-generated category ID
+                type: string
+                example: 611686da50fb7e0c5df78c2e
+              name:
+                type: string
+                description: Category name
+                example: Sofa
+              parentId:
+                type: string
+                description: 24-character system-generated parent category ID
+                example: 63ea48368da1ae00089b7052
+              nodeId:
+                type: number
+                description: Category ID
+                example: 12
+              message:
+                type: string
+                example: Categories upserted successfully
+        failed:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                example: testNodeChild
+                description: Category name
+              parentNodeName:
+                type: string
+                example: PRIMARY->testNode
+                description: Parent category name
+              message:
+                type: string
+                example: Parent node not found
+                description: Error message
+    manageItemAttributesRequest:
+      type: object
+      properties:
+        attributes:
+          type: array
+          items:
+            type: object
+            required:
+            - action
+            - attributeId
+            properties:
+              action:
+                type: string
+                description: Assign or unassign item attributes
+                example: SET
+                enum:
+                - SET
+                - UNSET
+              id:
+                type: string
+                description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+                example: 6196b45b5cb04b7ce167cb46
+              nodeId:
+                type: number
+                description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+                example: 25
+              attributeId:
+                type: string
+                description: A 24-character system-generated attribute ID
+                example: 609ac75051f11a0007cf38b3
+              mandatory:
+                type: boolean
+                description: 'true: Attribute is mandatory <br /> false: Attribute is optional'
+                example: false
+    CategoryItemAttributeConditionsRequest:
+      type: object
+      required:
+      - itemAttributes
+      properties:
+        id:
+          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: string
+          example: 6196b45b5cb04b7ce167cb46
+        nodeId:
+          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: number
+          example: 25
+        itemAttributeConditions:
+          description: Details of conditions set or unset
+          type: array
+          items:
+            type: object
+            required:
+            - action
+            - attributeId
+            properties:
+              action:
+                type: string
+                enum:
+                - SET
+                - UNSET
+                description: Action type
+              attributeId:
+                type: string
+                example: 609ac75051f11a0007cf38b3
+                description: A 24-character system-generated attribute ID
+              condition:
+                type: object
+                required:
+                - type
+                properties:
+                  type:
+                    description: Applicable criteria
+                    type: string
+                    enum:
+                    - 'YES'
+                    - 'NO'
+                    - CONTAINS
+                    - DOES_NOT_CONTAIN
+                    - IS_EXACT_MATCH
+                    - IS_EQUAL_TO
+                    - IS_GREATER_THAN
+                    - IS_LESS_THAN
+                    - INCLUDES
+                    - EXCLUDES
+                    example: CONTAINS
+                  value:
+                    type: string
+                    example: shoe
+                    description: Value corresponding to condition `type`
+    Breadcrumbs:
+      type: object
+      properties:
+        id:
+          description: A 24-character system-generated category ID
+          type: string
+          example: 6196b44a5cb04b7ce167cb34
+        nodeId:
+          type: number
+          example: 10
+          description: Numeric category ID
+        name:
+          description: Category name
+          type: string
+          example: Computers
+        level:
+          description: Depth below the root of the tree
+          type: number
+          example: 0
+        hierarchy:
+          description: Category type
+          type: string
+          enum:
+          - PRIMARY
+          - ALTERNATE
+          example: ALTERNATE
+        isActive:
+          description: 'true: Category is Active <br /> false: Category is Inactive <br /> **Note**: Inactive status is not applicable for Primary category.'
+          type: boolean
+          example: true
+        createdOn:
+          type: string
+          example: '2022-03-09T23:37:54.086Z'
+          description: Time of category creation (UTC format)
+        modifiedOn:
+          type: string
+          example: '2022-03-09T23:37:54.086Z'
+          description: Time when category was last updated (UTC format)
+    ModifyCategoryItemAttributesRequest:
+      type: object
+      required:
+      - itemAttributes
+      properties:
+        id:
+          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: string
+          example: 619a8ba6f1875f6dbcaf0521
+        nodeId:
+          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: number
+          example: 25
+        itemAttributes:
+          description: Item attributes within a category
+          type: array
+          items:
+            type: object
+            required:
+            - action
+            - attributeId
+            properties:
+              action:
+                type: string
+                enum:
+                - SET
+                - UNSET
+                description: Action type
+              attributeId:
+                type: string
+                example: 609ac75051f11a0007cf38b3
+                description: A 24-character system-generated attribute ID
+              mandatory:
+                type: boolean
+                example: false
+                description: 'true: Attribute is mandatory <br /> false: Attribute is optional'
+    ModifyCategoryAttributesRequest:
+      type: object
+      required:
+      - attributes
+      properties:
+        id:
+          description: A 24-character system-generated category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: string
+          example: 6196b45b5cb04b7ce167cb46
+        nodeId:
+          description: Numeric category ID. `nodeId` and `id` are the two identifier of a category, and one of them must be specified.
+          type: number
+          example: 25
+        attributes:
+          description: Details of category attributes
+          type: array
+          items:
+            type: object
+            required:
+            - action
+            - attributeId
+            properties:
+              action:
+                type: string
+                enum:
+                - SET
+                - UNSET
+                description: Action type
+              attributeId:
+                type: string
+                example: 609ac75051f11a0007cf38b3
+                description: A 24-character system-generated attribute ID
+              value:
+                oneOf:
+                - type: boolean
+                - type: number
+                - type: string
   parameters:
-    Size:
-      in: query
-      name: size
-      description: 'Number of records per page <br /> **Note**: <br /> 1) Always paired with `page`. <br /> 2) Applicable only in a paginated response. <br /> 3) No default value set. Unless a value is specified, endpoint returns an error.'
-      example: 10
-      schema:
-        type: number
     MandatoryPage:
       in: query
       name: page
@@ -2246,6 +2237,21 @@ components:
       schema:
         type: number
       required: true
+    Size:
+      in: query
+      name: size
+      description: 'Number of records per page <br /> **Note**: <br /> 1) Always paired with `page`. <br /> 2) Applicable only in a paginated response. <br /> 3) No default value set. Unless a value is specified, endpoint returns an error.'
+      example: 10
+      schema:
+        type: number
+    xSiteContent:
+      name: x-site-context
+      in: header
+      description: The `x-site-context` header is a JSON object that contains information about the source you wish to pull from. The mandatory `account` is the 24 character identifier found in Copilot. The `channel` (Sales channel ID), `stage` (environment name), and `date` attributes can be used to further narrow the scope of your data source.
+      required: true
+      schema:
+        type: string
+        example: '{"date": "2023-01-01T00:00:00.000Z", "channel": 12, "account": "1234abcd5678efgh9ijklmno","stage":"production"}'
     Page:
       in: query
       name: page
@@ -2261,19 +2267,17 @@ components:
       schema:
         type: number
       required: true
-    xSiteContent:
-      name: x-site-context
-      in: header
-      description: The `x-site-context` header is a JSON object that contains information about the source you wish to pull from. The mandatory `account` is the 24 character identifier found in Copilot. The `channel` (Sales channel ID), `stage` (environment name), and `date` attributes can be used to further narrow the scope of your data source.
-      required: true
-      schema:
-        type: string
-        example: '{"date": "2023-01-01T00:00:00.000Z", "channel": 12, "account": "1234abcd5678efgh9ijklmno","stage":"production"}'
   securitySchemes:
-    bearerAuth:
+    api_key:
+      type: apiKey
+      name: x-api-key
+      description: The `x-api-key` enables you to access the fabric API without `Authorization`. You must request fabric Inc to obtain this key.<br />Authorization` header is required if `x-api-key` is omitted.
+      in: header
+    authorization:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      description: S2S access token (JWT) from fabric Identity service (during Login)
+externalDocs:
+  description: Find out more about Product Catalog
+  url: /v3/product-catalog/user-guides/product-catalog/overview

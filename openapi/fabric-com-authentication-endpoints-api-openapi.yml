@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Authentication Endpoints API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  description: fabric **Identity** API is designed to be used by all third-party developers for the purpose of authenticating and obtaining access tokens. These tokens are essential for building e-commerce solutions that seamlessly integrate with fabric services such as Orders, Offers, among others.
+  version: 2.0.0
+  termsOfService: https://fabric.inc/terms-of-use
+  title: Authentication v3 Authentication Endpoints API
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
-  version: 3.0.0
 servers:
-- url: https://api.fabric.inc/v3
-security:
-- bearerAuth: []
+- url: https://{customer_name}.login.fabric.inc
+  description: Production
+  variables:
+    customer_name:
+      default: yourcompany
+      description: The customer name as provided by the Support team
 tags:
 - name: Authentication Endpoints
   description: These endpoints allow apps to authenticate themselves or their end users using fabric Identity. The main objective of these endpoints is to provide access tokens to applications, allowing them to invoke other fabric services such as Orders, Product Catalog, and more.
@@ -173,11 +176,6 @@ components:
           type: string
           example: openid profile email
           description: Always set to `openid profile email` as part of the OpenID Connect standard.
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+externalDocs:
+  description: Find out more about Identity
+  url: https://developer.fabric.inc/reference/identity-developer-guide-intro

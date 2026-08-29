@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Networks API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: fabric Orders Team
+  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: fabric Inventory Networks API
   version: 3.0.0
+  x-audience: external-public
 servers:
-- url: https://api.fabric.inc/v3
+- description: Production
+  url: https://api.fabric.inc/v3
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - description: Network refers to a group of locations having a group of SKUs in each location. These endpoints let you read, create, and manage an inventory-network by location, brand, or any other custom attributes.
   name: Networks
@@ -404,83 +407,7 @@ paths:
       tags:
       - Networks
 components:
-  parameters:
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
   schemas:
-    networkSearchResponse:
-      description: Network search response
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/network'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
-      type: object
-    pagination:
-      description: Pagination response
-      properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
     network:
       description: Network response details
       properties:
@@ -534,43 +461,15 @@ components:
       - name
       - rule
       type: object
-    updateNetwork:
-      description: Request sample to update network
+    networkSearchResponse:
+      description: Network search response
       properties:
-        description:
-          description: Network description
-          example: network-mar6th
-          type: string
-        lowStock:
-          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
-          example: 10
-          format: int32
-          type: integer
-        name:
-          description: Network name
-          example: Distribution Center
-          type: string
-        networkId:
-          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
-          example: 5349b4ddd2781d08c09890f4
-          type: string
-        rule:
-          description: Rule by which a network will be created with the group of inventories
-          example:
-            locationData.attributes.safetyStock: 10
-            locationData.isActive: true
-            locationData.type: Store
-            productData.attributes.brand: ABC
-            productData.attributes.isSoldOnline: true
-          type: object
-        safetyStock:
-          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
-          example: 10
-          format: int32
-          type: integer
-      required:
-      - name
-      - rule
+        data:
+          items:
+            $ref: '#/components/schemas/network'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
       type: object
     createNetwork:
       description: Sample request to create network
@@ -615,6 +514,110 @@ components:
       - name
       - rule
       type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    updateNetwork:
+      description: Request sample to update network
+      properties:
+        description:
+          description: Network description
+          example: network-mar6th
+          type: string
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Network name
+          example: Distribution Center
+          type: string
+        networkId:
+          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        rule:
+          description: Rule by which a network will be created with the group of inventories
+          example:
+            locationData.attributes.safetyStock: 10
+            locationData.isActive: true
+            locationData.type: Store
+            productData.attributes.brand: ABC
+            productData.attributes.isSoldOnline: true
+          type: object
+        safetyStock:
+          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
+          example: 10
+          format: int32
+          type: integer
+      required:
+      - name
+      - rule
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+  parameters:
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
   headers:
     xFabricRequestIdResponseHeader:
       description: Unique request ID
@@ -623,10 +626,13 @@ components:
       schema:
         type: string
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    authorization:
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about fabric Inventory
+  url: https://developer.fabric.inc/v3/docs/orders-inventory
+x-mint:
+  mcp:
+    enabled: true

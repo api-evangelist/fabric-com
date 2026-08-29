@@ -1,18 +1,15 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Menu API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  version: 2.0.0
+  description: fabric's Experiences (formerly known as XM) enables you to design, implement, and optimize omnichannel e-commerce experiences, without having to code. With XM, you can easily add parent and child categories through our intuitive UI to create your website navigation, and seamlessly integrate with our APIs    for dynamic navigation rendering on your store front. In addition, developers can implement agile design by creating reusable design components and use one set of data and APIs for every channel.
+  title: Experiences v2 (XM v2) Menu API
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
   license:
-    name: fabric API License
+    name: fabric Inc
     url: https://fabric.inc/api-license
-  version: 3.0.0
 servers:
-- url: https://api.fabric.inc/v3
-security:
-- bearerAuth: []
+- url: https://cdn.xm.fabric.inc/api
 tags:
 - name: Menu
   description: XM Menu API allows you to fetch menus and their items
@@ -265,6 +262,19 @@ paths:
                 message: An internal error occurred. If the issue persists please contact support@fabric.inc.
 components:
   schemas:
+    Error:
+      type: object
+      description: Server error response object
+      properties:
+        code:
+          type: string
+          description: Code associated with the type of server error
+        message:
+          type: string
+          description: Message associated with the server error
+      required:
+      - code
+      - message
     BrowseMenuItem:
       type: object
       description: Browse menu item object
@@ -321,24 +331,3 @@ components:
           description: Database ID for menu item parent
         children:
           $ref: '#/components/schemas/BrowseMenuItem'
-    Error:
-      type: object
-      description: Server error response object
-      properties:
-        code:
-          type: string
-          description: Code associated with the type of server error
-        message:
-          type: string
-          description: Message associated with the server error
-      required:
-      - code
-      - message
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '

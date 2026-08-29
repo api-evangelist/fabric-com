@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Credits API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: fabric Support Team
+  description: fabric **Orders** API is a scalable multi-tenant service designed to streamline your order management process. Orders API is a REST and JSON driven interface enabling retailers to create orders directly from online Storefronts and Point-of-Sale systems, and serve as records of purchase transactions to permit retailers to operate against a standard schema with varied purchase channels. <p> fabric Orders API creates orders real time in the orders database, unifying the order data for users to streamline order lifecycle orchestration and customer service operations. It offers a range of features including the ability to create orders, get orders, update pickup details, and track orders, as well as search for existing orders. Also, the Orders API makes it easy to check eligibility of return, cancel, and exchange requests as well process them, if eligible. In addition, you can flag fraudulent orders based on due diligence, and either release them from hold or cancel them altogether. The appeasement feature helps you resolve any issues that may arise with an order and keep your customers happy. </p>
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: fabric Orders Credits API
   version: 3.0.0
+  x-audience: external-public
 servers:
-- url: https://api.fabric.inc/v3
+- description: Production
+  url: https://api.fabric.inc/v3
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - description: Credits are refunds to customers, often in the form of gift cards or credit notes, when customers have made payments with cash or a card that has subsequently expired. Credits are provided during order returns and appeasements. Use these endpoints to create and manage credits.
   name: Credits
@@ -847,6 +850,154 @@ paths:
       - Credits
 components:
   schemas:
+    reasonCodeAndDescription:
+      description: Return or exchange reason
+      properties:
+        code:
+          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
+          example: 1DMG
+          type: string
+        description:
+          description: Brief description for the return `code`
+          example: Damaged
+          type: string
+      type: object
+    orderCreditsResponse:
+      description: Credits response
+      properties:
+        credits:
+          items:
+            $ref: '#/components/schemas/creditsResponse'
+          type: array
+      type: object
+    creditsEligibilityResponse:
+      description: Credits eligibility model
+      properties:
+        description:
+          description: Description provided while requesting credits (for reference)
+          example: Policy used to add credits
+          type: string
+        eligibleReasonCodes:
+          description: Reason codes to support credits request
+          items:
+            $ref: '#/components/schemas/reasonCodeAndDescription'
+          type: array
+        orderId:
+          description: 24-character system-generated order ID
+          example: 62f3982438bcab1951be0a19
+          type: string
+        policyName:
+          description: Merchant-given policy name.
+          example: Credits policy
+          type: string
+        policyType:
+          description: Policy type used to check credits eligibility
+          example: credits
+          type: string
+      type: object
+    orderCreditsRequest:
+      description: Credits request
+      properties:
+        credits:
+          items:
+            $ref: '#/components/schemas/creditsRequest'
+          type: array
+      required:
+      - credits
+      type: object
+    orderCreditUpdateRequest:
+      description: An object containing update credits details. This is only triggered on request.
+      properties:
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
+          example:
+            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        creditId:
+          description: Unique UUID of credit
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+          type: string
+        note:
+          description: Placeholder for additional information, if any.
+          example: Credit request initiated
+          type: string
+        statusCode:
+          description: Credit status
+          enum:
+          - PENDING
+          - CONFIRMED
+          - FAILED
+          - CANCELED
+          example: PENDING
+          type: string
+      required:
+      - creditId
+      - statusCode
+      type: object
+    creditsRequest:
+      description: Request for credits
+      properties:
+        amount:
+          description: Credits amount
+          example: 21.5
+          format: double
+          type: number
+        amountInCurrencies:
+          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
+          example:
+            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated a the credits request
+          example: '12312232'
+          type: string
+        note:
+          description: Note
+          example: Credit request initiated
+          type: string
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        policyCode:
+          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
+          example: RC1
+          type: string
+        reasonCode:
+          description: Reason code
+          example: EC
+          type: string
+        source:
+          description: Source of credits request
+          example: CSR
+          type: string
+        subReasonCode:
+          description: Subreason code
+          example: ACC
+          type: string
+        type:
+          description: Credit type. Currently, supports only Gift Card
+          enum:
+          - GIFT_CARD
+          example: GIFT_CARD
+          type: string
+      required:
+      - amount
+      - currency
+      - reasonCode
+      - source
+      - type
+      type: object
     creditsResponse:
       description: Credit response
       properties:
@@ -934,70 +1085,6 @@ components:
       - source
       - type
       type: object
-    creditsRequest:
-      description: Request for credits
-      properties:
-        amount:
-          description: Credits amount
-          example: 21.5
-          format: double
-          type: number
-        amountInCurrencies:
-          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrency'
-          type: array
-        attributes:
-          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
-          example:
-            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
-          type: object
-        currency:
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-          type: string
-        employeeId:
-          description: Employee (ID or name) who initiated a the credits request
-          example: '12312232'
-          type: string
-        note:
-          description: Note
-          example: Credit request initiated
-          type: string
-        paymentCounter:
-          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
-          example: 1
-          format: int32
-          type: integer
-        policyCode:
-          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
-          example: RC1
-          type: string
-        reasonCode:
-          description: Reason code
-          example: EC
-          type: string
-        source:
-          description: Source of credits request
-          example: CSR
-          type: string
-        subReasonCode:
-          description: Subreason code
-          example: ACC
-          type: string
-        type:
-          description: Credit type. Currently, supports only Gift Card
-          enum:
-          - GIFT_CARD
-          example: GIFT_CARD
-          type: string
-      required:
-      - amount
-      - currency
-      - reasonCode
-      - source
-      - type
-      type: object
     amountInCurrency:
       description: Amount in currency object details.
       properties:
@@ -1018,90 +1105,6 @@ components:
       - currency
       - group
       type: object
-    orderCreditsRequest:
-      description: Credits request
-      properties:
-        credits:
-          items:
-            $ref: '#/components/schemas/creditsRequest'
-          type: array
-      required:
-      - credits
-      type: object
-    reasonCodeAndDescription:
-      description: Return or exchange reason
-      properties:
-        code:
-          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
-          example: 1DMG
-          type: string
-        description:
-          description: Brief description for the return `code`
-          example: Damaged
-          type: string
-      type: object
-    creditsEligibilityResponse:
-      description: Credits eligibility model
-      properties:
-        description:
-          description: Description provided while requesting credits (for reference)
-          example: Policy used to add credits
-          type: string
-        eligibleReasonCodes:
-          description: Reason codes to support credits request
-          items:
-            $ref: '#/components/schemas/reasonCodeAndDescription'
-          type: array
-        orderId:
-          description: 24-character system-generated order ID
-          example: 62f3982438bcab1951be0a19
-          type: string
-        policyName:
-          description: Merchant-given policy name.
-          example: Credits policy
-          type: string
-        policyType:
-          description: Policy type used to check credits eligibility
-          example: credits
-          type: string
-      type: object
-    orderCreditsResponse:
-      description: Credits response
-      properties:
-        credits:
-          items:
-            $ref: '#/components/schemas/creditsResponse'
-          type: array
-      type: object
-    orderCreditUpdateRequest:
-      description: An object containing update credits details. This is only triggered on request.
-      properties:
-        attributes:
-          description: Merchant-defined custom attributes. This is a placeholder for additional info (in key-value pairs).
-          example:
-            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
-          type: object
-        creditId:
-          description: Unique UUID of credit
-          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
-          type: string
-        note:
-          description: Placeholder for additional information, if any.
-          example: Credit request initiated
-          type: string
-        statusCode:
-          description: Credit status
-          enum:
-          - PENDING
-          - CONFIRMED
-          - FAILED
-          - CANCELED
-          example: PENDING
-          type: string
-      required:
-      - creditId
-      - statusCode
-      type: object
     errorResponse:
       description: Error response
       properties:
@@ -1120,6 +1123,14 @@ components:
           type: string
       type: object
   parameters:
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
     xFabricTenantId:
       description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
       example: 5f328bf0b5f328bf0b5f328b
@@ -1136,14 +1147,6 @@ components:
       required: true
       schema:
         type: string
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
   headers:
     xFabricRequestIdResponseHeader:
       description: Unique request ID
@@ -1152,10 +1155,13 @@ components:
       schema:
         type: string
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    authorization:
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about fabric Orders (also called OMS)
+  url: https://developer.fabric.inc/v3/docs/orders-overview
+x-mint:
+  mcp:
+    enabled: true

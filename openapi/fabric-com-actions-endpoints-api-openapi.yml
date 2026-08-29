@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: fabric Orders Team
+  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: fabric Inventory Actions Endpoints API
   version: 3.0.0
+  x-audience: external-public
 servers:
-- url: https://api.fabric.inc/v3
+- description: Production
+  url: https://api.fabric.inc/v3
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - description: 'This endpoint helps perform additional operations for inventory
 
@@ -87,89 +90,34 @@ paths:
       - Actions Endpoints
 components:
   schemas:
-    valuesSearchFilter:
-      allOf:
-      - $ref: '#/components/schemas/inventorySearchFilter'
-      - properties:
-          values:
-            items:
-              description: Multiple values using which inventory details are searched
-              example: SKU
-              oneOf:
-              - description: Target record's non-numeric identifier
-                example: ORDER_CREATE
-                type: string
-              - description: Target record's numeric identifier
-                example: 112233
-                format: int64
-                type: number
-              - description: Target record's numeric identifier
-                example: 1122.33
-                format: double
-                type: number
-            maxItems: 25
-            minItems: 1
-            type: array
-        type: object
-      description: Criteria to find inventories by multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
-      required:
-      - condition
-      - field
-      type: object
-    pagination:
-      description: Pagination response
+    importCount:
+      description: Import count object
       properties:
-        count:
-          description: Total number of search results
-          example: 1000
+        error:
+          description: Total rows with errors in the file
+          example: 2000
           format: int32
           type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
+        processed:
+          description: Total rows processed in the file. `processed` = `uploaded` - `error` **Note:** Rows that are not formatted according to system requirements will not be imported.
+          example: 8000
           format: int32
-          maximum: 100
-          minimum: 1
           type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
+        uploaded:
+          description: Total rows in the file
+          example: 10000
           format: int32
-          minimum: 0
           type: integer
       type: object
-    hardReservationSearchRequest:
-      description: Hard reservation search request model
-      example:
-        filters:
-        - condition: EQ
-          field: hardReserve.allocationRequestId
-          value: '123'
-        - condition: IN
-          field: hardReserve.inventoryAllocations.channelId
-          values:
-          - WHBM
-          - CHO
-        sort: -hardReserve.createdAt
+    searchResponse:
+      description: Search response
       properties:
-        filters:
+        data:
           items:
-            oneOf:
-            - $ref: '#/components/schemas/valueSearchFilter'
-            - $ref: '#/components/schemas/valuesSearchFilter'
-          maxItems: 50
-          minItems: 0
+            $ref: '#/components/schemas/inventoryImportStatusResponse'
           type: array
-        sort:
-          default: -hardReserve.createdAt
-          description: Resource property on which data needs to be sorted on.
-          example: +hardReserve.createdAt
-          pattern: (^[+-]hardReserve\.[a-zA-Z.\-_]*)(,([+-]hardReserve\.[a-zA-Z.\-_]*)){0,}
-          type: string
-      required:
-      - filters
+        pagination:
+          $ref: '#/components/schemas/pagination'
       type: object
     valueSearchFilter:
       allOf:
@@ -195,25 +143,6 @@ components:
       required:
       - condition
       - field
-      type: object
-    importCount:
-      description: Import count object
-      properties:
-        error:
-          description: Total rows with errors in the file
-          example: 2000
-          format: int32
-          type: integer
-        processed:
-          description: Total rows processed in the file. `processed` = `uploaded` - `error` **Note:** Rows that are not formatted according to system requirements will not be imported.
-          example: 8000
-          format: int32
-          type: integer
-        uploaded:
-          description: Total rows in the file
-          example: 10000
-          format: int32
-          type: integer
       type: object
     inventorySearchFilter:
       description: Criteria to find inventory. To search using a single value, `valueSearchFilter` is considered. To search using multiple values, `valuesSearchFilter` is considered.
@@ -256,6 +185,83 @@ components:
       required:
       - condition
       - field
+      type: object
+    valuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventorySearchFilter'
+      - properties:
+          values:
+            items:
+              description: Multiple values using which inventory details are searched
+              example: SKU
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find inventories by multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    hardReservationSearchRequest:
+      description: Hard reservation search request model
+      example:
+        filters:
+        - condition: EQ
+          field: hardReserve.allocationRequestId
+          value: '123'
+        - condition: IN
+          field: hardReserve.inventoryAllocations.channelId
+          values:
+          - WHBM
+          - CHO
+        sort: -hardReserve.createdAt
+      properties:
+        filters:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/valueSearchFilter'
+            - $ref: '#/components/schemas/valuesSearchFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+        sort:
+          default: -hardReserve.createdAt
+          description: Resource property on which data needs to be sorted on.
+          example: +hardReserve.createdAt
+          pattern: (^[+-]hardReserve\.[a-zA-Z.\-_]*)(,([+-]hardReserve\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+      - filters
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
       type: object
     inventoryImportStatusResponse:
       description: An object containing the inventory import status response details.
@@ -317,34 +323,39 @@ components:
       - createdAt
       - importId
       type: object
-    searchResponse:
-      description: Search response
+    pagination:
+      description: Pagination response
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/inventoryImportStatusResponse'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
       type: object
   parameters:
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
     xFabricTenantId:
       description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
       example: 5f328bf0b5f328bf0b5f328b
@@ -361,14 +372,6 @@ components:
       required: true
       schema:
         type: string
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
   headers:
     xFabricRequestIdResponseHeader:
       description: Unique request ID
@@ -377,10 +380,13 @@ components:
       schema:
         type: string
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    authorization:
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about fabric Inventory
+  url: https://developer.fabric.inc/v3/docs/orders-inventory
+x-mint:
+  mcp:
+    enabled: true

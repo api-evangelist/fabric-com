@@ -1,18 +1,31 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Platform API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: fabric Support Team
+  description: 'The Product Agent API helps brands optimize product data for AI-driven commerce.
+
+    Monitor how your catalog performs in AI search experiences, enrich product
+
+    content for stronger semantic visibility, and publish optimized data across
+
+    channels. Designed for iterative improvement, Product Agent enables teams to
+
+    measure, refine, and enhance product content as AI shopping behavior evolves.
+
+    '
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: fabric Orders Platform API
   version: 3.0.0
+  x-audience: external-public
 servers:
-- url: https://api.fabric.inc/v3
+- url: https://commerceos.aiagents.fabric.inc/api
+  description: Production API
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - name: Platform
 paths:
@@ -94,6 +107,23 @@ paths:
       - Platform
 components:
   schemas:
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
     AuthResponse:
       type: object
       required:
@@ -118,28 +148,14 @@ components:
           type: string
           description: Scope of the access token.
           example: ''
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    authorization:
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about Product Agent.
+  url: https://developer.fabric.inc/product-agent/overview
+x-mint:
+  mcp:
+    enabled: true

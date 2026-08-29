@@ -1,16 +1,20 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Checkout Session API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  title: Checkout Session API
+  description: fabric's **Checkout API** lets you complete the checkout process and place an order for cart items. This process includes specifying a customer's shipping and payment details, and calculating taxes and shipping rates.
+  version: 3.0.0
+  x-audience: external-public
   contact:
-    name: Cart Support
+    name: Checkout Support
+    url: https://www.fabric.inc
     email: support.cnc@fabric.inc
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
-  version: 3.0.0
+  termsOfService: https://fabric.inc/terms-of-use
 servers:
 - url: https://api.fabric.inc/v3
+  description: Production
 security:
 - bearerAuth: []
 tags:
@@ -96,61 +100,6 @@ paths:
                 $ref: '#/components/schemas/error500'
 components:
   schemas:
-    shippingTaxes:
-      description: Shipping taxes
-      type: object
-      required:
-      - shippingDetailsId
-      properties:
-        shippingDetailsId:
-          type: string
-          description: Unique shipping ID
-          nullable: true
-          example: fef78121-bee3-4448-bf1c-d5b5461dbda2
-        amount:
-          type: number
-          format: double
-          description: Currency amount
-          example: 150.25
-        currency:
-          type: string
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-        name:
-          type: string
-          description: Tax name
-          nullable: true
-          example: state tax
-    name:
-      description: Individual's name
-      type: object
-      properties:
-        firstName:
-          type: string
-          description: Individual's first name
-          example: Pat
-        middleName:
-          type: string
-          description: Individual's middle name or initial
-          nullable: true
-          example: E
-        lastName:
-          type: string
-          description: Individual's last name
-          example: Kake
-    money:
-      type: object
-      description: Payment amount
-      properties:
-        amount:
-          type: number
-          format: double
-          description: Currency amount
-          example: 150.25
-        currency:
-          type: string
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
     billingPhone:
       description: Individual's phone details (for billing purposes)
       type: object
@@ -160,238 +109,11 @@ components:
           description: Phone number
           example: 123-456-7890
         type:
-          type: string
-          description: Phone type
-          nullable: true
-          example: office
-    cartNotFound:
-      type: object
-      description: Cart not found error
-      properties:
-        type:
-          description: Error code
-          type: string
-          example: NOT_FOUND
-        message:
-          description: Error description
-          type: string
-          example: Cart not found
-    dependencyFailure:
-      description: Checkout dependency failure type
-      type: string
-      example: PAYMENT
-      enum:
-      - CART
-      - PAYMENT
-      - ORDER
-    note:
-      description: Notes section for use by customer service representative only
-      type: object
-      properties:
-        notedAt:
-          allOf:
-          - $ref: '#/components/schemas/date'
-          - description: Time note was created
-        user:
-          type: string
-          description: Customer service representative ID
-          nullable: true
-          example: 261AF48
-        notes:
-          type: string
-          description: Note content
-          nullable: true
-          example: Additional notes...
-    checkoutSessionErrorResponse:
-      description: Checkout error response details
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error type
-          example: PAYMENT_FAILURE
-        message:
-          type: string
-          description: Error description
-          example: Payment authorization failed due to payment mismatch
-        pointOfFailure:
-          $ref: '#/components/schemas/dependencyFailure'
-        details:
-          type: object
-          description: Error details
-          oneOf:
-          - $ref: '#/components/schemas/paymentErrorResponse'
-    itemTaxes:
-      description: Cart line item tax
-      type: object
-      properties:
-        lineItemId:
-          type: string
-          description: Line item ID
-          example: d7e78a21-bee3-4448-bf1c-d5b5461dbda2
-        position:
-          type: integer
-          description: Item sequence number
-          format: int32
-          example: 1
-        amount:
-          type: number
-          format: double
-          description: Currency amount
-          example: 150.25
-        currency:
-          type: string
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-        name:
-          type: string
-          description: Tax name
-          nullable: true
-          example: state tax
-        rateType:
-          type: string
-          description: Rate type
-          nullable: true
-          example: PERCENTAGE
-        rate:
-          type: number
-          description: Rate
-          format: double
-          nullable: true
-          example: 10
-    feeTaxes:
-      description: Fee taxes
-      type: object
-      required:
-      - feeId
-      properties:
-        feeId:
-          type: string
-          description: Unique fee tax ID
-          example: fef78121-bee3-4448-bf1c-d5b5461dbda2
-        name:
-          type: string
-          description: Fee tax type
-          nullable: true
-          example: State tax
-        amount:
-          type: number
-          format: double
-          description: Fee tax amount
-          example: 150.25
-        currency:
-          type: string
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-    error401:
-      type: object
-      description: Unauthorized error
-      properties:
-        type:
-          description: Error type
-          type: string
-          example: UNAUTHORIZED
-        message:
-          description: Error description
-          type: string
-          example: Unauthorized user
-    paymentDetailsRequest:
-      description: Payment request details.Empty if there is no payment configuration.
-      type: object
-      required:
-      - paymentProvider
-      properties:
-        paymentProvider:
-          type: string
-          description: Payment gateway service provider
-          example: authorize.net
-        paymentMethod:
-          type: string
-          description: Payment method
-          nullable: true
-          example: card
-        paymentToken:
-          type: object
-          properties:
-            token:
-              type: string
-              description: Payment token
-              example: pi_34tr6787rt
-            paymentType:
-              type: string
-              description: Payment type, for credit card payments
-              example: VISA
-          description: Order payment token model
-        amount:
-          type: number
-          format: double
-          description: Payment amount
-          example: 150.25
-        currency:
-          type: string
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-        billingAddress:
-          $ref: '#/components/schemas/billingAddress'
-        attributes:
-          type: object
-          additionalProperties: true
-          description: Additional data passed by the caller
-          nullable: true
-          example:
-            paymentId: 620d8896058edb0009385311
-    billingAddress:
-      allOf:
-      - $ref: '#/components/schemas/customerAddress'
-      - description: Billing address
-        type: object
-        properties:
-          name:
-            $ref: '#/components/schemas/name'
-          phone:
-            $ref: '#/components/schemas/billingPhone'
-          email:
-            type: string
-            description: Receiver email ID
-            example: user@example.com
-          customerId:
-            type: string
-            description: Customer profile ID, created by the payment gateway, for payment instruction. This ID is specific to payment flow.
-            nullable: true
-            example: 62cffd65e8d7eb868c6a29d6
           type:
-            type: string
-            description: Address type
-            nullable: true
-            example: residence
-          latitude:
-            type: number
-            format: double
-            description: Address latitude
-            nullable: true
-            example: 47.6205
-          longitude:
-            type: number
-            format: double
-            description: Address longitude
-            nullable: true
-            example: -122.3493
-    checkoutSessionResponse:
-      description: Checkout response details
-      type: object
-      properties:
-        state:
-          type: string
-          enum:
-          - COMPLETED
-          - PENDING
-          description: 'Checkout session state.<br />COMPLETED: Checkout is complete<br />PENDING: Checkout is incomplete'
-          example: COMPLETED
-        orderId:
-          type: string
-          description: Order ID
-          nullable: true
-          example: 111-123-4421
+          - string
+          - 'null'
+          description: Phone type
+          example: office
     customerAddress:
       type: object
       description: Customer's address
@@ -428,18 +150,107 @@ components:
           description: Country (can be full name, or ISO 3166-1 alpha-2 or alpha-3 code)
           type: string
           example: US
-    error400:
+    itemTaxes:
+      description: Cart line item tax
       type: object
-      description: Bad request
       properties:
-        type:
-          description: Error type
+        lineItemId:
           type: string
-          example: BAD_REQUEST
-        message:
-          description: Error description
+          description: Line item ID
+          example: d7e78a21-bee3-4448-bf1c-d5b5461dbda2
+        position:
+          type: integer
+          description: Item sequence number
+          format: int32
+          example: 1
+        amount:
+          type: number
+          format: double
+          description: Currency amount
+          example: 150.25
+        currency:
           type: string
-          example: Bad Request
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+        name:
+          type:
+          - string
+          - 'null'
+          description: Tax name
+          example: state tax
+        rateType:
+          type:
+          - string
+          - 'null'
+          description: Rate type
+          example: PERCENTAGE
+        rate:
+          type:
+          - number
+          - 'null'
+          description: Rate
+          format: double
+          example: 10
+    shippingTaxes:
+      description: Shipping taxes
+      type: object
+      required:
+      - shippingDetailsId
+      properties:
+        shippingDetailsId:
+          type:
+          - string
+          - 'null'
+          description: Unique shipping ID
+          example: fef78121-bee3-4448-bf1c-d5b5461dbda2
+        amount:
+          type: number
+          format: double
+          description: Currency amount
+          example: 150.25
+        currency:
+          type: string
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+        name:
+          type:
+          - string
+          - 'null'
+          description: Tax name
+          example: state tax
+    paymentErrorResponse:
+      description: Payment mismatch response details. It's displayed when `totalAmount` and `orderTotal` are different. The user must authorize payment of the total order amount.
+      type: object
+      properties:
+        paymentError:
+          type: object
+          description: Indicates payment error details
+          properties:
+            totalAmount:
+              allOf:
+              - $ref: '#/components/schemas/money'
+              - description: Total authorized amount
+            orderTotal:
+              allOf:
+              - $ref: '#/components/schemas/money'
+              - description: Order total. It includes cart amount + taxes.
+    checkoutSessionResponse:
+      description: Checkout response details
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+          - COMPLETED
+          - PENDING
+          description: 'Checkout session state.<br />COMPLETED: Checkout is complete<br />PENDING: Checkout is incomplete'
+          example: COMPLETED
+        orderId:
+          type:
+          - string
+          - 'null'
+          description: Order ID
+          example: 111-123-4421
     lineItemShippingDetailsNotFound:
       type: object
       description: Ship to not found error
@@ -452,23 +263,147 @@ components:
           description: Error description
           type: string
           example: Cart item ship to's are missing.
-    date:
-      description: Date and time in ISO-8601 format
-      type: string
-      format: date-time
-      example: '2022-09-06T14:07:17.000Z'
-    error500:
+    error400:
       type: object
-      description: Internal server error
+      description: Bad request
       properties:
         type:
           description: Error type
           type: string
-          example: INTERNAL_SERVER_ERROR
+          example: BAD_REQUEST
         message:
           description: Error description
           type: string
-          example: Internal server error
+          example: Bad Request
+    checkoutSessionErrorResponse:
+      description: Checkout error response details
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error type
+          example: PAYMENT_FAILURE
+        message:
+          type: string
+          description: Error description
+          example: Payment authorization failed due to payment mismatch
+        pointOfFailure:
+          $ref: '#/components/schemas/dependencyFailure'
+        details:
+          type: object
+          description: Error details
+          oneOf:
+          - $ref: '#/components/schemas/paymentErrorResponse'
+    cartNotFound:
+      type: object
+      description: Cart not found error
+      properties:
+        type:
+          description: Error code
+          type: string
+          example: NOT_FOUND
+        message:
+          description: Error description
+          type: string
+          example: Cart not found
+    money:
+      type: object
+      description: Payment amount
+      properties:
+        amount:
+          type: number
+          format: double
+          description: Currency amount
+          example: 150.25
+        currency:
+          type: string
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+    paymentDetailsRequest:
+      description: Payment request details.Empty if there is no payment configuration.
+      type: object
+      required:
+      - paymentProvider
+      properties:
+        paymentProvider:
+          type: string
+          description: Payment gateway service provider
+          example: authorize.net
+        paymentMethod:
+          type:
+          - string
+          - 'null'
+          description: Payment method
+          example: card
+        paymentToken:
+          type: object
+          properties:
+            token:
+              type: string
+              description: Payment token
+              example: pi_34tr6787rt
+            paymentType:
+              type: string
+              description: Payment type, for credit card payments
+              example: VISA
+          description: Order payment token model
+        amount:
+          type: number
+          format: double
+          description: Payment amount
+          example: 150.25
+        currency:
+          type: string
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+        billingAddress:
+          $ref: '#/components/schemas/billingAddress'
+        attributes:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: Additional data passed by the caller
+          example:
+            paymentId: 620d8896058edb0009385311
+    name:
+      description: Individual's name
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: Individual's first name
+          example: Pat
+        middleName:
+          type:
+          - string
+          - 'null'
+          description: Individual's middle name or initial
+          example: E
+        lastName:
+          type: string
+          description: Individual's last name
+          example: Kake
+    note:
+      description: Notes section for use by customer service representative only
+      type: object
+      properties:
+        notedAt:
+          allOf:
+          - $ref: '#/components/schemas/date'
+          - description: Time note was created
+        user:
+          type:
+          - string
+          - 'null'
+          description: Customer service representative ID
+          example: 261AF48
+        notes:
+          type:
+          - string
+          - 'null'
+          description: Note content
+          example: Additional notes...
     checkoutSessionRequest:
       description: Checkout request body
       required:
@@ -549,36 +484,67 @@ components:
           description: Additional order information
           properties:
             orderType:
-              type: string
+              type:
+              - string
+              - 'null'
               description: Order type (WEB, CSC, MOBILE_APP, POS, etc.)
-              nullable: true
               example: MOBILE_APP
             orderSubtype:
-              type: string
+              type:
+              - string
+              - 'null'
               description: Order subtype (Android, IOS, International, etc.)
-              nullable: true
               example: Android
             notes:
               type: array
               description: Customer service representative's notes
               items:
                 $ref: '#/components/schemas/note'
-    paymentErrorResponse:
-      description: Payment mismatch response details. It's displayed when `totalAmount` and `orderTotal` are different. The user must authorize payment of the total order amount.
+    error401:
       type: object
+      description: Unauthorized error
       properties:
-        paymentError:
-          type: object
-          description: Indicates payment error details
-          properties:
-            totalAmount:
-              allOf:
-              - $ref: '#/components/schemas/money'
-              - description: Total authorized amount
-            orderTotal:
-              allOf:
-              - $ref: '#/components/schemas/money'
-              - description: Order total. It includes cart amount + taxes.
+        type:
+          description: Error type
+          type: string
+          example: UNAUTHORIZED
+        message:
+          description: Error description
+          type: string
+          example: Unauthorized user
+    feeTaxes:
+      description: Fee taxes
+      type: object
+      required:
+      - feeId
+      properties:
+        feeId:
+          type: string
+          description: Unique fee tax ID
+          example: fef78121-bee3-4448-bf1c-d5b5461dbda2
+        name:
+          type:
+          - string
+          - 'null'
+          description: Fee tax type
+          example: State tax
+        amount:
+          type: number
+          format: double
+          description: Fee tax amount
+          example: 150.25
+        currency:
+          type: string
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+    dependencyFailure:
+      description: Checkout dependency failure type
+      type: string
+      example: PAYMENT
+      enum:
+      - CART
+      - PAYMENT
+      - ORDER
     estimatedTax:
       description: Estimated taxes for items, shipping and fees
       required:
@@ -597,28 +563,70 @@ components:
           items:
             $ref: '#/components/schemas/shippingTaxes'
         feeTaxes:
-          type: array
+          type:
+          - array
+          - 'null'
           description: Taxes related to fees
-          nullable: true
           items:
             $ref: '#/components/schemas/feeTaxes'
+    date:
+      description: Date and time in ISO-8601 format
+      type: string
+      format: date-time
+      example: '2022-09-06T14:07:17.000Z'
+    billingAddress:
+      allOf:
+      - $ref: '#/components/schemas/customerAddress'
+      - description: Billing address
+        type: object
+        properties:
+          name:
+            $ref: '#/components/schemas/name'
+          phone:
+            $ref: '#/components/schemas/billingPhone'
+          email:
+            type: string
+            description: Receiver email ID
+            example: user@example.com
+          customerId:
+            type:
+            - string
+            - 'null'
+            description: Customer profile ID, created by the payment gateway, for payment instruction. This ID is specific to payment flow.
+            example: 62cffd65e8d7eb868c6a29d6
+          type:
+            type:
+            - string
+            - 'null'
+            description: Address type
+            example: residence
+          latitude:
+            type:
+            - number
+            - 'null'
+            format: double
+            description: Address latitude
+            example: 47.6205
+          longitude:
+            type:
+            - number
+            - 'null'
+            format: double
+            description: Address longitude
+            example: -122.3493
+    error500:
+      type: object
+      description: Internal server error
+      properties:
+        type:
+          description: Error type
+          type: string
+          example: INTERNAL_SERVER_ERROR
+        message:
+          description: Error description
+          type: string
+          example: Internal server error
   parameters:
-    xFabricTenantId:
-      in: header
-      name: x-fabric-tenant-id
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      schema:
-        type: string
-      example: 617329dfd5288b0011332311
-      required: true
-    xFabricRequestId:
-      in: header
-      name: x-fabric-request-id
-      description: Unique request ID
-      schema:
-        type: string
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
     xFabricChannelId:
       in: header
       name: x-fabric-channel-id
@@ -627,6 +635,22 @@ components:
         type: string
       example: '12'
       required: false
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: Unique request ID
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      schema:
+        type: string
+      example: 617329dfd5288b0011332311
+      required: true
   headers:
     xFabricRequestId:
       description: Unique request ID
@@ -639,6 +663,9 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+externalDocs:
+  description: Find out more about Checkout
+  url: https://developer.fabric.inc/v3/reference/checkout-getting-started
+x-mint:
+  mcp:
+    enabled: true

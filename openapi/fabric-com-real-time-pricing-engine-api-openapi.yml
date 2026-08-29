@@ -1,18 +1,19 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Real-time Pricing Engine API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  title: Offers Real-time Pricing Engine API
+  description: fabric's Real-time Pricing Engine (RTPE) endpoints are used to calculate prices and evaluate discounts for individual products and carts.
+  version: 3.0.0
+  x-audience: external-public
+  termsOfService: https://fabric.inc/terms-of-use
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    name: Offers support
+    email: support@fabric.inc
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
-  version: 3.0.0
 servers:
 - url: https://api.fabric.inc/v3
-security:
-- bearerAuth: []
+  description: Production environment
 tags:
 - name: Real-time Pricing Engine
 paths:
@@ -249,18 +250,6 @@ paths:
                 message: Internal server error
 components:
   schemas:
-    priceError:
-      type: object
-      description: The validation errors related to the price.
-      properties:
-        type:
-          type: string
-          description: The error code.
-          example: Not found
-        message:
-          type: string
-          description: An error message corresponding to the `type`.
-          example: Price doesn't exist for product 179089, channels [12, 10], date Wed Nov 16 14:11:16 UYT 2022 and price lists [197090]
     evaluateProductsByIdRequest:
       type: object
       required:
@@ -301,101 +290,153 @@ components:
           type: string
           description: The language code, which is a combination of language in ISO 639 format and country in ISO 3166 format. The default value is en-US.
           example: en-US
-    priceParameterBySku:
-      allOf:
-      - $ref: '#/components/schemas/priceParameter'
-      - type: object
-        properties:
-          sku:
-            type: string
-            description: Product SKU
-            example: '1000019501'
-          quantity:
-            type: integer
-            description: Number of products ordered. This value is required for the range-based pricing method.
-            format: int32
-            example: 500
-    notAppliedCoupon:
+    promotionDiscount:
       type: object
-      description: Coupon details
+      description: Promotion discount
       example:
-        couponCode: SUPERCOUPON
-        promotionId: 624b5aa2a8fd12000965dfdc
-        message: Invalid coupon
+        amount: 100.15
+        quantity: 1
+        proratedAmount: 100.15
+        proratedQuantity: 1
+        application: 1
+        promotion:
+          id: 6197ec46e836ff000952d668
+          value: 2000.15
+          groupId: 61a6354d0d70e30009415f16
+          level: 1
+          isStackable: true
+          isAlwaysApplied: true
+          name: 20% OFF
+          type: Coupon
+          discountType: AMOUNT_OFF
+          stackingType: STACKABLE
       properties:
-        couponCode:
-          type: string
-          nullable: true
-          description: Coupon code
-          example: SUPERCOUPON
-        promotionId:
-          type: string
-          nullable: true
-          description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
-          example: 624b5aa2a8fd12000965dfdc
-        message:
-          type: string
-          nullable: true
-          description: Reason why coupon not applied
-          example: Invalid coupon
-    shippingDetailReference:
-      description: Shipping details reference
-      type: object
-      properties:
-        shippingCost:
+        amount:
           type: number
+          description: The actual discount amount applied to the price. For example, specifying 100.15 for a product with a base price of 2000.15 results in a discounted price of 1900.
           format: double
-          description: Shipping cost
-          example: 150.25
-        shippingMethodId:
-          type: string
-          description: Shipping method ID
-          example: dfsae-2d32113-32lpdd
-        shippingDiscount:
+          example: 100.15
+        quantity:
+          type: integer
+          description: The number of items eligible for the promotional discount.
+          format: int32
+          example: 5
+        proratedAmount:
           type: number
+          description: The discount amount distributed proportionally among all the selected items. The distribution is determined based on each item's price relative to the total price of all participating items. Typically, `proratedAmount` matches the `amount`. However, there might be variations, particularly in the context of Buy-Get promotions.
           format: double
-          description: Discount amount
-          example: 150.25
-        shippingMethodName:
-          type: string
-          description: Shipping method name
-          nullable: true
-          example: Express Delivery
-    calculatedPriceOffersByProductId:
-      type: object
-      description: Discounts or special offers applied to the price.
-      properties:
-        price:
-          $ref: '#/components/schemas/calculatedPriceObject'
-        discounts:
-          type: array
-          description: A list of discounts applied to the price.
-          items:
-            $ref: '#/components/schemas/promotionDiscountWithPromoMessage'
-        additionalAttributes:
-          type: array
-          description: A placeholder for additional price attributes, in name-values pairs.
-          items:
-            type: object
-        promotionMessages:
-          $ref: '#/components/schemas/rtpePromotionMessages'
+          example: 1000.15
+        proratedQuantity:
+          type: integer
+          description: This is used in conjunction with `proratedAmount` to determine the discount portion allocated to the respective units of BuyGet promotions. This is applicable in partial return scenarios.
+          format: int32
+          example: 5
+        application:
+          type:
+          - integer
+          - 'null'
+          description: An identifier for an instance of the Buy-Get promotion that can be applied repeatedly. For example, consider a promotion - Buy 1 shirt and get 1 pant at a 20% off. If a shopper buys three shirts, 20% discount is individually applied to each shirt-pant pair. Each such discounted pair is assigned a unique `application` number for tracking purposes.
+          format: int32
+          example: 1
+        promotion:
+          type: object
+          description: The promotion details.
+          example:
+            id: 6197ec46e836ff000952c668
+            value: 2000.15
+            groupId: 61a6354d0d70e30009415f16
+            level: 1
+            isStackable: true
+            isAlwaysApplied: true
+            name: 20% OFF
+            type: Coupon
+            discountType: AMOUNT_OFF
+            stackingType: STACKABLE
+          properties:
+            id:
+              type: string
+              description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
+              example: 6197ec46e836ff000952c667
+            value:
+              type: number
+              description: The discount in percent or amount.
+              format: double
+              example: 2000.15
+            groupId:
+              type:
+              - string
+              - 'null'
+              description: ID of the group or category this product belongs to
+              example: 61a6354d0d70e30009415f16
+            level:
+              type:
+              - integer
+              - 'null'
+              description: The order in which the current promotion is executed.
+              format: int32
+              example: 1
+            isStackable:
+              type:
+              - boolean
+              - 'null'
+              description: A flag indicating whether the promotion is stackable. Set to `true` to combine the given promotion with other promotions. The discount of the current promotion is combined with other promotions, if applicable, to the item. Set to `false` if the promotion isn't stackable; the given promotion can't be combined with other promotions.
+              example: true
+            isAlwaysApplied:
+              type:
+              - boolean
+              - 'null'
+              description: A flag indicating whether the promotion is always applied regardless of any exclusive promotions on the same item. Set to `true` if the promotion is always applied and set to `false` if the promotion isn't applied on the item by default.
+              example: true
+            stackingType:
+              type: string
+              description: "Defines the rules for how a promotion can be combined with other promotions. This field determines whether a specific promotion can be applied in conjunction with other active promotions during a transaction or if it must be used exclusively. Possible values: - `STACKABLE`: This promotion can be combined with other stackable promotions, allowing multiple\n  discounts to be applied together. The order in which stackable promotions are applied\n  is determined by the `level` field, with promotions having a higher priority (lower numeric value)\n  being applied before those with a lower priority.\n- `EXCLUSIVE`: This promotion can't be combined with any other promotions. The `level` field is\n  used to determine which exclusive promotion will be evaluated and applied first. Once an exclusive\n  promotion is applied, no other promotions can be used in the same transaction.\n- `TYPE_EXCLUSIVE`: This promotion can't be combined with other promotions of the same type.\n  The `level` field is used to determine which promotion within the same type will be evaluated and\n  applied first.\n- `UNIVERSAL`: This promotion can be combined with any other promotions without restrictions.\n  Universal promotions will be evaluated last."
+              enum:
+              - STACKABLE
+              - EXCLUSIVE
+              - TYPE_EXCLUSIVE
+              - UNIVERSAL
+              example: STACKABLE
+            name:
+              type: string
+              description: The name of the promotion.
+              example: 20% off
+            type:
+              type: string
+              description: The type of the promotion.
+              example: COUPON
+            discountType:
+              example: PERCENTAGE_OFF
+              type: string
+              description: The type of discount.
+              enum:
+              - PERCENTAGE_OFF
+              - AMOUNT_OFF
+              - FIXED_PRICE
+    cartItemId:
+      type: integer
+      description: Item ID obtained from Product Catalog.
+      format: int32
+      example: 1730902008
     suggestedProduct:
       type: object
       description: Complimentary or free products offered to shoppers in the context of BuyGet and SpendGet promotions.
       properties:
         promotionId:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
           example: 6197ec46e836ff000952c665
         promotionName:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: The promotion name
           example: Buy shoes get socks for free
         itemId:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           description: The item ID of the free product
           format: int32
           example: 234343
@@ -448,63 +489,665 @@ components:
           description: The discount amount.
           format: double
           example: 100.15
-    rtpePromotionMessages:
-      allOf:
-      - $ref: '#/components/schemas/promotionMessages'
-      - type: array
-        items:
-          type: object
-          properties:
-            promoId:
-              type: string
-              description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
-              example: 61df12345678900009b7091c
-    cartProductAttribute:
-      description: Product attribute as defined within Product Catalog.
-      required:
-      - value
-      - name
+    apiError:
       type: object
+      description: The details of validation errors.
       properties:
-        attributeId:
-          type: string
-          description: Attribute ID
-          example: 60c2a358eb2ec30008ae70a1
-        name:
-          type: string
-          description: Attribute name
-          example: gift wrapping (small)
-        description:
-          type: string
-          description: Attribute description
-          nullable: true
-          example: Gift wrapping for a small package
-        mapping:
-          type: string
-          description: Attribute mapping
-          nullable: true
-          example: ITEM
         type:
           type: string
-          description: Attribute type
-          example: GIFT
-          nullable: true
-        value:
+          description: The error code.
+          example: BAD_REQUEST
+        message:
           type: string
-          description: Attribute value
-          nullable: true
-          example: 'true'
-        price:
-          type: number
+          description: An error message corresponding to the `type`.
+          example: Request isn't valid
+        errors:
+          description: The error details.
+          type: array
+          items:
+            $ref: '#/components/schemas/cartSubError'
+    appliedDiscount:
+      type: object
+      description: Discount details
+      example:
+        promotionId: 6197ec46e836ff000952c665
+        promotionName: Buy shoes get socks for free
+        couponCode: SUPERCOUPON20
+        type: COUPON
+        amount: 105.15
+      properties:
+        promotionId:
+          type:
+          - string
+          - 'null'
+          description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
+          example: 6197ec46e836ff000952c664
+        couponCode:
+          type:
+          - string
+          - 'null'
+          description: Coupon code
+          example: SUPERCOUPON20
+        promotionName:
+          type:
+          - string
+          - 'null'
+          description: Promotion name
+          example: 20% off
+        type:
+          type:
+          - string
+          - 'null'
+          description: Promotion type
+          example: COUPON
+        amount:
+          type:
+          - number
+          - 'null'
+          description: Discount amount
           format: double
-          nullable: true
-          description: Attribute price
-          example: 10
-        level:
+          example: 10.15
+    customer:
+      type: object
+      description: Customer details
+      properties:
+        id:
           type: string
-          description: Attribute level
-          nullable: true
-          example: order
+          description: Unique identifier for the customer
+          example: 5e2cfb9b45570b000864c4b5
+        segments:
+          type: array
+          description: A list of segments the customer belongs to.
+          example:
+          - name: category
+            value:
+            - GOLD
+            - YELLOW
+          - name: ageGroup
+            value:
+            - elderly
+          items:
+            type: object
+            properties:
+              name:
+                description: The name of the segment the customer belongs to.
+                type: string
+                example: category
+              value:
+                type: array
+                description: The values of the segment associated with the customer.
+                items:
+                  type: string
+                  description: Segment item
+                  example: GOLD
+    pdpSuggestedSKU:
+      type: array
+      description: A list of suggested products.
+      items:
+        description: The suggested product.
+        type: object
+        properties:
+          promotionId:
+            type: string
+            description: A 24-character system-generated promotion ID generated using the [create promotion](/v3/api-reference/offers/promotions/create-promotion) endpoint.
+            example: 6197ec46e836ff000952c668
+          promotionName:
+            type: string
+            description: The name of the promotion.
+            example: Buy Shoes, get socks for free
+          skus:
+            type: array
+            description: A list of Stock Keeping Units (SKUs).
+            items:
+              description: SKU
+              example: SKU1
+              type: string
+            example:
+            - SOCK1
+            - SOCK2
+            - SOCKN
+          eligiblePriceLists:
+            type: array
+            description: The eligible price lists.
+            items:
+              description: The price list ID associated with the item generated using the [create price list](/v3/api-reference/offers/price-lists/create-price-list) endpoint.
+              example: 10000
+              type: integer
+              format: int32
+            example:
+            - 10000
+          isFree:
+            type: boolean
+            description: A flag indicating whether the promotion offers complimentary items. Set to `true` if the promotion includes one or more complimentary items and `false` if it doesn't.
+            example: false
+          discountType:
+            type: string
+            description: The type of discount, such as PERCENTAGE_OFF, AMOUNT_OFF, or FIXED_PRICE.
+            enum:
+            - PERCENTAGE_OFF
+            - AMOUNT_OFF
+            - FIXED_PRICE
+            example: PERCENTAGE_OFF
+          amount:
+            type: number
+            description: The discount amount.
+            format: double
+            example: 50
+          quantity:
+            type: number
+            description: The number of complimentary items in the cart.
+            format: double
+            example: 50
+    promotionDiscountWithPromoMessage:
+      type: object
+      description: Promotion discount
+      example:
+        amount: 100.15
+        quantity: 1
+        application: 1
+        promotion:
+          id: 6197ec46e836ff000952d668
+          value: 2000.15
+          groupId: 61a6354d0d70e30009415f16
+          level: 1
+          isStackable: true
+          isAlwaysApplied: true
+          name: 20% OFF
+          type: Coupon
+          discountType: AMOUNT_OFF
+          stackingType: STACKABLE
+          promotionMessages:
+          - promoId: 6197ec46e836ff000952c666
+            title: Get 50% off socks when buying shoes!
+            message: Buy any pair of shoes and get 50% off a pair of socks.
+            locales:
+            - en-US
+            - en-GB
+            pages:
+            - PDP
+            - CART
+            type: DISCOUNT
+      properties:
+        amount:
+          type: number
+          description: The actual amount of the discounts applied to the price. For example, entering 100.15 for a product with a base price of 2000.15 results in a discounted price of 1900.
+          format: double
+          example: 100.15
+        quantity:
+          type: integer
+          description: The number of items eligible for the promotional discount.
+          format: int32
+          example: 5
+        application:
+          type:
+          - integer
+          - 'null'
+          description: The number of times the BuyGet promotion can be used, indicating how many times you can use the promotions, such as get a certain amount or percentage off, or get free items when making a purchase.
+          format: int32
+          example: 1
+        promotion:
+          type: object
+          description: Promotion object
+          example:
+            id: 6197ec46e836ff000952c668
+            value: 2000.15
+            groupId: 61a6354d0d70e30009415f16
+            level: 1
+            isStackable: true
+            isAlwaysApplied: true
+            name: 20% OFF
+            type: Coupon
+            discountType: AMOUNT_OFF
+            stackingType: STACKABLE
+            promotionMessages:
+            - promoId: 6197ec46e836ff000952c666
+              title: Get 50% off socks when buying shoes!
+              message: Buy any pair of shoes and get 50% off a pair of socks.
+              locales:
+              - en-US
+              - en-GB
+              pages:
+              - PDP
+              - CART
+              type: DISCOUNT
+          properties:
+            id:
+              type: string
+              description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
+              example: 6197ec46e836ff000952c667
+            value:
+              type: number
+              description: The discount applied to the price. This can be specified as a percentage or a fixed amount.
+              format: double
+              example: 2000.15
+            groupId:
+              type:
+              - string
+              - 'null'
+              description: ID of the group or category this product belongs to
+              example: 61a6354d0d70e30009415f16
+            level:
+              type:
+              - integer
+              - 'null'
+              description: The order in which the current promotion is executed.
+              format: int32
+              example: 1
+            isStackable:
+              type:
+              - boolean
+              - 'null'
+              description: 'Specifies whether the promotion is stackable. You can set one of the following: - `true`: This promotion can be combined with other stackable promotions, allowing multiple discounts to be applied together. - `false`: The promotion isn''t stackable. You can''t combine this promotion with other promotions.'
+              example: true
+            isAlwaysApplied:
+              type:
+              - boolean
+              - 'null'
+              description: 'Specifies whether the promotion is applied regardless of the exclusive promotions on the same item. You can set one of the following values: - `true`: Promotion is applied regardless of the exclusive promotions on the same item. - `false`: Promotion isn''t applied on the item.'
+              example: true
+            stackingType:
+              type: string
+              description: "Defines the rules for how a promotion can be combined with other promotions. This field determines whether a specific promotion can be applied in conjunction with other active promotions during a transaction or if it must be used exclusively. Possible values: - `STACKABLE`: This promotion can be combined with other stackable promotions, allowing multiple\n  discounts to be applied together. The order in which stackable promotions are applied\n  is determined by the `level` field, with promotions having a higher priority (lower numeric value)\n  being applied before those with a lower priority.\n- `EXCLUSIVE`: This promotion can't be combined with any other promotions. The `level` field is\n  used to determine which exclusive promotion will be evaluated and applied first. Once an exclusive\n  promotion is applied, no other promotions can be used in the same transaction.\n- `TYPE_EXCLUSIVE`: This promotion can't be combined with other promotions of the same type.\n  The `level` field is used to determine which promotion within the same type will be evaluated and\n  applied first.\n- `UNIVERSAL`: This promotion can be combined with any other promotions without restrictions.\n  Universal promotions will be evaluated last."
+              enum:
+              - STACKABLE
+              - EXCLUSIVE
+              - TYPE_EXCLUSIVE
+              - UNIVERSAL
+              example: STACKABLE
+            name:
+              type: string
+              description: Promotion name
+              example: 20% off
+            type:
+              type: string
+              description: Promotion type
+              example: COUPON
+            discountType:
+              example: PERCENTAGE_OFF
+              type: string
+              description: Discount type
+              enum:
+              - PERCENTAGE_OFF
+              - AMOUNT_OFF
+              - FIXED_PRICE
+            promotionMessages:
+              $ref: '#/components/schemas/rtpePromotionMessages'
+    calculatedPriceOffersByProductId:
+      type: object
+      description: Discounts or special offers applied to the price.
+      properties:
+        price:
+          $ref: '#/components/schemas/calculatedPriceObject'
+        discounts:
+          type: array
+          description: A list of discounts applied to the price.
+          items:
+            $ref: '#/components/schemas/promotionDiscountWithPromoMessage'
+        additionalAttributes:
+          type: array
+          description: A placeholder for additional price attributes, in name-values pairs.
+          items:
+            type: object
+        promotionMessages:
+          $ref: '#/components/schemas/rtpePromotionMessages'
+    priceAttributes:
+      type: object
+      description: Price attributes
+      example:
+        floor: 1000.15
+        cost: 900.15
+        clearance: 2000.15
+      properties:
+        cost:
+          type: number
+          description: Cost price
+          format: double
+          example: 9.15
+        floor:
+          type: number
+          description: Lowest price at which a product is sold
+          format: double
+          example: 10.15
+        clearance:
+          type: number
+          description: Selling price
+          format: double
+          example: 10.15
+    promotionMessages:
+      type: array
+      description: The promotion message that is displayed to the customer.
+      required:
+      - message
+      - locales
+      - type
+      items:
+        type: object
+        description: Message description for the promotion
+        properties:
+          title:
+            type: string
+            description: Message name
+            example: Buy 2 get 1 free
+          message:
+            type: string
+            description: Message description
+            example: Offer valid at participating stores through September 5, 2023.
+          pages:
+            type: array
+            description: The types of web pages where the message is displayed.
+            items:
+              type: string
+              description: Page type
+              enum:
+              - PDP
+              - PLP
+              - Cart
+              - Checkout
+              example: PDP
+          locales:
+            type: array
+            description: The geographic regions where the promotion message is displayed, determined by the user's IP address. Locales define language and country-specific settings for promotions.
+            items:
+              type: string
+              description: Locale
+              example: en-CA
+          type:
+            type: string
+            description: "Specifies the promotion message type.\n  - `DISCOUNT`: The discount has been applied.\n  - `PROXIMITY`: The product or cart is close to meeting discount conditions.\n  - `POTENTIAL_DISCOUNT`: The product could qualify for a discount but has not yet."
+            enum:
+            - DISCOUNT
+            - PROXIMITY
+            - POTENTIAL_DISCOUNT
+            example: DISCOUNT
+          threshold:
+            type: integer
+            format: int32
+            description: Indicates a quantity or amount that is close to meeting the discount requirement. If the user reaches this value, a promotion message is displayed. This field is only valid for PROXIMITY messages.
+            example: 2
+    calculatedPriceBySku:
+      type: object
+      description: Calculated price details
+      properties:
+        priceListId:
+          description: The price list ID of the item.
+          type: integer
+          format: int32
+          example: 100275
+        sku:
+          type: string
+          description: Product SKU
+          example: SKU1234
+        offer:
+          $ref: '#/components/schemas/calculatedPriceOffersBySKU'
+        audit:
+          $ref: '#/components/schemas/calculatedPriceAudit'
+    rtpeCouponCodes:
+      type: array
+      description: Promotion codes to be applied
+      items:
+        type: string
+        description: Promotion code
+        example: SUPERCOUPON1
+    priceParameterBySku:
+      allOf:
+      - $ref: '#/components/schemas/priceParameter'
+      - type: object
+        properties:
+          sku:
+            type: string
+            description: Product SKU
+            example: '1000019501'
+          quantity:
+            type: integer
+            description: Number of products ordered. This value is required for the range-based pricing method.
+            format: int32
+            example: 500
+    calculatedPriceObject:
+      type: object
+      description: The calculated price details for line items.
+      example:
+        sale: 1000.15
+        cost: 900.15
+        base: 2000.15
+        unitPriceWithoutDiscounts: 2000.15
+        lineTotalWithoutDiscounts: 2000.15
+        lineTotalWithDiscounts: 2000.15
+        type: BASE
+      properties:
+        sale:
+          type:
+          - number
+          - 'null'
+          description: Sale price of the product.
+          format: double
+          example: 1000.15
+        cost:
+          type: number
+          description: Cost of goods sold, from either producing or purchasing from other vendors.
+          format: double
+          example: 900.15
+        base:
+          type: number
+          description: The base price of a single item before any discounts.
+          format: double
+          example: 2000.15
+        unitPriceWithoutDiscounts:
+          type:
+          - number
+          - 'null'
+          description: Price of a single item without discount. This price is either the `base` or `sale` price. The type used is noted in the `type` property.
+          format: double
+          example: 2000.15
+        lineTotalWithoutDiscounts:
+          type:
+          - number
+          - 'null'
+          description: Total price of all items without calculating discounts. This is the `unitPriceWithoutDiscounts` multiplied by the quantity.
+          format: double
+          example: 5000.15
+        lineTotalWithDiscounts:
+          type:
+          - number
+          - 'null'
+          description: Total price of all items after all discounts. This is the unitPriceWithoutDiscounts multiplied by the quantity, less the promotion discounts.
+          format: double
+          example: 5000.15
+        type:
+          type:
+          - string
+          - 'null'
+          description: Price type
+          example: BASE
+        currency:
+          type: string
+          description: Currency string value
+          example: USD
+    calculatedPrice:
+      type: object
+      description: Calculated price details
+      properties:
+        priceListId:
+          description: The price list ID of the item generated using the [create price list](/v3/api-reference/offers/price-lists/create-price-list) endpoint.
+          type: integer
+          format: int32
+          example: 100275
+        itemId:
+          type: integer
+          description: Item ID
+          format: int32
+          example: 11111111
+        currency:
+          type: string
+          description: The currency for the discount amount.
+          example: USD
+        channelId:
+          type: string
+          description: The sales channel used to calculate the price. The channels are 12 corresponding to US and 13 corresponding to Canada.
+          example: '12'
+        offer:
+          $ref: '#/components/schemas/calculatedPriceOffersByProductId'
+        audit:
+          $ref: '#/components/schemas/calculatedPriceAudit'
+    notAppliedCoupon:
+      type: object
+      description: Coupon details
+      example:
+        couponCode: SUPERCOUPON
+        promotionId: 624b5aa2a8fd12000965dfdc
+        message: Invalid coupon
+      properties:
+        couponCode:
+          type:
+          - string
+          - 'null'
+          description: Coupon code
+          example: SUPERCOUPON
+        promotionId:
+          type:
+          - string
+          - 'null'
+          description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
+          example: 624b5aa2a8fd12000965dfdc
+        message:
+          type:
+          - string
+          - 'null'
+          description: Reason why coupon not applied
+          example: Invalid coupon
+    evaluateCartRequest:
+      type: object
+      required:
+      - cartItems
+      description: A sample cart evaluation request.
+      properties:
+        customer:
+          $ref: '#/components/schemas/customer'
+        couponCodes:
+          $ref: '#/components/schemas/rtpeCouponCodes'
+        cartItems:
+          type: array
+          required:
+          - itemId
+          - quantity
+          description: The details of items in the cart.
+          items:
+            allOf:
+            - $ref: '#/components/schemas/lineItemReference'
+            - $ref: '#/components/schemas/productCollectionsReference'
+        locale:
+          type: string
+          description: The language code, which is a combination of language in ISO 639 format and country in ISO 3166 format. The default value is en-US.
+          example: en-US
+    lineItemReference:
+      description: Line item details
+      required:
+      - quantity
+      - itemId
+      type: object
+      properties:
+        itemId:
+          $ref: '#/components/schemas/cartItemId'
+        position:
+          minimum: 1
+          type: integer
+          description: Line item position (starts at 1)
+          format: int32
+          example: 1
+        sku:
+          type: string
+          description: Line item SKU
+          example: 16B2GS8LD5FDS
+        productAttributes:
+          description: Line item product attributes
+          type:
+          - array
+          - 'null'
+          items:
+            $ref: '#/components/schemas/cartProductAttribute'
+        quantity:
+          type: integer
+          format: int32
+          description: Line item quantity within the cart
+          example: 15
+        priceListId:
+          type:
+          - integer
+          - 'null'
+          format: int32
+          description: The price list ID associated with the item generated using the [create price list](/v3/api-reference/offers/price-lists/create-price-list) endpoint.
+          example: 108674
+        price:
+          description: Individual line item price
+          allOf:
+          - $ref: '#/components/schemas/calculatedPriceObject'
+          - {}
+        groups:
+          type:
+          - array
+          - 'null'
+          description: List of group IDs for groups or category the line items belongs to
+          items:
+            type: string
+            description: ID of group or category to which line item belongs
+            example: 61d38e117162b7dba69c3d6d
+        attributes:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: Line item attributes passed by caller
+          example:
+            productFamily: Laptop computers
+        shippingDetails:
+          description: Shipping details
+          allOf:
+          - $ref: '#/components/schemas/shippingDetailReference'
+          - {}
+    evaluateProductsBySkuRequest:
+      type: object
+      required:
+      - priceListId
+      - skus
+      description: Evaluate prices for products based on their individual SKUs.
+      properties:
+        priceListId:
+          description: Price list ID of the item.
+          type: integer
+          format: int32
+          example: 100275
+        skus:
+          type: array
+          description: List of product SKUs for which prices are to be retrieved. You can specify up to 50 SKUs.
+          example:
+          - '1000019501'
+          - '1000019502'
+          minItems: 1
+          maxItems: 50
+          items:
+            description: Product SKU
+            example: SKU10023
+            type: string
+        customer:
+          $ref: '#/components/schemas/customer'
+        priceParameters:
+          type: array
+          description: The parameters used to calculate the price.
+          items:
+            $ref: '#/components/schemas/priceParameterBySku'
+        isAudit:
+          type: boolean
+          description: 'Specifies whether an audit''s required. The options are:
+
+            - `true`: Response includes an audit object mentioning how the price is calculated.
+
+            - `false`: Response doesn''t include an audit object.
+
+            '
+          example: true
+        locale:
+          type: string
+          description: The language code, which is a combination of language in ISO 639 format and country in ISO 3166 format. The default value is en-US.
+          example: en-US
     evaluateCartResponse:
       type: object
       description: The response of the evaluation request of the cart promotion.
@@ -586,57 +1229,118 @@ components:
             message: Invalid coupon
         promotionMessages:
           $ref: '#/components/schemas/rtpePromotionMessages'
-    promotionMessages:
-      type: array
-      description: The promotion message that is displayed to the customer.
+    cartProductAttribute:
+      description: Product attribute as defined within Product Catalog.
       required:
-      - message
-      - locales
-      - type
-      items:
-        type: object
-        description: Message description for the promotion
-        properties:
-          title:
-            type: string
-            description: Message name
-            example: Buy 2 get 1 free
-          message:
-            type: string
-            description: Message description
-            example: Offer valid at participating stores through September 5, 2023.
-          pages:
-            type: array
-            description: The types of web pages where the message is displayed.
-            items:
-              type: string
-              description: Page type
-              enum:
-              - PDP
-              - PLP
-              - Cart
-              - Checkout
-              example: PDP
-          locales:
-            type: array
-            description: The geographic regions where the promotion message is displayed, determined by the user's IP address. Locales define language and country-specific settings for promotions.
-            items:
-              type: string
-              description: Locale
-              example: en-CA
+      - value
+      - name
+      type: object
+      properties:
+        attributeId:
+          type: string
+          description: Attribute ID
+          example: 60c2a358eb2ec30008ae70a1
+        name:
+          type: string
+          description: Attribute name
+          example: gift wrapping (small)
+        description:
           type:
-            type: string
-            description: "Specifies the promotion message type.\n  - `DISCOUNT`: The discount has been applied.\n  - `PROXIMITY`: The product or cart is close to meeting discount conditions.\n  - `POTENTIAL_DISCOUNT`: The product could qualify for a discount but has not yet."
-            enum:
-            - DISCOUNT
-            - PROXIMITY
-            - POTENTIAL_DISCOUNT
-            example: DISCOUNT
-          threshold:
+          - string
+          - 'null'
+          description: Attribute description
+          example: Gift wrapping for a small package
+        mapping:
+          type:
+          - string
+          - 'null'
+          description: Attribute mapping
+          example: ITEM
+        type:
+          type:
+          - string
+          - 'null'
+          description: Attribute type
+          example: GIFT
+        value:
+          type:
+          - string
+          - 'null'
+          description: Attribute value
+          example: 'true'
+        price:
+          type:
+          - number
+          - 'null'
+          format: double
+          description: Attribute price
+          example: 10
+        level:
+          type:
+          - string
+          - 'null'
+          description: Attribute level
+          example: order
+    priceParameterById:
+      allOf:
+      - $ref: '#/components/schemas/priceParameter'
+      - type: object
+        properties:
+          quantity:
             type: integer
+            description: Number of products ordered, required for the range-based pricing method. For more information about range-based pricing method, see the [discount type](/v3/offers/user-guides/offers/coupons/overview#defining-discounts-and-how-they’re-applied) section.
             format: int32
-            description: Indicates a quantity or amount that is close to meeting the discount requirement. If the user reaches this value, a promotion message is displayed. This field is only valid for PROXIMITY messages.
-            example: 2
+            example: 500
+          itemId:
+            type: integer
+            description: Item ID obtained from Product Catalog.
+            format: int32
+            example: 12345
+    arrayOfStrings:
+      type: array
+      description: A list of string values.
+      example:
+      - blue
+      - red
+      items:
+        type: string
+        description: The string value.
+        example: blue
+    shippingDetailReference:
+      description: Shipping details reference
+      type: object
+      properties:
+        shippingCost:
+          type: number
+          format: double
+          description: Shipping cost
+          example: 150.25
+        shippingMethodId:
+          type: string
+          description: Shipping method ID
+          example: dfsae-2d32113-32lpdd
+        shippingDiscount:
+          type: number
+          format: double
+          description: Discount amount
+          example: 150.25
+        shippingMethodName:
+          type:
+          - string
+          - 'null'
+          description: Shipping method name
+          example: Express Delivery
+    rtpePromotionMessages:
+      allOf:
+      - $ref: '#/components/schemas/promotionMessages'
+      - type: array
+        items:
+          type: object
+          properties:
+            promoId:
+              type: string
+              description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
+              example: 61df12345678900009b7091c
     priceAdditionalProperties:
       type: object
       description: The additional parameters for calculating the price.
@@ -661,82 +1365,18 @@ components:
                 type: number
                 example: 10
                 format: double
-    priceParameterById:
-      allOf:
-      - $ref: '#/components/schemas/priceParameter'
-      - type: object
-        properties:
-          quantity:
-            type: integer
-            description: Number of products ordered, required for the range-based pricing method. For more information about range-based pricing method, see the [discount type](/v3/offers/user-guides/offers/coupons/overview#defining-discounts-and-how-they’re-applied) section.
-            format: int32
-            example: 500
-          itemId:
-            type: integer
-            description: Item ID obtained from Product Catalog.
-            format: int32
-            example: 12345
-    lineItemReference:
-      description: Line item details
-      required:
-      - quantity
-      - itemId
+    cartSubError:
       type: object
+      description: The validation sub errors related to the cart.
       properties:
-        itemId:
-          $ref: '#/components/schemas/cartItemId'
-        position:
-          minimum: 1
-          type: integer
-          description: Line item position (starts at 1)
-          format: int32
-          example: 1
-        sku:
+        type:
           type: string
-          description: Line item SKU
-          example: 16B2GS8LD5FDS
-        productAttributes:
-          description: Line item product attributes
-          type: array
-          nullable: true
-          items:
-            $ref: '#/components/schemas/cartProductAttribute'
-        quantity:
-          type: integer
-          format: int32
-          description: Line item quantity within the cart
-          example: 15
-        priceListId:
-          type: integer
-          format: int32
-          description: The price list ID associated with the item generated using the [create price list](/v3/api-reference/offers/price-lists/create-price-list) endpoint.
-          nullable: true
-          example: 108674
-        price:
-          description: Individual line item price
-          allOf:
-          - $ref: '#/components/schemas/calculatedPriceObject'
-          - nullable: true
-        groups:
-          type: array
-          description: List of group IDs for groups or category the line items belongs to
-          nullable: true
-          items:
-            type: string
-            description: ID of group or category to which line item belongs
-            example: 61d38e117162b7dba69c3d6d
-        attributes:
-          type: object
-          additionalProperties: true
-          description: Line item attributes passed by caller
-          nullable: true
-          example:
-            productFamily: Laptop computers
-        shippingDetails:
-          description: Shipping details
-          allOf:
-          - $ref: '#/components/schemas/shippingDetailReference'
-          - nullable: true
+          description: The error code.
+          example: Bad request
+        message:
+          type: string
+          description: The error message corresponding to the `type`.
+          example: -1.0 isn't a valid shipping price. Value must be greater than or equal to 0.
     priceParameter:
       allOf:
       - $ref: '#/components/schemas/priceAdditionalProperties'
@@ -751,190 +1391,28 @@ components:
               type: string
               example: blind_motor
               description: Add-on name
-    calculatedPriceObject:
+    calculatedPriceOffersBySKU:
       type: object
-      description: The calculated price details for line items.
-      example:
-        sale: 1000.15
-        cost: 900.15
-        base: 2000.15
-        unitPriceWithoutDiscounts: 2000.15
-        lineTotalWithoutDiscounts: 2000.15
-        lineTotalWithDiscounts: 2000.15
-        type: BASE
+      description: Discounts or special offers applied to the price.
       properties:
-        sale:
-          type: number
-          description: Sale price of the product.
-          format: double
-          example: 1000.15
-          nullable: true
-        cost:
-          type: number
-          description: Cost of goods sold, from either producing or purchasing from other vendors.
-          format: double
-          example: 900.15
-        base:
-          type: number
-          description: The base price of a single item before any discounts.
-          format: double
-          example: 2000.15
-        unitPriceWithoutDiscounts:
-          type: number
-          nullable: true
-          description: Price of a single item without discount. This price is either the `base` or `sale` price. The type used is noted in the `type` property.
-          format: double
-          example: 2000.15
-        lineTotalWithoutDiscounts:
-          type: number
-          nullable: true
-          description: Total price of all items without calculating discounts. This is the `unitPriceWithoutDiscounts` multiplied by the quantity.
-          format: double
-          example: 5000.15
-        lineTotalWithDiscounts:
-          type: number
-          nullable: true
-          description: Total price of all items after all discounts. This is the unitPriceWithoutDiscounts multiplied by the quantity, less the promotion discounts.
-          format: double
-          example: 5000.15
-        type:
-          type: string
-          nullable: true
-          description: Price type
-          example: BASE
-        currency:
-          type: string
-          description: Currency string value
-          example: USD
-    promotionDiscountWithPromoMessage:
-      type: object
-      description: Promotion discount
-      example:
-        amount: 100.15
-        quantity: 1
-        application: 1
-        promotion:
-          id: 6197ec46e836ff000952d668
-          value: 2000.15
-          groupId: 61a6354d0d70e30009415f16
-          level: 1
-          isStackable: true
-          isAlwaysApplied: true
-          name: 20% OFF
-          type: Coupon
-          discountType: AMOUNT_OFF
-          stackingType: STACKABLE
-          promotionMessages:
-          - promoId: 6197ec46e836ff000952c666
-            title: Get 50% off socks when buying shoes!
-            message: Buy any pair of shoes and get 50% off a pair of socks.
-            locales:
-            - en-US
-            - en-GB
-            pages:
-            - PDP
-            - CART
-            type: DISCOUNT
-      properties:
-        amount:
-          type: number
-          description: The actual amount of the discounts applied to the price. For example, entering 100.15 for a product with a base price of 2000.15 results in a discounted price of 1900.
-          format: double
-          example: 100.15
-        quantity:
-          type: integer
-          description: The number of items eligible for the promotional discount.
-          format: int32
-          example: 5
-        application:
-          type: integer
-          nullable: true
-          description: The number of times the BuyGet promotion can be used, indicating how many times you can use the promotions, such as get a certain amount or percentage off, or get free items when making a purchase.
-          format: int32
-          example: 1
-        promotion:
-          type: object
-          description: Promotion object
-          example:
-            id: 6197ec46e836ff000952c668
-            value: 2000.15
-            groupId: 61a6354d0d70e30009415f16
-            level: 1
-            isStackable: true
-            isAlwaysApplied: true
-            name: 20% OFF
-            type: Coupon
-            discountType: AMOUNT_OFF
-            stackingType: STACKABLE
-            promotionMessages:
-            - promoId: 6197ec46e836ff000952c666
-              title: Get 50% off socks when buying shoes!
-              message: Buy any pair of shoes and get 50% off a pair of socks.
-              locales:
-              - en-US
-              - en-GB
-              pages:
-              - PDP
-              - CART
-              type: DISCOUNT
-          properties:
-            id:
-              type: string
-              description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
-              example: 6197ec46e836ff000952c667
-            value:
-              type: number
-              description: The discount applied to the price. This can be specified as a percentage or a fixed amount.
-              format: double
-              example: 2000.15
-            groupId:
-              type: string
-              nullable: true
-              description: ID of the group or category this product belongs to
-              example: 61a6354d0d70e30009415f16
-            level:
-              type: integer
-              nullable: true
-              description: The order in which the current promotion is executed.
-              format: int32
-              example: 1
-            isStackable:
-              type: boolean
-              nullable: true
-              description: 'Specifies whether the promotion is stackable. You can set one of the following: - `true`: This promotion can be combined with other stackable promotions, allowing multiple discounts to be applied together. - `false`: The promotion isn''t stackable. You can''t combine this promotion with other promotions.'
-              example: true
-            isAlwaysApplied:
-              type: boolean
-              nullable: true
-              description: 'Specifies whether the promotion is applied regardless of the exclusive promotions on the same item. You can set one of the following values: - `true`: Promotion is applied regardless of the exclusive promotions on the same item. - `false`: Promotion isn''t applied on the item.'
-              example: true
-            stackingType:
-              type: string
-              description: "Defines the rules for how a promotion can be combined with other promotions. This field determines whether a specific promotion can be applied in conjunction with other active promotions during a transaction or if it must be used exclusively. Possible values: - `STACKABLE`: This promotion can be combined with other stackable promotions, allowing multiple\n  discounts to be applied together. The order in which stackable promotions are applied\n  is determined by the `level` field, with promotions having a higher priority (lower numeric value)\n  being applied before those with a lower priority.\n- `EXCLUSIVE`: This promotion can't be combined with any other promotions. The `level` field is\n  used to determine which exclusive promotion will be evaluated and applied first. Once an exclusive\n  promotion is applied, no other promotions can be used in the same transaction.\n- `TYPE_EXCLUSIVE`: This promotion can't be combined with other promotions of the same type.\n  The `level` field is used to determine which promotion within the same type will be evaluated and\n  applied first.\n- `UNIVERSAL`: This promotion can be combined with any other promotions without restrictions.\n  Universal promotions will be evaluated last."
-              enum:
-              - STACKABLE
-              - EXCLUSIVE
-              - TYPE_EXCLUSIVE
-              - UNIVERSAL
-              example: STACKABLE
-            name:
-              type: string
-              description: Promotion name
-              example: 20% off
-            type:
-              type: string
-              description: Promotion type
-              example: COUPON
-            discountType:
-              example: PERCENTAGE_OFF
-              type: string
-              description: Discount type
-              enum:
-              - PERCENTAGE_OFF
-              - AMOUNT_OFF
-              - FIXED_PRICE
-            promotionMessages:
-              $ref: '#/components/schemas/rtpePromotionMessages'
+        price:
+          $ref: '#/components/schemas/calculatedPriceObject'
+        discounts:
+          type: array
+          description: A list of discounts applied to the price.
+          items:
+            $ref: '#/components/schemas/promotionDiscountWithPromoMessage'
+        suggestedProducts:
+          description: The suggested products.
+          items:
+            $ref: '#/components/schemas/pdpSuggestedSKU'
+        additionalAttributes:
+          type: array
+          description: A placeholder for additional price attributes, in name-values pairs.
+          items:
+            type: object
+        promotionMessages:
+          $ref: '#/components/schemas/rtpePromotionMessages'
     evaluateProductsByIdResponse:
       type: object
       description: Sample response including successful retrievals and potential errors.
@@ -948,29 +1426,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/calculatedPrice'
-    priceAttributes:
-      type: object
-      description: Price attributes
-      example:
-        floor: 1000.15
-        cost: 900.15
-        clearance: 2000.15
-      properties:
-        cost:
-          type: number
-          description: Cost price
-          format: double
-          example: 9.15
-        floor:
-          type: number
-          description: Lowest price at which a product is sold
-          format: double
-          example: 10.15
-        clearance:
-          type: number
-          description: Selling price
-          format: double
-          example: 10.15
     calculatedPriceAudit:
       type: object
       description: Details involved in calculating the price.
@@ -998,145 +1453,6 @@ components:
             example:
               name: blind-motor
               value: 100
-    appliedDiscount:
-      type: object
-      description: Discount details
-      example:
-        promotionId: 6197ec46e836ff000952c665
-        promotionName: Buy shoes get socks for free
-        couponCode: SUPERCOUPON20
-        type: COUPON
-        amount: 105.15
-      properties:
-        promotionId:
-          type: string
-          nullable: true
-          description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
-          example: 6197ec46e836ff000952c664
-        couponCode:
-          type: string
-          nullable: true
-          description: Coupon code
-          example: SUPERCOUPON20
-        promotionName:
-          type: string
-          nullable: true
-          description: Promotion name
-          example: 20% off
-        type:
-          type: string
-          nullable: true
-          description: Promotion type
-          example: COUPON
-        amount:
-          type: number
-          nullable: true
-          description: Discount amount
-          format: double
-          example: 10.15
-    calculatedPriceOffersBySKU:
-      type: object
-      description: Discounts or special offers applied to the price.
-      properties:
-        price:
-          $ref: '#/components/schemas/calculatedPriceObject'
-        discounts:
-          type: array
-          description: A list of discounts applied to the price.
-          items:
-            $ref: '#/components/schemas/promotionDiscountWithPromoMessage'
-        suggestedProducts:
-          description: The suggested products.
-          items:
-            $ref: '#/components/schemas/pdpSuggestedSKU'
-        additionalAttributes:
-          type: array
-          description: A placeholder for additional price attributes, in name-values pairs.
-          items:
-            type: object
-        promotionMessages:
-          $ref: '#/components/schemas/rtpePromotionMessages'
-    rtpeCouponCodes:
-      type: array
-      description: Promotion codes to be applied
-      items:
-        type: string
-        description: Promotion code
-        example: SUPERCOUPON1
-    evaluateProductsBySkuRequest:
-      type: object
-      required:
-      - priceListId
-      - skus
-      description: Evaluate prices for products based on their individual SKUs.
-      properties:
-        priceListId:
-          description: Price list ID of the item.
-          type: integer
-          format: int32
-          example: 100275
-        skus:
-          type: array
-          description: List of product SKUs for which prices are to be retrieved. You can specify up to 50 SKUs.
-          example:
-          - '1000019501'
-          - '1000019502'
-          minItems: 1
-          maxItems: 50
-          items:
-            description: Product SKU
-            example: SKU10023
-            type: string
-        customer:
-          $ref: '#/components/schemas/customer'
-        priceParameters:
-          type: array
-          description: The parameters used to calculate the price.
-          items:
-            $ref: '#/components/schemas/priceParameterBySku'
-        isAudit:
-          type: boolean
-          description: 'Specifies whether an audit''s required. The options are:
-
-            - `true`: Response includes an audit object mentioning how the price is calculated.
-
-            - `false`: Response doesn''t include an audit object.
-
-            '
-          example: true
-        locale:
-          type: string
-          description: The language code, which is a combination of language in ISO 639 format and country in ISO 3166 format. The default value is en-US.
-          example: en-US
-    calculatedPriceBySku:
-      type: object
-      description: Calculated price details
-      properties:
-        priceListId:
-          description: The price list ID of the item.
-          type: integer
-          format: int32
-          example: 100275
-        sku:
-          type: string
-          description: Product SKU
-          example: SKU1234
-        offer:
-          $ref: '#/components/schemas/calculatedPriceOffersBySKU'
-        audit:
-          $ref: '#/components/schemas/calculatedPriceAudit'
-    cartSubError:
-      type: object
-      description: The validation sub errors related to the cart.
-      properties:
-        type:
-          type: string
-          description: The error code.
-          example: Bad request
-        message:
-          type: string
-          description: The error message corresponding to the `type`.
-          example: -1.0 isn't a valid shipping price. Value must be greater than or equal to 0.
     evaluateProductsBySkuResponse:
       description: Sample response including successful retrievals and potential errors.
       type: object
@@ -1165,182 +1481,18 @@ components:
               description: String value
             example: Nike
             description: Property value
-    customer:
+    priceError:
       type: object
-      description: Customer details
+      description: The validation errors related to the price.
       properties:
-        id:
+        type:
           type: string
-          description: Unique identifier for the customer
-          example: 5e2cfb9b45570b000864c4b5
-        segments:
-          type: array
-          description: A list of segments the customer belongs to.
-          example:
-          - name: category
-            value:
-            - GOLD
-            - YELLOW
-          - name: ageGroup
-            value:
-            - elderly
-          items:
-            type: object
-            properties:
-              name:
-                description: The name of the segment the customer belongs to.
-                type: string
-                example: category
-              value:
-                type: array
-                description: The values of the segment associated with the customer.
-                items:
-                  type: string
-                  description: Segment item
-                  example: GOLD
-    promotionDiscount:
-      type: object
-      description: Promotion discount
-      example:
-        amount: 100.15
-        quantity: 1
-        proratedAmount: 100.15
-        proratedQuantity: 1
-        application: 1
-        promotion:
-          id: 6197ec46e836ff000952d668
-          value: 2000.15
-          groupId: 61a6354d0d70e30009415f16
-          level: 1
-          isStackable: true
-          isAlwaysApplied: true
-          name: 20% OFF
-          type: Coupon
-          discountType: AMOUNT_OFF
-          stackingType: STACKABLE
-      properties:
-        amount:
-          type: number
-          description: The actual discount amount applied to the price. For example, specifying 100.15 for a product with a base price of 2000.15 results in a discounted price of 1900.
-          format: double
-          example: 100.15
-        quantity:
-          type: integer
-          description: The number of items eligible for the promotional discount.
-          format: int32
-          example: 5
-        proratedAmount:
-          type: number
-          description: The discount amount distributed proportionally among all the selected items. The distribution is determined based on each item's price relative to the total price of all participating items. Typically, `proratedAmount` matches the `amount`. However, there might be variations, particularly in the context of Buy-Get promotions.
-          format: double
-          example: 1000.15
-        proratedQuantity:
-          type: integer
-          description: This is used in conjunction with `proratedAmount` to determine the discount portion allocated to the respective units of BuyGet promotions. This is applicable in partial return scenarios.
-          format: int32
-          example: 5
-        application:
-          type: integer
-          nullable: true
-          description: An identifier for an instance of the Buy-Get promotion that can be applied repeatedly. For example, consider a promotion - Buy 1 shirt and get 1 pant at a 20% off. If a shopper buys three shirts, 20% discount is individually applied to each shirt-pant pair. Each such discounted pair is assigned a unique `application` number for tracking purposes.
-          format: int32
-          example: 1
-        promotion:
-          type: object
-          description: The promotion details.
-          example:
-            id: 6197ec46e836ff000952c668
-            value: 2000.15
-            groupId: 61a6354d0d70e30009415f16
-            level: 1
-            isStackable: true
-            isAlwaysApplied: true
-            name: 20% OFF
-            type: Coupon
-            discountType: AMOUNT_OFF
-            stackingType: STACKABLE
-          properties:
-            id:
-              type: string
-              description: A 24-character system-generated coupon ID generated using the [create coupon](/v3/api-reference/offers/coupons/create-coupon) endpoint.
-              example: 6197ec46e836ff000952c667
-            value:
-              type: number
-              description: The discount in percent or amount.
-              format: double
-              example: 2000.15
-            groupId:
-              type: string
-              nullable: true
-              description: ID of the group or category this product belongs to
-              example: 61a6354d0d70e30009415f16
-            level:
-              type: integer
-              nullable: true
-              description: The order in which the current promotion is executed.
-              format: int32
-              example: 1
-            isStackable:
-              type: boolean
-              nullable: true
-              description: A flag indicating whether the promotion is stackable. Set to `true` to combine the given promotion with other promotions. The discount of the current promotion is combined with other promotions, if applicable, to the item. Set to `false` if the promotion isn't stackable; the given promotion can't be combined with other promotions.
-              example: true
-            isAlwaysApplied:
-              type: boolean
-              nullable: true
-              description: A flag indicating whether the promotion is always applied regardless of any exclusive promotions on the same item. Set to `true` if the promotion is always applied and set to `false` if the promotion isn't applied on the item by default.
-              example: true
-            stackingType:
-              type: string
-              description: "Defines the rules for how a promotion can be combined with other promotions. This field determines whether a specific promotion can be applied in conjunction with other active promotions during a transaction or if it must be used exclusively. Possible values: - `STACKABLE`: This promotion can be combined with other stackable promotions, allowing multiple\n  discounts to be applied together. The order in which stackable promotions are applied\n  is determined by the `level` field, with promotions having a higher priority (lower numeric value)\n  being applied before those with a lower priority.\n- `EXCLUSIVE`: This promotion can't be combined with any other promotions. The `level` field is\n  used to determine which exclusive promotion will be evaluated and applied first. Once an exclusive\n  promotion is applied, no other promotions can be used in the same transaction.\n- `TYPE_EXCLUSIVE`: This promotion can't be combined with other promotions of the same type.\n  The `level` field is used to determine which promotion within the same type will be evaluated and\n  applied first.\n- `UNIVERSAL`: This promotion can be combined with any other promotions without restrictions.\n  Universal promotions will be evaluated last."
-              enum:
-              - STACKABLE
-              - EXCLUSIVE
-              - TYPE_EXCLUSIVE
-              - UNIVERSAL
-              example: STACKABLE
-            name:
-              type: string
-              description: The name of the promotion.
-              example: 20% off
-            type:
-              type: string
-              description: The type of the promotion.
-              example: COUPON
-            discountType:
-              example: PERCENTAGE_OFF
-              type: string
-              description: The type of discount.
-              enum:
-              - PERCENTAGE_OFF
-              - AMOUNT_OFF
-              - FIXED_PRICE
-    calculatedPrice:
-      type: object
-      description: Calculated price details
-      properties:
-        priceListId:
-          description: The price list ID of the item generated using the [create price list](/v3/api-reference/offers/price-lists/create-price-list) endpoint.
-          type: integer
-          format: int32
-          example: 100275
-        itemId:
-          type: integer
-          description: Item ID
-          format: int32
-          example: 11111111
-        currency:
+          description: The error code.
+          example: Not found
+        message:
           type: string
-          description: The currency for the discount amount.
-          example: USD
-        channelId:
-          type: string
-          description: The sales channel used to calculate the price. The channels are 12 corresponding to US and 13 corresponding to Canada.
-          example: '12'
-        offer:
-          $ref: '#/components/schemas/calculatedPriceOffersByProductId'
-        audit:
-          $ref: '#/components/schemas/calculatedPriceAudit'
+          description: An error message corresponding to the `type`.
+          example: Price doesn't exist for product 179089, channels [12, 10], date Wed Nov 16 14:11:16 UYT 2022 and price lists [197090]
     productCollectionsReference:
       type: object
       properties:
@@ -1351,121 +1503,30 @@ components:
             type: string
             description: A 24-character system-generated collection ID.
             example: 5e2cfb9b45570b000863c4b5
-    cartItemId:
-      type: integer
-      description: Item ID obtained from Product Catalog.
-      format: int32
-      example: 1730902008
-    apiError:
-      type: object
-      description: The details of validation errors.
-      properties:
-        type:
-          type: string
-          description: The error code.
-          example: BAD_REQUEST
-        message:
-          type: string
-          description: An error message corresponding to the `type`.
-          example: Request isn't valid
-        errors:
-          description: The error details.
-          type: array
-          items:
-            $ref: '#/components/schemas/cartSubError'
-    arrayOfStrings:
-      type: array
-      description: A list of string values.
-      example:
-      - blue
-      - red
-      items:
-        type: string
-        description: The string value.
-        example: blue
-    pdpSuggestedSKU:
-      type: array
-      description: A list of suggested products.
-      items:
-        description: The suggested product.
-        type: object
-        properties:
-          promotionId:
-            type: string
-            description: A 24-character system-generated promotion ID generated using the [create promotion](/v3/api-reference/offers/promotions/create-promotion) endpoint.
-            example: 6197ec46e836ff000952c668
-          promotionName:
-            type: string
-            description: The name of the promotion.
-            example: Buy Shoes, get socks for free
-          skus:
-            type: array
-            description: A list of Stock Keeping Units (SKUs).
-            items:
-              description: SKU
-              example: SKU1
-              type: string
-            example:
-            - SOCK1
-            - SOCK2
-            - SOCKN
-          eligiblePriceLists:
-            type: array
-            description: The eligible price lists.
-            items:
-              description: The price list ID associated with the item generated using the [create price list](/v3/api-reference/offers/price-lists/create-price-list) endpoint.
-              example: 10000
-              type: integer
-              format: int32
-            example:
-            - 10000
-          isFree:
-            type: boolean
-            description: A flag indicating whether the promotion offers complimentary items. Set to `true` if the promotion includes one or more complimentary items and `false` if it doesn't.
-            example: false
-          discountType:
-            type: string
-            description: The type of discount, such as PERCENTAGE_OFF, AMOUNT_OFF, or FIXED_PRICE.
-            enum:
-            - PERCENTAGE_OFF
-            - AMOUNT_OFF
-            - FIXED_PRICE
-            example: PERCENTAGE_OFF
-          amount:
-            type: number
-            description: The discount amount.
-            format: double
-            example: 50
-          quantity:
-            type: number
-            description: The number of complimentary items in the cart.
-            format: double
-            example: 50
-    evaluateCartRequest:
-      type: object
-      required:
-      - cartItems
-      description: A sample cart evaluation request.
-      properties:
-        customer:
-          $ref: '#/components/schemas/customer'
-        couponCodes:
-          $ref: '#/components/schemas/rtpeCouponCodes'
-        cartItems:
-          type: array
-          required:
-          - itemId
-          - quantity
-          description: The details of items in the cart.
-          items:
-            allOf:
-            - $ref: '#/components/schemas/lineItemReference'
-            - $ref: '#/components/schemas/productCollectionsReference'
-        locale:
-          type: string
-          description: The language code, which is a combination of language in ISO 639 format and country in ISO 3166 format. The default value is en-US.
-          example: en-US
   parameters:
+    xFabricDate:
+      name: x-fabric-date
+      in: header
+      description: The Date and time, in ISO 8601 format, for which the evaluation should be done. The prices and promotions that are active on this date will be considered for evaluation.
+      required: false
+      schema:
+        type: string
+        example: 2022-09-06 14:07:17+00:00
+    xFabricChannelId:
+      in: header
+      name: x-fabric-channel-id
+      schema:
+        type: string
+        example: '12'
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: A unique request ID.
+      required: false
+      schema:
+        type: string
+        example: 263e731c-45c8-11ed-b878-0242ac120002
     xFabricTenantId:
       in: header
       name: x-fabric-tenant-id
@@ -1476,119 +1537,7 @@ components:
       required: true
       example: 5f328bf0b5f328bf0b5f328b
       description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-    xFabricDate:
-      name: x-fabric-date
-      in: header
-      description: The Date and time, in ISO 8601 format, for which the evaluation should be done. The prices and promotions that are active on this date will be considered for evaluation.
-      required: false
-      schema:
-        type: string
-        example: 2022-09-06 14:07:17+00:00
-    xFabricRequestId:
-      in: header
-      name: x-fabric-request-id
-      description: A unique request ID.
-      required: false
-      schema:
-        type: string
-        example: 263e731c-45c8-11ed-b878-0242ac120002
-    xFabricChannelId:
-      in: header
-      name: x-fabric-channel-id
-      schema:
-        type: string
-        example: '12'
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
   examples:
-    evaluateProductsSuccessBySKU:
-      value:
-        errors: []
-        data:
-        - priceListId: 100275
-          itemId: 11111111
-          currency: USD
-          channelId: '12'
-          offer:
-            price:
-              sale: 1000.15
-              cost: 900.15
-              base: 2000.15
-              unitPriceWithoutDiscounts: 2000.15
-              lineTotalWithoutDiscounts: 2000.15
-              lineTotalWithDiscounts: 2000.15
-              type: BASE
-            discounts:
-            - amount: 100.15
-              quantity: 1
-              application: 1
-              promotion:
-                id: 6197ec46e836ff000952d668
-                value: 2000.15
-                groupId: 61a6354d0d70e30009415f16
-                level: 1
-                isStackable: true
-                isAlwaysApplied: true
-                name: 20% OFF
-                type: Coupon
-                discountType: AMOUNT_OFF
-                stackingType: STACKABLE
-                promotionMessages:
-                - promoId: 6197ec46e836ff000952c666
-                  title: Get 50% off socks when buying shoes!
-                  message: Buy any pair of shoes and get 50% off a pair of socks.
-                  locales:
-                  - en-US
-                  - en-GB
-                  pages:
-                  - PDP
-                  - CART
-                  type: DISCOUNT
-            suggestedProducts:
-            - promotionId: 6197ec46e836ff000952c668
-              promotionName: Buy Shoes, get socks 50% off
-              skus:
-              - SOCK1
-              - SOCK2
-              - SOCKN
-              eligiblePriceLists:
-              - 10000
-              isFree: false
-              discountType: PERCENTAGE_OFF
-              amount: 50
-              quantity: 1
-            additionalAttributes:
-            - {}
-            promotionMessages:
-            - promoId: 6197ec46e836ff000952c667
-              threshold: 3
-              message: Add another pair of shoes to get free socks!
-              locales:
-              - en-US
-              - en-GB
-              type: PROXIMITY
-            - promoId: 6197ec46e836ff000952c668
-              title: Get free socks!
-              message: Buy two pairs of shoes and get a pair of socks for free!
-              locales:
-              - en-US
-              - en-GB
-              pages:
-              - PDP
-              - CART
-              type: POTENTIAL_DISCOUNT
-          audit:
-            userId: 62f5e25ca090100009c6e0f0
-            priceMethodType: SurfaceArea_Square_Increment
-            quantity: 50
-            priceParameters:
-              additionalProperties:
-              - id: length
-                value: 10
-              - id: width
-                value: 20
-            appliedAddons:
-            - name: blind-motor
-              value: 100
     evaluateProductsSuccessById:
       value:
         errors: []
@@ -1678,6 +1627,95 @@ components:
             appliedAddons:
             - name: blind-motor
               value: 100
+    evaluateProductsSuccessBySKU:
+      value:
+        errors: []
+        data:
+        - priceListId: 100275
+          itemId: 11111111
+          currency: USD
+          channelId: '12'
+          offer:
+            price:
+              sale: 1000.15
+              cost: 900.15
+              base: 2000.15
+              unitPriceWithoutDiscounts: 2000.15
+              lineTotalWithoutDiscounts: 2000.15
+              lineTotalWithDiscounts: 2000.15
+              type: BASE
+            discounts:
+            - amount: 100.15
+              quantity: 1
+              application: 1
+              promotion:
+                id: 6197ec46e836ff000952d668
+                value: 2000.15
+                groupId: 61a6354d0d70e30009415f16
+                level: 1
+                isStackable: true
+                isAlwaysApplied: true
+                name: 20% OFF
+                type: Coupon
+                discountType: AMOUNT_OFF
+                stackingType: STACKABLE
+                promotionMessages:
+                - promoId: 6197ec46e836ff000952c666
+                  title: Get 50% off socks when buying shoes!
+                  message: Buy any pair of shoes and get 50% off a pair of socks.
+                  locales:
+                  - en-US
+                  - en-GB
+                  pages:
+                  - PDP
+                  - CART
+                  type: DISCOUNT
+            suggestedProducts:
+            - promotionId: 6197ec46e836ff000952c668
+              promotionName: Buy Shoes, get socks 50% off
+              skus:
+              - SOCK1
+              - SOCK2
+              - SOCKN
+              eligiblePriceLists:
+              - 10000
+              isFree: false
+              discountType: PERCENTAGE_OFF
+              amount: 50
+              quantity: 1
+            additionalAttributes:
+            - {}
+            promotionMessages:
+            - promoId: 6197ec46e836ff000952c667
+              threshold: 3
+              message: Add another pair of shoes to get free socks!
+              locales:
+              - en-US
+              - en-GB
+              type: PROXIMITY
+            - promoId: 6197ec46e836ff000952c668
+              title: Get free socks!
+              message: Buy two pairs of shoes and get a pair of socks for free!
+              locales:
+              - en-US
+              - en-GB
+              pages:
+              - PDP
+              - CART
+              type: POTENTIAL_DISCOUNT
+          audit:
+            userId: 62f5e25ca090100009c6e0f0
+            priceMethodType: SurfaceArea_Square_Increment
+            quantity: 50
+            priceParameters:
+              additionalProperties:
+              - id: length
+                value: 10
+              - id: width
+                value: 20
+            appliedAddons:
+            - name: blind-motor
+              value: 100
   headers:
     xFabricRequestIdResponse:
       description: Unique request ID
@@ -1685,10 +1723,13 @@ components:
         type: string
         example: 263e731c-45c8-11ed-b878-0242ac120002
   securitySchemes:
-    bearerAuth:
+    AuthorizationToken:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+externalDocs:
+  description: Find out more about Offers
+  url: https://developer.fabric.inc/docs/offers-overview
+x-mint:
+  mcp:
+    enabled: true

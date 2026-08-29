@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints ReservedNetwork Endpoints API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: fabric Orders Team
+  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: fabric Inventory ReservedNetwork Endpoints API
   version: 3.0.0
+  x-audience: external-public
 servers:
-- url: https://api.fabric.inc/v3
+- description: Production
+  url: https://api.fabric.inc/v3
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - description: These endpoints help in performing reserved network operations
   name: ReservedNetwork Endpoints
@@ -151,6 +154,14 @@ paths:
       - ReservedNetwork Endpoints
 components:
   parameters:
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
     xFabricTenantId:
       description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
       example: 5f328bf0b5f328bf0b5f328b
@@ -167,79 +178,75 @@ components:
       required: true
       schema:
         type: string
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
   schemas:
-    softReserve:
-      description: SoftReserveRequest model
+    ItemResource:
       properties:
-        cartId:
-          description: CartId for which soft reserve requested, at least one of orderNumber or cartId or OrderId is required
-          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+        backorderQuantity:
+          description: Back order quantity that needs to be reserved
+          example: 5
+          format: int32
+          type: integer
+        channelId:
+          description: ChannelId for the item which needs to be reserved. Required parameter
+          example: '3'
           type: string
-        createdAt:
-          description: Date when soft reservation was created
-          example: '2022-08-01T18:03:28.483971941Z'
-          format: date-time
+        errorMessage:
           type: string
-        expiresAt:
-          description: Date when soft reservation will expire
-          example: '2022-08-01T18:03:28.483971941Z'
-          format: date-time
+        itemId:
+          description: itemId of product. Optional parameter
+          example: '451008962041'
           type: string
-        id:
-          description: ID
-          example: '"Infinity"'
+        lineItemId:
+          description: 'lineItemId of product. Required parameter '
+          example: '2'
           type: string
-        items:
-          description: Items which needs to be reserved. Required parameter
-          items:
-            $ref: '#/components/schemas/ItemResource'
-          type: array
+        locationNumber:
+          description: LocationNumber for which this item needs to be reserved. Optional parameter
+          example: 999
+          format: int32
+          type: integer
         networkCode:
-          description: Network for which items needs to be reserved. Optional parameter
-          example: DCOnly
+          description: Network for which this item needs to be reserved. Optional parameter
+          example: ShipToHome
           type: string
-        orderId:
-          description: Order ID for which soft reserve requested, at least one of orderNumber or cartId or OrderId is required
-          example: 62ab7af89ed14510827fe074
+        preorderQuantity:
+          description: Pre order quantity that needs to be reserved
+          example: 5
+          format: int32
+          type: integer
+        quantity:
+          description: quantity that needs to be reserved. Required parameter
+          example: 5
+          format: int32
+          type: integer
+        reservedNetworkCodes:
+          items:
+            type: string
+          type: array
+        sku:
+          description: sku of product. Required parameter
+          example: OMSTESTSKU1
           type: string
-        orderNumber:
-          deprecated: true
-          description: OrderNumber for which soft reserve requested, at least one of orderNumber or cartId or OrderId is required
-          example: order_20220729_883
+        status:
           type: string
-        orderType:
+        type:
           description: Order type, default value is STANDARD. Optional parameter
-          example: '[''STANDARD'',''CSR'']'
-          type: string
-        updatedAt:
-          description: Date when soft reservation was updated
-          example: '2022-08-01T18:03:28.483971941Z'
-          format: date-time
-          type: string
-        vendorId:
-          description: VendorId for which soft reserve requested. Optional parameter
-          example: test_vendor
+          example: '[''STANDARD'',''PREORDER'',''BACKORDER'']'
           type: string
       required:
-      - items
+      - channelId
+      - lineItemId
+      - quantity
+      - sku
       type: object
-    virtualCounters:
-      description: Virtual counters are calculated at run time from counters
+    aggregatedNetworksResponse:
+      description: AggregatedNetworksResponse model
       properties:
-        availableBackorder:
-          type: string
-        availablePreorder:
-          type: string
-        availableToPurchase:
-          type: string
+        aggregatedNetworks:
+          description: Aggregated networks
+          items:
+            $ref: '#/components/schemas/aggregatedNetwork'
+          type: array
       type: object
     aggregatedNetwork:
       description: Displays an aggregate representation of the SKU that includes all locations for which the sku is available in that network.
@@ -383,75 +390,6 @@ components:
         virtualCountersStatus:
           $ref: '#/components/schemas/virtualCounters'
       type: object
-    aggregatedNetworksResponse:
-      description: AggregatedNetworksResponse model
-      properties:
-        aggregatedNetworks:
-          description: Aggregated networks
-          items:
-            $ref: '#/components/schemas/aggregatedNetwork'
-          type: array
-      type: object
-    ItemResource:
-      properties:
-        backorderQuantity:
-          description: Back order quantity that needs to be reserved
-          example: 5
-          format: int32
-          type: integer
-        channelId:
-          description: ChannelId for the item which needs to be reserved. Required parameter
-          example: '3'
-          type: string
-        errorMessage:
-          type: string
-        itemId:
-          description: itemId of product. Optional parameter
-          example: '451008962041'
-          type: string
-        lineItemId:
-          description: 'lineItemId of product. Required parameter '
-          example: '2'
-          type: string
-        locationNumber:
-          description: LocationNumber for which this item needs to be reserved. Optional parameter
-          example: 999
-          format: int32
-          type: integer
-        networkCode:
-          description: Network for which this item needs to be reserved. Optional parameter
-          example: ShipToHome
-          type: string
-        preorderQuantity:
-          description: Pre order quantity that needs to be reserved
-          example: 5
-          format: int32
-          type: integer
-        quantity:
-          description: quantity that needs to be reserved. Required parameter
-          example: 5
-          format: int32
-          type: integer
-        reservedNetworkCodes:
-          items:
-            type: string
-          type: array
-        sku:
-          description: sku of product. Required parameter
-          example: OMSTESTSKU1
-          type: string
-        status:
-          type: string
-        type:
-          description: Order type, default value is STANDARD. Optional parameter
-          example: '[''STANDARD'',''PREORDER'',''BACKORDER'']'
-          type: string
-      required:
-      - channelId
-      - lineItemId
-      - quantity
-      - sku
-      type: object
     errorResponse:
       description: Error response
       properties:
@@ -469,6 +407,71 @@ components:
           example: CLIENT_ERROR
           type: string
       type: object
+    softReserve:
+      description: SoftReserveRequest model
+      properties:
+        cartId:
+          description: CartId for which soft reserve requested, at least one of orderNumber or cartId or OrderId is required
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        createdAt:
+          description: Date when soft reservation was created
+          example: '2022-08-01T18:03:28.483971941Z'
+          format: date-time
+          type: string
+        expiresAt:
+          description: Date when soft reservation will expire
+          example: '2022-08-01T18:03:28.483971941Z'
+          format: date-time
+          type: string
+        id:
+          description: ID
+          example: '"Infinity"'
+          type: string
+        items:
+          description: Items which needs to be reserved. Required parameter
+          items:
+            $ref: '#/components/schemas/ItemResource'
+          type: array
+        networkCode:
+          description: Network for which items needs to be reserved. Optional parameter
+          example: DCOnly
+          type: string
+        orderId:
+          description: Order ID for which soft reserve requested, at least one of orderNumber or cartId or OrderId is required
+          example: 62ab7af89ed14510827fe074
+          type: string
+        orderNumber:
+          deprecated: true
+          description: OrderNumber for which soft reserve requested, at least one of orderNumber or cartId or OrderId is required
+          example: order_20220729_883
+          type: string
+        orderType:
+          description: Order type, default value is STANDARD. Optional parameter
+          example: '[''STANDARD'',''CSR'']'
+          type: string
+        updatedAt:
+          description: Date when soft reservation was updated
+          example: '2022-08-01T18:03:28.483971941Z'
+          format: date-time
+          type: string
+        vendorId:
+          description: VendorId for which soft reserve requested. Optional parameter
+          example: test_vendor
+          type: string
+      required:
+      - items
+      type: object
+    virtualCounters:
+      description: Virtual counters are calculated at run time from counters
+      properties:
+        availableBackorder:
+          type: string
+        availablePreorder:
+          type: string
+        availableToPurchase:
+          type: string
+      type: object
   headers:
     xFabricRequestIdResponseHeader:
       description: Unique request ID
@@ -477,10 +480,13 @@ components:
       schema:
         type: string
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    authorization:
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about fabric Inventory
+  url: https://developer.fabric.inc/v3/docs/orders-inventory
+x-mint:
+  mcp:
+    enabled: true

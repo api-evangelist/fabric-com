@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Catalog Connector Operations by Item ID API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  description: fabric's **Catalog Connector** API is a lightweight service that you can use when you have your own Product Information Management (PIM) and only want to integrate with other fabric services, such as Offers and OMS (excluding the fabric Products API service). It supports CRUD operations to add and manage products in the Catalog Connector based on SKU, product ID, and item ID. Using Catalog Connector API, you can retrieve an import template, import product data into the Catalog Connector, export data, and check the status of previous imports and exports. Additionally, you can search for products based on specified filter conditions and perform bulk operations to manage products.
+  title: Catalog - Connector Catalog Connector Operations by Item ID API
+  version: 3.0.0
+  x-audience: external-public
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: Product team
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
-  version: 3.0.0
+  termsOfService: https://fabric.inc/terms-of-use
 servers:
 - url: https://api.fabric.inc/v3
+  description: Production URL
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - name: Catalog Connector Operations by Item ID
   description: Supports product operations based on Item ID.
@@ -150,428 +153,7 @@ paths:
         '500':
           $ref: '#/components/responses/internalServerError'
 components:
-  requestBodies:
-    putCatalogRequest:
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/putCatalogRequestSchema'
-          examples:
-            Item:
-              $ref: '#/components/examples/ItemUpdateExample'
-            Variant:
-              $ref: '#/components/examples/variantUpdateExample'
-            Bundle:
-              $ref: '#/components/examples/bundleUpdateExample'
-  parameters:
-    localeParameter:
-      name: locale
-      in: query
-      example: en-US
-      description: "The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
-      schema:
-        type: string
-      required: true
-    xFabricTenantId:
-      in: header
-      name: x-fabric-tenant-id
-      schema:
-        type: string
-      required: true
-      example: 5f328bf0b5f328bf0b5f328b
-      description: A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.
-    excludeBundleProductsParameter:
-      name: excludeBundleProducts
-      in: query
-      example: false
-      description: A flag indicating whether the products associated with a bundle should be excluded from the response. Set it to `true` to exclude products of a bundle and `false` to include them in the response.
-      schema:
-        type: boolean
-      required: false
-    excludeCategoriesParameter:
-      name: excludeCategories
-      in: query
-      example: false
-      description: A flag indicating whether the categories should be excluded from the response. Set it to `true` to exclude categories and `false` to include them in the response.
-      schema:
-        type: boolean
-      required: false
-    excludeVariantsParameter:
-      name: excludeVariants
-      in: query
-      example: false
-      description: A flag indicating whether item variants should be excluded from the response. Set it to `true` to exclude variants and `false` to include them in the response.
-      schema:
-        type: boolean
-      required: false
-    excludeCollectionsParameter:
-      name: excludeCollections
-      in: query
-      example: false
-      description: A flag indicating whether the collections should be excluded from the response. Set it to `true` to exclude collections and `false` to include them in the response.
-      schema:
-        type: boolean
-      required: false
-    excludeAttributesParameter:
-      name: excludeAttributes
-      in: query
-      example: false
-      description: A flag indicating whether attributes should be excluded from the response. Set it to `true` to exclude attributes and `false` to include them in the response.
-      schema:
-        type: boolean
-      required: false
-    xFabricRequestId:
-      in: header
-      name: x-fabric-request-id
-      description: Unique request ID
-      schema:
-        type: string
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
-  responses:
-    internalServerError:
-      description: Internal server error
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: SERVER_ERROR
-            message: Internal Server Error
-    forbidden:
-      description: The user isn't allowed to perform this action.
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: REQUEST_DENIED
-            message: User does not have the required permission
-    payloadLimitExceededError:
-      description: The payload limit is exceeded. It should be less than 10MB.
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: PAYLOAD_LIMIT_EXCEEDED_ERROR
-            message: Payload exceeds maximum configured size
-    badRequest:
-      description: Request is invalid or malformed
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-    notFoundError:
-      description: The requested entity isn't found
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: NOT_FOUND
-            message: Resource not found
-    notAuthorized:
-      description: The requester is unauthorized.
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: UNAUTHORIZED_ERROR
-            message: Requester is unauthorized
   schemas:
-    bundleProductSchema:
-      description: The details of the bundle.
-      type: object
-      properties:
-        quantity:
-          type: integer
-          format: int32
-          description: The quantity of the bundle.
-          example: 2
-        type:
-          $ref: '#/components/schemas/productType'
-      allOf:
-      - $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
-    booleanSchema:
-      type: boolean
-      nullable: true
-      description: Represents a boolean schema.
-      example: true
-    commonProductSchemaWithIdentifiers:
-      allOf:
-      - $ref: '#/components/schemas/commonProductSchema'
-      type: object
-      description: A common schema for product, variants, and bundles along with their identifiers.
-      properties:
-        sku:
-          $ref: '#/components/schemas/sku'
-        id:
-          $ref: '#/components/schemas/id'
-        itemId:
-          type: integer
-          format: int32
-          example: 1682313863
-          description: A unique identifier of an item, a variant or a bundle.
-    bundleCatalog:
-      description: The details of a bundle.
-      allOf:
-      - $ref: '#/components/schemas/extendedCommonProductSchema'
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/bundleProductType'
-        bundleProducts:
-          type: array
-          description: The details of a bundle.
-          items:
-            $ref: '#/components/schemas/bundleProductSchema'
-    putCatalogRequestSchema:
-      description: A sample request to update a product.
-      anyOf:
-      - $ref: '#/components/schemas/putItemCatalogRequestSchema'
-      - $ref: '#/components/schemas/putVariantCatalogRequestSchema'
-      - $ref: '#/components/schemas/putBundleCatalogRequestSchema'
-    integerSchema:
-      type: integer
-      nullable: true
-      format: int32
-      description: Represents an integer schema.
-      example: 1
-    extendedCommonProductSchema:
-      description: Additional details of a product.
-      allOf:
-      - $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
-      type: object
-      properties:
-        categoryName:
-          type: string
-          description: The name of the category.
-          example: Shoes
-        categoryId:
-          type: string
-          description: A 24-character system-generated category ID.
-          example: 648055dff4aa98d6c43e02da
-        categories:
-          type: array
-          description: The list of categories, including their paths from the leaf category to the root category.
-          items:
-            $ref: '#/components/schemas/category'
-        collections:
-          type: array
-          description: The details of the collection used to display products on the storefront.
-          items:
-            type: object
-            additionalProperties: false
-            description: The collection details.
-            properties:
-              id:
-                type: string
-                description: A 24-character system-generated collection ID.
-                example: 648014741adc8a9de14e1a68
-              name:
-                type: string
-                description: The name of the collection.
-                example: Flash Sale
-              hierarchy:
-                type: array
-                description: The list of collections, including their paths from the leaf collection to the root collection.
-                items:
-                  $ref: '#/components/schemas/category'
-    id:
-      type: string
-      example: 5f7329dfd5288b0011332366
-      description: A 24-character system-generated ID.
-    productType:
-      type: string
-      description: The type of product.
-      enum:
-      - BUNDLE
-      - VARIANT
-      - ITEM
-      example: ITEM
-    stringSchema:
-      type: string
-      nullable: true
-      description: Represents a string schema.
-      example: blue
-    putVariantCatalogRequestSchema:
-      allOf:
-      - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
-      type: object
-      additionalProperties: false
-      description: A sample request to update a variant.
-      properties:
-        type:
-          $ref: '#/components/schemas/variantProductType'
-        parentSku:
-          $ref: '#/components/schemas/sku'
-    variantProductType:
-      type: string
-      description: Represents the `variant` product type.
-      enum:
-      - VARIANT
-      example: VARIANT
-    attributeId:
-      type: string
-      description: A 24-character system-generated attribute ID.
-      example: 6480216349256438cb7d53b5
-    variantCatalog:
-      description: The details of an item variant.
-      allOf:
-      - $ref: '#/components/schemas/extendedCommonProductSchema'
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/variantProductType'
-        parentSku:
-          $ref: '#/components/schemas/sku'
-        parentId:
-          type: string
-          description: A 24-character system-generated ID of the parent item.
-          example: 648014741adc8a9de14e1a68
-    attribute:
-      type: object
-      additionalProperties: false
-      description: The details of the attribute.
-      properties:
-        name:
-          $ref: '#/components/schemas/attributeName'
-        value:
-          $ref: '#/components/schemas/attributeValue'
-        id:
-          $ref: '#/components/schemas/attributeId'
-        type:
-          $ref: '#/components/schemas/attributeType'
-    doubleSchema:
-      type: number
-      nullable: true
-      format: double
-      description: Represents a double schema.
-      example: 1
-    attributeValue:
-      anyOf:
-      - $ref: '#/components/schemas/booleanSchema'
-      - $ref: '#/components/schemas/stringSchema'
-      - $ref: '#/components/schemas/integerSchema'
-      - $ref: '#/components/schemas/doubleSchema'
-      - $ref: '#/components/schemas/arrayOfStringsSchema'
-      example: false
-      description: The attribute value.
-    itemProductType:
-      type: string
-      description: Represents the `item` product type.
-      enum:
-      - ITEM
-      example: ITEM
-    product:
-      description: The details of a product based on the product type.
-      anyOf:
-      - $ref: '#/components/schemas/itemCatalog'
-      - $ref: '#/components/schemas/variantCatalog'
-      - $ref: '#/components/schemas/bundleCatalog'
-    attributeName:
-      type: string
-      description: The name of the attribute.
-      example: isOnSale
-    itemCatalog:
-      description: The details of an item.
-      allOf:
-      - $ref: '#/components/schemas/extendedCommonProductSchema'
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/itemProductType'
-        variants:
-          type: array
-          description: The details of item variants.
-          items:
-            $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
-    attributeType:
-      type: string
-      description: The type of attribute.
-      enum:
-      - NUMBER
-      - BOOLEAN
-      - TEXT
-      - LOV
-      example: TEXT
-    arrayOfStringsSchema:
-      type: array
-      description: Represents an array of string schema.
-      items:
-        type: string
-        nullable: true
-        description: Represents a string schema.
-    bundleProductType:
-      type: string
-      description: Represents the `bundle` product type.
-      enum:
-      - BUNDLE
-      example: BUNDLE
-    putBundleCatalogRequestSchema:
-      allOf:
-      - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
-      type: object
-      additionalProperties: false
-      description: A sample request to update a bundle.
-      properties:
-        type:
-          $ref: '#/components/schemas/bundleProductType'
-        bundleProducts:
-          type: array
-          description: The details of a bundle.
-          items:
-            $ref: '#/components/schemas/bundleProductSchema'
-    commonProductSchema:
-      type: object
-      description: A common schema for product, variants, and bundles.
-      properties:
-        productName:
-          type: string
-          description: The name of the product.
-          example: Nike Men's Training Shoe
-        images:
-          type: array
-          description: The list of product images.
-          items:
-            type: string
-          example:
-          - https://myawsomestore.com/is/image/nike/8801290_s7
-        attributes:
-          type: array
-          description: The name of the attribute and its value.
-          items:
-            $ref: '#/components/schemas/attribute'
-        createdAt:
-          type: string
-          description: The time of product creation, in UTC format.
-          format: date-time
-          example: 2021-12-13 13:56:09.006000+00:00
-        updatedAt:
-          type: string
-          description: The time of last update to product, in UTC format.
-          format: date-time
-          example: 2021-12-13 13:56:09.006000+00:00
     putCommonCatalogRequestSchema:
       allOf:
       - $ref: '#/components/schemas/commonProductSchema'
@@ -643,42 +225,43 @@ components:
             - name: Sales
               id: 648055e0f4aa98d6c43e02f7
               isRoot: true
-    putItemCatalogRequestSchema:
+    putCatalogRequestSchema:
+      description: A sample request to update a product.
+      anyOf:
+      - $ref: '#/components/schemas/putItemCatalogRequestSchema'
+      - $ref: '#/components/schemas/putVariantCatalogRequestSchema'
+      - $ref: '#/components/schemas/putBundleCatalogRequestSchema'
+    itemCatalog:
+      description: The details of an item.
       allOf:
-      - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
+      - $ref: '#/components/schemas/extendedCommonProductSchema'
       type: object
-      additionalProperties: false
-      description: A sample request to update an item.
       properties:
         type:
           $ref: '#/components/schemas/itemProductType'
         variants:
           type: array
-          description: The details of the item variants.
+          description: The details of item variants.
           items:
             $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
-    category:
-      type: object
-      additionalProperties: false
-      description: The details of a category.
-      properties:
-        id:
-          type: string
-          description: A 24-character system-generated category ID.
-          example: 648055dff4aa98d6c43e02da
-        name:
-          type: string
-          description: The name of the category.
-          example: Shoes
-        isRoot:
-          type: boolean
-          description: A flag indicating whether the given category is a root category. Set it to `true` if it's a root category and `false` if it isn't a root category.
-          example: true
-        attributes:
-          type: array
-          description: The details of an attribute.
-          items:
-            $ref: '#/components/schemas/attribute'
+    arrayOfStringsSchema:
+      type: array
+      description: Represents an array of string schema.
+      items:
+        type:
+        - string
+        - 'null'
+        description: Represents a string schema.
+    itemProductType:
+      type: string
+      description: Represents the `item` product type.
+      enum:
+      - ITEM
+      example: ITEM
+    sku:
+      type: string
+      description: Product SKU
+      example: 24ggs67-e89b-12e3-a456-026614174119
     genericError:
       type: object
       description: The details of the error.
@@ -704,11 +287,352 @@ components:
                 type: string
                 description: The error message corresponding to the `type`.
                 example: Invalid request. Unable to find/create product
-    sku:
+    attributeName:
       type: string
-      description: Product SKU
-      example: 24ggs67-e89b-12e3-a456-026614174119
+      description: The name of the attribute.
+      example: isOnSale
+    commonProductSchema:
+      type: object
+      description: A common schema for product, variants, and bundles.
+      properties:
+        productName:
+          type: string
+          description: The name of the product.
+          example: Nike Men's Training Shoe
+        images:
+          type: array
+          description: The list of product images.
+          items:
+            type: string
+          example:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+        attributes:
+          type: array
+          description: The name of the attribute and its value.
+          items:
+            $ref: '#/components/schemas/attribute'
+        createdAt:
+          type: string
+          description: The time of product creation, in UTC format.
+          format: date-time
+          example: 2021-12-13 13:56:09.006000+00:00
+        updatedAt:
+          type: string
+          description: The time of last update to product, in UTC format.
+          format: date-time
+          example: 2021-12-13 13:56:09.006000+00:00
+    bundleProductType:
+      type: string
+      description: Represents the `bundle` product type.
+      enum:
+      - BUNDLE
+      example: BUNDLE
+    putItemCatalogRequestSchema:
+      allOf:
+      - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
+      type: object
+      additionalProperties: false
+      description: A sample request to update an item.
+      properties:
+        type:
+          $ref: '#/components/schemas/itemProductType'
+        variants:
+          type: array
+          description: The details of the item variants.
+          items:
+            $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+    putVariantCatalogRequestSchema:
+      allOf:
+      - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
+      type: object
+      additionalProperties: false
+      description: A sample request to update a variant.
+      properties:
+        type:
+          $ref: '#/components/schemas/variantProductType'
+        parentSku:
+          $ref: '#/components/schemas/sku'
+    productType:
+      type: string
+      description: The type of product.
+      enum:
+      - BUNDLE
+      - VARIANT
+      - ITEM
+      example: ITEM
+    integerSchema:
+      type:
+      - integer
+      - 'null'
+      format: int32
+      description: Represents an integer schema.
+      example: 1
+    attribute:
+      type: object
+      additionalProperties: false
+      description: The details of the attribute.
+      properties:
+        name:
+          $ref: '#/components/schemas/attributeName'
+        value:
+          $ref: '#/components/schemas/attributeValue'
+        id:
+          $ref: '#/components/schemas/attributeId'
+        type:
+          $ref: '#/components/schemas/attributeType'
+    putBundleCatalogRequestSchema:
+      allOf:
+      - $ref: '#/components/schemas/putCommonCatalogRequestSchema'
+      type: object
+      additionalProperties: false
+      description: A sample request to update a bundle.
+      properties:
+        type:
+          $ref: '#/components/schemas/bundleProductType'
+        bundleProducts:
+          type: array
+          description: The details of a bundle.
+          items:
+            $ref: '#/components/schemas/bundleProductSchema'
+    variantCatalog:
+      description: The details of an item variant.
+      allOf:
+      - $ref: '#/components/schemas/extendedCommonProductSchema'
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/variantProductType'
+        parentSku:
+          $ref: '#/components/schemas/sku'
+        parentId:
+          type: string
+          description: A 24-character system-generated ID of the parent item.
+          example: 648014741adc8a9de14e1a68
+    attributeValue:
+      anyOf:
+      - $ref: '#/components/schemas/booleanSchema'
+      - $ref: '#/components/schemas/stringSchema'
+      - $ref: '#/components/schemas/integerSchema'
+      - $ref: '#/components/schemas/doubleSchema'
+      - $ref: '#/components/schemas/arrayOfStringsSchema'
+      example: false
+      description: The attribute value.
+    variantProductType:
+      type: string
+      description: Represents the `variant` product type.
+      enum:
+      - VARIANT
+      example: VARIANT
+    category:
+      type: object
+      additionalProperties: false
+      description: The details of a category.
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated category ID.
+          example: 648055dff4aa98d6c43e02da
+        name:
+          type: string
+          description: The name of the category.
+          example: Shoes
+        isRoot:
+          type: boolean
+          description: A flag indicating whether the given category is a root category. Set it to `true` if it's a root category and `false` if it isn't a root category.
+          example: true
+        attributes:
+          type: array
+          description: The details of an attribute.
+          items:
+            $ref: '#/components/schemas/attribute'
+    bundleCatalog:
+      description: The details of a bundle.
+      allOf:
+      - $ref: '#/components/schemas/extendedCommonProductSchema'
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/bundleProductType'
+        bundleProducts:
+          type: array
+          description: The details of a bundle.
+          items:
+            $ref: '#/components/schemas/bundleProductSchema'
+    attributeType:
+      type: string
+      description: The type of attribute.
+      enum:
+      - NUMBER
+      - BOOLEAN
+      - TEXT
+      - LOV
+      example: TEXT
+    stringSchema:
+      type:
+      - string
+      - 'null'
+      description: Represents a string schema.
+      example: blue
+    attributeId:
+      type: string
+      description: A 24-character system-generated attribute ID.
+      example: 6480216349256438cb7d53b5
+    extendedCommonProductSchema:
+      description: Additional details of a product.
+      allOf:
+      - $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+      type: object
+      properties:
+        categoryName:
+          type: string
+          description: The name of the category.
+          example: Shoes
+        categoryId:
+          type: string
+          description: A 24-character system-generated category ID.
+          example: 648055dff4aa98d6c43e02da
+        categories:
+          type: array
+          description: The list of categories, including their paths from the leaf category to the root category.
+          items:
+            $ref: '#/components/schemas/category'
+        collections:
+          type: array
+          description: The details of the collection used to display products on the storefront.
+          items:
+            type: object
+            additionalProperties: false
+            description: The collection details.
+            properties:
+              id:
+                type: string
+                description: A 24-character system-generated collection ID.
+                example: 648014741adc8a9de14e1a68
+              name:
+                type: string
+                description: The name of the collection.
+                example: Flash Sale
+              hierarchy:
+                type: array
+                description: The list of collections, including their paths from the leaf collection to the root collection.
+                items:
+                  $ref: '#/components/schemas/category'
+    commonProductSchemaWithIdentifiers:
+      allOf:
+      - $ref: '#/components/schemas/commonProductSchema'
+      type: object
+      description: A common schema for product, variants, and bundles along with their identifiers.
+      properties:
+        sku:
+          $ref: '#/components/schemas/sku'
+        id:
+          $ref: '#/components/schemas/id'
+        itemId:
+          type: integer
+          format: int32
+          example: 1682313863
+          description: A unique identifier of an item, a variant or a bundle.
+    doubleSchema:
+      type:
+      - number
+      - 'null'
+      format: double
+      description: Represents a double schema.
+      example: 1
+    product:
+      description: The details of a product based on the product type.
+      anyOf:
+      - $ref: '#/components/schemas/itemCatalog'
+      - $ref: '#/components/schemas/variantCatalog'
+      - $ref: '#/components/schemas/bundleCatalog'
+    bundleProductSchema:
+      description: The details of the bundle.
+      type: object
+      properties:
+        quantity:
+          type: integer
+          format: int32
+          description: The quantity of the bundle.
+          example: 2
+        type:
+          $ref: '#/components/schemas/productType'
+      allOf:
+      - $ref: '#/components/schemas/commonProductSchemaWithIdentifiers'
+    id:
+      type: string
+      example: 5f7329dfd5288b0011332366
+      description: A 24-character system-generated ID.
+    booleanSchema:
+      type:
+      - boolean
+      - 'null'
+      description: Represents a boolean schema.
+      example: true
   examples:
+    ItemUpdateExample:
+      value:
+        productName: Nike runner shoes
+        categoryName: Sport Shoes
+        categoryId: 648014741adc8a9de14e1a68
+        images:
+        - https://myawsomestore.com/is/image/nike/8801290_s7
+        attributes:
+        - name: Color
+          value: black
+          id: 6480216349256438cb7d53b5
+          type: TEXT
+        - name: Wide Fit
+          value: false
+          id: 640db94f9fc28b255d155a42
+          type: BOOLEAN
+        type: ITEM
+        variants:
+        - sku: NIKE237766
+          productName: Nike runner white shoes
+          id: 648aa9280d7b561b4663038c
+          itemId: 2700538
+          images:
+          - https://myawsomestore.com/is/image/nike/8801291_s7
+          attributes:
+          - name: Color
+            value: White
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: true
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+          createdAt: 2021-12-13 13:56:09.006000+00:00
+          updatedAt: 2021-12-13 13:56:09.006000+00:00
+        categories:
+        - name: Sport Shoes
+          id: 648014741adc8a9de14e1a68
+          isRoot: false
+          attributes:
+          - name: Fit
+            value: Relaxed Fit
+            id: 648014741adc8a9de14e1a00
+            type: TEXT
+        - name: Shoes
+          id: 648aa9258fdef29675dbce42
+          isRoot: true
+          attributes:
+          - name: Material
+            value: Mesh
+        collections:
+        - name: Flash sale
+          id: 648055dff4aa98d6c43e02da
+          hierarchy:
+          - name: Flash Sale
+            id: 648055dff4aa98d6c43e02da
+            isRoot: false
+            attributes:
+            - name: Duration
+              value: 600
+              type: NUMBER
+          - name: Sales
+            id: 648055e0f4aa98d6c43e02f7
+            isRoot: true
     bundleExample:
       value:
         sku: BUNDLE237765
@@ -795,87 +719,6 @@ components:
             isRoot: true
         createdAt: 2021-12-13 13:56:09.006000+00:00
         updatedAt: 2021-12-13 13:56:09.006000+00:00
-    bundleUpdateExample:
-      value:
-        productName: Nike runner shoes bundle
-        categoryName: Sport Shoes
-        categoryId: 648014741adc8a9de14e1a68
-        images:
-        - https://myawsomestore.com/is/image/nike/8801290_s7
-        - https://myawsomestore.com/is/image/nike/8801291_s7
-        attributes:
-        - name: Shoes Combo
-          value: true
-          type: BOOLEAN
-        type: BUNDLE
-        bundleProducts:
-        - sku: NIKE237766
-          quantity: 1
-          productName: Nike runner white shoes
-          id: 648aa9280d7b561b4663038c
-          itemId: 2700538
-          type: VARIANT
-          images:
-          - https://myawsomestore.com/is/image/nike/8801291_s7
-          attributes:
-          - name: Color
-            value: White
-            id: 6480216349256438cb7d53b5
-            type: TEXT
-          - name: Wide Fit
-            value: true
-            id: 640db94f9fc28b255d155a42
-            type: BOOLEAN
-          createdAt: 2021-12-13 13:56:09.006000+00:00
-          updatedAt: 2021-12-13 13:56:09.006000+00:00
-        - sku: NIKE237765
-          quantity: 1
-          productName: Nike runner shoes
-          id: 6482b9524ffa4978fd9cbf5c
-          itemId: 2700537
-          type: ITEM
-          images:
-          - https://myawsomestore.com/is/image/nike/8801290_s7
-          attributes:
-          - name: Color
-            value: black
-            id: 6480216349256438cb7d53b5
-            type: TEXT
-          - name: Wide Fit
-            value: false
-            id: 640db94f9fc28b255d155a42
-            type: BOOLEAN
-          createdAt: 2021-12-13 13:56:09.006000+00:00
-          updatedAt: 2021-12-13 13:56:09.006000+00:00
-        categories:
-        - name: Sport Shoes
-          id: 648014741adc8a9de14e1a68
-          isRoot: false
-          attributes:
-          - name: Fit
-            value: Relaxed Fit
-            id: 648014741adc8a9de14e1a00
-            type: TEXT
-        - name: Shoes
-          id: 648aa9258fdef29675dbce42
-          isRoot: true
-          attributes:
-          - name: Material
-            value: Mesh
-        collections:
-        - name: Flash sale
-          id: 648055dff4aa98d6c43e02da
-          hierarchy:
-          - name: Flash Sale
-            id: 648055dff4aa98d6c43e02da
-            isRoot: false
-            attributes:
-            - name: Duration
-              value: 600
-              type: NUMBER
-          - name: Sales
-            id: 648055e0f4aa98d6c43e02f7
-            isRoot: true
     ItemExample:
       value:
         sku: NIKE237765
@@ -945,28 +788,26 @@ components:
             isRoot: true
         createdAt: 2021-12-13 13:56:09.006000+00:00
         updatedAt: 2021-12-13 13:56:09.006000+00:00
-    ItemUpdateExample:
+    bundleUpdateExample:
       value:
-        productName: Nike runner shoes
+        productName: Nike runner shoes bundle
         categoryName: Sport Shoes
         categoryId: 648014741adc8a9de14e1a68
         images:
         - https://myawsomestore.com/is/image/nike/8801290_s7
+        - https://myawsomestore.com/is/image/nike/8801291_s7
         attributes:
-        - name: Color
-          value: black
-          id: 6480216349256438cb7d53b5
-          type: TEXT
-        - name: Wide Fit
-          value: false
-          id: 640db94f9fc28b255d155a42
+        - name: Shoes Combo
+          value: true
           type: BOOLEAN
-        type: ITEM
-        variants:
+        type: BUNDLE
+        bundleProducts:
         - sku: NIKE237766
+          quantity: 1
           productName: Nike runner white shoes
           id: 648aa9280d7b561b4663038c
           itemId: 2700538
+          type: VARIANT
           images:
           - https://myawsomestore.com/is/image/nike/8801291_s7
           attributes:
@@ -976,6 +817,25 @@ components:
             type: TEXT
           - name: Wide Fit
             value: true
+            id: 640db94f9fc28b255d155a42
+            type: BOOLEAN
+          createdAt: 2021-12-13 13:56:09.006000+00:00
+          updatedAt: 2021-12-13 13:56:09.006000+00:00
+        - sku: NIKE237765
+          quantity: 1
+          productName: Nike runner shoes
+          id: 6482b9524ffa4978fd9cbf5c
+          itemId: 2700537
+          type: ITEM
+          images:
+          - https://myawsomestore.com/is/image/nike/8801290_s7
+          attributes:
+          - name: Color
+            value: black
+            id: 6480216349256438cb7d53b5
+            type: TEXT
+          - name: Wide Fit
+            value: false
             id: 640db94f9fc28b255d155a42
             type: BOOLEAN
           createdAt: 2021-12-13 13:56:09.006000+00:00
@@ -1109,6 +969,141 @@ components:
             isRoot: true
         createdAt: 2021-12-13 13:56:09.006000+00:00
         updatedAt: 2021-12-13 13:56:09.006000+00:00
+  parameters:
+    excludeCategoriesParameter:
+      name: excludeCategories
+      in: query
+      example: false
+      description: A flag indicating whether the categories should be excluded from the response. Set it to `true` to exclude categories and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeVariantsParameter:
+      name: excludeVariants
+      in: query
+      example: false
+      description: A flag indicating whether item variants should be excluded from the response. Set it to `true` to exclude variants and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeCollectionsParameter:
+      name: excludeCollections
+      in: query
+      example: false
+      description: A flag indicating whether the collections should be excluded from the response. Set it to `true` to exclude collections and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    excludeAttributesParameter:
+      name: excludeAttributes
+      in: query
+      example: false
+      description: A flag indicating whether attributes should be excluded from the response. Set it to `true` to exclude attributes and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: Unique request ID
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    localeParameter:
+      name: locale
+      in: query
+      example: en-US
+      description: "The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format). \n\nThe default value is en-US.\n"
+      schema:
+        type: string
+      required: true
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      schema:
+        type: string
+      required: true
+      example: 5f328bf0b5f328bf0b5f328b
+      description: A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.
+    excludeBundleProductsParameter:
+      name: excludeBundleProducts
+      in: query
+      example: false
+      description: A flag indicating whether the products associated with a bundle should be excluded from the response. Set it to `true` to exclude products of a bundle and `false` to include them in the response.
+      schema:
+        type: boolean
+      required: false
+  responses:
+    notFoundError:
+      description: The requested entity isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: NOT_FOUND
+            message: Resource not found
+    notAuthorized:
+      description: The requester is unauthorized.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: UNAUTHORIZED_ERROR
+            message: Requester is unauthorized
+    forbidden:
+      description: The user isn't allowed to perform this action.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: REQUEST_DENIED
+            message: User does not have the required permission
+    badRequest:
+      description: Request is invalid or malformed
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+    internalServerError:
+      description: Internal server error
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: SERVER_ERROR
+            message: Internal Server Error
+    payloadLimitExceededError:
+      description: The payload limit is exceeded. It should be less than 10MB.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: PAYLOAD_LIMIT_EXCEEDED_ERROR
+            message: Payload exceeds maximum configured size
   headers:
     xFabricRequestId:
       schema:
@@ -1116,11 +1111,28 @@ components:
       required: false
       example: 263e731c-45c8-11ed-b878-0242ac120002
       description: Unique request ID
+  requestBodies:
+    putCatalogRequest:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/putCatalogRequestSchema'
+          examples:
+            Item:
+              $ref: '#/components/examples/ItemUpdateExample'
+            Variant:
+              $ref: '#/components/examples/variantUpdateExample'
+            Bundle:
+              $ref: '#/components/examples/bundleUpdateExample'
   securitySchemes:
-    bearerAuth:
+    authorization:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      description: This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+externalDocs:
+  description: Find out more about Catalog Connector (previously called PIM Connector)
+  url: https://developer.fabric.inc/docs/products-overview
+x-mint:
+  mcp:
+    enabled: true

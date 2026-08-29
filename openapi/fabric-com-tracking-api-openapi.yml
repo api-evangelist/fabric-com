@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Tracking API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: fabric Support Team
+  description: fabric **Orders** API is a scalable multi-tenant service designed to streamline your order management process. Orders API is a REST and JSON driven interface enabling retailers to create orders directly from online Storefronts and Point-of-Sale systems, and serve as records of purchase transactions to permit retailers to operate against a standard schema with varied purchase channels. <p> fabric Orders API creates orders real time in the orders database, unifying the order data for users to streamline order lifecycle orchestration and customer service operations. It offers a range of features including the ability to create orders, get orders, update pickup details, and track orders, as well as search for existing orders. Also, the Orders API makes it easy to check eligibility of return, cancel, and exchange requests as well process them, if eligible. In addition, you can flag fraudulent orders based on due diligence, and either release them from hold or cancel them altogether. The appeasement feature helps you resolve any issues that may arise with an order and keep your customers happy. </p>
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: fabric Orders Tracking API
   version: 3.0.0
+  x-audience: external-public
 servers:
-- url: https://api.fabric.inc/v3
+- description: Production
+  url: https://api.fabric.inc/v3
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - description: These endpoints track orders.
   name: Tracking
@@ -188,32 +191,39 @@ paths:
       tags:
       - Tracking
 components:
+  parameters:
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
   schemas:
-    acknowledgePackageTrackingRequest:
-      description: Acknowledgement for package tracking
-      properties:
-        attributes:
-          additionalProperties:
-            description: Additional custom attribute mappings.
-            type: object
-          description: Custom attribute mappings.
-          type: object
-        eventType:
-          description: Event type for which acknowledgement is received
-          enum:
-          - ORDER_CREATE_IN_PTS
-          - ORDER_CANCELLED_IN_PTS
-          - SHIPMENT_CREATE_IN_PTS
-          - SHIPMENT_CANCELLED_IN_PTS
-          - TRANSFER_CREATE_IN_PTS
-          - TRANSFER_CANCELLED_IN_PTS
-          - TRANSFER_SHIPMENT_CREATE_IN_PTS
-          - TRANSFER_SHIPMENT_CANCELLED_IN_PTS
-          example: ORDER_CREATE_IN_PTS
-          type: string
-      required:
-      - eventType
-      type: object
     apiResponse:
       description: Response message
       properties:
@@ -239,43 +249,39 @@ components:
           example: CLIENT_ERROR
           type: string
       type: object
-  parameters:
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
-  headers:
-    xFabricRequestIdResponseHeader:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
-      schema:
-        type: string
+    acknowledgePackageTrackingRequest:
+      description: Acknowledgement for package tracking
+      properties:
+        attributes:
+          additionalProperties:
+            description: Additional custom attribute mappings.
+            type: object
+          description: Custom attribute mappings.
+          type: object
+        eventType:
+          description: Event type for which acknowledgement is received
+          enum:
+          - ORDER_CREATE_IN_PTS
+          - ORDER_CANCELLED_IN_PTS
+          - SHIPMENT_CREATE_IN_PTS
+          - SHIPMENT_CANCELLED_IN_PTS
+          - TRANSFER_CREATE_IN_PTS
+          - TRANSFER_CANCELLED_IN_PTS
+          - TRANSFER_SHIPMENT_CREATE_IN_PTS
+          - TRANSFER_SHIPMENT_CANCELLED_IN_PTS
+          example: ORDER_CREATE_IN_PTS
+          type: string
+      required:
+      - eventType
+      type: object
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    authorization:
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about fabric Orders (also called OMS)
+  url: https://developer.fabric.inc/v3/docs/orders-overview
+x-mint:
+  mcp:
+    enabled: true

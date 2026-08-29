@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Item Adjustments API
+  title: Cart Item Adjustments API
   description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
     name: Cart Support
@@ -248,58 +248,6 @@ paths:
                 $ref: '#/components/schemas/NotFound'
 components:
   schemas:
-    UpdateAdjustmentRequest:
-      type: object
-      properties:
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        reason:
-          type: string
-          description: The reason for the adjustment.
-          example: Price adjustment from Customer Representative
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context, such as who made the adjustment.
-            example:
-              source: CSR
-          description: Custom attributes to provide more context, such as who made the adjustment.
-          example:
-            source: CSR
-      description: Adjustment Request
-    ItemAdjustment:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The Item Adjustment ID generated when an adjustment was created using the [Create item adjustment](/v3/cart-and-checkout/api-reference/carts-v3/item-adjustments/create-item-adjustments) endpoint.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        reason:
-          type: string
-          description: The reason for the adjustment.
-          example: Price adjustment from customer representative.
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes used for price adjustments.
-            example:
-              source: CSR
-          description: Custom attributes used for price adjustments.
-          example:
-            source: CSR
-        updatedAt:
-          type: string
-          description: The date and time when the adjustment was last updated.
-          example: 2024-06-13 16:50:00.682000+00:00
-        createdAt:
-          type: string
-          description: The date and time when the adjustment was created.
-          example: 2024-06-13 16:50:00.682000+00:00
-      description: Adjustment
     NotFound:
       type: object
       properties:
@@ -324,18 +272,29 @@ components:
           description: Human-readable error description
           example: x-fabric-tenant-id is required
       description: Client error details
-    ResourcePrice:
+    CreateAdjustmentRequest:
       required:
-      - amount
+      - price
+      - reason
       type: object
       properties:
-        amount:
-          minimum: 0
-          exclusiveMinimum: false
-          type: number
-          description: Total fees amount
-          example: 12.99
-      description: Price details
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        reason:
+          type: string
+          description: The reason for the adjustment.
+          example: Price adjustment from Customer Representative
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes to provide more context, such as who made the adjustment.
+            example:
+              source: CSR
+          description: Custom attributes to provide more context, such as who made the adjustment.
+          example:
+            source: CSR
+      description: Adjustment Request
     NewItemAdjustment:
       type: object
       properties:
@@ -368,10 +327,50 @@ components:
           description: The date and time when the adjustment was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Adjustment
-    CreateAdjustmentRequest:
+    ItemAdjustment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Item Adjustment ID generated when an adjustment was created using the [Create item adjustment](/v3/cart-and-checkout/api-reference/carts-v3/item-adjustments/create-item-adjustments) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        reason:
+          type: string
+          description: The reason for the adjustment.
+          example: Price adjustment from customer representative.
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes used for price adjustments.
+            example:
+              source: CSR
+          description: Custom attributes used for price adjustments.
+          example:
+            source: CSR
+        updatedAt:
+          type: string
+          description: The date and time when the adjustment was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the adjustment was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+      description: Adjustment
+    ResourcePrice:
       required:
-      - price
-      - reason
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
+    UpdateAdjustmentRequest:
       type: object
       properties:
         price:

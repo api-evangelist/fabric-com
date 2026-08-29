@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Catalog Connector Files API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  description: fabric's **Catalog Connector** API is a lightweight service that you can use when you have your own Product Information Management (PIM) and only want to integrate with other fabric services, such as Offers and OMS (excluding the fabric Products API service). It supports CRUD operations to add and manage products in the Catalog Connector based on SKU, product ID, and item ID. Using Catalog Connector API, you can retrieve an import template, import product data into the Catalog Connector, export data, and check the status of previous imports and exports. Additionally, you can search for products based on specified filter conditions and perform bulk operations to manage products.
+  title: Catalog - Connector Catalog Connector Files API
+  version: 3.0.0
+  x-audience: external-public
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: Product team
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
-  version: 3.0.0
+  termsOfService: https://fabric.inc/terms-of-use
 servers:
 - url: https://api.fabric.inc/v3
+  description: Production URL
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - name: Catalog Connector Files
   description: Retrieve an import template, import a file to the Catalog Connector, view import and export status, and download a previously processed file.
@@ -161,50 +164,6 @@ paths:
           $ref: '#/components/responses/internalServerError'
 components:
   parameters:
-    fileName:
-      in: query
-      name: fileName
-      schema:
-        type: string
-      description: Use this endpoint to specify the name of the file you want to retrieve.
-      example: bulk_import_123345677788999.csv
-    xFabricTenantId:
-      in: header
-      name: x-fabric-tenant-id
-      schema:
-        type: string
-      required: true
-      example: 5f328bf0b5f328bf0b5f328b
-      description: A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.
-    productFileType:
-      in: query
-      name: type
-      schema:
-        $ref: '#/components/schemas/productFileJobTypes'
-      description: Specify the type of operation or job performed when the file was uploaded.
-    xFabricRequestId:
-      in: header
-      name: x-fabric-request-id
-      description: Unique request ID
-      schema:
-        type: string
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
-    sortBy:
-      in: query
-      name: sort
-      description: The sorting criteria. Currently, the supported values are `updatedAt` and `name`. Use `-` for descending order and `+` for ascending.
-      schema:
-        type: string
-        example: +name,-updatedAt
-      required: false
-    formatTypeQueryParam:
-      in: query
-      name: formatType
-      description: Depending on the context, it represents the format of the file or template.
-      schema:
-        $ref: '#/components/schemas/formatTypes'
-      example: csv
     fileId:
       in: query
       name: fileId
@@ -213,6 +172,44 @@ components:
         type: string
       example: 5f328bf0b5f328bf0b5f328b
       required: true
+    sortBy:
+      in: query
+      name: sort
+      description: The sorting criteria. Currently, the supported values are `updatedAt` and `name`. Use `-` for descending order and `+` for ascending.
+      schema:
+        type: string
+        example: +name,-updatedAt
+      required: false
+    productFileType:
+      in: query
+      name: type
+      schema:
+        $ref: '#/components/schemas/productFileJobTypes'
+      description: Specify the type of operation or job performed when the file was uploaded.
+    limit:
+      in: query
+      name: limit
+      description: The maximum number of records per page.
+      schema:
+        type: integer
+        format: int32
+        default: 10
+        example: 20
+    fileName:
+      in: query
+      name: fileName
+      schema:
+        type: string
+      description: Use this endpoint to specify the name of the file you want to retrieve.
+      example: bulk_import_123345677788999.csv
+    xFabricRequestId:
+      in: header
+      name: x-fabric-request-id
+      description: Unique request ID
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
     ids:
       in: query
       name: ids
@@ -220,6 +217,14 @@ components:
       schema:
         type: string
       example: 5f328bf0b5f328bf0b5f328b, 1e328bf0b5f328bf0b5f3287
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      schema:
+        type: string
+      required: true
+      example: 5f328bf0b5f328bf0b5f328b
+      description: A header retrieved from your [Copilot Account Details](/v3/platform/settings/account-details/getting-the-account-id) that's used by the API to identify the tenant making the request. Tenant ID must be included in the authentication header for API requests to access any of fabric’s endpoints.
     offset:
       in: query
       name: offset
@@ -230,106 +235,41 @@ components:
         default: 0
         example: 2
       required: false
-    limit:
+    formatTypeQueryParam:
       in: query
-      name: limit
-      description: The maximum number of records per page.
+      name: formatType
+      description: Depending on the context, it represents the format of the file or template.
       schema:
-        type: integer
-        format: int32
-        default: 10
-        example: 20
-  responses:
-    internalServerError:
-      description: Internal server error
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: SERVER_ERROR
-            message: Internal Server Error
-    forbidden:
-      description: The user isn't allowed to perform this action.
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: REQUEST_DENIED
-            message: User does not have the required permission
-    badRequest:
-      description: Request is invalid or malformed
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-    notFoundError:
-      description: The requested entity isn't found
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: NOT_FOUND
-            message: Resource not found
-    notAuthorized:
-      description: The requester is unauthorized.
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/headers/xFabricRequestId'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/genericError'
-          example:
-            type: UNAUTHORIZED_ERROR
-            message: Requester is unauthorized
+        $ref: '#/components/schemas/formatTypes'
+      example: csv
   schemas:
-    productsType:
-      type: string
-      enum:
-      - ITEM
-      - BUNDLE
-      description: Specify the product type you want to import using the product import template you will receive from a successful response.
-      example: ITEM
-    productFileJobTypes:
-      type: string
-      enum:
-      - CATALOG_CONN_ITEM_VARIANT_IMPORT
-      - CATALOG_CONN_ITEM_VARIANT_EXPORT
-      - CATALOG_CONN_BUNDLE_IMPORT
-      - CATALOG_CONN_BUNDLE_EXPORT
-      description: Specify the type of operation or job performed by uploading the file.
-      example: CATALOG_CONN_ITEM_VARIANT_IMPORT
-    fileDownloadResponse:
+    getFilesResponse:
       type: object
-      description: The URL generated in the response of the `Download a file by ID` request.
+      description: The response of the `Retrieve import or export history` request, along with pagination data.
       properties:
-        location:
-          type: string
-          description: The URL to download an imported file.
-          format: uri
-          example: https://pim-v3-dev02-us-east-1-files.s3.us-east-1.amazonaws.com/local/PRODUCT_EXPORT/abc.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=EXAMPLEACCESSKEYID%252F20230317%252Fus-east-1%252Fs3%252Faws4_request&X-Amz-Date=20230317T171516Z&X-Amz-Expires=300&X-Amz-Signature=EXAMPLESIGNATURE&X-Amz-SignedHeaders=host&x-id=GetObject
-    formatTypes:
-      type: string
-      enum:
-      - csv
-      - jsonl
-      description: Specify the file format used to upload to Catalog Connector.
-      example: jsonl
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/commonFileSchema'
+        offset:
+          description: 'The number of records to skip before returning records.
+
+            For example, when the offset is 20 and limit is 10, the system returns the records from 21 to 30.'
+          type: integer
+          format: int32
+          default: 0
+          example: 5
+        limit:
+          description: The maximum number of records per page.
+          type: integer
+          format: int32
+          default: 10
+          example: 10
+        count:
+          description: The total number of records.
+          type: integer
+          format: int32
+          example: 100
     commonFileSchema:
       type: object
       description: The details of the file.
@@ -360,51 +300,13 @@ components:
           type: string
           description: The time of last update to the file, in UTC format.
           example: '2021-09-14T22:10:30.618Z'
-    getFilesResponse:
-      type: object
-      description: The response of the `Retrieve import or export history` request, along with pagination data.
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/commonFileSchema'
-        offset:
-          description: 'The number of records to skip before returning records.
-
-            For example, when the offset is 20 and limit is 10, the system returns the records from 21 to 30.'
-          type: integer
-          format: int32
-          default: 0
-          example: 5
-        limit:
-          description: The maximum number of records per page.
-          type: integer
-          format: int32
-          default: 10
-          example: 10
-        count:
-          description: The total number of records.
-          type: integer
-          format: int32
-          example: 100
-    locale:
+    formatTypes:
       type: string
-      description: 'The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format).
-
-
-        The default value is `en-US`.
-
-        '
-      example: en-US
-    file:
-      allOf:
-      - $ref: '#/components/schemas/newCommonFileSchema'
-      - type: object
-        properties:
-          location:
-            type: string
-            description: The AWS S3 file location of the imported file is provided as a URL.
-            example: https://s3.console.aws.amazon.com/s3/buckets/greatwall-stg01-bulk-import-pim/bulk_import_123345677788999.csv
+      enum:
+      - csv
+      - jsonl
+      description: Specify the file format used to upload to Catalog Connector.
+      example: jsonl
     newCommonFileSchema:
       type: object
       description: The details of the file.
@@ -460,21 +362,115 @@ components:
                 type: string
                 description: The error message corresponding to the `type`.
                 example: Invalid request. Unable to find/create product
-  requestBodies:
-    generateTemplateRequest:
+    locale:
+      type: string
+      description: 'The language code, which is a combination of language (ISO 639 format) and country (ISO 3166 format).
+
+
+        The default value is `en-US`.
+
+        '
+      example: en-US
+    productsType:
+      type: string
+      enum:
+      - ITEM
+      - BUNDLE
+      description: Specify the product type you want to import using the product import template you will receive from a successful response.
+      example: ITEM
+    fileDownloadResponse:
+      type: object
+      description: The URL generated in the response of the `Download a file by ID` request.
+      properties:
+        location:
+          type: string
+          description: The URL to download an imported file.
+          format: uri
+          example: https://pim-v3-dev02-us-east-1-files.s3.us-east-1.amazonaws.com/local/PRODUCT_EXPORT/abc.csv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=EXAMPLEACCESSKEYID%252F20230317%252Fus-east-1%252Fs3%252Faws4_request&X-Amz-Date=20230317T171516Z&X-Amz-Expires=300&X-Amz-Signature=EXAMPLESIGNATURE&X-Amz-SignedHeaders=host&x-id=GetObject
+    productFileJobTypes:
+      type: string
+      enum:
+      - CATALOG_CONN_ITEM_VARIANT_IMPORT
+      - CATALOG_CONN_ITEM_VARIANT_EXPORT
+      - CATALOG_CONN_BUNDLE_IMPORT
+      - CATALOG_CONN_BUNDLE_EXPORT
+      description: Specify the type of operation or job performed by uploading the file.
+      example: CATALOG_CONN_ITEM_VARIANT_IMPORT
+    file:
+      allOf:
+      - $ref: '#/components/schemas/newCommonFileSchema'
+      - type: object
+        properties:
+          location:
+            type: string
+            description: The AWS S3 file location of the imported file is provided as a URL.
+            example: https://s3.console.aws.amazon.com/s3/buckets/greatwall-stg01-bulk-import-pim/bulk_import_123345677788999.csv
+  responses:
+    notFoundError:
+      description: The requested entity isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
       content:
         application/json:
           schema:
-            additionalProperties: false
-            description: Template request
-            required:
-            - type
-            - formatType
-            properties:
-              type:
-                $ref: '#/components/schemas/productsType'
-              formatType:
-                $ref: '#/components/schemas/formatTypes'
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: NOT_FOUND
+            message: Resource not found
+    notAuthorized:
+      description: The requester is unauthorized.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: UNAUTHORIZED_ERROR
+            message: Requester is unauthorized
+    forbidden:
+      description: The user isn't allowed to perform this action.
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: REQUEST_DENIED
+            message: User does not have the required permission
+    badRequest:
+      description: Request is invalid or malformed
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+    internalServerError:
+      description: Internal server error
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/headers/xFabricRequestId'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/genericError'
+          example:
+            type: SERVER_ERROR
+            message: Internal Server Error
+  headers:
+    xFabricRequestId:
+      schema:
+        type: string
+      required: false
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      description: Unique request ID
+  requestBodies:
     createProductFileRequest:
       content:
         application/json:
@@ -498,18 +494,29 @@ components:
                 $ref: '#/components/schemas/locale'
               formatType:
                 $ref: '#/components/schemas/formatTypes'
-  headers:
-    xFabricRequestId:
-      schema:
-        type: string
-      required: false
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      description: Unique request ID
+    generateTemplateRequest:
+      content:
+        application/json:
+          schema:
+            additionalProperties: false
+            description: Template request
+            required:
+            - type
+            - formatType
+            properties:
+              type:
+                $ref: '#/components/schemas/productsType'
+              formatType:
+                $ref: '#/components/schemas/formatTypes'
   securitySchemes:
-    bearerAuth:
+    authorization:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      description: This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
+externalDocs:
+  description: Find out more about Catalog Connector (previously called PIM Connector)
+  url: https://developer.fabric.inc/docs/products-overview
+x-mint:
+  mcp:
+    enabled: true

@@ -1,6 +1,6 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Fulfillment Fees API
+  title: Cart Fulfillment Fees API
   description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
     name: Cart Support
@@ -245,26 +245,6 @@ paths:
                 $ref: '#/components/schemas/NotFound'
 components:
   schemas:
-    Tax:
-      type: object
-      properties:
-        amount:
-          type: number
-          description: Tax amount
-          example: 3
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
-            example:
-              rate: '5.0'
-              type: COUNTY
-          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
-          example:
-            rate: '5.0'
-            type: COUNTY
-      description: Tax
     UpdatedFee:
       type: object
       properties:
@@ -305,30 +285,6 @@ components:
         taxDetails:
           $ref: '#/components/schemas/FeeTaxDetails'
       description: Fee
-    NotFound:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: CART_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error description
-          example: Cart not found
-      description: Resource Not Found
-    FeeTaxDetails:
-      type: object
-      properties:
-        destinationAddress:
-          type: string
-          description: The destination address where the item will be delivered.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-        originAddress:
-          type: string
-          description: The origin address from which the item will be fulfilled.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-      description: Tax details used to determine tax for a cart fee.
     TaxCollection:
       type: object
       properties:
@@ -342,6 +298,18 @@ components:
           items:
             $ref: '#/components/schemas/Tax'
       description: A collection of taxes.
+    NotFound:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
     ClientError:
       type: object
       properties:
@@ -354,27 +322,12 @@ components:
           description: Human-readable error description
           example: x-fabric-tenant-id is required
       description: Client error details
-    ResourcePrice:
-      required:
-      - amount
-      type: object
-      properties:
-        amount:
-          minimum: 0
-          exclusiveMinimum: false
-          type: number
-          description: Total fees amount
-          example: 12.99
-      description: Price details
-    CreateFeeRequest:
-      required:
-      - name
-      - price
+    UpdateFeeRequest:
       type: object
       properties:
         name:
           type: string
-          description: The name of the fee, such as an eco fee.
+          description: Name of the fee
           example: Eco Fee
         price:
           $ref: '#/components/schemas/ResourcePrice'
@@ -393,12 +346,35 @@ components:
           example:
             source: eco
       description: Fee Request
-    UpdateFeeRequest:
+    Tax:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Tax amount
+          example: 3
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+            example:
+              rate: '5.0'
+              type: COUNTY
+          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+          example:
+            rate: '5.0'
+            type: COUNTY
+      description: Tax
+    CreateFeeRequest:
+      required:
+      - name
+      - price
       type: object
       properties:
         name:
           type: string
-          description: Name of the fee
+          description: The name of the fee, such as an eco fee.
           example: Eco Fee
         price:
           $ref: '#/components/schemas/ResourcePrice'
@@ -457,6 +433,29 @@ components:
         taxDetails:
           $ref: '#/components/schemas/FeeTaxDetails'
       description: Fee
+    FeeTaxDetails:
+      type: object
+      properties:
+        destinationAddress:
+          type: string
+          description: The destination address where the item will be delivered.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+        originAddress:
+          type: string
+          description: The origin address from which the item will be fulfilled.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+      description: Tax details used to determine tax for a cart fee.
+    ResourcePrice:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
   securitySchemes:
     bearerAuth:
       type: http

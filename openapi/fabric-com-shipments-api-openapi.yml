@@ -1,18 +1,21 @@
-openapi: 3.0.1
+openapi: 3.2.0
 info:
-  title: Cart Actions Endpoints Shipments API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
   contact:
-    name: Cart Support
-    email: support.cnc@fabric.inc
+    email: support@fabric.inc
+    name: fabric Orders team
+  description: 'fabric **Shipments** API is a multi-tenant service that enables you to manage shipments for existing ''Allocations.'' Shipments serve as records of the locations from which an order was fulfilled. Typical user of fabric Shipments service is a Warehouse management service or Point of Sale service. <p> **Note**: Shipments API relies on the Allocation service to send allocation details to external merchant systems after an order is placed. Allocation is the prerequisite for using Shipments API.</p>'
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
+  termsOfService: https://fabric.inc/terms-of-use
+  title: Orders Shipments API
   version: 3.0.0
+  x-audience: external-public
 servers:
-- url: https://api.fabric.inc/v3
+- description: Production
+  url: https://api.fabric.inc/v3
 security:
-- bearerAuth: []
+- authorization: []
 tags:
 - description: 'fabric **Shipments** API is a multi-tenant service that enables you to manage shipments for existing ''Allocations.'' Shipments serve as records of the locations from which an order was fulfilled. Typical user of fabric Shipments service is a Warehouse management service or Point of Sale service. <p> **Note**: Shipments API relies on the Allocation service to send allocation details to external merchant systems after an order is placed. Allocation is the prerequisite for using Shipments API.</p>'
   name: Shipments
@@ -770,424 +773,22 @@ paths:
       tags:
       - Shipments
 components:
-  parameters:
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
-      schema:
-        type: string
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
   schemas:
-    giftCardActivation:
-      description: Gift card info
+    orderContactPhone:
+      description: Contact person's phone details
       properties:
-        giftCardNumber:
-          description: Gift card number
-          example: '453456765'
-          type: string
-        giftCardStatus:
-          description: Gift card status
-          enum:
-          - PENDING_ACTIVATION
-          - ACTIVE
-          - FAILED
-          example: ACTIVE
-          type: string
-      required:
-      - giftCardNumber
-      - giftCardStatus
-      type: object
-    valueSearchFilter:
-      allOf:
-      - $ref: '#/components/schemas/shipmentSearchFilter'
-      - properties:
-          value:
-            description: Search criteria using a single value
-            example: ORDER_CREATE
-            oneOf:
-            - description: Target record's non-numeric identifier
-              example: ORDER_CREATE
-              type: string
-            - description: Target record's numeric identifier
-              example: 112233
-              format: int64
-              type: number
-            - description: Target record's numeric identifier
-              example: 1122.33
-              format: double
-              type: number
-        type: object
-      description: The criteria used to find shipments by a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
-      required:
-      - condition
-      - field
-      type: object
-    shipmentSearchFilter:
-      description: Criteria to find shipments. To search using a single value, the `valueSearchFilter` is considered. To search using multiple values, `valuesSearchFilter` is considered.
-      discriminator:
-        mapping:
-          EQ: '#/components/schemas/valueSearchFilter'
-          GT: '#/components/schemas/valueSearchFilter'
-          GTE: '#/components/schemas/valueSearchFilter'
-          IN: '#/components/schemas/valuesSearchFilter'
-          LT: '#/components/schemas/valueSearchFilter'
-          LTE: '#/components/schemas/valueSearchFilter'
-          NEQ: '#/components/schemas/valueSearchFilter'
-          NIN: '#/components/schemas/valuesSearchFilter'
-        propertyName: condition
-      properties:
-        condition:
-          default: EQ
-          description: 'Filter conditions. EQ (Equal to): Searches for exact match. NEQ (Not equal to): Searches by excluding the specified value. IN: Search for multiple values. NIN (Not IN): Excludes the specified values in the search. LT (Less than): Searches for values that are less than the specified value. GT (Greater than):  Search for values that are greater than the specified value. LTE (Less than or equal to): Searches for values that are less than or equal to the specified value. GTE (Greater than or equal to): Searches for values that are greater than or equal to the specified value.'
-          enum:
-          - EQ
-          - NEQ
-          - IN
-          - NIN
-          - LT
-          - GT
-          - LTE
-          - GTE
-          example: LT
-          type: string
-        field:
-          description: Field name
-          example: shipment.shipmentNum
-          pattern: ^shipment\.[a-zA-Z.\-_]*
-          type: string
-        group:
-          default: Default
-          description: Group name
-          example: GroupA
-          type: string
-      required:
-      - condition
-      - field
-      type: object
-    shipmentAuditLog:
-      description: Details for updating shipment
-      properties:
-        auditId:
-          description: System-generated audit ID (UUID format)
-          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
-          type: string
-        auditType:
-          description: Audit type such as cancel, return, etc.
-          example: CANCEL
-          type: string
-        auditedAt:
-          description: Audit time (UTC)
-          example: '2023-03-12T09:24:54.804Z'
-          format: date-time
-          type: string
-        employeeId:
-          description: Employee (ID or name) who made the last update
-          example: '6227'
-          type: string
-        lineItemId:
-          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it during order creation, in UUID format.
-          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
-          type: string
-        note:
-          description: Additional info, if any
-          example: Note
-          type: string
-        reasonCode:
-          description: Merchant-defined reason code, varies from merchant to merchant
-          example: Scratched item
-          type: string
-        source:
-          description: Merchant-defined source from where the update was initiated. There are no predefined values; possible values could be Customer Service Representative (CSR), Point-of-Sale (POS), etc.
-          example: POS
-          type: string
-        subReasonCode:
-          description: Merchant-defined sub reason code; provides more clarity to audit reason
-          example: Scratched item
-          type: string
-        updatedFields:
-          description: Audit log for change history
-          items:
-            $ref: '#/components/schemas/orderAuditLogUpdatedField'
-          type: array
-      type: object
-    orderContactName:
-      description: Contact person's name
-      properties:
-        firstName:
-          description: Contact person's first name
-          example: Alex
-          type: string
-        lastName:
-          description: Contact person's last name
-          example: Doe
-          type: string
-        middleName:
-          description: Contact person's middle name or initial
-          example: E
-          type: string
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
+        number:
+          description: Contact person's phone number
+          example: 123-456-7890
           type: string
         type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    shipmentCarton:
-      description: Carton details
-      properties:
-        cartonNumber:
-          description: Merchant-defined unique identifier. This can optionally be generated by fabric by using the resource generator feature of the Configuration service.
-          example: '1'
-          type: string
-        cartonType:
-          description: Carton type
-          example: Package
-          type: string
-        estimatedDeliveryDate:
-          description: Estimated delivery date given by carrier based on several factors including selected shipping method and delivery location (UTC).
-          example: '2023-04-26T07:58:30.996Z'
-          format: date-time
-          type: string
-        estimatedShipmentDate:
-          description: Estimated ship date given by seller based on availability of items, their processing time, delivery location, and selected shipping method (UTC).
-          example: '2023-03-25T07:58:30.996Z'
-          format: date-time
-          type: string
-        items:
-          description: Carton item details
-          items:
-            $ref: '#/components/schemas/shipmentItem'
-          type: array
-        promisedDeliveryDate:
-          description: Promised delivery date given by seller (UTC)
-          example: '2023-03-26T07:58:30.996Z'
-          format: date-time
-          type: string
-        shipmentCarrier:
-          description: Shipment carrier name
-          example: FEDEX
-          type: string
-        shipmentMethod:
-          description: Shipment method
-          example: ground
-          type: string
-        tracking:
-          description: Carton tracking details
-          items:
-            $ref: '#/components/schemas/trackingResource'
-          type: array
-        trackingNumber:
-          description: Carton tracking number. There is a single tracking number per carton
-          example: 1Z999AA10123456784
-          type: string
-        trackingURL:
-          description: Carton tracking URL
-          example: https://example.com/tracking
-          type: string
-        weight:
-          description: Carton weight
-          example: 500 grams
-          type: string
-      type: object
-    address:
-      description: Address details
-      properties:
-        addressLine1:
-          description: Address line 1
-          example: 123 Main St.
-          type: string
-        addressLine2:
-          description: Address line 2
-          example: Suite 100
-          type: string
-        addressLine3:
-          description: Address line 3
-          example: Seventh floor
-          type: string
-        addressLine4:
-          description: Address line 4
-          example: 'Attention: Pat E. Kake'
-          type: string
-        city:
-          description: City name
-          example: Seattle
-          type: string
-        countryCode:
-          description: ISO 3166-1 alpha-2 based country code
-          example: US
-          type: string
-        email:
-          description: Contact person's email
-          example: test@example.com
-          type: string
-        latitude:
-          description: Address latitude, used with `longitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -90 and 90, both inclusive.
-          example: 47.6205
-          format: double
-          type: number
-        longitude:
-          description: Address longitude, used with `latitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -180 and 180, both inclusive.
-          example: -122.3493
-          format: double
-          type: number
-        name:
-          $ref: '#/components/schemas/orderContactName'
-        phone:
-          $ref: '#/components/schemas/orderContactPhone'
-        postalCode:
-          description: Postal or ZIP code
-          example: '98121'
-          type: string
-        region:
-          description: Region or state
-          example: WA
-          type: string
-        type:
-          description: Address type
-          example: Home
-          type: string
-      required:
-      - addressLine1
-      - city
-      - countryCode
-      - latitude
-      - longitude
-      - postalCode
-      - region
-      - type
-      type: object
-    shipmentGiftCardDetail:
-      description: Gift card details
-      properties:
-        amount:
-          description: Gift card amount
-          example: 50
-          format: double
-          type: number
-        amountInCurrencies:
-          type: array
-          description: "The gift card amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        giftCardActivatedAt:
-          description: Time gift card was activated (UTC)
-          example: '2023-04-26T07:58:30.996Z'
-          format: date-time
-          type: string
-        giftCardActivationRequestedAt:
-          description: Time of placing gift card activation request (UTC)
-          example: '2023-03-26T07:58:30.996Z'
-          format: date-time
-          type: string
-        giftCardNumber:
-          description: Gift card number
-          example: '453456765'
-          type: string
-        giftCardStatus:
-          description: Gift card status
+          description: Contact number type
           enum:
-          - PENDING_ACTIVATION
-          - ACTIVE
-          - FAILED
-          example: ACTIVE
+          - MOBILE
+          - HOME
+          - BUSINESS
+          example: MOBILE
           type: string
-      type: object
-    shipmentRecipient:
-      description: Shipment recipient details
-      properties:
-        email:
-          description: Recipient's email
-          example: support@example.inc
-          type: string
-        name:
-          $ref: '#/components/schemas/orderContactName'
-        phone:
-          $ref: '#/components/schemas/orderContactPhone'
-      type: object
-    scratchedItemDetails:
-      description: Details of scratched items in shipment
-      properties:
-        attributes:
-          description: 'Merchant-defined custom attributes. This is a placeholder for addition info (in key: value pairs)'
-          example:
-            attribute1: value
-          type: object
-        itemId:
-          description: Unique item identifier
-          example: 100043
-          format: int32
-          type: integer
-        lineItemId:
-          description: Unique number assigned by merchant to identify each item in an order. When this value isn't provided, fabric will auto generate (in UUID format) during order creation.
-          example: '2'
-          type: string
-        orderId:
-          type: string
-          description: 24-character system-generated ID displayed in the response of Create Order endpoint - `POST /orders`
-          example: 6413e370cb0dc859b6c0dcb0
-        orderNumber:
-          type: string
-          description: Merchant-defined order identifier
-          example: 309020213
-        quantity:
-          default: 0
-          description: Number of scratched items
-          example: 1
-          format: int32
-          type: integer
-        reasonCode:
-          description: The primary reason code for the item scratch.
-          example: ReasonCode23454
-          type: string
-        sku:
-          description: Stock keeping unit (SKU), unique item identifier
-          example: SKU00043
-          type: string
-        shipmentExternalId:
-          type: string
-          description: Unique shipment identifier defined by the merchant. This value can be used to track or reconcile shipments in external systems and serves as a reference between fabric and the merchant's order management or fulfillment system.
-          example: 123k4h123k
-        subReasonCode:
-          description: The sub-reason code for the item scratch.
-          example: SubReasonCode23242
-          type: string
-        uom:
-          description: Unit in which a product is measured or sold. UOM can be set to 'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
-          example: EA
-          type: string
-      required:
-      - lineItemId
-      - quantity
-      - reasonCode
       type: object
     returnFeeDetail:
       description: Return fee details
@@ -1221,194 +822,79 @@ components:
           example: FEE
           type: string
       type: object
-    shipmentTrackingDetail:
-      description: Shipment tracking details
-      properties:
-        shipmentNumber:
-          description: Merchant-defined unique shipment identifier
-          example: '78974156816152'
-          type: string
-        tracking:
-          description: Tracking details
-          items:
-            $ref: '#/components/schemas/trackingResource'
-          type: array
-        trackingNumber:
-          description: Tracking number
-          example: 1Z999AA10123456784
-          type: string
-        trackingURL:
-          description: Tracking URL
-          example: https://example.com/tracking
-          type: string
-      required:
-      - shipmentNumber
-      - trackingNumber
-      type: object
-    giftCardItemsActivationRequest:
-      description: Gift card activation request
-      properties:
-        items:
-          description: Items
-          items:
-            $ref: '#/components/schemas/giftCardItem'
-          maxItems: 1000
-          minItems: 1
-          type: array
-      required:
-      - items
-      type: object
-    shipmentsSearchRequest:
-      description: Sort and filter criteria for shipment search
-      example:
-        filters:
-        - condition: EQ
-          field: shipment.shipmentNum
-          value: Shipment_112255
-        - condition: IN
-          field: shipment.cartons.cartonNum
-          values:
-          - Tracking_*
-        sort: -shipment.shipDate
-      properties:
-        filters:
-          items:
+    valueSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/shipmentSearchFilter'
+      - properties:
+          value:
+            description: Search criteria using a single value
+            example: ORDER_CREATE
             oneOf:
-            - $ref: '#/components/schemas/valueSearchFilter'
-            - $ref: '#/components/schemas/valuesSearchFilter'
-          maxItems: 50
-          minItems: 0
-          type: array
-        sort:
-          default: -shipment.shipDate
-          description: 'Property name on which response needed to be sorted. **Note**: `-` refers to descending and `+` refers to ascending order'
-          example: -shipment.shipDate
-          pattern: (^[+-]shipment\.[a-zA-Z.\-_]*)(,([+-]shipment\.[a-zA-Z.\-_]*)){0,}
-          type: string
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+        type: object
+      description: The criteria used to find shipments by a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
       required:
-      - filters
+      - condition
+      - field
       type: object
-    cartonItems:
-      description: Item details
+    amountInCurrencyResource:
+      type: object
+      description: Amount in currency  details
       properties:
-        attributes:
-          description: 'Merchant-defined custom attributes. This is a placeholder for addition info (in key: value pairs)'
-          example:
-            attribute1: value
-          type: object
-        fees:
-          description: Return fee details
-          items:
-            $ref: '#/components/schemas/returnFeeDetail'
-          type: array
-        giftCards:
-          description: Gift card details
-          items:
-            $ref: '#/components/schemas/giftCardDetails'
-          type: array
-        itemId:
-          description: Unique item identifier from fabric Products service
-          example: 100023
-          format: int32
-          type: integer
-        lineItemId:
-          description: Unique number assigned by merchant to identify each item in an order. When this value isn't provided, fabric will auto generate (in UUID format) during order creation.
-          example: '1'
+        currency:
           type: string
-        orderId:
-          description: 24-character system-generated ID displayed in the response of Create Order endpoint - `POST /orders`
-          example: 6413e370cb0dc859b6c0dcb0
+          description: Currency in ISO-4217
+          example: USD
+        group:
           type: string
-        orderNumber:
-          description: Merchant-defined order identifier
-          example: '309020213'
-          type: string
-        shipmentExternalId:
-          type: string
-          description: Unique shipment identifier defined by the merchant. This value can be used to track or reconcile shipments in external systems and serves as a reference between fabric and the merchant's order management or fulfillment system.
-          example: 123k4h123k
-        orderedQuantity:
-          description: Ordered quantity of given item
-          example: 2
-          format: int32
-          minimum: 0
-          type: integer
-        refundAmount:
-          description: Return amount. Applicable for return shipment scenarios.
-          example: 10
-          format: double
+          description: 'Customer defined function name which uses this currency. '
+          example: SHOPPER
+        amount:
           type: number
-        refundAmountInCurrencies:
-          type: array
-          description: "The return amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        returnQuantity:
-          description: Returned quantity of given item. Applicable for return shipment scenarios.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-        returnRequestCounter:
-          description: Number of times return request is made for the given order. Applicable only for return shipment scenario.
-          example: 1
-          format: int32
-          type: integer
-        segment:
-          description: Item segment
-          example: segment
-          type: string
-        shippedQuantity:
-          description: Shipped quantity of given item
-          example: 2
-          format: int32
-          minimum: 0
-          type: integer
-        sku:
-          description: Stock keeping unit (SKU), unique item identifier
-          example: SKU0023
-          type: string
-        uom:
-          description: Unit in which a product is measured or sold. UOM can be set to 'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
-          example: EA
-          type: string
-        vendorId:
-          description: Vendor ID. Applicable in dropshipping scenarios to indicate the vendor responsible for the given item.
-          example: '56'
-          type: string
+          format: double
+          description: Amount in currency
+          example: 123.45
       required:
-      - lineItemId
-      - shippedQuantity
-      type: object
-    giftCardItem:
-      description: Gift card details
-      properties:
-        giftCards:
-          description: Gift cards
-          items:
-            $ref: '#/components/schemas/giftCardActivation'
-          maxItems: 100
-          minItems: 1
-          type: array
-        shipmentLineItemId:
-          description: Unique number assigned by merchant to identify item in a shipment. When this value isn't provided, fabric will auto generate (UUID format) during shipment.
-          example: 607f1f77bcf86cd799439011
-          type: string
+      - currency
+      - group
+    valuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/shipmentSearchFilter'
+      - properties:
+          values:
+            items:
+              description: Search criteria using multiple values
+              example: ORDER_CREATE
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: The search criteria when using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
       required:
-      - giftCards
-      - shipmentLineItemId
-      type: object
-    orderAuditLogUpdatedField:
-      description: Audit log for change history
-      properties:
-        fieldName:
-          description: Field or property name that was updated
-          example: UOM
-          type: string
-        fieldOriginalValue:
-          description: Original value of `fieldName` before it was updated
-          example: PK
-          type: string
+      - condition
+      - field
       type: object
     shipmentResponse:
       description: Shipment details
@@ -1547,6 +1033,332 @@ components:
       required:
       - version
       type: object
+    shipmentsResponse:
+      description: Shipment response
+      properties:
+        shipments:
+          description: Shipment details
+          items:
+            $ref: '#/components/schemas/shipmentResponse'
+          type: array
+      type: object
+    orderContactName:
+      description: Contact person's name
+      properties:
+        firstName:
+          description: Contact person's first name
+          example: Alex
+          type: string
+        lastName:
+          description: Contact person's last name
+          example: Doe
+          type: string
+        middleName:
+          description: Contact person's middle name or initial
+          example: E
+          type: string
+      type: object
+    orderAuditLogUpdatedField:
+      description: Audit log for change history
+      properties:
+        fieldName:
+          description: Field or property name that was updated
+          example: UOM
+          type: string
+        fieldOriginalValue:
+          description: Original value of `fieldName` before it was updated
+          example: PK
+          type: string
+      type: object
+    shipmentRecipient:
+      description: Shipment recipient details
+      properties:
+        email:
+          description: Recipient's email
+          example: support@example.inc
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+      type: object
+    shipmentSearchFilter:
+      description: Criteria to find shipments. To search using a single value, the `valueSearchFilter` is considered. To search using multiple values, `valuesSearchFilter` is considered.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilter'
+          GT: '#/components/schemas/valueSearchFilter'
+          GTE: '#/components/schemas/valueSearchFilter'
+          IN: '#/components/schemas/valuesSearchFilter'
+          LT: '#/components/schemas/valueSearchFilter'
+          LTE: '#/components/schemas/valueSearchFilter'
+          NEQ: '#/components/schemas/valueSearchFilter'
+          NIN: '#/components/schemas/valuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: 'Filter conditions. EQ (Equal to): Searches for exact match. NEQ (Not equal to): Searches by excluding the specified value. IN: Search for multiple values. NIN (Not IN): Excludes the specified values in the search. LT (Less than): Searches for values that are less than the specified value. GT (Greater than):  Search for values that are greater than the specified value. LTE (Less than or equal to): Searches for values that are less than or equal to the specified value. GTE (Greater than or equal to): Searches for values that are greater than or equal to the specified value.'
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: LT
+          type: string
+        field:
+          description: Field name
+          example: shipment.shipmentNum
+          pattern: ^shipment\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: Group name
+          example: GroupA
+          type: string
+      required:
+      - condition
+      - field
+      type: object
+    shipmentScratchedItem:
+      description: Customer may cancel allocation line items as part of the shipment post request. In fabric Shipments service, this is called 'Scratched Items' or 'scratchedItems'.
+      properties:
+        itemId:
+          description: Unique item identifier
+          example: 100043
+          format: int32
+          type: integer
+        lineItemId:
+          description: Unique number assigned by merchant to identify each item in an order. When this value isn't provided, fabric will auto generate it (in UUID format) during order creation.
+          example: '2'
+          type: string
+        orderId:
+          description: 24-character ID displayed in the response of Create Order endpoint - `POST /orders`
+          example: 6413e370cb0dc859b6c0dcb0
+          type: string
+        quantity:
+          default: 0
+          description: Number of scratched items
+          example: 1
+          format: int32
+          type: integer
+        reasonCode:
+          description: Reason code for scratch
+          example: ReasonCode23454
+          type: string
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU00043
+          type: string
+        subReasonCode:
+          description: Sub-reason code
+          example: SubReasonCode23242
+          type: string
+        uom:
+          description: Unit in which a product is measured or sold. UOM can be set to 'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+      required:
+      - reasonCode
+      type: object
+    shipmentAcknowledge:
+      description: Shipment acknowledgement details
+      properties:
+        acknowledgedAt:
+          description: Shipment acknowledgement time from middleware. If omitted, fabric uses the time (UTC) of Acknowledgement shipment call - `POST /shipments/{shipmentId}/acknowledge`.
+          example: '2023-08-01T20:03:28.483971941Z'
+          format: date-time
+          type: string
+        attributes:
+          description: 'Merchant-defined custom attributes. This is a placeholder for addition info (in key: value pairs)'
+          example:
+            shipmentId: 627963716b19511e8a3a631b
+          type: object
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    shipmentItem:
+      description: Details of item in shipment
+      properties:
+        fees:
+          description: Fee details
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        giftCards:
+          description: Gift card details
+          items:
+            $ref: '#/components/schemas/shipmentGiftCardDetail'
+          type: array
+        itemId:
+          description: Unique item identifier
+          example: 100023
+          format: int32
+          type: integer
+        lineItemId:
+          description: Unique number assigned by merchant to identify each item in an order. When this value isn't provided, fabric will auto generate (in UUID format) during order creation.
+          example: '1'
+          type: string
+        orderId:
+          description: 24-character order ID generated in the response of Create Order endpoint - `POST /orders`
+          example: 6413e370cb0dc859b6c0dcb0
+          type: string
+        orderNumber:
+          description: Merchant-defined order identifier
+          example: '309020213'
+          type: string
+        orderedQuantity:
+          default: 0
+          description: Ordered quantity of given item
+          example: 2
+          format: int32
+          type: integer
+        refundAmount:
+          description: Refund amount for returned items
+          example: 10
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          type: array
+          description: "The refund amount for returned items represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        returnQuantity:
+          default: 0
+          description: Returned quantity of given item
+          example: 1
+          format: int32
+          type: integer
+        segment:
+          description: Item segment
+          example: segment
+          type: string
+        shipmentLineItemId:
+          description: Unique number assigned by merchant to identify item in a shipment. When this value isn't provided, fabric will auto generate it (UUID format) during shipment.
+          example: 607f1f77bcf86cd799439011
+          type: string
+        shippedQuantity:
+          default: 0
+          description: Shipped quantity of given item
+          example: 2
+          format: int32
+          type: integer
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU0023
+          type: string
+        uom:
+          description: Unit in which a product is measured or sold. UOM can be set to 'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+        vendorId:
+          description: Vendor ID. Applicable in dropshipping scenarios to indicate the vendor responsible for the given item.
+          example: vend12346667
+          type: string
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page.
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: The number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    shipmentTrackingDetail:
+      description: Shipment tracking details
+      properties:
+        shipmentNumber:
+          description: Merchant-defined unique shipment identifier
+          example: '78974156816152'
+          type: string
+        tracking:
+          description: Tracking details
+          items:
+            $ref: '#/components/schemas/trackingResource'
+          type: array
+        trackingNumber:
+          description: Tracking number
+          example: 1Z999AA10123456784
+          type: string
+        trackingURL:
+          description: Tracking URL
+          example: https://example.com/tracking
+          type: string
+      required:
+      - shipmentNumber
+      - trackingNumber
+      type: object
+    shipmentGiftCardDetail:
+      description: Gift card details
+      properties:
+        amount:
+          description: Gift card amount
+          example: 50
+          format: double
+          type: number
+        amountInCurrencies:
+          type: array
+          description: "The gift card amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        giftCardActivatedAt:
+          description: Time gift card was activated (UTC)
+          example: '2023-04-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        giftCardActivationRequestedAt:
+          description: Time of placing gift card activation request (UTC)
+          example: '2023-03-26T07:58:30.996Z'
+          format: date-time
+          type: string
+        giftCardNumber:
+          description: Gift card number
+          example: '453456765'
+          type: string
+        giftCardStatus:
+          description: Gift card status
+          enum:
+          - PENDING_ACTIVATION
+          - ACTIVE
+          - FAILED
+          example: ACTIVE
+          type: string
+      type: object
     createShipmentRequest:
       description: Details to create shipment
       properties:
@@ -1665,213 +1477,52 @@ components:
       - allocationId
       - shipmentNumber
       type: object
-    cartonDetailsBasedOnOrder:
-      type: object
-      description: Details of a carton included in a shipment, based on the order.
+    trackingResource:
+      description: Shipment tracking details
       properties:
-        cartonNumber:
+        event:
+          description: Shipment-specific event. Mandatory in the request body of Update shipment tracking - `POST /shipments/actions/update-tracking` endpoint
+          example: picked up
           type: string
-          description: Unique carton identifier defined by the merchant. This value can also be auto-generated by fabric using the resource generator feature in the Configuration service.
-          example: 1
-        cartonType:
+        eventId:
+          description: Event ID provided by carrier
+          example: 627963716b19511e8a3a631b
           type: string
-          description: Type of carton used for shipping (for example, Package, Pallet, Crate).
-          example: Package
-        promisedDeliveryDate:
-          type: string
+        eventRecordedAt:
+          description: Time event was recorded (UTC)
+          example: '2019-09-30T07:58:30.996Z'
           format: date-time
-          description: Promised delivery date provided by the seller (in UTC).
-          example: '2023-03-26T07:58:30.996Z'
-        estimatedShipDate:
           type: string
-          format: date-time
-          description: Estimated ship date provided by the carrier (in UTC).
-          example: '2023-03-25T07:58:30.996Z'
-        estimatedDeliveryDate:
+        location:
+          description: Delivery location
+          example: Reno, NV
           type: string
-          format: date-time
-          description: Estimated delivery date provided by the carrier (in UTC). Determined by factors such as the selected shipping method and delivery location.
-          example: '2023-03-26T07:58:30.996Z'
-        shipmentMethod:
-          type: string
-          description: Shipping method selected for the carton (for example, Ground, Air, 2-Day).
-          example: ground
+        notes:
+          additionalProperties:
+            description: Attributes to save any additional info
+            example: '{"description":"Shipment picked up"}'
+            type: string
+          description: Attributes to save any additional info
+          example:
+            description: Shipment picked up
+          type: object
         shipmentCarrier:
-          type: string
-          description: Carrier responsible for delivering the carton (for example, FedEx, UPS).
+          description: Shipment carrier
           example: FEDEX
-        weight:
           type: string
-          description: Weight of the carton. Units should be specified consistently (for example, pounds or kilograms).
-          example: 500
-        trackingNumber:
-          type: string
-          description: Tracking number assigned to the carton. Used to monitor shipment progress and update tracking status.
-          example: 1Z999AA10123456784
-        trackingURL:
-          type: string
-          description: Direct URL for tracking the carton shipment.
-          example: https://fedex.com/tracking
-        tracking:
-          type: array
-          description: Tracking history and status updates for the carton.
-          items:
-            $ref: '#/components/schemas/trackingResource'
+      type: object
+    giftCardItemsActivationRequest:
+      description: Gift card activation request
+      properties:
         items:
-          type: array
-          description: List of items contained within the carton.
+          description: Items
           items:
-            $ref: '#/components/schemas/cartonItems'
+            $ref: '#/components/schemas/giftCardItem'
+          maxItems: 1000
+          minItems: 1
+          type: array
       required:
       - items
-    shipmentsSearchResponse:
-      description: Shipment search response
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/shipmentResponse'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
-      type: object
-    pagination:
-      description: Pagination response
-      properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page.
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: The number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
-    shipmentScratchedItem:
-      description: Customer may cancel allocation line items as part of the shipment post request. In fabric Shipments service, this is called 'Scratched Items' or 'scratchedItems'.
-      properties:
-        itemId:
-          description: Unique item identifier
-          example: 100043
-          format: int32
-          type: integer
-        lineItemId:
-          description: Unique number assigned by merchant to identify each item in an order. When this value isn't provided, fabric will auto generate it (in UUID format) during order creation.
-          example: '2'
-          type: string
-        orderId:
-          description: 24-character ID displayed in the response of Create Order endpoint - `POST /orders`
-          example: 6413e370cb0dc859b6c0dcb0
-          type: string
-        quantity:
-          default: 0
-          description: Number of scratched items
-          example: 1
-          format: int32
-          type: integer
-        reasonCode:
-          description: Reason code for scratch
-          example: ReasonCode23454
-          type: string
-        sku:
-          description: Stock keeping unit (SKU), unique item identifier
-          example: SKU00043
-          type: string
-        subReasonCode:
-          description: Sub-reason code
-          example: SubReasonCode23242
-          type: string
-        uom:
-          description: Unit in which a product is measured or sold. UOM can be set to 'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
-          example: EA
-          type: string
-      required:
-      - reasonCode
-      type: object
-    shipmentsResponse:
-      description: Shipment response
-      properties:
-        shipments:
-          description: Shipment details
-          items:
-            $ref: '#/components/schemas/shipmentResponse'
-          type: array
-      type: object
-    amountInCurrencyResource:
-      type: object
-      description: Amount in currency  details
-      properties:
-        currency:
-          type: string
-          description: Currency in ISO-4217
-          example: USD
-        group:
-          type: string
-          description: 'Customer defined function name which uses this currency. '
-          example: SHOPPER
-        amount:
-          type: number
-          format: double
-          description: Amount in currency
-          example: 123.45
-      required:
-      - currency
-      - group
-    orderContactPhone:
-      description: Contact person's phone details
-      properties:
-        number:
-          description: Contact person's phone number
-          example: 123-456-7890
-          type: string
-        type:
-          description: Contact number type
-          enum:
-          - MOBILE
-          - HOME
-          - BUSINESS
-          example: MOBILE
-          type: string
-      type: object
-    valuesSearchFilter:
-      allOf:
-      - $ref: '#/components/schemas/shipmentSearchFilter'
-      - properties:
-          values:
-            items:
-              description: Search criteria using multiple values
-              example: ORDER_CREATE
-              oneOf:
-              - description: Target record's non-numeric identifier
-                example: ORDER_CREATE
-                type: string
-              - description: Target record's numeric identifier
-                example: 112233
-                format: int64
-                type: number
-              - description: Target record's numeric identifier
-                example: 1122.33
-                format: double
-                type: number
-            maxItems: 25
-            minItems: 1
-            type: array
-        type: object
-      description: The search criteria when using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
-      required:
-      - condition
-      - field
       type: object
     createShipmentByOrderRequest:
       type: object
@@ -1978,66 +1629,174 @@ components:
             $ref: '#/components/schemas/baseScratchedItemDetails'
       required:
       - shipmentNumber
-    shipmentAcknowledge:
-      description: Shipment acknowledgement details
+    shipmentAuditLog:
+      description: Details for updating shipment
       properties:
-        acknowledgedAt:
-          description: Shipment acknowledgement time from middleware. If omitted, fabric uses the time (UTC) of Acknowledgement shipment call - `POST /shipments/{shipmentId}/acknowledge`.
-          example: '2023-08-01T20:03:28.483971941Z'
+        auditId:
+          description: System-generated audit ID (UUID format)
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+          type: string
+        auditType:
+          description: Audit type such as cancel, return, etc.
+          example: CANCEL
+          type: string
+        auditedAt:
+          description: Audit time (UTC)
+          example: '2023-03-12T09:24:54.804Z'
           format: date-time
           type: string
-        attributes:
-          description: 'Merchant-defined custom attributes. This is a placeholder for addition info (in key: value pairs)'
-          example:
-            shipmentId: 627963716b19511e8a3a631b
-          type: object
+        employeeId:
+          description: Employee (ID or name) who made the last update
+          example: '6227'
+          type: string
+        lineItemId:
+          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it during order creation, in UUID format.
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        note:
+          description: Additional info, if any
+          example: Note
+          type: string
+        reasonCode:
+          description: Merchant-defined reason code, varies from merchant to merchant
+          example: Scratched item
+          type: string
+        source:
+          description: Merchant-defined source from where the update was initiated. There are no predefined values; possible values could be Customer Service Representative (CSR), Point-of-Sale (POS), etc.
+          example: POS
+          type: string
+        subReasonCode:
+          description: Merchant-defined sub reason code; provides more clarity to audit reason
+          example: Scratched item
+          type: string
+        updatedFields:
+          description: Audit log for change history
+          items:
+            $ref: '#/components/schemas/orderAuditLogUpdatedField'
+          type: array
       type: object
-    trackingResource:
-      description: Shipment tracking details
+    baseScratchedItemDetails:
+      type: object
+      description: Base details of items scratched (removed) from a shipment.
       properties:
-        event:
-          description: Shipment-specific event. Mandatory in the request body of Update shipment tracking - `POST /shipments/actions/update-tracking` endpoint
-          example: picked up
+        orderId:
           type: string
-        eventId:
-          description: Event ID provided by carrier
-          example: 627963716b19511e8a3a631b
+          description: System-generated 24-character order ID, returned in the response of the Create Order endpoint (`POST /orders`).
+          example: 6413e370cb0dc859b6c0dcb0
+        orderNumber:
           type: string
-        eventRecordedAt:
-          description: Time event was recorded (UTC)
-          example: '2019-09-30T07:58:30.996Z'
+          description: Merchant-defined order number associated with the shipment.
+          example: 309020213
+        orderExternalId:
+          type: string
+          description: External order identifier defined by the merchant. Useful for reconciliation with external systems.
+          example: 123k4h123k
+        lineItemId:
+          type: string
+          description: Unique identifier for the line item in the order. If not provided, fabric automatically generates this value in UUID format during order creation.
+          example: 2
+        itemId:
+          type: integer
+          format: int32
+          description: System-generated unique identifier for the item.
+          example: 100043
+        sku:
+          type: string
+          description: Stock keeping unit (SKU), a merchant-defined unique identifier for the item.
+          example: SKU00043
+        quantity:
+          type: integer
+          format: int32
+          default: 0
+          description: Number of units scratched from the shipment.
+          example: 1
+        uom:
+          type: string
+          description: Unit of measure for the item (for example, EA for Each, GAL for Gallon, DZ for Dozen).
+          example: EA
+        reasonCode:
+          type: string
+          description: Code indicating the primary reason for scratching the item from the shipment.
+          example: ReasonCode23454
+        subReasonCode:
+          type: string
+          description: Code indicating a more specific sub-reason related to the scratch action.
+          example: SubReasonCode23242
+        attributes:
+          type: object
+          description: Merchant-defined custom attributes in key-value format. Useful for adding supplemental information.
+          example:
+            attribute1: value
+      required:
+      - lineItemId
+      - quantity
+      - reasonCode
+    shipmentCarton:
+      description: Carton details
+      properties:
+        cartonNumber:
+          description: Merchant-defined unique identifier. This can optionally be generated by fabric by using the resource generator feature of the Configuration service.
+          example: '1'
+          type: string
+        cartonType:
+          description: Carton type
+          example: Package
+          type: string
+        estimatedDeliveryDate:
+          description: Estimated delivery date given by carrier based on several factors including selected shipping method and delivery location (UTC).
+          example: '2023-04-26T07:58:30.996Z'
           format: date-time
           type: string
-        location:
-          description: Delivery location
-          example: Reno, NV
+        estimatedShipmentDate:
+          description: Estimated ship date given by seller based on availability of items, their processing time, delivery location, and selected shipping method (UTC).
+          example: '2023-03-25T07:58:30.996Z'
+          format: date-time
           type: string
-        notes:
-          additionalProperties:
-            description: Attributes to save any additional info
-            example: '{"description":"Shipment picked up"}'
-            type: string
-          description: Attributes to save any additional info
-          example:
-            description: Shipment picked up
-          type: object
+        items:
+          description: Carton item details
+          items:
+            $ref: '#/components/schemas/shipmentItem'
+          type: array
+        promisedDeliveryDate:
+          description: Promised delivery date given by seller (UTC)
+          example: '2023-03-26T07:58:30.996Z'
+          format: date-time
+          type: string
         shipmentCarrier:
-          description: Shipment carrier
+          description: Shipment carrier name
           example: FEDEX
           type: string
-      type: object
-    giftCardDetails:
-      description: Gift card details
-      properties:
-        amount:
-          description: Gift card amount
-          example: 50
-          format: double
-          type: number
-        giftCardNumber:
-          description: Gift card number
-          example: '453456765'
+        shipmentMethod:
+          description: Shipment method
+          example: ground
           type: string
+        tracking:
+          description: Carton tracking details
+          items:
+            $ref: '#/components/schemas/trackingResource'
+          type: array
+        trackingNumber:
+          description: Carton tracking number. There is a single tracking number per carton
+          example: 1Z999AA10123456784
+          type: string
+        trackingURL:
+          description: Carton tracking URL
+          example: https://example.com/tracking
+          type: string
+        weight:
+          description: Carton weight
+          example: 500 grams
+          type: string
+      type: object
+    shipmentsSearchResponse:
+      description: Shipment search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/shipmentResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
       type: object
     cartonDetails:
       description: Carton details
@@ -2096,21 +1855,168 @@ components:
           example: 500 gram
           type: string
       type: object
-    shipmentItem:
-      description: Details of item in shipment
+    cartonDetailsBasedOnOrder:
+      type: object
+      description: Details of a carton included in a shipment, based on the order.
       properties:
+        cartonNumber:
+          type: string
+          description: Unique carton identifier defined by the merchant. This value can also be auto-generated by fabric using the resource generator feature in the Configuration service.
+          example: 1
+        cartonType:
+          type: string
+          description: Type of carton used for shipping (for example, Package, Pallet, Crate).
+          example: Package
+        promisedDeliveryDate:
+          type: string
+          format: date-time
+          description: Promised delivery date provided by the seller (in UTC).
+          example: '2023-03-26T07:58:30.996Z'
+        estimatedShipDate:
+          type: string
+          format: date-time
+          description: Estimated ship date provided by the carrier (in UTC).
+          example: '2023-03-25T07:58:30.996Z'
+        estimatedDeliveryDate:
+          type: string
+          format: date-time
+          description: Estimated delivery date provided by the carrier (in UTC). Determined by factors such as the selected shipping method and delivery location.
+          example: '2023-03-26T07:58:30.996Z'
+        shipmentMethod:
+          type: string
+          description: Shipping method selected for the carton (for example, Ground, Air, 2-Day).
+          example: ground
+        shipmentCarrier:
+          type: string
+          description: Carrier responsible for delivering the carton (for example, FedEx, UPS).
+          example: FEDEX
+        weight:
+          type: string
+          description: Weight of the carton. Units should be specified consistently (for example, pounds or kilograms).
+          example: 500
+        trackingNumber:
+          type: string
+          description: Tracking number assigned to the carton. Used to monitor shipment progress and update tracking status.
+          example: 1Z999AA10123456784
+        trackingURL:
+          type: string
+          description: Direct URL for tracking the carton shipment.
+          example: https://fedex.com/tracking
+        tracking:
+          type: array
+          description: Tracking history and status updates for the carton.
+          items:
+            $ref: '#/components/schemas/trackingResource'
+        items:
+          type: array
+          description: List of items contained within the carton.
+          items:
+            $ref: '#/components/schemas/cartonItems'
+      required:
+      - items
+    giftCardItem:
+      description: Gift card details
+      properties:
+        giftCards:
+          description: Gift cards
+          items:
+            $ref: '#/components/schemas/giftCardActivation'
+          maxItems: 100
+          minItems: 1
+          type: array
+        shipmentLineItemId:
+          description: Unique number assigned by merchant to identify item in a shipment. When this value isn't provided, fabric will auto generate (UUID format) during shipment.
+          example: 607f1f77bcf86cd799439011
+          type: string
+      required:
+      - giftCards
+      - shipmentLineItemId
+      type: object
+    shipmentAcknowledgeResponse:
+      description: Shipment acknowledgement response
+      properties:
+        acknowledgedAt:
+          description: Shipment acknowledgement time (UTC)
+          example: '2023-02-01T20:03:28.483971941Z'
+          format: date-time
+          type: string
+      type: object
+    scratchedItemDetails:
+      description: Details of scratched items in shipment
+      properties:
+        attributes:
+          description: 'Merchant-defined custom attributes. This is a placeholder for addition info (in key: value pairs)'
+          example:
+            attribute1: value
+          type: object
+        itemId:
+          description: Unique item identifier
+          example: 100043
+          format: int32
+          type: integer
+        lineItemId:
+          description: Unique number assigned by merchant to identify each item in an order. When this value isn't provided, fabric will auto generate (in UUID format) during order creation.
+          example: '2'
+          type: string
+        orderId:
+          type: string
+          description: 24-character system-generated ID displayed in the response of Create Order endpoint - `POST /orders`
+          example: 6413e370cb0dc859b6c0dcb0
+        orderNumber:
+          type: string
+          description: Merchant-defined order identifier
+          example: 309020213
+        quantity:
+          default: 0
+          description: Number of scratched items
+          example: 1
+          format: int32
+          type: integer
+        reasonCode:
+          description: The primary reason code for the item scratch.
+          example: ReasonCode23454
+          type: string
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU00043
+          type: string
+        shipmentExternalId:
+          type: string
+          description: Unique shipment identifier defined by the merchant. This value can be used to track or reconcile shipments in external systems and serves as a reference between fabric and the merchant's order management or fulfillment system.
+          example: 123k4h123k
+        subReasonCode:
+          description: The sub-reason code for the item scratch.
+          example: SubReasonCode23242
+          type: string
+        uom:
+          description: Unit in which a product is measured or sold. UOM can be set to 'each' (EA) or GAL (Gallon), DZ (Dozen), etc.
+          example: EA
+          type: string
+      required:
+      - lineItemId
+      - quantity
+      - reasonCode
+      type: object
+    cartonItems:
+      description: Item details
+      properties:
+        attributes:
+          description: 'Merchant-defined custom attributes. This is a placeholder for addition info (in key: value pairs)'
+          example:
+            attribute1: value
+          type: object
         fees:
-          description: Fee details
+          description: Return fee details
           items:
             $ref: '#/components/schemas/returnFeeDetail'
           type: array
         giftCards:
           description: Gift card details
           items:
-            $ref: '#/components/schemas/shipmentGiftCardDetail'
+            $ref: '#/components/schemas/giftCardDetails'
           type: array
         itemId:
-          description: Unique item identifier
+          description: Unique item identifier from fabric Products service
           example: 100023
           format: int32
           type: integer
@@ -2119,32 +2025,41 @@ components:
           example: '1'
           type: string
         orderId:
-          description: 24-character order ID generated in the response of Create Order endpoint - `POST /orders`
+          description: 24-character system-generated ID displayed in the response of Create Order endpoint - `POST /orders`
           example: 6413e370cb0dc859b6c0dcb0
           type: string
         orderNumber:
           description: Merchant-defined order identifier
           example: '309020213'
           type: string
+        shipmentExternalId:
+          type: string
+          description: Unique shipment identifier defined by the merchant. This value can be used to track or reconcile shipments in external systems and serves as a reference between fabric and the merchant's order management or fulfillment system.
+          example: 123k4h123k
         orderedQuantity:
-          default: 0
           description: Ordered quantity of given item
           example: 2
           format: int32
+          minimum: 0
           type: integer
         refundAmount:
-          description: Refund amount for returned items
+          description: Return amount. Applicable for return shipment scenarios.
           example: 10
           format: double
           type: number
         refundAmountInCurrencies:
           type: array
-          description: "The refund amount for returned items represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          description: "The return amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
           items:
             $ref: '#/components/schemas/amountInCurrencyResource'
         returnQuantity:
-          default: 0
-          description: Returned quantity of given item
+          description: Returned quantity of given item. Applicable for return shipment scenarios.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+        returnRequestCounter:
+          description: Number of times return request is made for the given order. Applicable only for return shipment scenario.
           example: 1
           format: int32
           type: integer
@@ -2152,15 +2067,11 @@ components:
           description: Item segment
           example: segment
           type: string
-        shipmentLineItemId:
-          description: Unique number assigned by merchant to identify item in a shipment. When this value isn't provided, fabric will auto generate it (UUID format) during shipment.
-          example: 607f1f77bcf86cd799439011
-          type: string
         shippedQuantity:
-          default: 0
           description: Shipped quantity of given item
           example: 2
           format: int32
+          minimum: 0
           type: integer
         sku:
           description: Stock keeping unit (SKU), unique item identifier
@@ -2172,74 +2083,166 @@ components:
           type: string
         vendorId:
           description: Vendor ID. Applicable in dropshipping scenarios to indicate the vendor responsible for the given item.
-          example: vend12346667
+          example: '56'
           type: string
-      type: object
-    shipmentAcknowledgeResponse:
-      description: Shipment acknowledgement response
-      properties:
-        acknowledgedAt:
-          description: Shipment acknowledgement time (UTC)
-          example: '2023-02-01T20:03:28.483971941Z'
-          format: date-time
-          type: string
-      type: object
-    baseScratchedItemDetails:
-      type: object
-      description: Base details of items scratched (removed) from a shipment.
-      properties:
-        orderId:
-          type: string
-          description: System-generated 24-character order ID, returned in the response of the Create Order endpoint (`POST /orders`).
-          example: 6413e370cb0dc859b6c0dcb0
-        orderNumber:
-          type: string
-          description: Merchant-defined order number associated with the shipment.
-          example: 309020213
-        orderExternalId:
-          type: string
-          description: External order identifier defined by the merchant. Useful for reconciliation with external systems.
-          example: 123k4h123k
-        lineItemId:
-          type: string
-          description: Unique identifier for the line item in the order. If not provided, fabric automatically generates this value in UUID format during order creation.
-          example: 2
-        itemId:
-          type: integer
-          format: int32
-          description: System-generated unique identifier for the item.
-          example: 100043
-        sku:
-          type: string
-          description: Stock keeping unit (SKU), a merchant-defined unique identifier for the item.
-          example: SKU00043
-        quantity:
-          type: integer
-          format: int32
-          default: 0
-          description: Number of units scratched from the shipment.
-          example: 1
-        uom:
-          type: string
-          description: Unit of measure for the item (for example, EA for Each, GAL for Gallon, DZ for Dozen).
-          example: EA
-        reasonCode:
-          type: string
-          description: Code indicating the primary reason for scratching the item from the shipment.
-          example: ReasonCode23454
-        subReasonCode:
-          type: string
-          description: Code indicating a more specific sub-reason related to the scratch action.
-          example: SubReasonCode23242
-        attributes:
-          type: object
-          description: Merchant-defined custom attributes in key-value format. Useful for adding supplemental information.
-          example:
-            attribute1: value
       required:
       - lineItemId
-      - quantity
-      - reasonCode
+      - shippedQuantity
+      type: object
+    giftCardActivation:
+      description: Gift card info
+      properties:
+        giftCardNumber:
+          description: Gift card number
+          example: '453456765'
+          type: string
+        giftCardStatus:
+          description: Gift card status
+          enum:
+          - PENDING_ACTIVATION
+          - ACTIVE
+          - FAILED
+          example: ACTIVE
+          type: string
+      required:
+      - giftCardNumber
+      - giftCardStatus
+      type: object
+    address:
+      description: Address details
+      properties:
+        addressLine1:
+          description: Address line 1
+          example: 123 Main St.
+          type: string
+        addressLine2:
+          description: Address line 2
+          example: Suite 100
+          type: string
+        addressLine3:
+          description: Address line 3
+          example: Seventh floor
+          type: string
+        addressLine4:
+          description: Address line 4
+          example: 'Attention: Pat E. Kake'
+          type: string
+        city:
+          description: City name
+          example: Seattle
+          type: string
+        countryCode:
+          description: ISO 3166-1 alpha-2 based country code
+          example: US
+          type: string
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        latitude:
+          description: Address latitude, used with `longitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -90 and 90, both inclusive.
+          example: 47.6205
+          format: double
+          type: number
+        longitude:
+          description: Address longitude, used with `latitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -180 and 180, both inclusive.
+          example: -122.3493
+          format: double
+          type: number
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        postalCode:
+          description: Postal or ZIP code
+          example: '98121'
+          type: string
+        region:
+          description: Region or state
+          example: WA
+          type: string
+        type:
+          description: Address type
+          example: Home
+          type: string
+      required:
+      - addressLine1
+      - city
+      - countryCode
+      - latitude
+      - longitude
+      - postalCode
+      - region
+      - type
+      type: object
+    shipmentsSearchRequest:
+      description: Sort and filter criteria for shipment search
+      example:
+        filters:
+        - condition: EQ
+          field: shipment.shipmentNum
+          value: Shipment_112255
+        - condition: IN
+          field: shipment.cartons.cartonNum
+          values:
+          - Tracking_*
+        sort: -shipment.shipDate
+      properties:
+        filters:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/valueSearchFilter'
+            - $ref: '#/components/schemas/valuesSearchFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+        sort:
+          default: -shipment.shipDate
+          description: 'Property name on which response needed to be sorted. **Note**: `-` refers to descending and `+` refers to ascending order'
+          example: -shipment.shipDate
+          pattern: (^[+-]shipment\.[a-zA-Z.\-_]*)(,([+-]shipment\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+      - filters
+      type: object
+    giftCardDetails:
+      description: Gift card details
+      properties:
+        amount:
+          description: Gift card amount
+          example: 50
+          format: double
+          type: number
+        giftCardNumber:
+          description: Gift card number
+          example: '453456765'
+          type: string
+      type: object
+  parameters:
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
   headers:
     xFabricRequestIdResponseHeader:
       description: Unique request ID
@@ -2248,10 +2251,13 @@ components:
       schema:
         type: string
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
+    authorization:
       bearerFormat: JWT
-      description: 'This is the authorization token used to authenticate the request. You must pass the access token generated from the system app. For more information, see the [Making your first API request](/v3/api-reference/getting-started/getting-started-with-fabric-apis#procedure) section.
-
-        '
+      scheme: bearer
+      type: http
+externalDocs:
+  description: Find out more about fabric Orders (also called OMS)
+  url: https://developer.fabric.inc/v3/docs/orders-overview
+x-mint:
+  mcp:
+    enabled: true
