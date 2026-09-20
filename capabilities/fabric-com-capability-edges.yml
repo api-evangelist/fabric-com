@@ -11,7 +11,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 23
+edge_count: 25
 edges:
 - tag: Promotions
   spec_file: fabric-com-promotions-api-openapi.yml
@@ -184,6 +184,17 @@ edges:
   evidence: '"Authorize Payments", "Void Payments"; schemas PaymentCollection, PaymentAuthorization'
   reason: Payment authorisation and voiding for a consumer cart is tender/payment acceptance in the retail
     transaction layer, albeit digital rather than at a till.
+- tag: Coupons
+  spec_file: fabric-com-coupons-api-openapi.yml
+  capability_id: BC-440.30
+  capability_id_l1: BC-440
+  capability_name: Discount & Promotion Management
+  confidence: 0.7
+  evidence: POST /carts/{cartId}/coupons/{couponId}  addCoupon  Add Coupon
+  reason: Operations add and remove coupons on a cart, with PromotionConfiguration/PromotionValidationData
+    schemas — this is application of promotional discounts, i.e. Discount & Promotion Management. Confidence
+    moderated because the surface is coupon application at checkout rather than promotion design.
+  recovered_from: sweep-20260829T005356Z-edges.json
 - tag: Customer Self
   spec_file: fabric-com-customer-self-api-openapi.yml
   capability_id: BC-420.10
@@ -194,6 +205,18 @@ edges:
     Self'' API provide features for customers or shoppers to independently manage their own details"'
   reason: Same customer master/address record maintenance, exposed in shopper context; it is customer
     data management rather than a self-service knowledge/support channel.
+- tag: Fulfillments
+  spec_file: fabric-com-fulfillments-api-openapi.yml
+  capability_id: BC-520.40
+  capability_id_l1: BC-520
+  capability_name: Order Fulfilment Management
+  confidence: 0.7
+  evidence: 'POST /carts/{cartId}/fulfillments  createFulfillment  Create Fulfillment; schemas: Fulfillment,
+    PickupPerson'
+  reason: Operations create and manage fulfillment groups on a cart (shipping/pickup person, fulfillment
+    attributes) ahead of order processing by the OMS — order fulfilment orchestration. Moderate confidence
+    as this is the cart-stage precursor to fulfilment execution.
+  recovered_from: sweep-20260829T005356Z-edges.json
 - tag: Invoices
   spec_file: fabric-com-invoices-api-openapi.yml
   capability_id: BC-200.30
