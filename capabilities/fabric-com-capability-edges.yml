@@ -1,0 +1,245 @@
+slug: fabric-com
+provider: fabric
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Retail & Consumer Goods
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 23
+edges:
+- tag: Promotions
+  spec_file: fabric-com-promotions-api-openapi.yml
+  capability_id: BC-440.30
+  capability_id_l1: BC-440
+  capability_name: Discount & Promotion Management
+  confidence: 0.88
+  evidence: fabric Promotions are discounts on items, carts, or shipping methods ... create and manage
+    promotional discounts that are applied to a customers' cart
+  reason: Lifecycle of promotional discount definitions (createPromotion, togglePromotion, endPromotion)
+    is discount and promotion management.
+- tag: Attributes
+  spec_file: fabric-com-attributes-api-openapi.yml
+  capability_id: BC-2370.10
+  capability_id_l1: BC-2370
+  capability_name: Item Master Data Management
+  confidence: 0.85
+  evidence: '"Create Update and Delete Item Attributes", "Create, Update and Delete Category Attributes",
+    "Find Attribute Mapping" (fabric-pim-openapi.yml)'
+  reason: PIM attribute, attribute-group and category-attribute maintenance is authoritative item master
+    attribute/taxonomy management.
+- tag: Customer Profile
+  spec_file: fabric-com-customer-profile-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.85
+  evidence: '"Add a New Customer", "Update Customer Details", "Search for Customer" — API "used to create
+    and manage details of storefront customers, also referred to as shoppers"'
+  reason: CRUD and search over the shopper master record (customer, commonName, commonAddress schemas)
+    is customer data / golden-record management, not marketing or service.
+- tag: Inventory
+  spec_file: fabric-com-inventory-api-openapi.yml
+  capability_id: BC-530
+  capability_id_l1: BC-530
+  capability_name: Inventory Management
+  confidence: 0.85
+  evidence: '"Create Inventory", "Adjust Inventory Counters", "Find Inventory of Specific Items in a Specific
+    Region"; "functions as the repository of product availability for order fulfillment"'
+  reason: Plainly stock record and availability management across locations; spans level-setting, adjustment
+    and availability lookup so no single L2 is named.
+- tag: Product
+  spec_file: fabric-com-product-api-openapi.yml
+  capability_id: BC-2370.10
+  capability_id_l1: BC-2370
+  capability_name: Item Master Data Management
+  confidence: 0.85
+  evidence: You can create, import, enrich, validate, distribute, and manage complex item information,
+    centrally
+  reason: Central item catalog with item/bundle creation and item attribute retrieval (getProductAttribute,
+    ProductCreate) is authoritative item master data management.
+- tag: Category
+  spec_file: fabric-com-category-api-openapi.yml
+  capability_id: BC-2370.10
+  capability_id_l1: BC-2370
+  capability_name: Item Master Data Management
+  confidence: 0.8
+  evidence: POST /api-category/v1/category categoryCreate 'Create Category'; GET /api-category/v1/category/tree
+    'Get Category Tree'; GET /api-category/v1/category/sku 'Get Skus in a Category'; 'Assign and Unassign
+    Item Attributes'
+  reason: Maintains the product catalog category hierarchy, SKU membership and category/item attribute
+    assignments — this is item master data taxonomy and attribute governance, not merchandising category
+    strategy.
+- tag: Orders
+  spec_file: fabric-com-orders-api-openapi.yml
+  capability_id: BC-2330.10
+  capability_id_l1: BC-2330
+  capability_name: Channel Orchestration Management
+  confidence: 0.8
+  evidence: '"enabling retailers to create orders directly from online Storefronts and Point-of-Sale systems
+    ... unifying the order data for users to streamline order lifecycle orchestration"; POST /orders/{...}/actions/update-status  Update
+    an Order’s Status with State Transition'
+  reason: Full consumer order lifecycle across digital and store channels with unified order records and
+    status orchestration — matches cross-channel order orchestration.
+- tag: Actions Endpoints
+  spec_file: fabric-com-actions-endpoints-api-openapi.yml
+  capability_id: BC-530.30
+  capability_id_l1: BC-530
+  capability_name: Inventory Allocation Management
+  confidence: 0.78
+  evidence: POST /inventories/actions/hard-reserve-search 'Search for Inventory Hard Reservations'; schema
+    hardReservationSearchRequest; API is 'the repository of product availability for order fulfillment'
+  reason: Operation searches hard inventory reservations in fabric's Inventory service, which is allocation/reservation
+    of stock against orders.
+- tag: Catalog Connector Operations by Item ID
+  spec_file: fabric-com-catalog-connector-operations-by-item-id-api-openapi.yml
+  capability_id: BC-2370.10
+  capability_id_l1: BC-2370
+  capability_name: Item Master Data Management
+  confidence: 0.78
+  evidence: GET /catalog-connector/products/itemIds/{itemId} 'Retrieve a Product or a Variant by Item
+    ID'; schemas itemCatalog, sku, attribute, productType
+  reason: CRUD on the canonical product/item record (item, variant, bundle, SKU, attributes) in a catalog
+    that substitutes for a PIM — this is item master data management within Product Information Management.
+- tag: Catalog Connector Operations by Product ID
+  spec_file: fabric-com-catalog-connector-operations-by-product-id-api-openapi.yml
+  capability_id: BC-2370.10
+  capability_id_l1: BC-2370
+  capability_name: Item Master Data Management
+  confidence: 0.78
+  evidence: POST /catalog-connector/products createProduct 'Add a Product'; 'It supports CRUD operations
+    to add and manage products in the Catalog Connector based on SKU, product ID, and item ID'
+  reason: Creation, retrieval, update and deletion of product records with attributes and SKUs — maintenance
+    of the canonical item master record.
+- tag: Catalog Connector Operations by SKU
+  spec_file: fabric-com-catalog-connector-operations-by-sku-api-openapi.yml
+  capability_id: BC-2370.10
+  capability_id_l1: BC-2370
+  capability_name: Item Master Data Management
+  confidence: 0.78
+  evidence: GET /catalog-connector/products/skus/{skuId} 'Retrieve a Product by SKU'; schemas sku, attributeName,
+    variantCatalog
+  reason: SKU-keyed product record CRUD — the same item master data surface, addressed by SKU identifier.
+- tag: Prices
+  spec_file: fabric-com-prices-api-openapi.yml
+  capability_id: BC-440.20
+  capability_id_l1: BC-440
+  capability_name: Price List Management
+  confidence: 0.78
+  evidence: fabric Pricing endpoints let you create and manage price details for one or more items. You
+    can configure the prices endpoints to include your default price list in all requests.
+  reason: CRUD over item prices anchored to price lists (createPrices, getPricesBySku, createBatchPrices)
+    is price list maintenance within Pricing Management.
+- tag: ReservedNetwork Endpoints
+  spec_file: fabric-com-reservednetwork-endpoints-api-openapi.yml
+  capability_id: BC-530.30
+  capability_id_l1: BC-530
+  capability_name: Inventory Allocation Management
+  confidence: 0.78
+  evidence: POST /inventory-networks/actions/soft-reserve  reserveQuantity  Soft Reservation
+  reason: Soft reserve/release of quantity against inventory networks is inventory reservation and allocation
+    across the network, not generic stock level setting.
+- tag: Customer Address
+  spec_file: fabric-com-customer-address-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.72
+  evidence: POST /customers/{customerId}/customer-address 'Add a New Address'; 'used to create and manage
+    details of storefront customers ... manage their customers' details and addresses'
+  reason: Full CRUD and search over persistent customer address records held against a customer master,
+    which is customer data/golden-record maintenance rather than transaction-scoped data.
+- tag: General Catalog Connector Operations
+  spec_file: fabric-com-general-catalog-connector-operations-api-openapi.yml
+  capability_id: BC-2370.10
+  capability_id_l1: BC-2370
+  capability_name: Item Master Data Management
+  confidence: 0.72
+  evidence: '"Find Products" over the Catalog Connector; schemas sku, itemCatalog, productType, attribute,
+    category; "add and manage products in the Catalog Connector based on SKU, product ID, and item ID"'
+  reason: The surface queries the canonical item/SKU record with attributes and category hierarchy, i.e.
+    item master data for retail product information.
+- tag: Cancellations
+  spec_file: fabric-com-cancellations-api-openapi.yml
+  capability_id: BC-2330
+  capability_id_l1: BC-2330
+  capability_name: Omnichannel Order & Fulfilment Management
+  confidence: 0.7
+  evidence: '"Cancel Order by Order Number", "Get Order Cancellation Eligibility by Order ID"; API "enabling
+    retailers to create orders directly from online Storefronts and Point-of-Sale systems"'
+  reason: Cancellation eligibility and processing on consumer orders held in a cross-channel OMS; sits
+    in omnichannel order management but evidence does not pin a single sub-capability.
+- tag: CartPayments
+  spec_file: fabric-com-cartpayments-api-openapi.yml
+  capability_id: BC-2320.20
+  capability_id_l1: BC-2320
+  capability_name: Tender and Payment Acceptance Management
+  confidence: 0.7
+  evidence: '"Authorize Payments", "Void Payments"; schemas PaymentCollection, PaymentAuthorization'
+  reason: Payment authorisation and voiding for a consumer cart is tender/payment acceptance in the retail
+    transaction layer, albeit digital rather than at a till.
+- tag: Customer Self
+  spec_file: fabric-com-customer-self-api-openapi.yml
+  capability_id: BC-420.10
+  capability_id_l1: BC-420
+  capability_name: Customer Data Management
+  confidence: 0.7
+  evidence: '"Get Customer Details - Customer Context", "Add Address - Customer Context" — "The `Customer
+    Self'' API provide features for customers or shoppers to independently manage their own details"'
+  reason: Same customer master/address record maintenance, exposed in shopper context; it is customer
+    data management rather than a self-service knowledge/support channel.
+- tag: Invoices
+  spec_file: fabric-com-invoices-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.7
+  evidence: '"Create Invoice", "Acknowledge Financial Transaction"; schemas invoiceSettlement, paymentReference,
+    taxDetail, amountInCurrencyResource'
+  reason: Generates and maintains customer invoices with settlement and payment references for orders,
+    which is customer invoicing under accounts receivable.
+- tag: Items
+  spec_file: fabric-com-items-api-openapi.yml
+  capability_id: BC-2330
+  capability_id_l1: BC-2330
+  capability_name: Omnichannel Order & Fulfilment Management
+  confidence: 0.7
+  evidence: POST /carts/{cartId}/items  createItem  Create Item; "lets you add, update, and remove items
+    from your Storefront cart, either as a guest user or as a logged-in user"
+  reason: Core cart line-item CRUD for a storefront basket — consumer order capture in an omnichannel
+    commerce stack. L1 only since the operations do not specify a particular fulfilment or channel sub-capability.
+- tag: Networks
+  spec_file: fabric-com-networks-api-openapi.yml
+  capability_id: BC-530
+  capability_id_l1: BC-530
+  capability_name: Inventory Management
+  confidence: 0.7
+  evidence: POST /inventory-networks  createNetwork  Create Inventory Network; "functions as the repository
+    of product availability for order fulfillment"
+  reason: 'Manages inventory network definitions used to determine product availability across locations
+    — inventory management. L1 only: could be allocation or stock-level scoped, evidence does not disambiguate.'
+- tag: Real-time Pricing Engine
+  spec_file: fabric-com-real-time-pricing-engine-api-openapi.yml
+  capability_id: BC-440
+  capability_id_l1: BC-440
+  capability_name: Pricing Management
+  confidence: 0.7
+  evidence: Real-time Pricing Engine (RTPE) endpoints are used to calculate prices and evaluate discounts
+    for individual products and carts
+  reason: Runtime price and discount calculation sits under Pricing Management; evidence spans both price
+    setting and promotion evaluation so no single L2 is clearly named.
+- tag: Shipments
+  spec_file: fabric-com-shipments-api-openapi.yml
+  capability_id: BC-520.40
+  capability_id_l1: BC-520
+  capability_name: Order Fulfilment Management
+  confidence: 0.7
+  evidence: Shipments serve as records of the locations from which an order was fulfilled ... Create Shipment
+    for an Existing Order
+  reason: Shipment creation against order allocations and tracking updates realise order fulfilment orchestration
+    in the supply chain.
