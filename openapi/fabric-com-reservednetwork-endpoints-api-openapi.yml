@@ -3,7 +3,7 @@ info:
   contact:
     email: support@fabric.inc
     name: fabric Orders Team
-  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
+  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
@@ -153,100 +153,23 @@ paths:
       tags:
       - ReservedNetwork Endpoints
 components:
-  parameters:
-    xFabricRequestId:
+  headers:
+    xFabricRequestIdResponseHeader:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
       required: false
       schema:
         type: string
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
   schemas:
-    ItemResource:
+    virtualCounters:
+      description: Virtual counters are calculated at run time from counters
       properties:
-        backorderQuantity:
-          description: Back order quantity that needs to be reserved
-          example: 5
-          format: int32
-          type: integer
-        channelId:
-          description: ChannelId for the item which needs to be reserved. Required parameter
-          example: '3'
+        availableBackorder:
           type: string
-        errorMessage:
+        availablePreorder:
           type: string
-        itemId:
-          description: itemId of product. Optional parameter
-          example: '451008962041'
+        availableToPurchase:
           type: string
-        lineItemId:
-          description: 'lineItemId of product. Required parameter '
-          example: '2'
-          type: string
-        locationNumber:
-          description: LocationNumber for which this item needs to be reserved. Optional parameter
-          example: 999
-          format: int32
-          type: integer
-        networkCode:
-          description: Network for which this item needs to be reserved. Optional parameter
-          example: ShipToHome
-          type: string
-        preorderQuantity:
-          description: Pre order quantity that needs to be reserved
-          example: 5
-          format: int32
-          type: integer
-        quantity:
-          description: quantity that needs to be reserved. Required parameter
-          example: 5
-          format: int32
-          type: integer
-        reservedNetworkCodes:
-          items:
-            type: string
-          type: array
-        sku:
-          description: sku of product. Required parameter
-          example: OMSTESTSKU1
-          type: string
-        status:
-          type: string
-        type:
-          description: Order type, default value is STANDARD. Optional parameter
-          example: '[''STANDARD'',''PREORDER'',''BACKORDER'']'
-          type: string
-      required:
-      - channelId
-      - lineItemId
-      - quantity
-      - sku
-      type: object
-    aggregatedNetworksResponse:
-      description: AggregatedNetworksResponse model
-      properties:
-        aggregatedNetworks:
-          description: Aggregated networks
-          items:
-            $ref: '#/components/schemas/aggregatedNetwork'
-          type: array
       type: object
     aggregatedNetwork:
       description: Displays an aggregate representation of the SKU that includes all locations for which the sku is available in that network.
@@ -390,23 +313,6 @@ components:
         virtualCountersStatus:
           $ref: '#/components/schemas/virtualCounters'
       type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
     softReserve:
       description: SoftReserveRequest model
       properties:
@@ -462,21 +368,115 @@ components:
       required:
       - items
       type: object
-    virtualCounters:
-      description: Virtual counters are calculated at run time from counters
+    errorResponse:
+      description: Error response
       properties:
-        availableBackorder:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
           type: string
-        availablePreorder:
-          type: string
-        availableToPurchase:
+        type:
+          description: Error type
+          example: CLIENT_ERROR
           type: string
       type: object
-  headers:
-    xFabricRequestIdResponseHeader:
+    aggregatedNetworksResponse:
+      description: AggregatedNetworksResponse model
+      properties:
+        aggregatedNetworks:
+          description: Aggregated networks
+          items:
+            $ref: '#/components/schemas/aggregatedNetwork'
+          type: array
+      type: object
+    ItemResource:
+      properties:
+        backorderQuantity:
+          description: Back order quantity that needs to be reserved
+          example: 5
+          format: int32
+          type: integer
+        channelId:
+          description: ChannelId for the item which needs to be reserved. Required parameter
+          example: '3'
+          type: string
+        errorMessage:
+          type: string
+        itemId:
+          description: itemId of product. Optional parameter
+          example: '451008962041'
+          type: string
+        lineItemId:
+          description: 'lineItemId of product. Required parameter '
+          example: '2'
+          type: string
+        locationNumber:
+          description: LocationNumber for which this item needs to be reserved. Optional parameter
+          example: 999
+          format: int32
+          type: integer
+        networkCode:
+          description: Network for which this item needs to be reserved. Optional parameter
+          example: ShipToHome
+          type: string
+        preorderQuantity:
+          description: Pre order quantity that needs to be reserved
+          example: 5
+          format: int32
+          type: integer
+        quantity:
+          description: quantity that needs to be reserved. Required parameter
+          example: 5
+          format: int32
+          type: integer
+        reservedNetworkCodes:
+          items:
+            type: string
+          type: array
+        sku:
+          description: sku of product. Required parameter
+          example: OMSTESTSKU1
+          type: string
+        status:
+          type: string
+        type:
+          description: Order type, default value is STANDARD. Optional parameter
+          example: '[''STANDARD'',''PREORDER'',''BACKORDER'']'
+          type: string
+      required:
+      - channelId
+      - lineItemId
+      - quantity
+      - sku
+      type: object
+  parameters:
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
       required: false
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
       schema:
         type: string
   securitySchemes:

@@ -25,7 +25,9 @@ paths:
       tags:
       - Authentication Endpoints
       summary: Authorize User App with and Without PKCE
-      description: 'Use this endpoint to authenticate a user app using fabric Identity. When calling this endpoint, the immediate response will be a browser redirect to the hosted Login page configured in fabric Identity. After successful authentication of the user on the hosted Login page, fabric Identity will redirect back to the user app using the provided `redirect_uri`. This endpoint supports both authorization code flow with and without Proof of Code Exchange (PKCE). <p> **Note**: This endpoint isn''t required for system app authentication (refer to `/token` endpoint instead).</p>'
+      description: 'Use this endpoint to authenticate a user app using fabric Identity. When calling this endpoint, the immediate response will be a browser redirect to the hosted Login page configured in fabric Identity. After successful authentication of the user on the hosted Login page, fabric Identity will redirect back to the user app using the provided `redirect_uri`. This endpoint supports both authorization code flow with and without Proof of Code Exchange (PKCE).
+
+        **Note**: This endpoint isn''t required for system app authentication (refer to `/token` endpoint instead).'
       operationId: authorizeUserApp
       parameters:
       - in: query
@@ -85,7 +87,9 @@ paths:
       tags:
       - Authentication Endpoints
       summary: Fetch Access Token
-      description: 'This endpoint allows user apps and system apps to fetch access tokens. For user apps, use this endpoint after the `/authorize` endpoint and the subsequent callback. For user apps this endpoint supports generation of access token from authorization code or from refresh token, sent in the previous `authorize` endpoint''s callback. For system apps this endpoint can directly be used to get an access token, no prior `/authorize` end point call is needed.<p> <b><span style={{color: ''red''}}>NOTE: Fetching a token for a system app via the browser on our developer portal WILL NOT WORK as browser requests to the token endpoint must use PKCE.</span></b> Instead, send the request through a server side/native method and ensure the ''Origin'' header isn''t present. </p>'
+      description: 'This endpoint allows user apps and system apps to fetch access tokens. For user apps, use this endpoint after the `/authorize` endpoint and the subsequent callback. For user apps this endpoint supports generation of access token from authorization code or from refresh token, sent in the previous `authorize` endpoint''s callback. For system apps this endpoint can directly be used to get an access token, no prior `/authorize` end point call is needed.
+
+        NOTE: Fetching a token for a system app via the browser on our developer portal WILL NOT WORK as browser requests to the token endpoint must use PKCE. Instead, send the request through a server side/native method and ensure the ''Origin'' header isn''t present.'
       operationId: getAccessToken
       parameters:
       - in: path

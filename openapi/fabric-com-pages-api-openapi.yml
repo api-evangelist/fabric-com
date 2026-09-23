@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: 2.0.0
-  description: fabric's Experiences (formerly known as XM) enables you to design, implement, and optimize omnichannel e-commerce experiences, without having to code. With XM, you can easily add parent and child categories through our intuitive UI to create your website navigation, and seamlessly integrate with our APIs    for dynamic navigation rendering on your store front. In addition, developers can implement agile design by creating reusable design components and use one set of data and APIs for every channel.
+  description: fabric's Experiences (formerly known as XM) enables you to design, implement, and optimize omnichannel e-commerce experiences, without having to code.
   title: Experiences v2 (XM v2) Pages API
   contact:
     email: support@fabric.inc
@@ -518,19 +518,6 @@ paths:
                 message: An internal error occurred. If the issue persists please contact support@fabric.inc.
 components:
   schemas:
-    Error:
-      type: object
-      description: Server error response object
-      properties:
-        code:
-          type: string
-          description: Code associated with the type of server error
-        message:
-          type: string
-          description: Message associated with the server error
-      required:
-      - code
-      - message
     Page:
       type: object
       description: Page details
@@ -584,57 +571,6 @@ components:
           items:
             type: integer
             description: Channel identifier
-    PageMetaData:
-      type: object
-      description: Page metadata
-      properties:
-        id:
-          type: string
-          description: Page ID
-        name:
-          type: string
-          description: Page name
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when the page was last updated
-        publishedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when page was last published
-        metadata:
-          type: object
-          description: Page metadata
-          properties:
-            url:
-              type: string
-              description: Page URL
-            channels:
-              type: array
-              description: Page channels
-              items:
-                type: string
-                description: Channel identifier
-            seoFields:
-              $ref: '#/components/schemas/SeoFields'
-    Components:
-      type: array
-      description: List of components
-      items:
-        type: object
-        description: Component data
-        properties:
-          _id:
-            type: string
-            description: Virtual ID associated with the component
-          id:
-            type: string
-            description: Identifier used in the UI by the component
-          params:
-            type: object
-            description: Attached fields and values of the component
-            additionalProperties: true
-        additionalProperties: true
     SeoFields:
       type: object
       description: SEO fields
@@ -680,6 +616,70 @@ components:
         _id:
           type: string
           description: Virtual ID associated with the SEO field
+    PageMetaData:
+      type: object
+      description: Page metadata
+      properties:
+        id:
+          type: string
+          description: Page ID
+        name:
+          type: string
+          description: Page name
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when the page was last updated
+        publishedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when page was last published
+        metadata:
+          type: object
+          description: Page metadata
+          properties:
+            url:
+              type: string
+              description: Page URL
+            channels:
+              type: array
+              description: Page channels
+              items:
+                type: string
+                description: Channel identifier
+            seoFields:
+              $ref: '#/components/schemas/SeoFields'
+    Error:
+      type: object
+      description: Server error response object
+      properties:
+        code:
+          type: string
+          description: Code associated with the type of server error
+        message:
+          type: string
+          description: Message associated with the server error
+      required:
+      - code
+      - message
+    Components:
+      type: array
+      description: List of components
+      items:
+        type: object
+        description: Component data
+        properties:
+          _id:
+            type: string
+            description: Virtual ID associated with the component
+          id:
+            type: string
+            description: Identifier used in the UI by the component
+          params:
+            type: object
+            description: Attached fields and values of the component
+            additionalProperties: true
+        additionalProperties: true
     PageVersion:
       type: object
       description: Version details

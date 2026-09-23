@@ -3,7 +3,7 @@ info:
   contact:
     email: support@fabric.inc
     name: fabric Orders Team
-  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
+  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
@@ -343,74 +343,80 @@ components:
           format: int32
           type: integer
       type: object
-    searchResponse:
-      description: Search response
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/inventoryImportStatusResponse'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
-      type: object
-    inventoryImportsSearchFilter:
-      description: An object containing the inventory import search filter that was.
-      discriminator:
-        mapping:
-          EQ: '#/components/schemas/singleValueSearchFilter'
-          GT: '#/components/schemas/singleValueSearchFilter'
-          GTE: '#/components/schemas/singleValueSearchFilter'
-          IN: '#/components/schemas/multipleValuesSearchFilter'
-          LT: '#/components/schemas/singleValueSearchFilter'
-          LTE: '#/components/schemas/singleValueSearchFilter'
-          NEQ: '#/components/schemas/singleValueSearchFilter'
-          NIN: '#/components/schemas/multipleValuesSearchFilter'
-        propertyName: condition
-      properties:
-        condition:
-          default: EQ
-          description: Search condition to apply filter
-          enum:
-          - EQ
-          - NEQ
-          - IN
-          - NIN
-          - LT
-          - GT
-          - LTE
-          - GTE
-          example: EQ
-          type: string
-        field:
-          description: Field name
-          example: import.events
-          pattern: ^import\.[a-zA-Z.\-_]*
-          type: string
-        group:
-          default: Default
-          description: Group name
-          example: GroupA
-          type: string
+    singleValueSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventoryImportsSearchFilter'
+      - properties:
+          value:
+            description: A single value is used in combination with `field` (the singleValueSearchFilter), except when the condition is IN or NIN. When the condition is IN or NIN, multiple values are used (the multipleValuesSearchFilter).
+            example: ORDER_CREATE
+            oneOf:
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+            type: object
+        type: object
+      description: Single-value search filter
       required:
       - condition
       - field
       type: object
-    inventoryImportRequest:
-      description: An object containing the inventory import request details.
+    inventoryImportSearchRequest:
+      description: An object containing the inventory import search request details.
+      example:
+        filters:
+        - field: import.statusCode
+          value: INITIATED
+        sort: -import.finishedAt
       properties:
-        fileName:
-          description: Uploaded file name
-          example: import-file.csv
-          type: string
-        type:
-          enum:
-          - INVENTORY
-          - INVENTORY_COUNTERS
-          example: INVENTORY
+        filters:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/multipleValuesSearchFilter'
+            - $ref: '#/components/schemas/singleValueSearchFilter'
+          maxItems: 50
+          minItems: 0
+          type: array
+        sort:
+          default: -import.createdAt
+          description: Property on which data is to be sorted. Prefix with `+` to sort ascending, and `-` to sort descending.
+          example: +import.createdAt
+          pattern: (^[+-]import\.[a-zA-Z.\-_]*)(,([+-]import\.[a-zA-Z.\-_]*)){0,}
           type: string
       required:
-      - fileName
-      - type
+      - filters
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
       type: object
     inventoryImportResponse:
       description: An object containing the inventory import response details.
@@ -463,61 +469,91 @@ components:
       - importId
       - uploadFileUrl
       type: object
-    multipleValuesSearchFilter:
-      allOf:
-      - $ref: '#/components/schemas/inventoryImportsSearchFilter'
-      - properties:
-          values:
-            items:
-              description: A single value is used in combination with `field` (the singleValueSearchFilter), except when the condition is IN or NIN. When the condition is IN or NIN, multiple values are used (the multipleValuesSearchFilter).
-              example: ORDER_CREATE
-              oneOf:
-              - description: Target record's non-numeric identifier
-                example: ORDER_CREATE
-                type: string
-              - description: Target record's numeric identifier
-                example: 112233
-                format: int64
-                type: number
-              - description: Target record's numeric identifier
-                example: 1122.33
-                format: double
-                type: number
-              type: object
-            maxItems: 25
-            minItems: 1
-            type: array
-        type: object
-      description: Multiple value search filter
+    inventoryImportRequest:
+      description: An object containing the inventory import request details.
+      properties:
+        fileName:
+          description: Uploaded file name
+          example: import-file.csv
+          type: string
+        type:
+          enum:
+          - INVENTORY
+          - INVENTORY_COUNTERS
+          example: INVENTORY
+          type: string
+      required:
+      - fileName
+      - type
+      type: object
+    inventoryImportsSearchFilter:
+      description: An object containing the inventory import search filter that was.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/singleValueSearchFilter'
+          GT: '#/components/schemas/singleValueSearchFilter'
+          GTE: '#/components/schemas/singleValueSearchFilter'
+          IN: '#/components/schemas/multipleValuesSearchFilter'
+          LT: '#/components/schemas/singleValueSearchFilter'
+          LTE: '#/components/schemas/singleValueSearchFilter'
+          NEQ: '#/components/schemas/singleValueSearchFilter'
+          NIN: '#/components/schemas/multipleValuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: Search condition to apply filter
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: import.events
+          pattern: ^import\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: Group name
+          example: GroupA
+          type: string
       required:
       - condition
       - field
       type: object
-    singleValueSearchFilter:
-      allOf:
-      - $ref: '#/components/schemas/inventoryImportsSearchFilter'
-      - properties:
-          value:
-            description: A single value is used in combination with `field` (the singleValueSearchFilter), except when the condition is IN or NIN. When the condition is IN or NIN, multiple values are used (the multipleValuesSearchFilter).
-            example: ORDER_CREATE
-            oneOf:
-            - description: Target record's non-numeric identifier
-              example: ORDER_CREATE
-              type: string
-            - description: Target record's numeric identifier
-              example: 112233
-              format: int64
-              type: number
-            - description: Target record's numeric identifier
-              example: 1122.33
-              format: double
-              type: number
-            type: object
-        type: object
-      description: Single-value search filter
-      required:
-      - condition
-      - field
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    searchResponse:
+      description: Search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/inventoryImportStatusResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
       type: object
     inventoryImportStatusResponse:
       description: An object containing the inventory import status response details.
@@ -579,95 +615,50 @@ components:
       - createdAt
       - importId
       type: object
-    inventoryImportSearchRequest:
-      description: An object containing the inventory import search request details.
-      example:
-        filters:
-        - field: import.statusCode
-          value: INITIATED
-        sort: -import.finishedAt
-      properties:
-        filters:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/multipleValuesSearchFilter'
-            - $ref: '#/components/schemas/singleValueSearchFilter'
-          maxItems: 50
-          minItems: 0
-          type: array
-        sort:
-          default: -import.createdAt
-          description: Property on which data is to be sorted. Prefix with `+` to sort ascending, and `-` to sort descending.
-          example: +import.createdAt
-          pattern: (^[+-]import\.[a-zA-Z.\-_]*)(,([+-]import\.[a-zA-Z.\-_]*)){0,}
-          type: string
+    multipleValuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventoryImportsSearchFilter'
+      - properties:
+          values:
+            items:
+              description: A single value is used in combination with `field` (the singleValueSearchFilter), except when the condition is IN or NIN. When the condition is IN or NIN, multiple values are used (the multipleValuesSearchFilter).
+              example: ORDER_CREATE
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+              type: object
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Multiple value search filter
       required:
-      - filters
+      - condition
+      - field
       type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    pagination:
-      description: Pagination response
-      properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
-  parameters:
-    xFabricRequestId:
+  headers:
+    xFabricRequestIdResponseHeader:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
       required: false
       schema:
         type: string
+  parameters:
     xFabricChannelIdOptional:
       description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
       example: '12'
       in: header
       name: x-fabric-channel-id
       required: false
-      schema:
-        type: string
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
       schema:
         type: string
     xFabricChannelId:
@@ -678,11 +669,20 @@ components:
       required: true
       schema:
         type: string
-  headers:
-    xFabricRequestIdResponseHeader:
+    xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
       required: false
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
       schema:
         type: string
   securitySchemes:

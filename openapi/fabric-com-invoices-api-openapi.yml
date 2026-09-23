@@ -933,7 +933,139 @@ paths:
                   service: invoices
                   endpoint: POST /v3/invoices/{invoiceId}/actions/update-attributes
 components:
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
   schemas:
+    financialPostingAcknowledgeResponse:
+      description: Financial transaction acknowledgement response
+      properties:
+        message:
+          description: Generic response
+          example: Success
+          type: string
+      type: object
+    invoiceContact:
+      description: Contact person's details
+      properties:
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+      type: object
+    orderContactPhone:
+      description: Contact person's phone details
+      properties:
+        number:
+          description: Contact person's phone number
+          example: 123-456-7890
+          type: string
+        type:
+          description: Contact number type
+          enum:
+          - MOBILE
+          - HOME
+          - BUSINESS
+          example: MOBILE
+          type: string
+      type: object
+    cancellationItemResource:
+      type: object
+      description: cancellation Item Resource
+      properties:
+        cancellationCounter:
+          type: string
+          description: Cancellation Counter
+          example: 1
+        source:
+          type: string
+          description: Determine where the request is initialized
+          example: CSR
+        reasonCode:
+          type: string
+          description: Reason code
+          example: Order Line Cancel
+        subReasonCode:
+          type: string
+          description: Sub reason code
+          example: Late shipping
+        status:
+          type: string
+          description: Cancellation Status
+          enum:
+          - PROCESSING
+          - COMPLETED
+          - REJECTED
+          example: PROCESSING
+        amount:
+          type: number
+          format: double
+          description: Amount
+          example: '-20.'
+        amountInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        invoicedAmount:
+          type: number
+          format: double
+          description: Invoiced Amount
+          example: '-20.'
+        invoicedAmountInCurrencies:
+          type: array
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/paymentReference'
+        refunds:
+          type: array
+          items:
+            $ref: '#/components/schemas/refundDetailResource'
+        attributes:
+          type: object
+          description: Custom attributes
+          example:
+            number: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+        quantity:
+          type: integer
+          format: int32
+          description: Total quantity cancelled
+          example: 10
+    valueSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/invoiceSearchFilter'
+      - properties:
+          value:
+            description: A single value for `field` using which data is searched
+            example: ORDER_CREATE
+            oneOf:
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+        type: object
+      description: Criteria to find invoice by a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
     invoiceSettlement:
       description: Invoice settlement details
       properties:
@@ -960,48 +1092,6 @@ components:
           - SETTLEMENT_FAILED
           example: SETTLED
           type: string
-      type: object
-    invoiceSearchFilter:
-      description: Criteria to find invoice. To search using a single value, `valueSearchFilter` is used. To search using multiple values, `valuesSearchFilter` is used.
-      discriminator:
-        mapping:
-          EQ: '#/components/schemas/valueSearchFilter'
-          GT: '#/components/schemas/valueSearchFilter'
-          GTE: '#/components/schemas/valueSearchFilter'
-          IN: '#/components/schemas/valuesSearchFilter'
-          LT: '#/components/schemas/valueSearchFilter'
-          LTE: '#/components/schemas/valueSearchFilter'
-          NEQ: '#/components/schemas/valueSearchFilter'
-          NIN: '#/components/schemas/valuesSearchFilter'
-        propertyName: condition
-      properties:
-        condition:
-          default: EQ
-          description: 'Filter conditions. EQ (Equal to): Searches for exact match. NEQ (Not equal to): Searches by excluding the specified value. IN: Search for multiple values. NIN (Not IN): Excludes the specified values in the search. LT (Less than): Searches for values that are less than the specified value. GT (Greater than):  Search for values that are greater than the specified value. LTE (Less than or equal to): Searches for values that are less than or equal to the specified value. GTE (Greater than or equal to): Searches for values that are greater than or equal to the specified value.'
-          enum:
-          - EQ
-          - NEQ
-          - IN
-          - NIN
-          - LT
-          - GT
-          - LTE
-          - GTE
-          example: EQ
-          type: string
-        field:
-          description: Field name
-          example: invoice.invoiceType
-          pattern: ^invoice\.[a-zA-Z.\-_]*
-          type: string
-        group:
-          default: Default
-          description: The group name.
-          example: GroupA
-          type: string
-      required:
-      - condition
-      - field
       type: object
     shippingDiscount:
       description: Details of shipping discount
@@ -1043,209 +1133,251 @@ components:
           format: int32
           type: integer
       type: object
-    orderContactPhone:
-      description: Contact person's phone details
+    orderAuditLogUpdatedField:
+      description: Audit log for change history
       properties:
-        number:
-          description: Contact person's phone number
-          example: 123-456-7890
+        fieldName:
+          description: Field or property name that was updated
+          example: UOM
           type: string
-        type:
-          description: Contact number type
-          enum:
-          - MOBILE
-          - HOME
-          - BUSINESS
-          example: MOBILE
+        fieldOriginalValue:
+          description: Original value of `fieldName` before it was updated
+          example: PK
           type: string
       type: object
-    invoiceAdjustmentResource:
-      description: Invoice adjustment details
+    paymentReference:
+      type: object
+      description: Payment Reference
       properties:
-        adjustmentCounter:
-          description: Represents number of times adjustment has happened to the order
+        paymentCounter:
+          type: string
+          description: Cancellation Counter
           example: 1
-          format: int32
-          type: integer
         amount:
           type: number
           format: double
           description: Amount
-          example: 34.56
+          example: '-20.'
         amountInCurrencies:
           type: array
-          description: "The amount represented in one or more currencies.  \nEach item includes the value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          description: CurrencyList details
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          properties:
+            empty:
+              type: boolean
+    invoiceFeeDetail:
+      description: Invoice fee details
+      properties:
+        amount:
+          description: Amount charged for an item in the invoice
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          type: array
+          description: "The amount charged for the item, represented in one or more currencies.  \nEach entry specifies the value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        quantity:
+          description: Quantity of items to which amount is charged
+          example: 1
+          format: int32
+          type: integer
+        refundAmount:
+          description: Refund amount for the invoice
+          example: 345.56
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          type: array
+          description: "The refund amount represented in one or more currencies.  \nEach entry includes the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        type:
+          description: Item fee type
+          example: tax
+          type: string
+      type: object
+    taxDetail:
+      description: Tax details
+      properties:
+        amount:
+          description: Tax amount
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          type: array
+          description: "The merchant-defined tax amount represented in one or more currencies.  \nEach entry specifies the appeasement value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
           items:
             $ref: '#/components/schemas/amountInCurrencyResource'
         attributes:
           additionalProperties:
-            description: Custom attributes specific to tenant
+            description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
             type: object
-          description: Custom attributes specific to tenant
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
           type: object
-        notes:
-          description: An optional free text field and is saved as a metadata
-          example: Any additional info
+        currency:
+          default: USD
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        name:
+          description: Applied tax name
+          example: STATE
+          type: string
+        rate:
+          description: Rate
+          example: 10
+          format: double
+          type: number
+        rateType:
+          description: Rate type
+          example: PERCENTAGE
+          type: string
+        taxCode:
+          description: Tax code applied
+          example: FR01
+          type: string
+      type: object
+    valuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/invoiceSearchFilter'
+      - properties:
+          values:
+            items:
+              description: Multiple values for the field using which data is searched.
+              example: ORDER_CREATE
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find invoices using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    currencyGroup:
+      type: object
+      description: CurrencyGroup  details
+      properties:
+        currency:
+          type: string
+          description: Currency in ISO-4217
+          example: USD
+        group:
+          type: string
+          description: Customer-defined function name which uses this currency.
+          example: SHOPPER
+        conversionRate:
+          type: number
+          format: double
+          description: conversion rate
+          example: 1
+        attributes:
+          type: object
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
+          example:
+            fxId: ID123
+      required:
+      - currency
+      - group
+    invoicePaymentToken:
+      description: Invoice payment token
+      properties:
+        token:
+          description: Payment token number
+          example: pi_34tr6787rt
+          type: string
+      type: object
+    auditLog:
+      description: Audit log to capture change history
+      properties:
+        amount:
+          description: Amount for which audit's done
+          example: 2.4
+          format: double
+          type: number
+        auditId:
+          description: System-generated audit ID (UUID format)
+          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
+          type: string
+        auditType:
+          description: Audit type such as cancel, return, etc.
+          example: CANCEL
+          type: string
+        auditedAt:
+          description: Audit time (UTC)
+          example: '2023-03-12T09:24:54.804Z'
+          format: date-time
+          type: string
+        employeeId:
+          description: Employee (ID or name) who made the last update
+          example: '6227'
+          type: string
+        isSuccess:
+          default: false
+          description: 'true: Update operation (any update to the service) is successful  false: Update operation has failed'
+          example: true
+          type: boolean
+        lineItemId:
+          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it during order creation, in UUID format.
+          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
+          type: string
+        lineItemNumber:
+          description: Item identifier
+          example: 1
+          format: int32
+          type: integer
+        note:
+          description: Additional info, if any
+          example: Note
+          type: string
+        paymentToken:
+          $ref: '#/components/schemas/orderPaymentToken'
+        policyCode:
+          description: Configurable in Copilot as per requirement. If omitted, default policy is used.
+          example: POS
           type: string
         quantity:
-          description: Adjustment quantity
+          description: Ordered quantity of given item
           example: 1
           format: int32
           type: integer
         reasonCode:
-          description: Merchant-defined reason code for order adjustment, varies from merchant to merchant
-          example: Incorrect Item
+          description: Merchant-defined reason code, varies from merchant to merchant
+          example: Scratched item
+          type: string
+        sku:
+          description: Stock keeping unit (SKU), unique item identifier
+          example: SKU0023
+          type: string
+        source:
+          description: Merchant-defined source from where the update was initiated. There are no predefined values; possible values could be Customer Service Representative (CSR), Point-of-Sale (POS), etc.
+          example: POS
           type: string
         subReasonCode:
-          description: Merchant-defined sub reason code
-          example: Late shipping
+          description: Merchant-defined sub reason code; provides more clarity to audit reason
+          example: Scratched item
           type: string
-        value:
-          description: Amount
-          example: 34.56
-          format: double
-          type: number
-      type: object
-    returnFeeDetail:
-      description: Return fee details
-      properties:
-        amount:
-          description: Merchant-defined return amount
-          example: 34.56
-          format: double
-          type: number
-        amountInCurrencies:
-          type: array
-          description: "The merchant-defined refund amount represented in one or more currencies.  \nEach entry specifies the appeasement value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+        updatedFields:
+          description: Audit log for change history
           items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        name:
-          description: Fee name
-          example: RETURN_FEE
-          type: string
-        reason:
-          description: Merchant-defined return reason
-          example: Return fee
-          type: string
-        type:
-          description: Return fee type
-          enum:
-          - TAX
-          - DISCOUNT
-          - FEE
-          - ITEM
-          - ADJUSTMENT
-          example: FEE
-          type: string
-      type: object
-    discount:
-      description: Invoice discount details
-      properties:
-        amount:
-          description: Discounted amount for the given `quantity`
-          example: 2
-          format: double
-          type: number
-        amountInCurrencies:
+            $ref: '#/components/schemas/orderAuditLogUpdatedField'
           type: array
-          description: "The discounted amount represented in one or more currencies.  \nEach entry specifies the value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.  \nThis enables multi-currency support for the given `quantity`.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        promotionCode:
-          description: Promotion code used by shoppers to take advantage of an ongoing promotion and avail discounts
-          example: HNY2022
-          type: string
-        promotionId:
-          description: Unique promotion ID either from fabric Offers service or external Offers service. When fabric Offers service is used, this is the 24-character system-generated promotion ID returned in the response of Create promotion endpoint.
-          example: HNY2022
-          type: string
-        promotionName:
-          description: Promotion title or name
-          example: Happy New Year
-          type: string
-        quantity:
-          description: Number of discounted items in an order; example- buy 2 get 2 free
-          example: 2
-          format: int32
-          type: integer
-        type:
-          description: Promotion type
-          example: promotion
-          type: string
-      required:
-      - promotionId
-      type: object
-    addressWithContactsResource:
-      description: Address with contact details
-      properties:
-        addressLine1:
-          description: Address line 1
-          example: 123 Main St.
-          type: string
-        addressLine2:
-          description: Address line 2
-          example: Suite 100
-          type: string
-        addressLine3:
-          description: Address line 3
-          example: Seventh floor
-          type: string
-        addressLine4:
-          description: Address line 4
-          example: 'Attention: Pat E. Kake'
-          type: string
-        city:
-          description: City name
-          example: Seattle
-          type: string
-        contacts:
-          description: Contacts
-          items:
-            $ref: '#/components/schemas/invoiceContact'
-          type: array
-        countryCode:
-          description: ISO 3166-1 alpha-2 based country code
-          example: US
-          type: string
-        email:
-          description: Contact person's email
-          example: test@example.com
-          type: string
-        latitude:
-          description: Address latitude, used with `longitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -90 and 90, both inclusive.
-          example: 47.6205
-          format: double
-          type: number
-        longitude:
-          description: Address longitude, used with `latitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -180 and 180, both inclusive.
-          example: -122.3493
-          format: double
-          type: number
-        name:
-          $ref: '#/components/schemas/orderContactName'
-        phone:
-          $ref: '#/components/schemas/orderContactPhone'
-        postalCode:
-          description: Postal or ZIP code
-          example: '98121'
-          type: string
-        region:
-          description: Region or state
-          example: WA
-          type: string
-        type:
-          description: Address type
-          example: Home
-          type: string
-      required:
-      - addressLine1
-      - city
-      - countryCode
-      - latitude
-      - longitude
-      - postalCode
-      - region
-      - type
       type: object
     invoiceResponse:
       description: The invoice response model.
@@ -1397,238 +1529,80 @@ components:
       - statusCode
       - totalTaxAmount
       - version
-    valueSearchFilter:
-      allOf:
-      - $ref: '#/components/schemas/invoiceSearchFilter'
-      - properties:
-          value:
-            description: A single value for `field` using which data is searched
-            example: ORDER_CREATE
-            oneOf:
-            - description: Target record's non-numeric identifier
-              example: ORDER_CREATE
-              type: string
-            - description: Target record's numeric identifier
-              example: 112233
-              format: int64
-              type: number
-            - description: Target record's numeric identifier
-              example: 1122.33
-              format: double
-              type: number
-        type: object
-      description: Criteria to find invoice by a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
-      required:
-      - condition
-      - field
+    invoiceAttributesUpdateRequest:
       type: object
-    amountInCurrencyResource:
-      type: object
-      description: Amount in currency details
+      description: Invoice attributes update request details
       properties:
-        currency:
-          type: string
-          description: Currency in ISO-4217
-          example: USD
-        group:
-          type: string
-          description: Customer-defined function name which uses this currency.
-          example: SHOPPER
-        amount:
-          type: number
-          format: double
-          description: Amount in currency
-          example: 123.45
-      required:
-      - currency
-      - group
-    valuesSearchFilter:
-      allOf:
-      - $ref: '#/components/schemas/invoiceSearchFilter'
-      - properties:
-          values:
-            items:
-              description: Multiple values for the field using which data is searched.
-              example: ORDER_CREATE
-              oneOf:
-              - description: Target record's non-numeric identifier
-                example: ORDER_CREATE
-                type: string
-              - description: Target record's numeric identifier
-                example: 112233
-                format: int64
-                type: number
-              - description: Target record's numeric identifier
-                example: 1122.33
-                format: double
-                type: number
-            maxItems: 25
-            minItems: 1
-            type: array
-        type: object
-      description: Criteria to find invoices using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
-      required:
-      - condition
-      - field
-      type: object
-    auditLog:
-      description: Audit log to capture change history
+        requestContext:
+          $ref: '#/components/schemas/requestReferenceContextResource'
+          description: Request reference context information
+        keysToRemove:
+          type: array
+          items:
+            type: string
+        attributes:
+          type: object
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
+          example:
+            loyaltyStatus: N
+            invoicePosting: 'Yes'
+    pagination:
+      description: Pagination response
       properties:
-        amount:
-          description: Amount for which audit's done
-          example: 2.4
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    orderReturns:
+      description: Order return details
+      properties:
+        exchangeLineItemId:
+          description: Exchange line item ID
+          example: 62f3dfc438bcab1951be0a19
+          type: string
+        fees:
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        invoicedAmount:
+          description: System-generated amount from Invoice service based on requested `amount`
+          example: 11.29
           format: double
           type: number
-        auditId:
-          description: System-generated audit ID (UUID format)
-          example: a05b72dc-78d8-4ea4-90fc-2fe6a1fe1111
-          type: string
-        auditType:
-          description: Audit type such as cancel, return, etc.
-          example: CANCEL
-          type: string
-        auditedAt:
-          description: Audit time (UTC)
-          example: '2023-03-12T09:24:54.804Z'
-          format: date-time
-          type: string
-        employeeId:
-          description: Employee (ID or name) who made the last update
-          example: '6227'
-          type: string
-        isSuccess:
+        invoicedAmountInCurrencies:
+          type: array
+          description: "The system-generated invoiced amount represented in one or more currencies.  \nEach entry includes the invoiced value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        isExchangeItemReturned:
           default: false
-          description: 'true: Update operation (any update to the service) is successful  false: Update operation has failed'
+          description: 'true: Item received for exchange is returned false: Item received for exchange isn''t returned'
           example: true
           type: boolean
-        lineItemId:
-          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it during order creation, in UUID format.
-          example: b03b72dc-78d8-4ea4-90fc-2fe6a1fe6569
-          type: string
-        lineItemNumber:
-          description: Item identifier
-          example: 1
-          format: int32
-          type: integer
-        note:
-          description: Additional info, if any
-          example: Note
-          type: string
-        paymentToken:
-          $ref: '#/components/schemas/orderPaymentToken'
-        policyCode:
-          description: Configurable in Copilot as per requirement. If omitted, default policy is used.
-          example: POS
-          type: string
-        quantity:
-          description: Ordered quantity of given item
-          example: 1
-          format: int32
-          type: integer
         reasonCode:
-          description: Merchant-defined reason code, varies from merchant to merchant
-          example: Scratched item
+          description: Merchant-defined reason code for return
+          example: Incorrect item
           type: string
-        sku:
-          description: Stock keeping unit (SKU), unique item identifier
-          example: SKU0023
-          type: string
-        source:
-          description: Merchant-defined source from where the update was initiated. There are no predefined values; possible values could be Customer Service Representative (CSR), Point-of-Sale (POS), etc.
-          example: POS
-          type: string
-        subReasonCode:
-          description: Merchant-defined sub reason code; provides more clarity to audit reason
-          example: Scratched item
-          type: string
-        updatedFields:
-          description: Audit log for change history
-          items:
-            $ref: '#/components/schemas/orderAuditLogUpdatedField'
-          type: array
-      type: object
-    shipmentInvoiceResource:
-      description: The shipment invoice resource object.
-      properties:
-        invoiceId:
-          description: The unique ID of the shipment invoice.
-          example: 62ff5c0bec0aed3c86202c32
-          type: string
-        invoiceNumber:
-          description: The unique number of the shipment invoice.
-          example: '23940791'
-          type: string
-        invoicedAt:
-          description: The date when the invoice was processed.
-          example: '2022-08-01T20:03:28.483971941Z'
-          format: date-time
-          type: string
-      required:
-      - invoiceId
-      type: object
-    invoiceSearchRequest:
-      description: Sort and filter criteria for invoice search
-      example:
-        filters:
-        - condition: EQ
-          field: invoice.orders.orderNumber
-          value: '30490384'
-        - condition: IN
-          field: invoice.invoiceType
-          values:
-          - RETURN
-          - SHIPMENT
-        sort: -invoice.invoicedAt
-      properties:
-        filters:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/valueSearchFilter'
-            - $ref: '#/components/schemas/valuesSearchFilter'
-          maxItems: 50
-          minItems: 0
-          type: array
-        sort:
-          default: -invoice.invoicedAt
-          description: 'Property by which data is sorted. **Note**: `-` refers to descending and `+` refers to ascending order'
-          example: +invoice.invoicedAt
-          pattern: (^[+-]invoice\.[a-zA-Z.\-_]*)(,([+-]invoice\.[a-zA-Z.\-_]*)){0,}
-          type: string
-      required:
-      - filters
-      type: object
-    paymentReference:
-      type: object
-      description: Payment Reference
-      properties:
-        paymentCounter:
-          type: string
-          description: Cancellation Counter
-          example: 1
-        amount:
-          type: number
-          format: double
-          description: Amount
-          example: '-20.'
-        amountInCurrencies:
-          type: array
-          description: CurrencyList details
-          items:
-            $ref: '#/components/schemas/amountInCurrency'
-          properties:
-            empty:
-              type: boolean
-    orderAppeasementPaymentInfo:
-      description: Order appeasement payment info
-      properties:
-        paymentCounter:
-          description: Payment counter to identify which payment to refund
-          example: 1
-          format: int32
-          type: integer
         refundAmount:
-          description: Refund amount for appeasement
-          example: 34.56
+          description: Refund amount
+          example: 11.29
           format: double
           type: number
         refundAmountInCurrencies:
@@ -1636,103 +1610,74 @@ components:
           description: "The refund amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
           items:
             $ref: '#/components/schemas/amountInCurrencyResource'
+        refunds:
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+          type: array
+        returnRequestCounter:
+          description: Unique, sequential, or incremental counter for return request
+          example: 1
+          format: int32
+          type: integer
+        returnsReceivedAt:
+          description: System-generated time of returned item that has come back to the facility (UTC)
+          example: '2022-09-14T14:07:36.861Z'
+          format: date-time
+          type: string
+        shipmentId:
+          description: 24-character system-generated shipment ID
+          example: 62b37697c67b204dd18a7465
+          type: string
+        shipmentInvoice:
+          $ref: '#/components/schemas/shipmentInvoiceResource'
+        shipmentLineItemId:
+          description: Unique identifier for each item in the shipment
+          example: '234'
+          type: string
+        shipmentQuantity:
+          default: 0
+          description: Shipped quantity of given item
+          example: 1
+          format: int32
+          type: integer
       type: object
-    taxDetail:
-      description: Tax details
+    discount:
+      description: Invoice discount details
       properties:
         amount:
-          description: Tax amount
-          example: 34.56
+          description: Discounted amount for the given `quantity`
+          example: 2
           format: double
           type: number
         amountInCurrencies:
           type: array
-          description: "The merchant-defined tax amount represented in one or more currencies.  \nEach entry specifies the appeasement value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          description: "The discounted amount represented in one or more currencies.  \nEach entry specifies the value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.  \nThis enables multi-currency support for the given `quantity`.\n"
           items:
             $ref: '#/components/schemas/amountInCurrencyResource'
-        attributes:
-          additionalProperties:
-            description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
-            type: object
-          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
-          type: object
-        currency:
-          default: USD
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
+        promotionCode:
+          description: Promotion code used by shoppers to take advantage of an ongoing promotion and avail discounts
+          example: HNY2022
           type: string
-        name:
-          description: Applied tax name
-          example: STATE
+        promotionId:
+          description: Unique promotion ID either from fabric Offers service or external Offers service. When fabric Offers service is used, this is the 24-character system-generated promotion ID returned in the response of Create promotion endpoint.
+          example: HNY2022
           type: string
-        rate:
-          description: Rate
-          example: 10
-          format: double
-          type: number
-        rateType:
-          description: Rate type
-          example: PERCENTAGE
+        promotionName:
+          description: Promotion title or name
+          example: Happy New Year
           type: string
-        taxCode:
-          description: Tax code applied
-          example: FR01
-          type: string
-      type: object
-    orderReturnsInfo:
-      type: object
-      description: Order returns info
-      properties:
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Attributes
-            example:
-              transactionId: 0R12TQ46
-          description: Attributes
-          example:
-            transactionId: 0R12TQ46
-        fees:
-          type: array
-          description: Fee details for the return request
-          items:
-            $ref: '#/components/schemas/returnFeeDetail'
-        invoicedAmount:
-          type: number
-          format: double
-          description: System-generated invoiced amount for the return request
-          example: 11.29
-        invoicedAmountInCurrencies:
-          type: array
-          description: "The system-generated invoiced amount represented in one or more currencies.  \nEach entry includes the invoiced value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        paymentCounterRefundDetails:
-          type: array
-          description: Refund details associated with payment counters for the return request
-          items:
-            $ref: '#/components/schemas/paymentCounterRefundInfo'
-        refunds:
-          type: array
-          description: Refund details for the return request
-          items:
-            $ref: '#/components/schemas/returnFeeDetail'
-        returnCounter:
-          type: integer
+        quantity:
+          description: Number of discounted items in an order; example- buy 2 get 2 free
+          example: 2
           format: int32
-          description: Unique, sequential or incremental counter for return request
-          example: 1
-        totalRefundAmount:
-          type: number
-          format: double
-          description: Merchant-defined total refund amount for the return request
-          example: 11.29
-        totalRefundAmountInCurrencies:
-          type: array
-          description: "The total refund amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: integer
+        type:
+          description: Promotion type
+          example: promotion
+          type: string
+      required:
+      - promotionId
+      type: object
     invoiceRequest:
       type: object
       description: The request model for creating or updating an invoice in the payment system.
@@ -1888,386 +1833,23 @@ components:
       - statusCode
       - totalTaxAmount
       - version
-    orderReturns:
-      description: Order return details
-      properties:
-        exchangeLineItemId:
-          description: Exchange line item ID
-          example: 62f3dfc438bcab1951be0a19
-          type: string
-        fees:
-          items:
-            $ref: '#/components/schemas/returnFeeDetail'
-          type: array
-        invoicedAmount:
-          description: System-generated amount from Invoice service based on requested `amount`
-          example: 11.29
-          format: double
-          type: number
-        invoicedAmountInCurrencies:
-          type: array
-          description: "The system-generated invoiced amount represented in one or more currencies.  \nEach entry includes the invoiced value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        isExchangeItemReturned:
-          default: false
-          description: 'true: Item received for exchange is returned false: Item received for exchange isn''t returned'
-          example: true
-          type: boolean
-        reasonCode:
-          description: Merchant-defined reason code for return
-          example: Incorrect item
-          type: string
-        refundAmount:
-          description: Refund amount
-          example: 11.29
-          format: double
-          type: number
-        refundAmountInCurrencies:
-          type: array
-          description: "The refund amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        refunds:
-          items:
-            $ref: '#/components/schemas/returnFeeDetail'
-          type: array
-        returnRequestCounter:
-          description: Unique, sequential, or incremental counter for return request
-          example: 1
-          format: int32
-          type: integer
-        returnsReceivedAt:
-          description: System-generated time of returned item that has come back to the facility (UTC)
-          example: '2022-09-14T14:07:36.861Z'
-          format: date-time
-          type: string
-        shipmentId:
-          description: 24-character system-generated shipment ID
-          example: 62b37697c67b204dd18a7465
-          type: string
-        shipmentInvoice:
-          $ref: '#/components/schemas/shipmentInvoiceResource'
-        shipmentLineItemId:
-          description: Unique identifier for each item in the shipment
-          example: '234'
-          type: string
-        shipmentQuantity:
-          default: 0
-          description: Shipped quantity of given item
-          example: 1
-          format: int32
-          type: integer
+    currencies:
       type: object
-    orderContactName:
-      description: Contact person's name
+      description: currencies
       properties:
-        firstName:
-          description: Contact person's first name
-          example: Alex
+        primaryGroup:
           type: string
-        lastName:
-          description: Contact person's last name
-          example: Doe
-          type: string
-        middleName:
-          description: Contact person's middle name or initial
-          example: E
-          type: string
-      type: object
-    orderAuditLogUpdatedField:
-      description: Audit log for change history
-      properties:
-        fieldName:
-          description: Field or property name that was updated
-          example: UOM
-          type: string
-        fieldOriginalValue:
-          description: Original value of `fieldName` before it was updated
-          example: PK
-          type: string
-      type: object
-    paymentCounterRefundInfo:
-      description: Payment counter refund details
-      properties:
-        amount:
-          description: Final refunded amount
-          example: 34.56
-          format: double
-          type: number
-        amountInCurrencies:
-          type: array
-          description: CurrencyList details
-          items:
-            $ref: '#/components/schemas/amountInCurrency'
-          properties:
-            empty:
-              type: boolean
-        paymentCounter:
-          description: Unique incremented number for this payment object
-          example: 1
-          format: int32
-          type: integer
-      type: object
-    financialPostingAcknowledgeResponse:
-      description: Financial transaction acknowledgement response
-      properties:
-        message:
-          description: Generic response
-          example: Success
-          type: string
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    currencyGroup:
-      type: object
-      description: CurrencyGroup  details
-      properties:
-        currency:
-          type: string
-          description: Currency in ISO-4217
-          example: USD
-        group:
-          type: string
-          description: Customer-defined function name which uses this currency.
+          description: Primary currency for order
           example: SHOPPER
-        conversionRate:
-          type: number
-          format: double
-          description: conversion rate
-          example: 1
-        attributes:
-          type: object
-          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
-          example:
-            fxId: ID123
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/currencyGroup'
+          maxItems: 50
+          minItems: 1
       required:
-      - currency
-      - group
-    invoicePaymentToken:
-      description: Invoice payment token
-      properties:
-        token:
-          description: Payment token number
-          example: pi_34tr6787rt
-          type: string
-      type: object
-    pagination:
-      description: Pagination response
-      properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
-    invoiceAttributesUpdateRequest:
-      type: object
-      description: Invoice attributes update request details
-      properties:
-        requestContext:
-          $ref: '#/components/schemas/requestReferenceContextResource'
-          description: Request reference context information
-        keysToRemove:
-          type: array
-          items:
-            type: string
-        attributes:
-          type: object
-          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
-          example:
-            loyaltyStatus: N
-            invoicePosting: 'Yes'
-    invoiceFeeDetail:
-      description: Invoice fee details
-      properties:
-        amount:
-          description: Amount charged for an item in the invoice
-          example: 34.56
-          format: double
-          type: number
-        amountInCurrencies:
-          type: array
-          description: "The amount charged for the item, represented in one or more currencies.  \nEach entry specifies the value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        quantity:
-          description: Quantity of items to which amount is charged
-          example: 1
-          format: int32
-          type: integer
-        refundAmount:
-          description: Refund amount for the invoice
-          example: 345.56
-          format: double
-          type: number
-        refundAmountInCurrencies:
-          type: array
-          description: "The refund amount represented in one or more currencies.  \nEach entry includes the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        type:
-          description: Item fee type
-          example: tax
-          type: string
-      type: object
-    invoiceCustomer:
-      description: Customer details for the generated invoice
-      properties:
-        accountId:
-          description: Customer's loyalty account ID or external identifier that's used to track their loyalty program activity and rewards earned.
-          example: 62272e917b12209e68751d94
-          type: string
-        address:
-          $ref: '#/components/schemas/address'
-        company:
-          description: Shopper's company name. This may be used for company discounts.
-          example: Demo Inc
-          type: string
-        email:
-          description: Contact person's email
-          example: test@example.com
-          type: string
-        employeeId:
-          description: Employee (ID or name) who initiated an update request
-          example: 62272e917b12209e68751d94
-          type: string
-        name:
-          $ref: '#/components/schemas/orderContactName'
-        phone:
-          $ref: '#/components/schemas/orderContactPhone'
-        userId:
-          description: Identifier of the logged in user who initiated the request. This could be from either fabric Identity service or an external Identity service.
-          example: 62272e917b12209e68751d94
-          type: string
-      type: object
-    invoiceContact:
-      description: Contact person's details
-      properties:
-        email:
-          description: Contact person's email
-          example: test@example.com
-          type: string
-        name:
-          $ref: '#/components/schemas/orderContactName'
-        phone:
-          $ref: '#/components/schemas/orderContactPhone'
-      type: object
-    cancellationItemResource:
-      type: object
-      description: cancellation Item Resource
-      properties:
-        cancellationCounter:
-          type: string
-          description: Cancellation Counter
-          example: 1
-        source:
-          type: string
-          description: Determine where the request is initialized
-          example: CSR
-        reasonCode:
-          type: string
-          description: Reason code
-          example: Order Line Cancel
-        subReasonCode:
-          type: string
-          description: Sub reason code
-          example: Late shipping
-        status:
-          type: string
-          description: Cancellation Status
-          enum:
-          - PROCESSING
-          - COMPLETED
-          - REJECTED
-          example: PROCESSING
-        amount:
-          type: number
-          format: double
-          description: Amount
-          example: '-20.'
-        amountInCurrencies:
-          type: array
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        invoicedAmount:
-          type: number
-          format: double
-          description: Invoiced Amount
-          example: '-20.'
-        invoicedAmountInCurrencies:
-          type: array
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        payments:
-          type: array
-          items:
-            $ref: '#/components/schemas/paymentReference'
-        refunds:
-          type: array
-          items:
-            $ref: '#/components/schemas/refundDetailResource'
-        attributes:
-          type: object
-          description: Custom attributes
-          example:
-            number: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
-        quantity:
-          type: integer
-          format: int32
-          description: Total quantity cancelled
-          example: 10
-    refundDetailResource:
-      type: object
-      description: Refund Detail Resource
-      properties:
-        type:
-          type: string
-          description: Type of refund
-          example: ITEM
-        name:
-          type: string
-          description: Name
-          example: Name
-        amount:
-          type: number
-          format: double
-          description: Refund Amount
-          example: '-10.'
-        amountInCurrencies:
-          type: array
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
+      - groups
+      - primaryGroup
     orderShipInfo:
       type: object
       description: Order shipment details
@@ -2403,73 +1985,156 @@ components:
             $ref: '#/components/schemas/taxDetail'
       required:
       - shipToId
-    invoiceRetail:
-      description: Invoice retail sample
+    errorResponse:
+      description: Error response
       properties:
-        cashierId:
-          description: Merchant-specified cashier ID during invoice creation
-          example: CE-321
-          type: string
-        locationNumber:
-          description: Unique value to identify ship-from location. This must be the `locationNumber` stored in the fabric Location service.
-          example: WH334
-          type: string
-      type: object
-    currencies:
-      type: object
-      description: currencies
-      properties:
-        primaryGroup:
-          type: string
-          description: Primary currency for order
-          example: SHOPPER
-        groups:
-          type: array
+        errors:
+          description: Errors
           items:
-            $ref: '#/components/schemas/currencyGroup'
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    orderContactName:
+      description: Contact person's name
+      properties:
+        firstName:
+          description: Contact person's first name
+          example: Alex
+          type: string
+        lastName:
+          description: Contact person's last name
+          example: Doe
+          type: string
+        middleName:
+          description: Contact person's middle name or initial
+          example: E
+          type: string
+      type: object
+    invoiceSearchRequest:
+      description: Sort and filter criteria for invoice search
+      example:
+        filters:
+        - condition: EQ
+          field: invoice.orders.orderNumber
+          value: '30490384'
+        - condition: IN
+          field: invoice.invoiceType
+          values:
+          - RETURN
+          - SHIPMENT
+        sort: -invoice.invoicedAt
+      properties:
+        filters:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/valueSearchFilter'
+            - $ref: '#/components/schemas/valuesSearchFilter'
           maxItems: 50
-          minItems: 1
-      required:
-      - groups
-      - primaryGroup
-    orderPaymentToken:
-      description: Order payment token details
-      properties:
-        paymentType:
-          description: Payment type, for example, credit card payment providers can be Visa, Mastercard, American express, etc.
-          example: VISA
-          type: string
-        token:
-          description: Payment token provided by payment provider
-          example: pi_34tr6787rt
-          type: string
-      type: object
-    invoiceSearchResponse:
-      description: Invoice search response
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/invoiceResponse'
+          minItems: 0
           type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
+        sort:
+          default: -invoice.invoicedAt
+          description: 'Property by which data is sorted. **Note**: `-` refers to descending and `+` refers to ascending order'
+          example: +invoice.invoicedAt
+          pattern: (^[+-]invoice\.[a-zA-Z.\-_]*)(,([+-]invoice\.[a-zA-Z.\-_]*)){0,}
+          type: string
+      required:
+      - filters
       type: object
-    invoiceTaxDetail:
-      description: Tax details for the invoice
+    returnFeeDetail:
+      description: Return fee details
       properties:
         amount:
-          description: Amount for `type`
+          description: Merchant-defined return amount
           example: 34.56
           format: double
           type: number
         amountInCurrencies:
           type: array
+          description: "The merchant-defined refund amount represented in one or more currencies.  \nEach entry specifies the appeasement value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
           items:
             $ref: '#/components/schemas/amountInCurrencyResource'
-        type:
-          description: Item fee type
-          example: tax
+        name:
+          description: Fee name
+          example: RETURN_FEE
           type: string
+        reason:
+          description: Merchant-defined return reason
+          example: Return fee
+          type: string
+        type:
+          description: Return fee type
+          enum:
+          - TAX
+          - DISCOUNT
+          - FEE
+          - ITEM
+          - ADJUSTMENT
+          example: FEE
+          type: string
+      type: object
+    invoicePaymentIdentifier:
+      description: Invoice payment identifier
+      properties:
+        cardIdentifier:
+          description: Card number
+          example: '***********3456'
+          type: string
+      type: object
+    invoiceAdjustmentResource:
+      description: Invoice adjustment details
+      properties:
+        adjustmentCounter:
+          description: Represents number of times adjustment has happened to the order
+          example: 1
+          format: int32
+          type: integer
+        amount:
+          type: number
+          format: double
+          description: Amount
+          example: 34.56
+        amountInCurrencies:
+          type: array
+          description: "The amount represented in one or more currencies.  \nEach item includes the value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        attributes:
+          additionalProperties:
+            description: Custom attributes specific to tenant
+            type: object
+          description: Custom attributes specific to tenant
+          type: object
+        notes:
+          description: An optional free text field and is saved as a metadata
+          example: Any additional info
+          type: string
+        quantity:
+          description: Adjustment quantity
+          example: 1
+          format: int32
+          type: integer
+        reasonCode:
+          description: Merchant-defined reason code for order adjustment, varies from merchant to merchant
+          example: Incorrect Item
+          type: string
+        subReasonCode:
+          description: Merchant-defined sub reason code
+          example: Late shipping
+          type: string
+        value:
+          description: Amount
+          example: 34.56
+          format: double
+          type: number
       type: object
     invoiceItem:
       type: object
@@ -2679,6 +2344,159 @@ components:
       required:
       - acknowledgedAt
       type: object
+    amountInCurrencyResource:
+      type: object
+      description: Amount in currency details
+      properties:
+        currency:
+          type: string
+          description: Currency in ISO-4217
+          example: USD
+        group:
+          type: string
+          description: Customer-defined function name which uses this currency.
+          example: SHOPPER
+        amount:
+          type: number
+          format: double
+          description: Amount in currency
+          example: 123.45
+      required:
+      - currency
+      - group
+    invoiceSearchFilter:
+      description: Criteria to find invoice. To search using a single value, `valueSearchFilter` is used. To search using multiple values, `valuesSearchFilter` is used.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilter'
+          GT: '#/components/schemas/valueSearchFilter'
+          GTE: '#/components/schemas/valueSearchFilter'
+          IN: '#/components/schemas/valuesSearchFilter'
+          LT: '#/components/schemas/valueSearchFilter'
+          LTE: '#/components/schemas/valueSearchFilter'
+          NEQ: '#/components/schemas/valueSearchFilter'
+          NIN: '#/components/schemas/valuesSearchFilter'
+        propertyName: condition
+      properties:
+        condition:
+          default: EQ
+          description: 'Filter conditions. EQ (Equal to): Searches for exact match. NEQ (Not equal to): Searches by excluding the specified value. IN: Search for multiple values. NIN (Not IN): Excludes the specified values in the search. LT (Less than): Searches for values that are less than the specified value. GT (Greater than):  Search for values that are greater than the specified value. LTE (Less than or equal to): Searches for values that are less than or equal to the specified value. GTE (Greater than or equal to): Searches for values that are greater than or equal to the specified value.'
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: invoice.invoiceType
+          pattern: ^invoice\.[a-zA-Z.\-_]*
+          type: string
+        group:
+          default: Default
+          description: The group name.
+          example: GroupA
+          type: string
+      required:
+      - condition
+      - field
+      type: object
+    invoicePaymentResource:
+      description: Payment resource details for the invoice
+      properties:
+        attributes:
+          additionalProperties:
+            description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs)'
+            type: object
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs)'
+          type: object
+        authorizedAmount:
+          description: Amount authorized to be debited from the given `paymentMethod`
+          example: 256.1
+          format: double
+          type: number
+        authorizedAmountInCurrencies:
+          type: array
+          description: "The authorized amount represented in one or more currencies.  \nEach entry specifies the authorized value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        billToAddress:
+          $ref: '#/components/schemas/address'
+        conversion:
+          description: Conversion required for currency
+          example: 1
+          format: double
+          type: number
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        paidAt:
+          description: System-generated time (UTC) when payment was captured. In case of payment captured at checkout, this is a merchant-defined value given during order creation (UTC).
+          example: '2022-01-27T16:15:58.000-05:00'
+          type: string
+        paymentCounter:
+          description: Unique incremented number for this payment object
+          example: 1
+          format: int32
+          type: integer
+        paymentIdentifier:
+          $ref: '#/components/schemas/invoicePaymentIdentifier'
+        paymentMethod:
+          description: Payment method such as PayPal or Credit Card
+          example: CREDIT_CARD
+          type: string
+        paymentProvider:
+          description: Name of the payment provider
+          example: stripe
+          type: string
+        paymentStatus:
+          description: Payment status. There are no predefined values; possible values are Paid, Partially Paid, Authorized, and Error.
+          example: PAID
+          type: string
+        paymentToken:
+          $ref: '#/components/schemas/invoicePaymentToken'
+        paymentType:
+          description: Payment type such as VISA or Mastercard
+          example: VISA
+          type: string
+        settlement:
+          $ref: '#/components/schemas/invoiceSettlement'
+      type: object
+    orderPickup:
+      description: Order pickup details
+      properties:
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        pickupType:
+          description: Order pickup type
+          enum:
+          - PRIMARY
+          - ALTERNATE
+          example: PRIMARY
+          type: string
+      type: object
+    invoiceSearchResponse:
+      description: Invoice search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/invoiceResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
     createInvoiceRequest:
       type: object
       description: Create Invoice Request
@@ -2790,98 +2608,23 @@ components:
       - invoiceTotal
       - shipmentId
       - totalTaxAmount
-    orderAppeasementDetail:
-      description: Appeasement details
+    invoiceTaxDetail:
+      description: Tax details for the invoice
       properties:
         amount:
-          description: Merchant-defined appeasement amount, which shouldn't exceed (charged amount - already refunded amount)
+          description: Amount for `type`
           example: 34.56
           format: double
           type: number
         amountInCurrencies:
           type: array
-          description: "The merchant-defined appeasement amount represented in one or more currencies.  \nEach entry specifies the appeasement value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
           items:
             $ref: '#/components/schemas/amountInCurrencyResource'
-        appeasementCounter:
-          description: Sequential or incremental counter for appeasement. Used for keeping track of duplicates in the request. If omitted in the request, it's automatically generated and won't be used to check duplicates. Multiple appeasement calls for the same order can cause repetition of appeasement counter and may cause the request to be rejected completely.
-          example: 1
-          format: int32
-          type: integer
-        invoicedAmount:
-          description: System-generated amount from Invoice service based on requested `amount`
-          example: 34.56
-          format: double
-          type: number
-        invoicedAmountInCurrencies:
-          type: array
-          description: "The system-generated invoiced amount represented in one or more currencies.  \nEach entry includes the invoiced value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-        payments:
-          items:
-            $ref: '#/components/schemas/orderAppeasementPaymentInfo'
-          type: array
-        reasonCode:
-          description: Merchant-defined appeasement reason code; varies from merchant to merchant
-          example: Incorrect Item
-          type: string
-        subReasonCode:
-          description: Sub-reason code for appeasement, for another layer of classification
-          example: Late shipping
-          type: string
-      type: object
-    invoiceLocation:
-      description: Contains location details regarding shipment if `invoiceType= SHIPPING`
-      properties:
-        address:
-          $ref: '#/components/schemas/addressWithContactsResource'
-        locationNumber:
-          description: If `invoiceType= SHIPPING`, location number refers to the inventory location from where the order is fulfilled.
-          example: WH334
-          type: string
-      type: object
-    requestReferenceContextResource:
-      type: object
-      description: Request reference context information
-      properties:
         type:
+          description: Item fee type
+          example: tax
           type: string
-        requestId:
-          type: string
-          description: request id
-          readOnly: true
-        requestTime:
-          type: string
-          format: date-time
-          description: System-generated order creation time
-          example: '2022-04-12T09:30:31.198Z'
-        attributes:
-          type: object
-          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
-          example:
-            attribute: N
-            someFlag: true
-    amountInCurrency:
       type: object
-      description: Amount in currency  details
-      properties:
-        currency:
-          type: string
-          description: Currency in ISO-4217
-          example: USD
-        group:
-          type: string
-          description: Customer-defined function name which uses this currency.
-          example: SHOPPER
-        amount:
-          type: number
-          format: double
-          description: Amount in currency
-          example: 123.45
-      required:
-      - currency
-      - group
     address:
       description: Address details
       properties:
@@ -2949,94 +2692,108 @@ components:
       - region
       - type
       type: object
-    orderPickup:
-      description: Order pickup details
+    invoiceLocation:
+      description: Contains location details regarding shipment if `invoiceType= SHIPPING`
       properties:
-        email:
-          description: Contact person's email
-          example: test@example.com
-          type: string
-        name:
-          $ref: '#/components/schemas/orderContactName'
-        phone:
-          $ref: '#/components/schemas/orderContactPhone'
-        pickupType:
-          description: Order pickup type
-          enum:
-          - PRIMARY
-          - ALTERNATE
-          example: PRIMARY
+        address:
+          $ref: '#/components/schemas/addressWithContactsResource'
+        locationNumber:
+          description: If `invoiceType= SHIPPING`, location number refers to the inventory location from where the order is fulfilled.
+          example: WH334
           type: string
       type: object
-    invoicePaymentResource:
-      description: Payment resource details for the invoice
+    refundDetailResource:
+      type: object
+      description: Refund Detail Resource
       properties:
-        attributes:
-          additionalProperties:
-            description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs)'
-            type: object
-          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs)'
-          type: object
-        authorizedAmount:
-          description: Amount authorized to be debited from the given `paymentMethod`
-          example: 256.1
-          format: double
+        type:
+          type: string
+          description: Type of refund
+          example: ITEM
+        name:
+          type: string
+          description: Name
+          example: Name
+        amount:
           type: number
-        authorizedAmountInCurrencies:
+          format: double
+          description: Refund Amount
+          example: '-10.'
+        amountInCurrencies:
           type: array
-          description: "The authorized amount represented in one or more currencies.  \nEach entry specifies the authorized value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
           items:
             $ref: '#/components/schemas/amountInCurrencyResource'
-        billToAddress:
-          $ref: '#/components/schemas/address'
-        conversion:
-          description: Conversion required for currency
-          example: 1
+    orderPaymentToken:
+      description: Order payment token details
+      properties:
+        paymentType:
+          description: Payment type, for example, credit card payment providers can be Visa, Mastercard, American express, etc.
+          example: VISA
+          type: string
+        token:
+          description: Payment token provided by payment provider
+          example: pi_34tr6787rt
+          type: string
+      type: object
+    orderAppeasementDetail:
+      description: Appeasement details
+      properties:
+        amount:
+          description: Merchant-defined appeasement amount, which shouldn't exceed (charged amount - already refunded amount)
+          example: 34.56
           format: double
           type: number
-        currency:
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-          type: string
-        paidAt:
-          description: System-generated time (UTC) when payment was captured. In case of payment captured at checkout, this is a merchant-defined value given during order creation (UTC).
-          example: '2022-01-27T16:15:58.000-05:00'
-          type: string
-        paymentCounter:
-          description: Unique incremented number for this payment object
+        amountInCurrencies:
+          type: array
+          description: "The merchant-defined appeasement amount represented in one or more currencies.  \nEach entry specifies the appeasement value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        appeasementCounter:
+          description: Sequential or incremental counter for appeasement. Used for keeping track of duplicates in the request. If omitted in the request, it's automatically generated and won't be used to check duplicates. Multiple appeasement calls for the same order can cause repetition of appeasement counter and may cause the request to be rejected completely.
           example: 1
           format: int32
           type: integer
-        paymentIdentifier:
-          $ref: '#/components/schemas/invoicePaymentIdentifier'
-        paymentMethod:
-          description: Payment method such as PayPal or Credit Card
-          example: CREDIT_CARD
+        invoicedAmount:
+          description: System-generated amount from Invoice service based on requested `amount`
+          example: 34.56
+          format: double
+          type: number
+        invoicedAmountInCurrencies:
+          type: array
+          description: "The system-generated invoiced amount represented in one or more currencies.  \nEach entry includes the invoiced value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        payments:
+          items:
+            $ref: '#/components/schemas/orderAppeasementPaymentInfo'
+          type: array
+        reasonCode:
+          description: Merchant-defined appeasement reason code; varies from merchant to merchant
+          example: Incorrect Item
           type: string
-        paymentProvider:
-          description: Name of the payment provider
-          example: stripe
+        subReasonCode:
+          description: Sub-reason code for appeasement, for another layer of classification
+          example: Late shipping
           type: string
-        paymentStatus:
-          description: Payment status. There are no predefined values; possible values are Paid, Partially Paid, Authorized, and Error.
-          example: PAID
-          type: string
-        paymentToken:
-          $ref: '#/components/schemas/invoicePaymentToken'
-        paymentType:
-          description: Payment type such as VISA or Mastercard
-          example: VISA
-          type: string
-        settlement:
-          $ref: '#/components/schemas/invoiceSettlement'
       type: object
-    invoicePaymentIdentifier:
-      description: Invoice payment identifier
+    shipmentInvoiceResource:
+      description: The shipment invoice resource object.
       properties:
-        cardIdentifier:
-          description: Card number
-          example: '***********3456'
+        invoiceId:
+          description: The unique ID of the shipment invoice.
+          example: 62ff5c0bec0aed3c86202c32
           type: string
+        invoiceNumber:
+          description: The unique number of the shipment invoice.
+          example: '23940791'
+          type: string
+        invoicedAt:
+          description: The date when the invoice was processed.
+          example: '2022-08-01T20:03:28.483971941Z'
+          format: date-time
+          type: string
+      required:
+      - invoiceId
       type: object
     invoiceOrder:
       description: Invoice order details
@@ -3122,6 +2879,256 @@ components:
       - invoiceOrderTotal
       - orderId
       type: object
+    requestReferenceContextResource:
+      type: object
+      description: Request reference context information
+      properties:
+        type:
+          type: string
+        requestId:
+          type: string
+          description: request id
+          readOnly: true
+        requestTime:
+          type: string
+          format: date-time
+          description: System-generated order creation time
+          example: '2022-04-12T09:30:31.198Z'
+        attributes:
+          type: object
+          description: 'Merchant-defined custom attributes. This is a placeholder for additional info (in key: value pairs).'
+          example:
+            attribute: N
+            someFlag: true
+    amountInCurrency:
+      type: object
+      description: Amount in currency  details
+      properties:
+        currency:
+          type: string
+          description: Currency in ISO-4217
+          example: USD
+        group:
+          type: string
+          description: Customer-defined function name which uses this currency.
+          example: SHOPPER
+        amount:
+          type: number
+          format: double
+          description: Amount in currency
+          example: 123.45
+      required:
+      - currency
+      - group
+    paymentCounterRefundInfo:
+      description: Payment counter refund details
+      properties:
+        amount:
+          description: Final refunded amount
+          example: 34.56
+          format: double
+          type: number
+        amountInCurrencies:
+          type: array
+          description: CurrencyList details
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          properties:
+            empty:
+              type: boolean
+        paymentCounter:
+          description: Unique incremented number for this payment object
+          example: 1
+          format: int32
+          type: integer
+      type: object
+    invoiceRetail:
+      description: Invoice retail sample
+      properties:
+        cashierId:
+          description: Merchant-specified cashier ID during invoice creation
+          example: CE-321
+          type: string
+        locationNumber:
+          description: Unique value to identify ship-from location. This must be the `locationNumber` stored in the fabric Location service.
+          example: WH334
+          type: string
+      type: object
+    orderAppeasementPaymentInfo:
+      description: Order appeasement payment info
+      properties:
+        paymentCounter:
+          description: Payment counter to identify which payment to refund
+          example: 1
+          format: int32
+          type: integer
+        refundAmount:
+          description: Refund amount for appeasement
+          example: 34.56
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          type: array
+          description: "The refund amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+      type: object
+    addressWithContactsResource:
+      description: Address with contact details
+      properties:
+        addressLine1:
+          description: Address line 1
+          example: 123 Main St.
+          type: string
+        addressLine2:
+          description: Address line 2
+          example: Suite 100
+          type: string
+        addressLine3:
+          description: Address line 3
+          example: Seventh floor
+          type: string
+        addressLine4:
+          description: Address line 4
+          example: 'Attention: Pat E. Kake'
+          type: string
+        city:
+          description: City name
+          example: Seattle
+          type: string
+        contacts:
+          description: Contacts
+          items:
+            $ref: '#/components/schemas/invoiceContact'
+          type: array
+        countryCode:
+          description: ISO 3166-1 alpha-2 based country code
+          example: US
+          type: string
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        latitude:
+          description: Address latitude, used with `longitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -90 and 90, both inclusive.
+          example: 47.6205
+          format: double
+          type: number
+        longitude:
+          description: Address longitude, used with `latitude` to specify the address location. Decimal degrees format; negative is degrees South. **Note:**Value must be between -180 and 180, both inclusive.
+          example: -122.3493
+          format: double
+          type: number
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        postalCode:
+          description: Postal or ZIP code
+          example: '98121'
+          type: string
+        region:
+          description: Region or state
+          example: WA
+          type: string
+        type:
+          description: Address type
+          example: Home
+          type: string
+      required:
+      - addressLine1
+      - city
+      - countryCode
+      - latitude
+      - longitude
+      - postalCode
+      - region
+      - type
+      type: object
+    orderReturnsInfo:
+      type: object
+      description: Order returns info
+      properties:
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Attributes
+            example:
+              transactionId: 0R12TQ46
+          description: Attributes
+          example:
+            transactionId: 0R12TQ46
+        fees:
+          type: array
+          description: Fee details for the return request
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+        invoicedAmount:
+          type: number
+          format: double
+          description: System-generated invoiced amount for the return request
+          example: 11.29
+        invoicedAmountInCurrencies:
+          type: array
+          description: "The system-generated invoiced amount represented in one or more currencies.  \nEach entry includes the invoiced value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+        paymentCounterRefundDetails:
+          type: array
+          description: Refund details associated with payment counters for the return request
+          items:
+            $ref: '#/components/schemas/paymentCounterRefundInfo'
+        refunds:
+          type: array
+          description: Refund details for the return request
+          items:
+            $ref: '#/components/schemas/returnFeeDetail'
+        returnCounter:
+          type: integer
+          format: int32
+          description: Unique, sequential or incremental counter for return request
+          example: 1
+        totalRefundAmount:
+          type: number
+          format: double
+          description: Merchant-defined total refund amount for the return request
+          example: 11.29
+        totalRefundAmountInCurrencies:
+          type: array
+          description: "The total refund amount represented in one or more currencies.  \nEach entry specifies the refunded value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+    invoiceCustomer:
+      description: Customer details for the generated invoice
+      properties:
+        accountId:
+          description: Customer's loyalty account ID or external identifier that's used to track their loyalty program activity and rewards earned.
+          example: 62272e917b12209e68751d94
+          type: string
+        address:
+          $ref: '#/components/schemas/address'
+        company:
+          description: Shopper's company name. This may be used for company discounts.
+          example: Demo Inc
+          type: string
+        email:
+          description: Contact person's email
+          example: test@example.com
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated an update request
+          example: 62272e917b12209e68751d94
+          type: string
+        name:
+          $ref: '#/components/schemas/orderContactName'
+        phone:
+          $ref: '#/components/schemas/orderContactPhone'
+        userId:
+          description: Identifier of the logged in user who initiated the request. This could be from either fabric Identity service or an external Identity service.
+          example: 62272e917b12209e68751d94
+          type: string
+      type: object
   parameters:
     xFabricChannelId:
       description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
@@ -3145,13 +3152,6 @@ components:
       in: header
       name: x-fabric-tenant-id
       required: true
-      schema:
-        type: string
-  headers:
-    xFabricRequestIdResponseHeader:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
       schema:
         type: string
   securitySchemes:

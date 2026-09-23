@@ -3,7 +3,7 @@ info:
   contact:
     email: support@fabric.inc
     name: fabric Support Team
-  description: fabric **Orders** API is a scalable multi-tenant service designed to streamline your order management process. Orders API is a REST and JSON driven interface enabling retailers to create orders directly from online Storefronts and Point-of-Sale systems, and serve as records of purchase transactions to permit retailers to operate against a standard schema with varied purchase channels. <p> fabric Orders API creates orders real time in the orders database, unifying the order data for users to streamline order lifecycle orchestration and customer service operations. It offers a range of features including the ability to create orders, get orders, update pickup details, and track orders, as well as search for existing orders. Also, the Orders API makes it easy to check eligibility of return, cancel, and exchange requests as well process them, if eligible. In addition, you can flag fraudulent orders based on due diligence, and either release them from hold or cancel them altogether. The appeasement feature helps you resolve any issues that may arise with an order and keep your customers happy. </p>
+  description: fabric **Orders** API is a scalable multi-tenant service designed to streamline your order management process.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
@@ -22,7 +22,9 @@ tags:
 paths:
   /orders/order-number/{orderNumber}/actions/package-tracking-acknowledge:
     put:
-      description: 'This endpoint gets acknowledgement of package tracking by order number. <p> **Note**: If you do not have order number, use the corresponding order ID-based endpoint - `PUT /orders/{orderId}/actions/package-tracking-acknowledge`.</p>'
+      description: 'This endpoint gets acknowledgement of package tracking by order number.
+
+        **Note**: If you do not have order number, use the corresponding order ID-based endpoint - `PUT /orders/{orderId}/actions/package-tracking-acknowledge`.'
       operationId: acknowledgeTrackingDetailsByOrderNumber
       parameters:
       - description: Merchant-defined order identifier
@@ -107,7 +109,9 @@ paths:
       - Tracking
   /orders/{orderId}/actions/package-tracking-acknowledge:
     put:
-      description: 'This endpoint gets acknowledgement of package tracking by order ID. <p> **Note**: If you do not have order ID, use the corresponding order number-based endpoint - `PUT /orders/order-number/{orderNumber}/actions/package-tracking-acknowledge`.</p>'
+      description: 'This endpoint gets acknowledgement of package tracking by order ID.
+
+        **Note**: If you do not have order ID, use the corresponding order number-based endpoint - `PUT /orders/order-number/{orderNumber}/actions/package-tracking-acknowledge`.'
       operationId: acknowledgeTrackingDetailsByOrderId
       parameters:
       - description: 24-character system-generated ID. It is returned in the response of Create Order - `POST /orders` endpoint.
@@ -191,31 +195,6 @@ paths:
       tags:
       - Tracking
 components:
-  parameters:
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
   headers:
     xFabricRequestIdResponseHeader:
       description: Unique request ID
@@ -224,31 +203,6 @@ components:
       schema:
         type: string
   schemas:
-    apiResponse:
-      description: Response message
-      properties:
-        message:
-          description: Response message
-          example: OK
-          type: string
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
     acknowledgePackageTrackingRequest:
       description: Acknowledgement for package tracking
       properties:
@@ -274,6 +228,56 @@ components:
       required:
       - eventType
       type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    apiResponse:
+      description: Response message
+      properties:
+        message:
+          description: Response message
+          example: OK
+          type: string
+      type: object
+  parameters:
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
   securitySchemes:
     authorization:
       bearerFormat: JWT

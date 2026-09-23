@@ -3,7 +3,7 @@ info:
   contact:
     email: support@fabric.inc
     name: fabric Orders Team
-  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
+  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
@@ -109,15 +109,29 @@ components:
           format: int32
           type: integer
       type: object
-    searchResponse:
-      description: Search response
+    pagination:
+      description: Pagination response
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/inventoryImportStatusResponse'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
       type: object
     valueSearchFilter:
       allOf:
@@ -186,34 +200,22 @@ components:
       - condition
       - field
       type: object
-    valuesSearchFilter:
-      allOf:
-      - $ref: '#/components/schemas/inventorySearchFilter'
-      - properties:
-          values:
-            items:
-              description: Multiple values using which inventory details are searched
-              example: SKU
-              oneOf:
-              - description: Target record's non-numeric identifier
-                example: ORDER_CREATE
-                type: string
-              - description: Target record's numeric identifier
-                example: 112233
-                format: int64
-                type: number
-              - description: Target record's numeric identifier
-                example: 1122.33
-                format: double
-                type: number
-            maxItems: 25
-            minItems: 1
-            type: array
-        type: object
-      description: Criteria to find inventories by multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
-      required:
-      - condition
-      - field
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
       type: object
     hardReservationSearchRequest:
       description: Hard reservation search request model
@@ -246,22 +248,44 @@ components:
       required:
       - filters
       type: object
-    errorResponse:
-      description: Error response
+    searchResponse:
+      description: Search response
       properties:
-        errors:
-          description: Errors
+        data:
           items:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/inventoryImportStatusResponse'
           type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    valuesSearchFilter:
+      allOf:
+      - $ref: '#/components/schemas/inventorySearchFilter'
+      - properties:
+          values:
+            items:
+              description: Multiple values using which inventory details are searched
+              example: SKU
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find inventories by multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
       type: object
     inventoryImportStatusResponse:
       description: An object containing the inventory import status response details.
@@ -323,31 +347,22 @@ components:
       - createdAt
       - importId
       type: object
-    pagination:
-      description: Pagination response
-      properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
   parameters:
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
     xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
@@ -362,21 +377,6 @@ components:
       in: header
       name: x-fabric-tenant-id
       required: true
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-  headers:
-    xFabricRequestIdResponseHeader:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
       schema:
         type: string
   securitySchemes:

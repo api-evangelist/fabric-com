@@ -3,7 +3,7 @@ info:
   contact:
     email: support@fabric.inc
     name: fabric Support Team
-  description: fabric **Orders** API is a scalable multi-tenant service designed to streamline your order management process. Orders API is a REST and JSON driven interface enabling retailers to create orders directly from online Storefronts and Point-of-Sale systems, and serve as records of purchase transactions to permit retailers to operate against a standard schema with varied purchase channels. <p> fabric Orders API creates orders real time in the orders database, unifying the order data for users to streamline order lifecycle orchestration and customer service operations. It offers a range of features including the ability to create orders, get orders, update pickup details, and track orders, as well as search for existing orders. Also, the Orders API makes it easy to check eligibility of return, cancel, and exchange requests as well process them, if eligible. In addition, you can flag fraudulent orders based on due diligence, and either release them from hold or cancel them altogether. The appeasement feature helps you resolve any issues that may arise with an order and keep your customers happy. </p>
+  description: fabric **Orders** API is a scalable multi-tenant service designed to streamline your order management process.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
@@ -25,7 +25,16 @@ paths:
       tags:
       - Credits
       summary: Create Credits by Order Identifier
-      description: "Creates credits for an order when you want to issue compensation to a customer.  \nThis endpoint allows you to initiate a credit request using an order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      description: 'Creates credits for an order when you want to issue compensation to a customer.
+
+        This endpoint allows you to initiate a credit request using an order identifier.
+
+
+        **Note:**
+
+        - Use this endpoint if you have the order ID, order number, or external order ID.
+
+        - If you only have an order number, set `orderIdType` to `order-number`.'
       operationId: createCreditsByOrderIdentifier
       parameters:
       - name: orderIdType
@@ -137,7 +146,25 @@ paths:
       tags:
       - Credits
       summary: Check Credits Eligibility by Order Identifier
-      description: "Checks whether an order is eligible for credits (for example, gift cards or store credits) \nin scenarios such as damaged products, late deliveries, or other qualifying \nconditions defined by your business policies.  \n\nThis endpoint allows you to verify eligibility using an order identifier, helping \nbusinesses manage credits effectively and provide appropriate compensation to \ncustomers.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      description: 'Checks whether an order is eligible for credits (for example, gift cards or store credits)
+
+        in scenarios such as damaged products, late deliveries, or other qualifying
+
+        conditions defined by your business policies.
+
+
+        This endpoint allows you to verify eligibility using an order identifier, helping
+
+        businesses manage credits effectively and provide appropriate compensation to
+
+        customers.
+
+
+        **Note:**
+
+        - Use this endpoint if you have the order ID, order number, or external order ID.
+
+        - If you only have an order number, set `orderIdType` to `order-number`.'
       operationId: checkCreditsEligibilityByOrderIdentifier
       parameters:
       - name: orderIdType
@@ -243,7 +270,18 @@ paths:
       tags:
       - Credits
       summary: Update Credit Status by Order Identifier
-      description: "Updates the status of credits associated with an order.  \nThis endpoint can also be used to add notes or update additional \nattributes related to a credit.  \n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      description: 'Updates the status of credits associated with an order.
+
+        This endpoint can also be used to add notes or update additional
+
+        attributes related to a credit.
+
+
+        **Note:**
+
+        - Use this endpoint if you have the order ID, order number, or external order ID.
+
+        - If you only have an order number, set `orderIdType` to `order-number`.'
       operationId: updateCreditStatusByOrderIdentifier
       parameters:
       - name: orderIdType
@@ -352,7 +390,9 @@ paths:
                   endpoint: POST /v3/inventories/actions/find-by-geography
   /orders/order-number/{orderNumber}/actions/check-credits-eligibility:
     post:
-      description: When processing refunds, credits such as a gift card may be offered to customers for various reasons such as damaged products, late deliveries, or other qualifying factors as per your policy. <p> This endpoint checks the credits eligibility by order number, allowing you to manage credits effectively and provide appropriate compensation to eligible customers. </p>
+      description: 'When processing refunds, credits such as a gift card may be offered to customers for various reasons such as damaged products, late deliveries, or other qualifying factors as per your policy.
+
+        This endpoint checks the credits eligibility by order number, allowing you to manage credits effectively and provide appropriate compensation to eligible customers.'
       operationId: getCreditsEligibilityByOrderNumber
       parameters:
       - description: The merchant-defined order identifier provided by the Create Order - `POST /orders` endpoint.
@@ -601,7 +641,9 @@ paths:
       - Credits
   /orders/{orderId}/actions/check-credits-eligibility:
     post:
-      description: In case of refund scenarios, credits such as gift card may be offered to customers for various reasons such as damaged products, later deliveries, or other qualifying factors as per your policy. <p> This endpoint checks the credits eligibility by order ID, allowing businesses to manage credits effectively and provide appropriate compensation to eligible customers.</p>
+      description: 'In case of refund scenarios, credits such as gift card may be offered to customers for various reasons such as damaged products, later deliveries, or other qualifying factors as per your policy.
+
+        This endpoint checks the credits eligibility by order ID, allowing businesses to manage credits effectively and provide appropriate compensation to eligible customers.'
       operationId: getCreditsEligibility
       parameters:
       - description: 24-character system-generated order ID returned in the response of Create Order - `POST /orders` endpoint.
@@ -849,62 +891,14 @@ paths:
       tags:
       - Credits
 components:
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
   schemas:
-    reasonCodeAndDescription:
-      description: Return or exchange reason
-      properties:
-        code:
-          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
-          example: 1DMG
-          type: string
-        description:
-          description: Brief description for the return `code`
-          example: Damaged
-          type: string
-      type: object
-    orderCreditsResponse:
-      description: Credits response
-      properties:
-        credits:
-          items:
-            $ref: '#/components/schemas/creditsResponse'
-          type: array
-      type: object
-    creditsEligibilityResponse:
-      description: Credits eligibility model
-      properties:
-        description:
-          description: Description provided while requesting credits (for reference)
-          example: Policy used to add credits
-          type: string
-        eligibleReasonCodes:
-          description: Reason codes to support credits request
-          items:
-            $ref: '#/components/schemas/reasonCodeAndDescription'
-          type: array
-        orderId:
-          description: 24-character system-generated order ID
-          example: 62f3982438bcab1951be0a19
-          type: string
-        policyName:
-          description: Merchant-given policy name.
-          example: Credits policy
-          type: string
-        policyType:
-          description: Policy type used to check credits eligibility
-          example: credits
-          type: string
-      type: object
-    orderCreditsRequest:
-      description: Credits request
-      properties:
-        credits:
-          items:
-            $ref: '#/components/schemas/creditsRequest'
-          type: array
-      required:
-      - credits
-      type: object
     orderCreditUpdateRequest:
       description: An object containing update credits details. This is only triggered on request.
       properties:
@@ -933,70 +927,6 @@ components:
       required:
       - creditId
       - statusCode
-      type: object
-    creditsRequest:
-      description: Request for credits
-      properties:
-        amount:
-          description: Credits amount
-          example: 21.5
-          format: double
-          type: number
-        amountInCurrencies:
-          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrency'
-          type: array
-        attributes:
-          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
-          example:
-            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
-          type: object
-        currency:
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-          type: string
-        employeeId:
-          description: Employee (ID or name) who initiated a the credits request
-          example: '12312232'
-          type: string
-        note:
-          description: Note
-          example: Credit request initiated
-          type: string
-        paymentCounter:
-          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
-          example: 1
-          format: int32
-          type: integer
-        policyCode:
-          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
-          example: RC1
-          type: string
-        reasonCode:
-          description: Reason code
-          example: EC
-          type: string
-        source:
-          description: Source of credits request
-          example: CSR
-          type: string
-        subReasonCode:
-          description: Subreason code
-          example: ACC
-          type: string
-        type:
-          description: Credit type. Currently, supports only Gift Card
-          enum:
-          - GIFT_CARD
-          example: GIFT_CARD
-          type: string
-      required:
-      - amount
-      - currency
-      - reasonCode
-      - source
-      - type
       type: object
     creditsResponse:
       description: Credit response
@@ -1085,6 +1015,31 @@ components:
       - source
       - type
       type: object
+    creditsEligibilityResponse:
+      description: Credits eligibility model
+      properties:
+        description:
+          description: Description provided while requesting credits (for reference)
+          example: Policy used to add credits
+          type: string
+        eligibleReasonCodes:
+          description: Reason codes to support credits request
+          items:
+            $ref: '#/components/schemas/reasonCodeAndDescription'
+          type: array
+        orderId:
+          description: 24-character system-generated order ID
+          example: 62f3982438bcab1951be0a19
+          type: string
+        policyName:
+          description: Merchant-given policy name.
+          example: Credits policy
+          type: string
+        policyType:
+          description: Policy type used to check credits eligibility
+          example: credits
+          type: string
+      type: object
     amountInCurrency:
       description: Amount in currency object details.
       properties:
@@ -1105,6 +1060,18 @@ components:
       - currency
       - group
       type: object
+    reasonCodeAndDescription:
+      description: Return or exchange reason
+      properties:
+        code:
+          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
+          example: 1DMG
+          type: string
+        description:
+          description: Brief description for the return `code`
+          example: Damaged
+          type: string
+      type: object
     errorResponse:
       description: Error response
       properties:
@@ -1122,7 +1089,97 @@ components:
           example: CLIENT_ERROR
           type: string
       type: object
+    creditsRequest:
+      description: Request for credits
+      properties:
+        amount:
+          description: Credits amount
+          example: 21.5
+          format: double
+          type: number
+        amountInCurrencies:
+          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
+          example:
+            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated a the credits request
+          example: '12312232'
+          type: string
+        note:
+          description: Note
+          example: Credit request initiated
+          type: string
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        policyCode:
+          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
+          example: RC1
+          type: string
+        reasonCode:
+          description: Reason code
+          example: EC
+          type: string
+        source:
+          description: Source of credits request
+          example: CSR
+          type: string
+        subReasonCode:
+          description: Subreason code
+          example: ACC
+          type: string
+        type:
+          description: Credit type. Currently, supports only Gift Card
+          enum:
+          - GIFT_CARD
+          example: GIFT_CARD
+          type: string
+      required:
+      - amount
+      - currency
+      - reasonCode
+      - source
+      - type
+      type: object
+    orderCreditsRequest:
+      description: Credits request
+      properties:
+        credits:
+          items:
+            $ref: '#/components/schemas/creditsRequest'
+          type: array
+      required:
+      - credits
+      type: object
+    orderCreditsResponse:
+      description: Credits response
+      properties:
+        credits:
+          items:
+            $ref: '#/components/schemas/creditsResponse'
+          type: array
+      type: object
   parameters:
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
     xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
@@ -1137,21 +1194,6 @@ components:
       in: header
       name: x-fabric-tenant-id
       required: true
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-  headers:
-    xFabricRequestIdResponseHeader:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
       schema:
         type: string
   securitySchemes:

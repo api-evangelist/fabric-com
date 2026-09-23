@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Catalog Product API
-  description: 'As brands and retailers grow, they often expand their item catalogs, resulting in the need to enrich and manage more product (commonly referred to as item in fabric) data. fabric Product Catalog alleviates the burden of managing large amounts of item data by means of a central storage repository. fabric Product Catalog helps you with improved data quality, consistent customer experience, reduced time to market, easy integration with external systems, reduced management costs and risks, faster and easier updates, and easy scaling. You can create, import, enrich, validate, distribute, and manage complex item information, centrally. As a result, you deliver product experiences that drive sales through every channel. <br /> <br /> During onboarding, you are given the necessary credentials to access Product Catalog - Copilot UI, APIs, or both. As a prerequisite, you create the items to be sold, identify their unique as well as common properties, and envision their organization into categories and sub categories. A basic workflow is: <br /> 1) **Create item attributes** using POST /api-product/v1/product/attribute/bulk. <br /> 2) **Update attribute mapping** using POST /api-product/v1/product/attribute/mapping <br /> 3) **Create Primary category** using the POST /api-category/v1/category to create the original organizational structure. <br /> 4) **Assign item attributes** to Primary category using POST /api-category/v1/category/item-attribute. <br /> 5) **Create items** using POST /api-product/v1/product/bulk/insert. <br /> 6) **Create Alternate category**, for distribution management and fulfilling various merchandising objectives.'
+  description: As brands and retailers grow, they often expand their item catalogs, resulting in the need to enrich and manage more product (commonly referred to as item in fabric) data.
   version: 2.0.0
   contact:
     email: support@fabric.inc
@@ -13,14 +13,24 @@ servers:
   description: Production
 tags:
 - name: Product
-  description: '**Product**, a subset of Product Catalog endpoints, aims at making item management more efficient. They create, update, and get items, which may be individual items or collection of items (called bundles). Each item has a title, item ID, description, category, and assigned attributes. Multiple options of a given item become variants of that item. For example, a t-shirt with three sizes may have small, medium, and large variants. Each variant has its own item ID, attributes, and other data points. Each variant is nested under its parent item, allowing the different options to appear on the same product page. You can also create or update one or more item attributes and attribute groups.'
+  description: '**Product**, a subset of Product Catalog endpoints, aims at making item management more efficient.'
 paths:
   /api-product/v1/product/bulk/insert:
     post:
       tags:
       - Product
       summary: Create Items and Bundles
-      description: 'Creates multiple items or bundles along with their attributes. In addition, this endpoint supports data validation to ensure accuracy and consistency. <br /> **Note**: <br /> 1) As a prerequisite category and attributes must be created beforehand. <br /> 2) To add an item variant, parentSku must be additionally specified. <br /> 3) An item is assigned to only one category but it can be fetched from Alternate categories. <br /> 4) Up to 50 items or bundles can be added.'
+      description: 'Creates multiple items or bundles along with their attributes. In addition, this endpoint supports data validation to ensure accuracy and consistency.
+
+        **Note**:
+
+        1) As a prerequisite category and attributes must be created beforehand.
+
+        2) To add an item variant, parentSku must be additionally specified.
+
+        3) An item is assigned to only one category but it can be fetched from Alternate categories.
+
+        4) Up to 50 items or bundles can be added.'
       operationId: createProducts
       security:
       - authorization: []
@@ -61,7 +71,13 @@ paths:
       tags:
       - Product
       summary: Update Items and Bundles
-      description: 'With this endpoint, you can update multiple items or bundles, along with their attributes. <br /> **Note**: <br /> 1) You can update up to 50 items or bundles. <br /> 2) By specifying the attribute `value` as NULL, a reserved keyword, you can remove the existing attribute value.'
+      description: 'With this endpoint, you can update multiple items or bundles, along with their attributes.
+
+        **Note**:
+
+        1) You can update up to 50 items or bundles.
+
+        2) By specifying the attribute `value` as NULL, a reserved keyword, you can remove the existing attribute value.'
       operationId: updateProducts
       security:
       - authorization: []
@@ -102,7 +118,15 @@ paths:
       tags:
       - Product
       summary: Upsert Items and Bundles
-      description: 'With this endpoint, you can create or update items or bundles along with their attributes. <br /> **Note**: <br /> 1) If the SKU already exists, then the given item or bundle is updated. Otherwise, a new item or bundle is created with that SKU. <br /> 2) You can add or update up to 50 items or bundles. <br /> 3) By specifying the attribute `value` as NULL, a reserved keyword, you can remove the existing attribute value.'
+      description: 'With this endpoint, you can create or update items or bundles along with their attributes.
+
+        **Note**:
+
+        1) If the SKU already exists, then the given item or bundle is updated. Otherwise, a new item or bundle is created with that SKU.
+
+        2) You can add or update up to 50 items or bundles.
+
+        3) By specifying the attribute `value` as NULL, a reserved keyword, you can remove the existing attribute value.'
       operationId: upsertProducts
       security:
       - authorization: []
@@ -178,7 +202,13 @@ paths:
       tags:
       - Product
       summary: Get Items and Children Items
-      description: 'Items can be individual items or a bundle of items. This endpoints allows you to retrieve items - individual items and bundles, along with their attributes, children items and their details. <br /> **Note**: <br /> 1) Optional filter parameters can be passed in as query to narrow down the search results. <br /> 2) This API will only return the count and details of Parent SKU and not its variants'
+      description: 'Items can be individual items or a bundle of items. This endpoints allows you to retrieve items - individual items and bundles, along with their attributes, children items and their details.
+
+        **Note**:
+
+        1) Optional filter parameters can be passed in as query to narrow down the search results.
+
+        2) This API will only return the count and details of Parent SKU and not its variants'
       operationId: getProducts
       security:
       - authorization: []
@@ -304,7 +334,11 @@ paths:
       tags:
       - Product
       summary: Get Items and Limited Children Items
-      description: 'Gets items (single item or bundles) by `skus` or parent `skus`. When a parent SKU is sent as query parameter, you''ll get children items of those SKUs. When `parentSKU` is not specified, children items are not retrieved. Optionally, `page` and `size` can be used as query parameters. **Note**: <br /> 1) `status` and `date` query parameters works only with pagination when `parentSku` is omitted. Separate responses are shown for bundle and product.<br /> 2) when `parentSku` is passed as request parameter, it will only return the paginated response of children of `parentSKU`.'
+      description: 'Gets items (single item or bundles) by `skus` or parent `skus`. When a parent SKU is sent as query parameter, you''ll get children items of those SKUs. When `parentSKU` is not specified, children items are not retrieved. Optionally, `page` and `size` can be used as query parameters. **Note**:
+
+        1) `status` and `date` query parameters works only with pagination when `parentSku` is omitted. Separate responses are shown for bundle and product.
+
+        2) when `parentSku` is passed as request parameter, it will only return the paginated response of children of `parentSKU`.'
       operationId: getProductsV2
       security:
       - authorization: []
@@ -503,7 +537,11 @@ paths:
       tags:
       - Product
       summary: Get Item Attributes
-      description: 'Item attributes define characteristics of an item. For example, item name, its identifiers, and description are the common attributes of any item. Attributes are key-value pairs (color: red) that hold information for each property of an item. <br /> This endpoint gets all attributes of an item, by SKU or itemId. <br /> **Note**: The *Get item* (GET /v1/product) gets item details and their attribute. So, this endpoint is recommended when you have the item SKU or item ID, and only require its attributes.'
+      description: 'Item attributes define characteristics of an item. For example, item name, its identifiers, and description are the common attributes of any item. Attributes are key-value pairs (color: red) that hold information for each property of an item.
+
+        This endpoint gets all attributes of an item, by SKU or itemId.
+
+        **Note**: The *Get item* (GET /v1/product) gets item details and their attribute. So, this endpoint is recommended when you have the item SKU or item ID, and only require its attributes.'
       operationId: getProductAttribute
       security:
       - authorization: []
@@ -542,6 +580,196 @@ paths:
                 $ref: '#/components/schemas/ServerError'
 components:
   schemas:
+    Bundle:
+      type: object
+      properties:
+        sku:
+          type: string
+          example: BUNDLE-01
+          description: Stock Keeping Unit (SKU), a unique identifier of bundle
+        itemId:
+          type: number
+          example: 4
+          description: Item ID
+        type:
+          description: Item type - Bundle (default) or Item
+          type: string
+          example: BUNDLE
+        status:
+          type: boolean
+          example: true
+          description: 'true: Bundle is active <br /> false: Bundle is inactive'
+        bundleItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetBundleItems'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCategory'
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttribute'
+        createdOn:
+          type: string
+          example: '2022-03-07T22:50:10.668Z'
+          description: Time of bundle creation (UTC format)
+        modifiedOn:
+          type: string
+          example: '2022-03-07T22:52:01.720Z'
+          description: Time when bundle was last updated (UTC format)
+    BundleSearch:
+      allOf:
+      - $ref: '#/components/schemas/SearchResponse'
+      - type: object
+        properties:
+          bundleItems:
+            type: array
+            items:
+              $ref: '#/components/schemas/ProductChild'
+    BundleItems:
+      type: object
+      required:
+      - sku
+      - quantity
+      properties:
+        sku:
+          description: Stock Keeping Unit (SKU) of item that must be added to bundle
+          type: string
+          example: sku123
+        quantity:
+          description: Item quantity to be added to bundle
+          type: number
+          example: 6
+    NoProductsResponse:
+      type: object
+      properties:
+        pageSize:
+          type: number
+          example: 0
+          description: Number of records in a page
+        totalSize:
+          type: number
+          example: 0
+          description: Total number of records
+        pages:
+          type: number
+          example: 0
+          description: Number of pages for the given `pageSize`
+        products:
+          description: Item details
+          type: array
+          items:
+            type: string
+          example: []
+    ProductV2:
+      type: object
+      properties:
+        sku:
+          type: string
+          example: MOBO-X570
+          description: Stock Keeping Unit (SKU) of item
+        itemId:
+          type: number
+          example: 4
+          description: Item ID
+        childrenSize:
+          description: Number of children or variants of the item
+          type: number
+          default: 0
+        type:
+          description: Item type - ITEM or BUNDLE
+          type: string
+          example: ITEM
+          default: ITEM
+        status:
+          type: boolean
+          example: true
+          description: 'true: Item is Active <br /> false: Item is Inactive'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCategory'
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductAttribute'
+    InheritItemAttributesInsert:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Name of the attribute that can be inherited
+            example: color
+          action:
+            description: Action to set the inherited attribute
+            example: SET
+            type: string
+            enum:
+            - SET
+        required:
+        - name
+        - action
+        minItems: 1
+    ProductModifyError:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+          - STATUS_ERROR
+          description: Error code for backend mapping
+        message:
+          type: array
+          description: Error details for invalid items
+          items:
+            type: object
+            properties:
+              index:
+                type: number
+                description: Index of the item update request
+              item:
+                $ref: '#/components/schemas/ProductResponse'
+    BundleUpdateRequest:
+      type: object
+      properties:
+        action:
+          type: string
+          enum:
+          - UPDATE
+          example: UPDATE
+          description: Action type
+        bundles:
+          type: array
+          items:
+            type: object
+            required:
+            - action
+            - bundleSku
+            - itemSku
+            properties:
+              action:
+                type: string
+                enum:
+                - SET
+                - UNSET
+                example: SET
+                description: Action type
+              bundleSku:
+                type: string
+                example: iPhoneBundle
+                description: Stock Keeping Unit (SKU) of bundle
+              itemSku:
+                type: string
+                example: iPhone12
+                description: 'Stock Keeping Unit (SKU) of item '
+              quantity:
+                type: number
+                example: 1
+                description: Item quantity
     ServerError:
       type: object
       properties:
@@ -553,25 +781,42 @@ components:
           description: Human-readable error description
           type: string
           example: An internal error occurred. If the issue persists please contact support@fabric.inc.
-    ItemProductsV2Response:
+    ProductCategory:
       type: object
       properties:
-        totalSize:
+        id:
+          type: string
+          example: 621c121bff2e4507c199b7cb
+          description: A 24-character system-generated category ID
+        name:
+          type: string
+          example: electronics
+          description: Category name
+        nodeId:
+          description: Numeric category ID
           type: number
-          example: 100
-          description: Total number of records (items)
-        pageSize:
-          type: number
-          example: 10
-          description: Number of records (items) in a page
-        pages:
-          type: number
-          example: 10
-          description: Number of pages for the given `pageSize`
-        products:
+          example: 30
+        breadcrumbs:
           type: array
           items:
-            $ref: '#/components/schemas/ProductV2'
+            type: object
+            properties:
+              id:
+                type: string
+                example: 621c10f3ff2e4507c199b66b
+                description: A 24-character system-generated breadcrumb ID
+              nodeId:
+                description: Numeric category ID
+                type: number
+                example: 31
+              name:
+                type: string
+                example: PRIMARY
+                description: Category name
+              attributes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductAttribute'
     ProductChild:
       type: object
       properties:
@@ -582,6 +827,26 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductAttribute'
+    AttributeValueFrenchLocale:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Mobile-French
+          description: Attribute name in French
+        value:
+          type: string
+          example: Le téléphone portatif AMD X570
+          description: Attribute value in French
+    ProductSearch:
+      allOf:
+      - $ref: '#/components/schemas/SearchResponse'
+      - type: object
+        properties:
+          children:
+            type: array
+            items:
+              $ref: '#/components/schemas/ProductChild'
     GetBundleItems:
       type: object
       properties:
@@ -605,27 +870,81 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BundleChild'
-    ProductAttributePage:
+    ProductUpdate:
       type: object
-      description: Attribute page object
       properties:
-        totalSize:
+        skus:
+          description: Stock Keeping Units (SKUs)
+          maxItems: 50
+          type: array
+          items:
+            type: string
+          example:
+          - sku12
+          - sku13
+        type:
+          description: Item type - Bundle or Item
+          type: string
+          example: ITEM
+        action:
+          description: Action type
+          type: string
+          example: UPDATE
+        parentSku:
+          description: “Stock Keeping Unit (SKU) of the parent item. <br /> Set the value as `detach` or `null` to disassociate the item from parent item.”
+          type:
+          - string
+          - 'null'
+          example: sku234
+        attributeValues:
+          type: array
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/AttributeValue'
+            - $ref: '#/components/schemas/AttributeValueFrenchLocale'
+        inheritedAttributes:
+          description: Category item attributes to inherit from parent item to children items
+          $ref: '#/components/schemas/InheritItemAttributesUpdate'
+    Product:
+      type: object
+      properties:
+        sku:
+          type: string
+          example: MOBO-X570
+          description: Stock Keeping Unit (SKU) of item
+        itemId:
           type: number
-          description: Total number of records (item attributes)
-          example: 100
-        pageSize:
-          type: number
-          description: Number of records (item attributes) in a page
-          example: 10
-        pages:
-          type: number
-          description: Number of pages for the given `pageSize`
-          example: 10
+          example: 4
+          description: Item ID
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductChild'
+        type:
+          description: Item type - ITEM or BUNDLE
+          type: string
+          example: ITEM
+          default: ITEM
+        status:
+          type: boolean
+          example: true
+          description: 'true: Item is Active <br /> false: Item is Inactive'
+        categories:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductCategory'
         attributes:
           type: array
-          description: Attributes details
           items:
             $ref: '#/components/schemas/ProductAttribute'
+        createdOn:
+          type: string
+          example: '2022-03-07T22:50:10.668Z'
+          description: Time of item creation (UTC format)
+        modifiedOn:
+          type: string
+          example: '2022-03-07T22:52:01.720Z'
+          description: Time when item was last updated (UTC format)
     ProductCreate:
       type: array
       maxItems: 50
@@ -671,7 +990,7 @@ components:
         - sku
         - type
         - nodeName
-    ItemProductSearchResponse:
+    BundleProductsResponse:
       type: object
       properties:
         totalSize:
@@ -681,15 +1000,45 @@ components:
         pageSize:
           type: number
           example: 10
-          description: Number of records per page
+          description: Number of records in a page
         pages:
           type: number
           example: 10
-          description: Number of pages for the given pageSize
+          description: Number of pages for the given `pageSize`
         products:
           type: array
           items:
-            $ref: '#/components/schemas/ProductSearch'
+            $ref: '#/components/schemas/Bundle'
+    ClientError:
+      type: object
+      properties:
+        code:
+          description: Error code for machine consumption
+          type: string
+          example: 400
+        message:
+          description: Human-readable error description
+          type: string
+          example: Client error
+    ItemProductsResponse:
+      type: object
+      properties:
+        totalSize:
+          type: number
+          example: 100
+          description: Total number of records (items)
+        pageSize:
+          type: number
+          example: 10
+          description: Number of records (items) in a page
+        pages:
+          type: number
+          example: 10
+          description: Number of pages for the given `pageSize`
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
     BundleUpdateResponse:
       type: array
       items:
@@ -719,81 +1068,6 @@ components:
             type: string
             example: '2022-04-08T23:25:27.753Z'
             description: Time when bundle was last updated (UTC format)
-    ItemProductsResponse:
-      type: object
-      properties:
-        totalSize:
-          type: number
-          example: 100
-          description: Total number of records (items)
-        pageSize:
-          type: number
-          example: 10
-          description: Number of records (items) in a page
-        pages:
-          type: number
-          example: 10
-          description: Number of pages for the given `pageSize`
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-    InheritItemAttributesInsert:
-      type: array
-      items:
-        type: object
-        properties:
-          name:
-            type: string
-            description: Name of the attribute that can be inherited
-            example: color
-          action:
-            description: Action to set the inherited attribute
-            example: SET
-            type: string
-            enum:
-            - SET
-        required:
-        - name
-        - action
-        minItems: 1
-    BundleUpdateRequest:
-      type: object
-      properties:
-        action:
-          type: string
-          enum:
-          - UPDATE
-          example: UPDATE
-          description: Action type
-        bundles:
-          type: array
-          items:
-            type: object
-            required:
-            - action
-            - bundleSku
-            - itemSku
-            properties:
-              action:
-                type: string
-                enum:
-                - SET
-                - UNSET
-                example: SET
-                description: Action type
-              bundleSku:
-                type: string
-                example: iPhoneBundle
-                description: Stock Keeping Unit (SKU) of bundle
-              itemSku:
-                type: string
-                example: iPhone12
-                description: 'Stock Keeping Unit (SKU) of item '
-              quantity:
-                type: number
-                example: 1
-                description: Item quantity
     Attribute:
       type: object
       properties:
@@ -823,26 +1097,27 @@ components:
           type: string
           example: Unable to fulfill demand.
           description: Value corresponding to `type`
-    InheritItemAttributesUpdate:
-      type: array
-      items:
-        type: object
-        properties:
-          name:
-            type: string
-            description: Name of the attribute that can be inherited
-            example: color
-          action:
-            type: string
-            description: Action to set or unset (remove) the inherited attribute
-            example: SET
-            enum:
-            - SET
-            - UNSET
-        required:
-        - name
-        - action
-        minItems: 1
+    ProductAttributePage:
+      type: object
+      description: Attribute page object
+      properties:
+        totalSize:
+          type: number
+          description: Total number of records (item attributes)
+          example: 100
+        pageSize:
+          type: number
+          description: Number of records (item attributes) in a page
+          example: 10
+        pages:
+          type: number
+          description: Number of pages for the given `pageSize`
+          example: 10
+        attributes:
+          type: array
+          description: Attributes details
+          items:
+            $ref: '#/components/schemas/ProductAttribute'
     ProductResponse:
       type: object
       properties:
@@ -912,255 +1187,6 @@ components:
           type: array
           items:
             type: string
-    AttributeValue:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Mobile
-          description: Attribute name
-        value:
-          type: string
-          example: AMD X570 mobo
-          description: Attribute value
-    BundleProductSearchResponse:
-      type: object
-      properties:
-        totalSize:
-          type: number
-          example: 100
-          description: Total number of records (bundle)
-        pageSize:
-          type: number
-          example: 10
-          description: Number of records (bundle) in a page
-        pages:
-          type: number
-          example: 10
-          description: Number of pages for the given `pageSize`
-        products:
-          type: array
-          items:
-            allOf:
-            - $ref: '#/components/schemas/SearchResponse'
-            - $ref: '#/components/schemas/BundleSearch'
-    BundleSearch:
-      allOf:
-      - $ref: '#/components/schemas/SearchResponse'
-      - type: object
-        properties:
-          bundleItems:
-            type: array
-            items:
-              $ref: '#/components/schemas/ProductChild'
-    ProductV2:
-      type: object
-      properties:
-        sku:
-          type: string
-          example: MOBO-X570
-          description: Stock Keeping Unit (SKU) of item
-        itemId:
-          type: number
-          example: 4
-          description: Item ID
-        childrenSize:
-          description: Number of children or variants of the item
-          type: number
-          default: 0
-        type:
-          description: Item type - ITEM or BUNDLE
-          type: string
-          example: ITEM
-          default: ITEM
-        status:
-          type: boolean
-          example: true
-          description: 'true: Item is Active <br /> false: Item is Inactive'
-        categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductCategory'
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductAttribute'
-    AttributeValueFrenchLocale:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Mobile-French
-          description: Attribute name in French
-        value:
-          type: string
-          example: Le téléphone portatif AMD X570
-          description: Attribute value in French
-    Bundle:
-      type: object
-      properties:
-        sku:
-          type: string
-          example: BUNDLE-01
-          description: Stock Keeping Unit (SKU), a unique identifier of bundle
-        itemId:
-          type: number
-          example: 4
-          description: Item ID
-        type:
-          description: Item type - Bundle (default) or Item
-          type: string
-          example: BUNDLE
-        status:
-          type: boolean
-          example: true
-          description: 'true: Bundle is active <br /> false: Bundle is inactive'
-        bundleItems:
-          type: array
-          items:
-            $ref: '#/components/schemas/GetBundleItems'
-        categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductCategory'
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductAttribute'
-        createdOn:
-          type: string
-          example: '2022-03-07T22:50:10.668Z'
-          description: Time of bundle creation (UTC format)
-        modifiedOn:
-          type: string
-          example: '2022-03-07T22:52:01.720Z'
-          description: Time when bundle was last updated (UTC format)
-    ProductSearch:
-      allOf:
-      - $ref: '#/components/schemas/SearchResponse'
-      - type: object
-        properties:
-          children:
-            type: array
-            items:
-              $ref: '#/components/schemas/ProductChild'
-    NoProductsResponse:
-      type: object
-      properties:
-        pageSize:
-          type: number
-          example: 0
-          description: Number of records in a page
-        totalSize:
-          type: number
-          example: 0
-          description: Total number of records
-        pages:
-          type: number
-          example: 0
-          description: Number of pages for the given `pageSize`
-        products:
-          description: Item details
-          type: array
-          items:
-            type: string
-          example: []
-    ProductAttribute:
-      allOf:
-      - $ref: '#/components/schemas/Attribute'
-      - type: object
-        properties:
-          description:
-            type: string
-            description: Explains purpose of the selected attribute
-          mapping:
-            type: string
-            example: description
-            description: Attribute mapping (as received)
-    ProductModifyError:
-      type: object
-      properties:
-        code:
-          type: string
-          enum:
-          - STATUS_ERROR
-          description: Error code for backend mapping
-        message:
-          type: array
-          description: Error details for invalid items
-          items:
-            type: object
-            properties:
-              index:
-                type: number
-                description: Index of the item update request
-              item:
-                $ref: '#/components/schemas/ProductResponse'
-    ProductUpdate:
-      type: object
-      properties:
-        skus:
-          description: Stock Keeping Units (SKUs)
-          maxItems: 50
-          type: array
-          items:
-            type: string
-          example:
-          - sku12
-          - sku13
-        type:
-          description: Item type - Bundle or Item
-          type: string
-          example: ITEM
-        action:
-          description: Action type
-          type: string
-          example: UPDATE
-        parentSku:
-          description: “Stock Keeping Unit (SKU) of the parent item. <br /> Set the value as `detach` or `null` to disassociate the item from parent item.”
-          type:
-          - string
-          - 'null'
-          example: sku234
-        attributeValues:
-          type: array
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/AttributeValue'
-            - $ref: '#/components/schemas/AttributeValueFrenchLocale'
-        inheritedAttributes:
-          description: Category item attributes to inherit from parent item to children items
-          $ref: '#/components/schemas/InheritItemAttributesUpdate'
-    ClientError:
-      type: object
-      properties:
-        code:
-          description: Error code for machine consumption
-          type: string
-          example: 400
-        message:
-          description: Human-readable error description
-          type: string
-          example: Client error
-    BundleProductsResponse:
-      type: object
-      properties:
-        totalSize:
-          type: number
-          example: 100
-          description: Total number of records
-        pageSize:
-          type: number
-          example: 10
-          description: Number of records in a page
-        pages:
-          type: number
-          example: 10
-          description: Number of pages for the given `pageSize`
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/Bundle'
     SearchResponse:
       type: object
       properties:
@@ -1201,6 +1227,69 @@ components:
           description: Time when item was last updated (UTC format)
           type: string
           example: '2021-05-28T16:36:50.055Z'
+    ItemProductSearchResponse:
+      type: object
+      properties:
+        totalSize:
+          type: number
+          example: 100
+          description: Total number of records
+        pageSize:
+          type: number
+          example: 10
+          description: Number of records per page
+        pages:
+          type: number
+          example: 10
+          description: Number of pages for the given pageSize
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductSearch'
+    ProductAttribute:
+      allOf:
+      - $ref: '#/components/schemas/Attribute'
+      - type: object
+        properties:
+          description:
+            type: string
+            description: Explains purpose of the selected attribute
+          mapping:
+            type: string
+            example: description
+            description: Attribute mapping (as received)
+    BundleProductSearchResponse:
+      type: object
+      properties:
+        totalSize:
+          type: number
+          example: 100
+          description: Total number of records (bundle)
+        pageSize:
+          type: number
+          example: 10
+          description: Number of records (bundle) in a page
+        pages:
+          type: number
+          example: 10
+          description: Number of pages for the given `pageSize`
+        products:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/SearchResponse'
+            - $ref: '#/components/schemas/BundleSearch'
+    AttributeValue:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Mobile
+          description: Attribute name
+        value:
+          type: string
+          example: AMD X570 mobo
+          description: Attribute value
     BundleChild:
       type: object
       properties:
@@ -1214,96 +1303,45 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProductAttribute'
-    ProductCategory:
+    InheritItemAttributesUpdate:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Name of the attribute that can be inherited
+            example: color
+          action:
+            type: string
+            description: Action to set or unset (remove) the inherited attribute
+            example: SET
+            enum:
+            - SET
+            - UNSET
+        required:
+        - name
+        - action
+        minItems: 1
+    ItemProductsV2Response:
       type: object
       properties:
-        id:
-          type: string
-          example: 621c121bff2e4507c199b7cb
-          description: A 24-character system-generated category ID
-        name:
-          type: string
-          example: electronics
-          description: Category name
-        nodeId:
-          description: Numeric category ID
+        totalSize:
           type: number
-          example: 30
-        breadcrumbs:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                example: 621c10f3ff2e4507c199b66b
-                description: A 24-character system-generated breadcrumb ID
-              nodeId:
-                description: Numeric category ID
-                type: number
-                example: 31
-              name:
-                type: string
-                example: PRIMARY
-                description: Category name
-              attributes:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ProductAttribute'
-    BundleItems:
-      type: object
-      required:
-      - sku
-      - quantity
-      properties:
-        sku:
-          description: Stock Keeping Unit (SKU) of item that must be added to bundle
-          type: string
-          example: sku123
-        quantity:
-          description: Item quantity to be added to bundle
+          example: 100
+          description: Total number of records (items)
+        pageSize:
           type: number
-          example: 6
-    Product:
-      type: object
-      properties:
-        sku:
-          type: string
-          example: MOBO-X570
-          description: Stock Keeping Unit (SKU) of item
-        itemId:
+          example: 10
+          description: Number of records (items) in a page
+        pages:
           type: number
-          example: 4
-          description: Item ID
-        children:
+          example: 10
+          description: Number of pages for the given `pageSize`
+        products:
           type: array
           items:
-            $ref: '#/components/schemas/ProductChild'
-        type:
-          description: Item type - ITEM or BUNDLE
-          type: string
-          example: ITEM
-          default: ITEM
-        status:
-          type: boolean
-          example: true
-          description: 'true: Item is Active <br /> false: Item is Inactive'
-        categories:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductCategory'
-        attributes:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductAttribute'
-        createdOn:
-          type: string
-          example: '2022-03-07T22:50:10.668Z'
-          description: Time of item creation (UTC format)
-        modifiedOn:
-          type: string
-          example: '2022-03-07T22:52:01.720Z'
-          description: Time when item was last updated (UTC format)
+            $ref: '#/components/schemas/ProductV2'
   parameters:
     xSiteContent:
       name: x-site-context

@@ -1,6 +1,6 @@
 openapi: 3.2.0
 info:
-  title: Cart Orchestrator Order Drafts API
+  title: Cart Orchestrator Cart Payments API
   description: API for managing shopping carts
   version: 3.0.0
 servers:
@@ -11,19 +11,19 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: OrderDrafts
-  description: Order draft endpoints are used to create an order draft or get a generated order draft.
+- name: Cart Payments
+  description: CartPayments endpoints are used to authorize or void payments that are located within the shopping cart.
 paths:
-  /orchestrator/carts/{cartId}/order-drafts:
+  /orchestrator/carts/{cartId}/payments/actions/authorize:
     post:
-      summary: Create an Order Draft
-      description: 'Creates an order from the current cart.
+      summary: Authorize Payments
+      description: 'Authorize payments made within the corresponding cart.
 
 
         The Cart ID from the Create cart endpoint is used in the path parameter.'
-      operationId: createOrderDraft
+      operationId: authorizePayment
       tags:
-      - OrderDrafts
+      - Cart Payments
       parameters:
       - $ref: '#/components/parameters/XFabricTenantId'
       - $ref: '#/components/parameters/XFabricRequestId'
@@ -34,19 +34,50 @@ paths:
         schema:
           type: string
         description: The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint.
-      requestBody:
-        description: Order draft request body
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateOrderDraftRequest'
       responses:
         '200':
-          description: Order draft created successfully
+          description: Payments authorized successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderDraftResponse'
+                $ref: '#/components/schemas/CartResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: Unprocessable Orchestration Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableOrchestrationError'
+  /orchestrator/carts/{cartId}/payments/actions/void:
+    post:
+      summary: Void Payments
+      description: 'Void payments made within the corresponding cart.
+
+
+        The Cart ID from the Create cart endpoint is used in the path parameter.'
+      operationId: voidPayment
+      tags:
+      - Cart Payments
+      parameters:
+      - $ref: '#/components/parameters/XFabricTenantId'
+      - $ref: '#/components/parameters/XFabricRequestId'
+      - $ref: '#/components/parameters/XFabricChannelId'
+      - name: cartId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The 24-character system-generated Cart ID. This ID is generated using the [Create cart](/v3/api-reference/carts-v3/carts/carts) endpoint.
+      responses:
+        '200':
+          description: Payments void successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -59,6 +90,65 @@ paths:
                 $ref: '#/components/schemas/UnprocessableOrchestrationError'
 components:
   schemas:
+    MaxQtyConfiguration:
+      type: object
+      properties:
+        limit:
+          type: integer
+          description: The maximum quantity of an individual line item that can be added to the cart.
+          format: int32
+          example: 100
+        behaviors:
+          $ref: '#/components/schemas/MaxQtyBehaviour'
+      description: Item max quantity configurations
+    OrderValidateConfiguration:
+      type: object
+      properties:
+        paymentsRemaining:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default setting is BLOCK.
+
+            '
+          enum:
+          - BLOCK
+          - NONE
+        taxRemaining:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default setting is BLOCK.
+
+            '
+          enum:
+          - BLOCK
+          - NONE
+        invalidItem:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default setting is BLOCK.
+
+            '
+          enum:
+          - BLOCK
+          - NONE
+        itemOutOfStock:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default setting is BLOCK.
+
+            '
+          enum:
+          - BLOCK
+          - NONE
+      description: Order validate determines the blocking behavior when creating an order draft.
     Proration:
       type: object
       properties:
@@ -72,27 +162,66 @@ components:
           format: int32
           example: 3
       description: Proration details of the item used for returns in an OMS system
-    CreateOrderDraftRequest:
+    ProductBehaviour:
       type: object
       properties:
-        orderSequence:
-          type: object
-          properties:
-            sequenceName:
-              description: Sequence configuration name
-              type: string
-              example: STORE_ORDER_NUMBER
-            sequenceKey:
-              description: Sequence identifier
-              type: string
-              example: SHOPZ
-          description: 'An order sequence is used to define a pattern or template for generating unique order numbers. This object contains the order sequence name and identifier.
+        add:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is REJECT.
 
             '
-        orderNumber:
+          example: REJECT
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        update:
           type: string
-          description: Order number based on the order sequence.
-          example: SHOPZ0000001
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        get:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        cacheExpiry:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+      description: Behaviors related to inventory actions, such as adding the item or removing the item.
     ErrorDetails:
       type: object
       properties:
@@ -136,6 +265,66 @@ components:
           example: POST https://api.fabric.inc/carts/326949f9-7c25-4983-9848-b2061abb217dl/items/batch
         details:
           $ref: '#/components/schemas/ErrorDetails'
+    InventoryBehaviour:
+      type: object
+      properties:
+        add:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is REJECT.
+
+            '
+          example: REJECT
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        update:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        get:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        cacheExpiry:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+      description: Behaviors related to inventory actions, such as adding the item or removing the item.
     PaymentAuthorization:
       required:
       - amount
@@ -153,33 +342,18 @@ components:
         verifier:
           $ref: '#/components/schemas/Verifier'
       description: Payment authorization
-    OrderInfo:
+    ItemPrice:
       type: object
       properties:
-        id:
-          type: string
-          description: Identifier of an order draft to create an order.
-          example: 6d65755f-b1d9-4c9d-bb5b-118d317f8db4
-        number:
-          type: string
-          description: Order number
-          example: '100001'
-        lineItems:
-          type: array
-          description: An array containing items with associated custom data.
-          items:
-            $ref: '#/components/schemas/OrderDraftItemRequest'
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes, such as order status.
-            example:
-              orderStatus: ACTIVE
-          description: Custom attributes, such as order status.
-          example:
-            orderStatus: ACTIVE
-      description: Order information
+        unit:
+          type: number
+          description: The unit price of the item.
+          example: 10
+        amount:
+          type: number
+          description: The total price of the item, inclusive of quantity.
+          example: 100
+      description: Item price
     Tax:
       type: object
       properties:
@@ -200,18 +374,129 @@ components:
             rate: '5.0'
             type: COUNTY
       description: Tax
-    ItemPrice:
+    TaxConfiguration:
       type: object
       properties:
-        unit:
-          type: number
-          description: The unit price of the item.
-          example: 10
-        amount:
-          type: number
-          description: The total price of the item, inclusive of quantity.
-          example: 100
-      description: Item price
+        cacheExpiry:
+          type: integer
+          description: Duration in seconds until the tax data expires.
+          format: int64
+          example: 7776000
+        behaviors:
+          $ref: '#/components/schemas/TaxBehaviour'
+      description: Configuration settings for tax calculations and behaviors.
+    TaxBehaviour:
+      type: object
+      properties:
+        cacheExpiry:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - NONE
+      description: Tax behaviors
+    CartResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the cart that was passed in the parameter.
+          example: 0e49199c-5849-4211-abe6-a97a3c4dcc56
+        attributes:
+          $ref: '#/components/schemas/Attributes'
+        configuration:
+          $ref: '#/components/schemas/CartConfiguration'
+        customerContext:
+          $ref: '#/components/schemas/CustomerContext'
+        status:
+          type: string
+          description: The cart status indicates whether the cart is active or deleted.
+          example: ACTIVE
+          enum:
+          - ACTIVE
+          - SOFT_DELETE
+        state:
+          type: array
+          description: The resource state is stored in an array that holds information about the current status of the cart.
+          items:
+            $ref: '#/components/schemas/State'
+        price:
+          $ref: '#/components/schemas/PriceDetail'
+        promotions:
+          $ref: '#/components/schemas/Promotions'
+        fees:
+          $ref: '#/components/schemas/Fee'
+        adjustments:
+          $ref: '#/components/schemas/AdjustmentCollection'
+        addresses:
+          type: object
+          properties:
+            a8577d7f0d4d4b228e857b4a2e90dc93:
+              $ref: '#/components/schemas/Address'
+          description: A map of addresses added to the cart.
+        lineItems:
+          $ref: '#/components/schemas/ItemCollection'
+        summary:
+          $ref: '#/components/schemas/Summary'
+        fulfillments:
+          type: object
+          properties:
+            d6229cdb0c5b4885b1b213b94d02488e:
+              $ref: '#/components/schemas/Fulfillment'
+          description: A map of fulfillments added to the cart.
+        coupons:
+          type: array
+          description: An array containing all coupons added to the cart.
+          items:
+            $ref: '#/components/schemas/Coupon'
+        appliedCoupons:
+          type: array
+          description: An array containing all coupons applied to the cart.
+          items:
+            $ref: '#/components/schemas/Coupon'
+        notAppliedCoupons:
+          type: array
+          description: An array containing any coupons that were ineligible and not applied to the cart.
+          items:
+            $ref: '#/components/schemas/Coupon'
+        validations:
+          $ref: '#/components/schemas/ValidationData'
+        payments:
+          $ref: '#/components/schemas/PaymentCollection'
+        channelId:
+          type: string
+          description: Channel ID
+          example: '12'
+        currency:
+          type: string
+          description: The currency that the cart will use when an order is created.
+          example: USD
+        updatedAt:
+          type: string
+          description: The date and time in UTC when the cart was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when a cart was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+        suggestedProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/SuggestedProduct'
+        promotionMessages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromotionMessage'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     FulfillmentPromotion:
       type: object
       properties:
@@ -236,26 +521,14 @@ components:
           description: The date when the coupon was added to the cart.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Coupon
-    OrderDraftItemRequest:
-      required:
-      - id
+    TaxValidationData:
       type: object
       properties:
-        id:
+        updatedAt:
           type: string
-          description: The unique identifier of the item.
-          example: 6d65755f-b1d9-4c9d-bb5b-118d317f8db4
-        supplementaryData:
-          type: object
-          additionalProperties:
-            type: object
-            description: Additional data for the item, such as product attributes.
-            example:
-              productTitle: Lamp
-          description: Additional data for the item, such as product attributes.
-          example:
-            productTitle: Lamp
-      description: Custom data for the item
+          description: Latest date the tax was added to the cart.
+          example: 2024-06-13 16:50:00.682000+00:00
+      description: Tax validation data
     CustomerContext:
       type: object
       properties:
@@ -340,6 +613,14 @@ components:
             type: string
             description: Segment values
             example: '["gold","silver"]'
+    PIMValidationData:
+      type: object
+      properties:
+        availableSkus:
+          type: array
+          description: An array containing product validation data.
+          items:
+            $ref: '#/components/schemas/SKUValidationData'
     FeesCollection:
       type: object
       properties:
@@ -353,6 +634,12 @@ components:
           items:
             $ref: '#/components/schemas/Fee'
       description: A collection of fees associated with the cart.
+    OrderConfiguration:
+      type: object
+      properties:
+        validate:
+          $ref: '#/components/schemas/OrderValidateConfiguration'
+      description: Configuration settings related to order validation and processing.
     PaymentCollection:
       type: object
       properties:
@@ -484,6 +771,111 @@ components:
           description: The date and time the address was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Address
+    InventoryConfiguration:
+      type: object
+      properties:
+        cacheExpiry:
+          type: integer
+          description: Duration in seconds until inventory validation data expires.
+          format: int64
+          example: 7776000
+        behaviors:
+          $ref: '#/components/schemas/InventoryBehaviour'
+        check:
+          type: string
+          description: This setting is used to determine how you check inventory. The options are SKU or LINE_ITEM.
+          example: SKU
+          enum:
+          - SKU
+          - LINE_ITEM
+      description: Configuration settings related to inventory management and checks.
+    InventoryValidationData:
+      type: object
+      properties:
+        channels:
+          type: object
+          additionalProperties:
+            type: string
+            description: The inventory channels associated with the item.
+            example: '{"networkCode":"ShipToHome"}'
+          description: The inventory channels associated with the item.
+          example:
+            networkCode: ShipToHome
+        counters:
+          type: object
+          additionalProperties:
+            type: integer
+            description: The inventory counters available for the item.
+            format: int32
+          description: The inventory counters available for the item.
+          example:
+            backOrder: 15
+            preOrder: 100
+        updatedAt:
+          type: string
+          description: The latest date when inventory was added to the cart.
+          example: 2024-06-13 16:50:00.682000+00:00
+      description: Inventory validation details
+    MaxQtyBehaviour:
+      type: object
+      properties:
+        add:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is REJECT.
+
+            '
+          example: REJECT
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        update:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        get:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default setting is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+      description: Max quantity behaviors
+    CartConfiguration:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/OrderConfiguration'
+        product:
+          $ref: '#/components/schemas/ProductConfiguration'
+        inventory:
+          $ref: '#/components/schemas/InventoryConfiguration'
+        tax:
+          $ref: '#/components/schemas/TaxConfiguration'
+        promotions:
+          $ref: '#/components/schemas/PromotionsConfiguration'
+      description: Cart [configurations](/v3/api-reference/carts-v3/configuration-behaviors) determine the behavior within the cart.
     Promotion:
       type: object
       properties:
@@ -511,6 +903,20 @@ components:
           description: Custom attributes provide more context for the promotion.
           example:
             promotionStack: HIGHEST
+    Summary:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+          description: The total number of items in the cart, inclusive of quantity.
+          format: int32
+          example: 1
+        totalUniqueItems:
+          type: integer
+          description: The total number of unique items in the cart.
+          format: int32
+          example: 1
+      description: A summary of items in the cart.
     ResourcePrice:
       required:
       - amount
@@ -522,6 +928,33 @@ components:
           description: Total resource amount
           example: 12.99
       description: Price details
+    LineItemValidationData:
+      type: object
+      properties:
+        sku:
+          type: string
+          description: The SKU of the item.
+          example: SKU3
+        inventory:
+          $ref: '#/components/schemas/InventoryValidationData'
+      description: An object that contains item validation data.
+    SKUValidationData:
+      type: object
+      properties:
+        sku:
+          type: string
+          description: The SKU that exists within a Product Information Management (PIM) service.
+          example: SKU3
+        updatedAt:
+          type: string
+          description: The latest date when product data was added to the cart.
+          example: 2024-06-13 16:50:00.682000+00:00
+        maxQuantity:
+          type: integer
+          description: The maximum quantity allowed for a SKU.
+          format: int32
+          example: 100
+      description: Product validation data to determine product existence
     State:
       type: object
       properties:
@@ -686,6 +1119,48 @@ components:
         proration:
           $ref: '#/components/schemas/ProrationSpread'
       description: Item Promotion
+    Behavior:
+      type: object
+      description: Configuration for different behaviors in the system
+      properties:
+        add:
+          $ref: '#/components/schemas/ConfigurationValue'
+        update:
+          $ref: '#/components/schemas/ConfigurationValue'
+        get:
+          $ref: '#/components/schemas/ConfigurationValue'
+        cacheExpiry:
+          $ref: '#/components/schemas/ConfigurationValue'
+    PromotionsConfiguration:
+      type: object
+      description: Configuration settings related to promotions and their cache expiry.
+      properties:
+        cacheExpiry:
+          type: integer
+          example: 86400
+        behaviors:
+          $ref: '#/components/schemas/Behavior'
+    ConfigurationValue:
+      type: string
+      description: Configuration values that define [behavior actions](/v3/api-reference/carts-v3/configuration-behaviors).
+      enum:
+      - BLOCK
+      - REJECT
+      - WARN
+      - NONE
+    ValidationData:
+      type: object
+      properties:
+        promotions:
+          $ref: '#/components/schemas/PromotionValidationData'
+        lineItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineItemValidationData'
+        product:
+          $ref: '#/components/schemas/PIMValidationData'
+        tax:
+          $ref: '#/components/schemas/TaxValidationData'
     PriceDetail:
       type: object
       properties:
@@ -863,84 +1338,72 @@ components:
           items:
             $ref: '#/components/schemas/Tax'
       description: A collection of taxes.
-    OrderDraftResponse:
+    PromotionValidationData:
       type: object
       properties:
-        order:
-          $ref: '#/components/schemas/OrderInfo'
-        cartId:
-          type: string
-          description: The unique identifier of the cart that was passed in the parameter.
-          example: 4ed2e918-fb5b-47ed-bca3-da514b6aa6bf
-        attributes:
-          $ref: '#/components/schemas/Attributes'
-        customerContext:
-          $ref: '#/components/schemas/CustomerContext'
-        status:
-          type: string
-          description: The cart status indicates whether the cart is active or deleted.
-          example: ACTIVE
-          enum:
-          - ACTIVE
-          - SOFT_DELETE
-        state:
-          type: array
-          description: The resource state is stored in an array that holds information about the current status of the cart.
-          items:
-            $ref: '#/components/schemas/State'
-        price:
-          $ref: '#/components/schemas/PriceDetail'
-        promotions:
-          $ref: '#/components/schemas/Promotions'
-        fees:
-          $ref: '#/components/schemas/Fee'
-        adjustments:
-          $ref: '#/components/schemas/AdjustmentCollection'
-        addresses:
-          type: object
-          properties:
-            a8577d7f0d4d4b228e857b4a2e90dc93:
-              $ref: '#/components/schemas/Address'
-          description: A map of addresses added to the cart.
-        lineItems:
-          $ref: '#/components/schemas/ItemCollection'
-        fulfillments:
-          type: object
-          properties:
-            d6229cdb0c5b4885b1b213b94d02488e:
-              $ref: '#/components/schemas/Fulfillment'
-          description: A map of fulfillments added to the cart.
-        coupons:
-          type: array
-          description: An array containing all coupons added to the cart.
-          items:
-            $ref: '#/components/schemas/Coupon'
-        appliedCoupons:
-          type: array
-          description: An array containing all coupons applied to the cart.
-          items:
-            $ref: '#/components/schemas/Coupon'
-        notAppliedCoupons:
-          type: array
-          description: An array containing any coupons that were ineligible and not applied to the cart.
-          items:
-            $ref: '#/components/schemas/Coupon'
-        payments:
-          $ref: '#/components/schemas/PaymentCollection'
         updatedAt:
           type: string
-          format: date-time
-          description: The date and time in UTC when the cart was last updated.
-          example: '2024-06-24T16:57:47.112Z'
-        createdAt:
-          type: string
-          format: date-time
-          description: The date and time when a cart was created.
-          example: '2024-06-24T16:56:43.027Z'
-        errors:
+          description: The latest date when promotions data was added to the cart.
+          example: 2024-06-13 16:50:00.682000+00:00
+        appliedCoupons:
           type: array
+          description: An array containing coupons that have been added to the cart.
+          example:
+          - TEST_COUPON
           items:
-            $ref: '#/components/schemas/Error'
+            type: string
+            description: Coupons that have been added to the cart.
+            example: '["TEST_COUPON"]'
+        refreshRequired:
+          type: boolean
+          description: A boolean value that determines whether promotions require a refresh.
+          example: false
+      description: An object that contains promotion validation data.
+    PromotionMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The promotional message.
+          example: Buy one get one free
+        code:
+          type: string
+          description: The promotional code.
+          example: BOGO
+      description: An object containng various promotions associated with the cart.
+    ProductConfiguration:
+      type: object
+      properties:
+        cacheExpiry:
+          type: integer
+          description: Duration in seconds until product validation data expires.
+          format: int64
+          example: 7776000
+        behaviors:
+          $ref: '#/components/schemas/ProductBehaviour'
+        maxQuantity:
+          $ref: '#/components/schemas/MaxQtyConfiguration'
+      description: Configuration settings related to product behavior and cache expiry.
+    SuggestedProduct:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the suggested product.
+          example: '12345'
+        name:
+          type: string
+          description: The name of the suggested product.
+          example: Wireless Mouse
+        description:
+          type: string
+          description: The name of the suggested product.
+          example: A high-quality wireless mouse with ergonomic design.
+        price:
+          type: number
+          format: float
+          description: The price of the suggested product.
+          example: 29.99
     ItemCollection:
       type: object
       properties:

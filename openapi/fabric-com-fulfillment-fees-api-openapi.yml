@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   title: Cart Fulfillment Fees API
-  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user. It also provides functionality to merge carts when you switch from guest user to logged-in user, and apply coupons and other attributes (for example, gift wrapping) to the line items. Additionally, the API supports more advanced tasks such as using multiple carts within a B2B organization, sharing carts, and supporting a unified cart experience for multi-region and multi-brand businesses.<p>The Cart API provides high performance, scalability, multi-tenancy, and configurability to the end-to-end order processing actions that start from the item being added to the cart; through the pre-checkout stage that includes billing, shipping, and payment details; to the checkout stage where the order is processed and confirmed by fabric's Order Management System (OMS)
+  description: fabric's **Cart API** lets you add, update, and remove items from your Storefront cart, either as a guest user or as a logged-in user.
   contact:
     name: Cart Support
     email: support.cnc@fabric.inc
@@ -25,12 +25,10 @@ paths:
       description: 'Creates a fee associated the fulfillment.
 
 
-        The Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.
+        The Cart ID from the Create cart endpoint is used in the path parameter.
 
 
-        The Fulfillment ID from the [Create fulfillment](/v3/cart-and-checkout/api-reference/carts-v3/fulfillment/create-fulfillments) endpoint is used in the path parameter.
-
-        '
+        The Fulfillment ID from the Create fulfillment endpoint is used in the path parameter.'
       operationId: createFulfillmentFee
       parameters:
       - name: cartId
@@ -99,15 +97,13 @@ paths:
       description: 'Removes the fee from associated with the fulfillment.
 
 
-        The Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.
+        The Cart ID from the Create cart endpoint is used in the path parameter.
 
 
-        The Fulfillment ID from the [Create fulfillment](/v3/cart-and-checkout/api-reference/carts-v3/fulfillment/create-fulfillments) endpoint is used in the path parameter.
+        The Fulfillment ID from the Create fulfillment endpoint is used in the path parameter.
 
 
-        The Fee ID from the [Create fulfillment fee](/v3/cart-and-checkout/api-reference/carts-v3/fulfillment-fees/add-fulfillment) endpoint is used in the path parameter.
-
-        '
+        The Fee ID from the Create fulfillment fee endpoint is used in the path parameter.'
       operationId: deleteFulfillmentFee
       parameters:
       - name: cartId
@@ -171,12 +167,10 @@ paths:
       description: 'Updates the fee associated with the fulfillment.
 
 
-        The Cart ID from the [Create cart](/v3/cart-and-checkout/api-reference/carts-v3/carts/carts) endpoint is used in the path parameter.
+        The Cart ID from the Create cart endpoint is used in the path parameter.
 
 
-        The Fee ID from the [Create fulfillment fee](/v3/cart-and-checkout/api-reference/carts-v3/fulfillment-fees/add-fulfillment) endpoint is used in the path parameter.
-
-        '
+        The Fee ID from the Create fulfillment fee endpoint is used in the path parameter.'
       operationId: updateFulfillmentFee
       parameters:
       - name: cartId
@@ -245,6 +239,19 @@ paths:
                 $ref: '#/components/schemas/NotFound'
 components:
   schemas:
+    TaxCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Tax total in the collection.
+          example: 3
+        collection:
+          type: array
+          description: An array containing taxes in a collection.
+          items:
+            $ref: '#/components/schemas/Tax'
+      description: A collection of taxes.
     UpdatedFee:
       type: object
       properties:
@@ -285,87 +292,6 @@ components:
         taxDetails:
           $ref: '#/components/schemas/FeeTaxDetails'
       description: Fee
-    TaxCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Tax total in the collection.
-          example: 3
-        collection:
-          type: array
-          description: An array containing taxes in a collection.
-          items:
-            $ref: '#/components/schemas/Tax'
-      description: A collection of taxes.
-    NotFound:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: CART_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error description
-          example: Cart not found
-      description: Resource Not Found
-    ClientError:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: BAD_REQUEST
-        message:
-          type: string
-          description: Human-readable error description
-          example: x-fabric-tenant-id is required
-      description: Client error details
-    UpdateFeeRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the fee
-          example: Eco Fee
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        taxable:
-          type: boolean
-          description: A boolean value that determines whether a fee is taxable.
-          example: true
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes that provide more context for the fee, such as the source of the fee.
-            example:
-              source: eco
-          description: Custom attributes that provide more context for the fee, such as the source of the fee.
-          example:
-            source: eco
-      description: Fee Request
-    Tax:
-      type: object
-      properties:
-        amount:
-          type: number
-          description: Tax amount
-          example: 3
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
-            example:
-              rate: '5.0'
-              type: COUNTY
-          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
-          example:
-            rate: '5.0'
-            type: COUNTY
-      description: Tax
     CreateFeeRequest:
       required:
       - name
@@ -393,6 +319,62 @@ components:
           example:
             source: eco
       description: Fee Request
+    UpdateFeeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes that provide more context for the fee, such as the source of the fee.
+            example:
+              source: eco
+          description: Custom attributes that provide more context for the fee, such as the source of the fee.
+          example:
+            source: eco
+      description: Fee Request
+    NotFound:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
+    Tax:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Tax amount
+          example: 3
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+            example:
+              rate: '5.0'
+              type: COUNTY
+          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+          example:
+            rate: '5.0'
+            type: COUNTY
+      description: Tax
     Fee:
       type: object
       properties:
@@ -433,6 +415,29 @@ components:
         taxDetails:
           $ref: '#/components/schemas/FeeTaxDetails'
       description: Fee
+    ClientError:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: Human-readable error description
+          example: x-fabric-tenant-id is required
+      description: Client error details
+    ResourcePrice:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
     FeeTaxDetails:
       type: object
       properties:
@@ -445,17 +450,6 @@ components:
           description: The origin address from which the item will be fulfilled.
           example: c86f777b-1885-4ddf-961d-542ba80a69b8
       description: Tax details used to determine tax for a cart fee.
-    ResourcePrice:
-      required:
-      - amount
-      type: object
-      properties:
-        amount:
-          minimum: 0
-          type: number
-          description: Total fees amount
-          example: 12.99
-      description: Price details
   securitySchemes:
     bearerAuth:
       type: http

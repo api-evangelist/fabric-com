@@ -3,7 +3,7 @@ info:
   contact:
     email: support@fabric.inc
     name: fabric Support Team
-  description: fabric **Orders** API is a scalable multi-tenant service designed to streamline your order management process. Orders API is a REST and JSON driven interface enabling retailers to create orders directly from online Storefronts and Point-of-Sale systems, and serve as records of purchase transactions to permit retailers to operate against a standard schema with varied purchase channels. <p> fabric Orders API creates orders real time in the orders database, unifying the order data for users to streamline order lifecycle orchestration and customer service operations. It offers a range of features including the ability to create orders, get orders, update pickup details, and track orders, as well as search for existing orders. Also, the Orders API makes it easy to check eligibility of return, cancel, and exchange requests as well process them, if eligible. In addition, you can flag fraudulent orders based on due diligence, and either release them from hold or cancel them altogether. The appeasement feature helps you resolve any issues that may arise with an order and keep your customers happy. </p>
+  description: fabric **Orders** API is a scalable multi-tenant service designed to streamline your order management process.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
@@ -25,7 +25,18 @@ paths:
       tags:
       - Appeasements
       summary: Create an Appeasement by Order Identifier
-      description: "Creates an appeasement (such as a partial refund or credit) when a customer is dissatisfied \nwith their shopping experience. This endpoint allows you to initiate an appeasement \nrequest by providing an order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, you can still use this endpoint by setting `orderIdType` to `order-number`.\n"
+      description: 'Creates an appeasement (such as a partial refund or credit) when a customer is dissatisfied
+
+        with their shopping experience. This endpoint allows you to initiate an appeasement
+
+        request by providing an order identifier.
+
+
+        **Note:**
+
+        - Use this endpoint if you have the order ID, order number, or external order ID.
+
+        - If you only have an order number, you can still use this endpoint by setting `orderIdType` to `order-number`.'
       operationId: createAppeasementByOrderIdentifier
       parameters:
       - name: orderIdType
@@ -137,7 +148,16 @@ paths:
       tags:
       - Appeasements
       summary: Check Appeasement Eligibility by Order Identifier
-      description: "Checks whether a given order is eligible for an appeasement (such as a partial refund or credit).  \nThis endpoint evaluates eligibility based on the provided order identifier.\n\n**Note:**  \n- Use this endpoint if you have the order ID, order number, or external order ID.  \n- If you only have an order number, set `orderIdType` to `order-number`.\n"
+      description: 'Checks whether a given order is eligible for an appeasement (such as a partial refund or credit).
+
+        This endpoint evaluates eligibility based on the provided order identifier.
+
+
+        **Note:**
+
+        - Use this endpoint if you have the order ID, order number, or external order ID.
+
+        - If you only have an order number, set `orderIdType` to `order-number`.'
       operationId: checkAppeasementEligibilityByOrderIdentifier
       parameters:
       - name: orderIdType
@@ -319,7 +339,12 @@ paths:
       - Appeasements
   /orders/order-number/{orderNumber}/actions/create-appeasement:
     post:
-      description: 'When customer is dissatisfied with their shopping experience, you may want to offer an appeasement amount to keep them happy. <p> This endpoint is used to create appeasement request by order number.</p> <p> **Note**: If you do not have an order number, use the corresponding order ID-based endpoint - `POST /orders/{orderId}/actions/create-appeasement`</p>'
+      description: 'When customer is dissatisfied with their shopping experience, you may want to offer an appeasement amount to keep them happy.
+
+        This endpoint is used to create appeasement request by order number.
+
+
+        **Note**: If you do not have an order number, use the corresponding order ID-based endpoint - `POST /orders/{orderId}/actions/create-appeasement`'
       operationId: createAppeasementByOrderNumber
       parameters:
       - description: Merchant-defined order identifier
@@ -483,7 +508,12 @@ paths:
       - Appeasements
   /orders/{orderId}/actions/create-appeasement:
     post:
-      description: 'When customer is dissatisfied with their shopping experience, you may want to offer an appeasements amount such as partial refund to keep them happy. <p> This endpoint is used to create appeasement request by order ID </p> <p>. **Note**: If you do not have an order ID, but have an order number, use the order number-based endpoint - `POST /orders/order-number/{orderNumber}/actions/create-appeasement`.</p>'
+      description: 'When customer is dissatisfied with their shopping experience, you may want to offer an appeasements amount such as partial refund to keep them happy.
+
+        This endpoint is used to create appeasement request by order ID
+
+
+        . **Note**: If you do not have an order ID, but have an order number, use the order number-based endpoint - `POST /orders/order-number/{orderNumber}/actions/create-appeasement`.'
       operationId: createAppeasement
       parameters:
       - description: 24-character system-generated ID. It is returned in the response of Create Order - `POST /orders` endpoint.
@@ -567,7 +597,189 @@ paths:
       tags:
       - Appeasements
 components:
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
   schemas:
+    orderContactPhone:
+      description: Contact person's phone details.
+      properties:
+        number:
+          description: Contact person's phone number
+          example: 123-456-7890
+          type: string
+        type:
+          description: Contact number type
+          enum:
+          - MOBILE
+          - HOME
+          - BUSINESS
+          example: MOBILE
+          type: string
+      type: object
+    appeasementResponse:
+      description: Appeasement info
+      properties:
+        orderNumber:
+          description: Merchant-defined order identifier. If omitted, this is generated by fabric's sequence generator using Configuration service
+          example: '12'
+          type: string
+        totalAmountRefunded:
+          description: Total refunded amount
+          example: 25.5
+          format: double
+          type: number
+        totalAmountRefundedInCurrencies:
+          description: "The total amount that has been refunded, represented in one or more currencies.  \nEach entry provides the total refunded value and its corresponding currency code,  \nusing the structure defined in the `amountInCurrency` schema.  \nThis field enables tracking of cumulative refunds across multiple currencies.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    orderContactName:
+      description: Contact person's name
+      properties:
+        firstName:
+          description: Contact person's first name
+          example: Alex
+          type: string
+        lastName:
+          description: Contact person's last name
+          example: Doe
+          type: string
+        middleName:
+          description: Contact person's middle name or initial
+          example: E
+          type: string
+      type: object
+    orderCreateAppeasementRequest:
+      description: Appeasement request
+      properties:
+        appeasements:
+          description: Order-level appeasement details. At least one order-level or item-level appeasement must be added.
+          items:
+            $ref: '#/components/schemas/orderAppeasementDetail'
+          type: array
+        customer:
+          $ref: '#/components/schemas/invoiceCustomer'
+        items:
+          description: Item-level appeasements. At least one order-level or item-level appeasement must be added.
+          items:
+            $ref: '#/components/schemas/orderLineItemAppeasement'
+          type: array
+        orderExternalId:
+          type: string
+          description: "A merchant-defined external order identifier.  \nThis field is optional and can be used to reference the order in external \nsystems such as an ERP, OMS, or CRM.\n"
+          example: 191763090_O1231
+        source:
+          description: Merchant-defined source from where the appeasement request was initiated. There are no pre-defined values; possible values are Customer Service Representative (CSR), point-of-sale (POS), etc.
+          example: Storefront
+          type: string
+        userId:
+          description: Identifier of the logged in user who initiated the request. This could be from either fabric Identity service or an external Identity service.
+          example: '12'
+          type: string
+        requestContext:
+          $ref: '#/components/schemas/requestReferenceContextResource'
+          description: Request reference context information
+      required:
+      - source
+      - userId
+      type: object
+    reasonCodeAndDescription:
+      description: Return or exchange reason
+      properties:
+        code:
+          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
+          example: 1DMG
+          type: string
+        description:
+          description: Brief description for the return `code`
+          example: Damaged
+          type: string
+      type: object
+    orderLineItemAppeasement:
+      description: An object broken down by the item-level containing appeasement details for each item.
+      properties:
+        appeasements:
+          description: 'Item-level appeasements. **Note**: If the same appeasement counter is found twice at order level as well as item-level appeasement, item-level appeasement request is considered as duplicate. However, if the same appeasement counter is found under different items, then, it is not considered as duplicates.'
+          items:
+            $ref: '#/components/schemas/orderAppeasementDetail'
+          type: array
+        lineItemId:
+          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it (in UUID format) during order creation.
+          example: d538b1f1-0e45-43c6-bfc6-9666fc1188ca
+          type: string
+      required:
+      - appeasements
+      - lineItemId
+      type: object
+    appeasementEligibilityItemResource:
+      description: An object that contains properties and information on an item's eligibility for appeasement.
+      properties:
+        lineItemId:
+          description: The system generated item sequence ID.
+          example: 6f25bf01-ae4e-4e7f-96b9-0579a40a1a7d
+          type: string
+        quantity:
+          description: The eligible quantity for appeasement.
+          example: 2
+          format: int32
+          type: integer
+        refundAmount:
+          description: The maximum eligible refund amount for an appeasement item.
+          example: 20.5
+          type: number
+        sku:
+          description: The unique identifier of item. Stock Keeping Unit (SKU).
+          example: P1234
+          type: string
+        refundAmountInCurrencies:
+          type: array
+          description: "A list of refund amounts, each represented in a specific currency.  \nEach item includes the monetary value and its associated currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.  \nThis allows multi-currency refunds to be accurately represented and processed.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrencyResource'
+      type: object
+    amountInCurrencyResource:
+      description: Amount in currency object details.
+      properties:
+        amount:
+          description: The amount displayed in the primary currency.
+          example: 123.45
+          format: double
+          type: number
+        currency:
+          description: Currency in ISO-4217
+          example: USD
+          type: string
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
+          type: string
+      required:
+      - currency
+      - group
+      type: object
     appeasementEligibilityResponse:
       description: A response object that contains properties and information on an item's eligibility for appeasement.
       properties:
@@ -613,200 +825,6 @@ components:
           items:
             $ref: '#/components/schemas/amountInCurrency'
           type: array
-      type: object
-    orderContactPhone:
-      description: Contact person's phone details.
-      properties:
-        number:
-          description: Contact person's phone number
-          example: 123-456-7890
-          type: string
-        type:
-          description: Contact number type
-          enum:
-          - MOBILE
-          - HOME
-          - BUSINESS
-          example: MOBILE
-          type: string
-      type: object
-    orderCreateAppeasementRequest:
-      description: Appeasement request
-      properties:
-        appeasements:
-          description: Order-level appeasement details. At least one order-level or item-level appeasement must be added.
-          items:
-            $ref: '#/components/schemas/orderAppeasementDetail'
-          type: array
-        customer:
-          $ref: '#/components/schemas/invoiceCustomer'
-        items:
-          description: Item-level appeasements. At least one order-level or item-level appeasement must be added.
-          items:
-            $ref: '#/components/schemas/orderLineItemAppeasement'
-          type: array
-        orderExternalId:
-          type: string
-          description: "A merchant-defined external order identifier.  \nThis field is optional and can be used to reference the order in external \nsystems such as an ERP, OMS, or CRM.\n"
-          example: 191763090_O1231
-        source:
-          description: Merchant-defined source from where the appeasement request was initiated. There are no pre-defined values; possible values are Customer Service Representative (CSR), point-of-sale (POS), etc.
-          example: Storefront
-          type: string
-        userId:
-          description: Identifier of the logged in user who initiated the request. This could be from either fabric Identity service or an external Identity service.
-          example: '12'
-          type: string
-        requestContext:
-          $ref: '#/components/schemas/requestReferenceContextResource'
-          description: Request reference context information
-      required:
-      - source
-      - userId
-      type: object
-    amountInCurrencyResource:
-      description: Amount in currency object details.
-      properties:
-        amount:
-          description: The amount displayed in the primary currency.
-          example: 123.45
-          format: double
-          type: number
-        currency:
-          description: Currency in ISO-4217
-          example: USD
-          type: string
-        group:
-          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
-          example: SHOPPER
-          type: string
-      required:
-      - currency
-      - group
-      type: object
-    appeasementResponse:
-      description: Appeasement info
-      properties:
-        orderNumber:
-          description: Merchant-defined order identifier. If omitted, this is generated by fabric's sequence generator using Configuration service
-          example: '12'
-          type: string
-        totalAmountRefunded:
-          description: Total refunded amount
-          example: 25.5
-          format: double
-          type: number
-        totalAmountRefundedInCurrencies:
-          description: "The total amount that has been refunded, represented in one or more currencies.  \nEach entry provides the total refunded value and its corresponding currency code,  \nusing the structure defined in the `amountInCurrency` schema.  \nThis field enables tracking of cumulative refunds across multiple currencies.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrency'
-          type: array
-      type: object
-    reasonCodeAndDescription:
-      description: Return or exchange reason
-      properties:
-        code:
-          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
-          example: 1DMG
-          type: string
-        description:
-          description: Brief description for the return `code`
-          example: Damaged
-          type: string
-      type: object
-    orderAppeasementPaymentInfo:
-      description: Order appeasement payment info
-      properties:
-        paymentCounter:
-          description: Payment counter to identify which payment to refund.
-          example: 1
-          format: int32
-          type: integer
-        refundAmount:
-          description: Refund amount for appeasements.
-          example: 34.56
-          format: double
-          type: number
-        refundAmountInCurrencies:
-          items:
-            description: The refund amount specifically for appeasements, itemized by each currency used within the order.
-            $ref: '#/components/schemas/amountInCurrencyResource'
-          type: array
-      type: object
-    orderContactName:
-      description: Contact person's name
-      properties:
-        firstName:
-          description: Contact person's first name
-          example: Alex
-          type: string
-        lastName:
-          description: Contact person's last name
-          example: Doe
-          type: string
-        middleName:
-          description: Contact person's middle name or initial
-          example: E
-          type: string
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    appeasementEligibilityItemResource:
-      description: An object that contains properties and information on an item's eligibility for appeasement.
-      properties:
-        lineItemId:
-          description: The system generated item sequence ID.
-          example: 6f25bf01-ae4e-4e7f-96b9-0579a40a1a7d
-          type: string
-        quantity:
-          description: The eligible quantity for appeasement.
-          example: 2
-          format: int32
-          type: integer
-        refundAmount:
-          description: The maximum eligible refund amount for an appeasement item.
-          example: 20.5
-          type: number
-        sku:
-          description: The unique identifier of item. Stock Keeping Unit (SKU).
-          example: P1234
-          type: string
-        refundAmountInCurrencies:
-          type: array
-          description: "A list of refund amounts, each represented in a specific currency.  \nEach item includes the monetary value and its associated currency code,  \nfollowing the structure defined in the `amountInCurrencyResource` schema.  \nThis allows multi-currency refunds to be accurately represented and processed.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrencyResource'
-      type: object
-    orderLineItemAppeasement:
-      description: An object broken down by the item-level containing appeasement details for each item.
-      properties:
-        appeasements:
-          description: 'Item-level appeasements. **Note**: If the same appeasement counter is found twice at order level as well as item-level appeasement, item-level appeasement request is considered as duplicate. However, if the same appeasement counter is found under different items, then, it is not considered as duplicates.'
-          items:
-            $ref: '#/components/schemas/orderAppeasementDetail'
-          type: array
-        lineItemId:
-          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it (in UUID format) during order creation.
-          example: d538b1f1-0e45-43c6-bfc6-9666fc1188ca
-          type: string
-      required:
-      - appeasements
-      - lineItemId
       type: object
     refundDetailResource:
       description: Used for credit rules. This resource captures the split of fees and tax refunds at the item and order level.
@@ -929,6 +947,25 @@ components:
       - currency
       - group
       type: object
+    orderAppeasementPaymentInfo:
+      description: Order appeasement payment info
+      properties:
+        paymentCounter:
+          description: Payment counter to identify which payment to refund.
+          example: 1
+          format: int32
+          type: integer
+        refundAmount:
+          description: Refund amount for appeasements.
+          example: 34.56
+          format: double
+          type: number
+        refundAmountInCurrencies:
+          items:
+            description: The refund amount specifically for appeasements, itemized by each currency used within the order.
+            $ref: '#/components/schemas/amountInCurrencyResource'
+          type: array
+      type: object
     invoiceCustomer:
       description: Invoice customer
       properties:
@@ -980,13 +1017,6 @@ components:
       in: header
       name: x-fabric-tenant-id
       required: true
-      schema:
-        type: string
-  headers:
-    xFabricRequestIdResponseHeader:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
       schema:
         type: string
   securitySchemes:

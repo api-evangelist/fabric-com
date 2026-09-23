@@ -3,7 +3,7 @@ info:
   contact:
     email: support@fabric.inc
     name: fabric Orders Team
-  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment. Typically, Storefront Websites utilize the Inventory service to retrieve data, while Warehouse Management Systems (WMS) use it to create and update inventory details. fabric's Inventory API includes high-performance endpoints built on highly scalable architecture, and includes a configurable data model to orchestrate the inventory lifecycle events.
+  description: fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order fulfillment.
   license:
     name: fabric API License
     url: https://fabric.inc/api-license
@@ -407,6 +407,13 @@ paths:
       tags:
       - Networks
 components:
+  headers:
+    xFabricRequestIdResponseHeader:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+      schema:
+        type: string
   schemas:
     network:
       description: Network response details
@@ -461,6 +468,68 @@ components:
       - name
       - rule
       type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    updateNetwork:
+      description: Request sample to update network
+      properties:
+        description:
+          description: Network description
+          example: network-mar6th
+          type: string
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Network name
+          example: Distribution Center
+          type: string
+        networkId:
+          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        rule:
+          description: Rule by which a network will be created with the group of inventories
+          example:
+            locationData.attributes.safetyStock: 10
+            locationData.isActive: true
+            locationData.type: Store
+            productData.attributes.brand: ABC
+            productData.attributes.isSoldOnline: true
+          type: object
+        safetyStock:
+          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
+          example: 10
+          format: int32
+          type: integer
+      required:
+      - name
+      - rule
+      type: object
     networkSearchResponse:
       description: Network search response
       properties:
@@ -470,6 +539,23 @@ components:
           type: array
         pagination:
           $ref: '#/components/schemas/pagination'
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
       type: object
     createNetwork:
       description: Sample request to create network
@@ -514,86 +600,15 @@ components:
       - name
       - rule
       type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    updateNetwork:
-      description: Request sample to update network
-      properties:
-        description:
-          description: Network description
-          example: network-mar6th
-          type: string
-        lowStock:
-          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
-          example: 10
-          format: int32
-          type: integer
-        name:
-          description: Network name
-          example: Distribution Center
-          type: string
-        networkId:
-          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
-          example: 5349b4ddd2781d08c09890f4
-          type: string
-        rule:
-          description: Rule by which a network will be created with the group of inventories
-          example:
-            locationData.attributes.safetyStock: 10
-            locationData.isActive: true
-            locationData.type: Store
-            productData.attributes.brand: ABC
-            productData.attributes.isSoldOnline: true
-          type: object
-        safetyStock:
-          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
-          example: 10
-          format: int32
-          type: integer
-      required:
-      - name
-      - rule
-      type: object
-    pagination:
-      description: Pagination response
-      properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
   parameters:
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
     xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
@@ -608,21 +623,6 @@ components:
       in: header
       name: x-fabric-tenant-id
       required: true
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-  headers:
-    xFabricRequestIdResponseHeader:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
       schema:
         type: string
   securitySchemes:
