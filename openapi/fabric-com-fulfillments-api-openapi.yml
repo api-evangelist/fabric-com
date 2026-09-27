@@ -424,6 +424,243 @@ paths:
                 $ref: '#/components/schemas/NotFound'
 components:
   schemas:
+    PickupPerson:
+      type: object
+      properties:
+        primary:
+          $ref: '#/components/schemas/Person'
+        secondary:
+          type: array
+          description: An array containing secondary people for pickup.
+          items:
+            $ref: '#/components/schemas/Person'
+      description: Pickup person details
+    NotFound:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
+    Adjustment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Adjustment ID generated when an adjustment was created using the [Create adjustment](/v3/cart-and-checkout/api-reference/carts-v3/carts-adjustments/create-adjustments) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        reason:
+          type: string
+          description: The reason for the adjustment.
+          example: Price adjustment from customer representative.
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes used for price adjustments.
+            example:
+              source: CSR
+          description: Custom attributes used for price adjustments.
+          example:
+            source: CSR
+        updatedAt:
+          type: string
+          description: The date and time when the adjustment was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the adjustment was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+      description: Adjustment
+    Fee:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the fee associated with the corresponding cart that was generated when making [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes that provide more context for the fee, such as the source of the fee.
+            example:
+              source: eco
+          description: Custom attributes that provide more context for the fee, such as the source of the fee.
+          example:
+            source: eco
+        tax:
+          $ref: '#/components/schemas/TaxCollection'
+        updatedAt:
+          type: string
+          description: The date and time when the fee was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the fee was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+        taxDetails:
+          $ref: '#/components/schemas/FeeTaxDetails'
+      description: Fee
+    FeeTaxDetails:
+      type: object
+      properties:
+        destinationAddress:
+          type: string
+          description: The destination address where the item will be delivered.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+        originAddress:
+          type: string
+          description: The origin address from which the item will be fulfilled.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+      description: Tax details used to determine tax for a cart fee.
+    ResourcePrice:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
+    FulfillmentPromotionCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: The total discount applied within a collection.
+          example: 15
+        collection:
+          type: array
+          description: An array containing the promotions within a collection.
+          items:
+            $ref: '#/components/schemas/FulfillmentPromotion'
+      description: A collection of promotions applied to the fulfillment.
+    UpdateFulfillmentRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Determines the type of fulfillment.
+          example: SHIP_TO
+          enum:
+          - SHIP_TO
+          - BOPIS
+          - ROPIS
+        refId:
+          type: string
+          description: An alternative identifier for fulfillments, used for additional tracking or referencing.
+          example: '398427903843'
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes
+            example:
+              source: store
+          description: Custom attributes
+          example:
+            source: store
+        originAddress:
+          type: string
+          description: The identifier of the address where the item is being fulfilled.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        destinationAddress:
+          type: string
+          description: The identifier of the address where the item is being shipped.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        locationId:
+          type: string
+          description: Unique identifier of the store.
+          example: CA
+        pickupPerson:
+          $ref: '#/components/schemas/PickupPerson'
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+      description: Fulfillment Request
+    ClientError:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: Human-readable error description
+          example: x-fabric-tenant-id is required
+      description: Client error details
+    Person:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          type: string
+          description: Email of the pickup person.
+          example: john@test.com
+        phone:
+          $ref: '#/components/schemas/Phone'
+      description: Name of the pickup person.
+    AdjustmentCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Adjustments total in a collection.
+          example: 2
+        collection:
+          type: array
+          description: An array containing adjustments in the collection.
+          items:
+            $ref: '#/components/schemas/Adjustment'
+      description: A collection of adjustments made to the corresponding cart.
+    FulfillmentPromotion:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier of a promotion
+          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
+        amount:
+          type: number
+          description: The discount amount applied to a fulfillment.
+          example: 15
+      description: Fulfillment Promotion
+    TaxCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Tax total in the collection.
+          example: 3
+        collection:
+          type: array
+          description: An array containing taxes in a collection.
+          items:
+            $ref: '#/components/schemas/Tax'
+      description: A collection of taxes.
     Tax:
       type: object
       properties:
@@ -444,47 +681,22 @@ components:
             rate: '5.0'
             type: COUNTY
       description: Tax
-    FulfillmentPromotion:
+    Name:
       type: object
       properties:
-        id:
+        first:
           type: string
-          description: Identifier of a promotion
-          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
-        amount:
-          type: number
-          description: The discount amount applied to a fulfillment.
-          example: 15
-      description: Fulfillment Promotion
-    AddAttributesRequest:
-      required:
-      - attributes
-      type: object
-      properties:
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: An object containing custom attributes of your choice for the resource.
-            example:
-              test: test
-          description: An object containing custom attributes of your choice for the resource.
-          example:
-            test: test
-      description: Add Attributes Request
-    FeesCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: The total fees amount in the collection.
-          example: 5
-        collection:
-          type: array
-          description: An array containing all fees and their details in a collection.
-          items:
-            $ref: '#/components/schemas/Fee'
-      description: A collection of fees associated with the corresponding cart.
+          description: First name
+          example: John
+        middle:
+          type: string
+          description: Middle name
+          example: S
+        last:
+          type: string
+          description: Last name
+          example: Doe
+      description: Name of the recipient of the order.
     Fulfillment:
       type: object
       properties:
@@ -539,255 +751,6 @@ components:
         tax:
           $ref: '#/components/schemas/TaxCollection'
       description: A fulfillment object containing important fulfillment information.
-    PickupPerson:
-      type: object
-      properties:
-        primary:
-          $ref: '#/components/schemas/Person'
-        secondary:
-          type: array
-          description: An array containing secondary people for pickup.
-          items:
-            $ref: '#/components/schemas/Person'
-      description: Pickup person details
-    DeleteAttributesRequest:
-      required:
-      - attributes
-      type: object
-      properties:
-        attributes:
-          type: array
-          description: Include the attributes you wish to remove in an array containing attribute keys that remove the attributes added using the [Add payment attributes](/v3/cart-and-checkout/api-reference/carts-v3/payments/add-payment-attributes) endpoint.
-          example:
-          - test
-          items:
-            type: string
-            description: Include the attributes you wish to remove in an array containing attribute keys that remove the attributes added using the [Add payment attributes](/v3/cart-and-checkout/api-reference/carts-v3/payments/add-payment-attributes) endpoint.
-            example: '["test"]'
-      description: Delete Attributes Request
-    ResourcePrice:
-      required:
-      - amount
-      type: object
-      properties:
-        amount:
-          minimum: 0
-          type: number
-          description: Total fees amount
-          example: 12.99
-      description: Price details
-    Name:
-      type: object
-      properties:
-        first:
-          type: string
-          description: First name
-          example: John
-        middle:
-          type: string
-          description: Middle name
-          example: S
-        last:
-          type: string
-          description: Last name
-          example: Doe
-      description: Name of the recipient of the order.
-    AdjustmentCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Adjustments total in a collection.
-          example: 2
-        collection:
-          type: array
-          description: An array containing adjustments in the collection.
-          items:
-            $ref: '#/components/schemas/Adjustment'
-      description: A collection of adjustments made to the corresponding cart.
-    Fee:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the fee associated with the corresponding cart that was generated when making [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        name:
-          type: string
-          description: Name of the fee
-          example: Eco Fee
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        taxable:
-          type: boolean
-          description: A boolean value that determines whether a fee is taxable.
-          example: true
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes that provide more context for the fee, such as the source of the fee.
-            example:
-              source: eco
-          description: Custom attributes that provide more context for the fee, such as the source of the fee.
-          example:
-            source: eco
-        tax:
-          $ref: '#/components/schemas/TaxCollection'
-        updatedAt:
-          type: string
-          description: The date and time when the fee was last updated.
-          example: 2024-06-13 16:50:00.682000+00:00
-        createdAt:
-          type: string
-          description: The date and time when the fee was created.
-          example: 2024-06-13 16:50:00.682000+00:00
-        taxDetails:
-          $ref: '#/components/schemas/FeeTaxDetails'
-      description: Fee
-    Adjustment:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The Adjustment ID generated when an adjustment was created using the [Create adjustment](/v3/cart-and-checkout/api-reference/carts-v3/carts-adjustments/create-adjustments) endpoint.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        reason:
-          type: string
-          description: The reason for the adjustment.
-          example: Price adjustment from customer representative.
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes used for price adjustments.
-            example:
-              source: CSR
-          description: Custom attributes used for price adjustments.
-          example:
-            source: CSR
-        updatedAt:
-          type: string
-          description: The date and time when the adjustment was last updated.
-          example: 2024-06-13 16:50:00.682000+00:00
-        createdAt:
-          type: string
-          description: The date and time when the adjustment was created.
-          example: 2024-06-13 16:50:00.682000+00:00
-      description: Adjustment
-    FulfillmentPromotionCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: The total discount applied within a collection.
-          example: 15
-        collection:
-          type: array
-          description: An array containing the promotions within a collection.
-          items:
-            $ref: '#/components/schemas/FulfillmentPromotion'
-      description: A collection of promotions applied to the fulfillment.
-    Phone:
-      type: object
-      properties:
-        number:
-          type: string
-          description: Phone Number
-          example: 123-456-7890
-        type:
-          type: string
-          description: Phone Number Type
-          example: MOBILE
-          enum:
-          - MOBILE
-          - BUSINESS
-          - HOME
-      description: Phone
-    ClientError:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: BAD_REQUEST
-        message:
-          type: string
-          description: Human-readable error description
-          example: x-fabric-tenant-id is required
-      description: Client error details
-    CreateFulfillmentRequest:
-      required:
-      - price
-      - type
-      type: object
-      properties:
-        type:
-          type: string
-          description: Determines the type of fulfillment.
-          example: SHIP_TO
-          enum:
-          - SHIP_TO
-          - BOPIS
-          - ROPIS
-        refId:
-          type: string
-          description: An alternative identifier for fulfillments, used for additional tracking or referencing.
-          example: '398427903843'
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context to the fulfillment, such as where it was made.
-            example:
-              source: store
-          description: Custom attributes to provide more context to the fulfillment, such as where it was made.
-          example:
-            source: store
-        originAddress:
-          type: string
-          description: The identifier of the address where the item is being fulfilled.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        destinationAddress:
-          type: string
-          description: The identifier of the address where the item is being shipped.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        locationId:
-          type: string
-          description: Unique identifier of the store.
-          example: CA
-        pickupPerson:
-          $ref: '#/components/schemas/PickupPerson'
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-      description: Fulfillment Request
-    TaxCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Tax total in the collection.
-          example: 3
-        collection:
-          type: array
-          description: An array containing taxes in a collection.
-          items:
-            $ref: '#/components/schemas/Tax'
-      description: A collection of taxes.
-    NotFound:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: CART_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error description
-          example: Cart not found
-      description: Resource Not Found
     NewFulfillment:
       type: object
       properties:
@@ -842,21 +805,70 @@ components:
         tax:
           $ref: '#/components/schemas/TaxCollection'
       description: A fulfillment object containing important fulfillment information.
-    Person:
+    AddAttributesRequest:
       required:
-      - name
+      - attributes
       type: object
       properties:
-        name:
-          $ref: '#/components/schemas/Name'
-        email:
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: An object containing custom attributes of your choice for the resource.
+            example:
+              test: test
+          description: An object containing custom attributes of your choice for the resource.
+          example:
+            test: test
+      description: Add Attributes Request
+    FeesCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: The total fees amount in the collection.
+          example: 5
+        collection:
+          type: array
+          description: An array containing all fees and their details in a collection.
+          items:
+            $ref: '#/components/schemas/Fee'
+      description: A collection of fees associated with the corresponding cart.
+    Phone:
+      type: object
+      properties:
+        number:
           type: string
-          description: Email of the pickup person.
-          example: john@test.com
-        phone:
-          $ref: '#/components/schemas/Phone'
-      description: Name of the pickup person.
-    UpdateFulfillmentRequest:
+          description: Phone Number
+          example: 123-456-7890
+        type:
+          type: string
+          description: Phone Number Type
+          example: MOBILE
+          enum:
+          - MOBILE
+          - BUSINESS
+          - HOME
+      description: Phone
+    DeleteAttributesRequest:
+      required:
+      - attributes
+      type: object
+      properties:
+        attributes:
+          type: array
+          description: Include the attributes you wish to remove in an array containing attribute keys that remove the attributes added using the [Add payment attributes](/v3/cart-and-checkout/api-reference/carts-v3/payments/add-payment-attributes) endpoint.
+          example:
+          - test
+          items:
+            type: string
+            description: Include the attributes you wish to remove in an array containing attribute keys that remove the attributes added using the [Add payment attributes](/v3/cart-and-checkout/api-reference/carts-v3/payments/add-payment-attributes) endpoint.
+            example: '["test"]'
+      description: Delete Attributes Request
+    CreateFulfillmentRequest:
+      required:
+      - price
+      - type
       type: object
       properties:
         type:
@@ -875,10 +887,10 @@ components:
           type: object
           additionalProperties:
             type: object
-            description: Custom attributes
+            description: Custom attributes to provide more context to the fulfillment, such as where it was made.
             example:
               source: store
-          description: Custom attributes
+          description: Custom attributes to provide more context to the fulfillment, such as where it was made.
           example:
             source: store
         originAddress:
@@ -898,18 +910,6 @@ components:
         price:
           $ref: '#/components/schemas/ResourcePrice'
       description: Fulfillment Request
-    FeeTaxDetails:
-      type: object
-      properties:
-        destinationAddress:
-          type: string
-          description: The destination address where the item will be delivered.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-        originAddress:
-          type: string
-          description: The origin address from which the item will be fulfilled.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-      description: Tax details used to determine tax for a cart fee.
   securitySchemes:
     bearerAuth:
       type: http

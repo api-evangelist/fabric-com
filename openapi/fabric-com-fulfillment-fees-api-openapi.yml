@@ -239,19 +239,6 @@ paths:
                 $ref: '#/components/schemas/NotFound'
 components:
   schemas:
-    TaxCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Tax total in the collection.
-          example: 3
-        collection:
-          type: array
-          description: An array containing taxes in a collection.
-          items:
-            $ref: '#/components/schemas/Tax'
-      description: A collection of taxes.
     UpdatedFee:
       type: object
       properties:
@@ -277,6 +264,150 @@ components:
             example:
               source: eco
           description: Custom attributes used to describe a fee, such as an eco fee.
+          example:
+            source: eco
+        tax:
+          $ref: '#/components/schemas/TaxCollection'
+        updatedAt:
+          type: string
+          description: The date and time when the fee was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the fee was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+        taxDetails:
+          $ref: '#/components/schemas/FeeTaxDetails'
+      description: Fee
+    TaxCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Tax total in the collection.
+          example: 3
+        collection:
+          type: array
+          description: An array containing taxes in a collection.
+          items:
+            $ref: '#/components/schemas/Tax'
+      description: A collection of taxes.
+    Tax:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Tax amount
+          example: 3
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+            example:
+              rate: '5.0'
+              type: COUNTY
+          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+          example:
+            rate: '5.0'
+            type: COUNTY
+      description: Tax
+    NotFound:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
+    FeeTaxDetails:
+      type: object
+      properties:
+        destinationAddress:
+          type: string
+          description: The destination address where the item will be delivered.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+        originAddress:
+          type: string
+          description: The origin address from which the item will be fulfilled.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+      description: Tax details used to determine tax for a cart fee.
+    ResourcePrice:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
+    ClientError:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: Human-readable error description
+          example: x-fabric-tenant-id is required
+      description: Client error details
+    UpdateFeeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes that provide more context for the fee, such as the source of the fee.
+            example:
+              source: eco
+          description: Custom attributes that provide more context for the fee, such as the source of the fee.
+          example:
+            source: eco
+      description: Fee Request
+    Fee:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the fee associated with the corresponding cart that was generated when making [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes that provide more context for the fee, such as the source of the fee.
+            example:
+              source: eco
+          description: Custom attributes that provide more context for the fee, such as the source of the fee.
           example:
             source: eco
         tax:
@@ -319,137 +450,6 @@ components:
           example:
             source: eco
       description: Fee Request
-    UpdateFeeRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the fee
-          example: Eco Fee
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        taxable:
-          type: boolean
-          description: A boolean value that determines whether a fee is taxable.
-          example: true
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes that provide more context for the fee, such as the source of the fee.
-            example:
-              source: eco
-          description: Custom attributes that provide more context for the fee, such as the source of the fee.
-          example:
-            source: eco
-      description: Fee Request
-    NotFound:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: CART_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error description
-          example: Cart not found
-      description: Resource Not Found
-    Tax:
-      type: object
-      properties:
-        amount:
-          type: number
-          description: Tax amount
-          example: 3
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
-            example:
-              rate: '5.0'
-              type: COUNTY
-          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
-          example:
-            rate: '5.0'
-            type: COUNTY
-      description: Tax
-    Fee:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the fee associated with the corresponding cart that was generated when making [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        name:
-          type: string
-          description: Name of the fee
-          example: Eco Fee
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        taxable:
-          type: boolean
-          description: A boolean value that determines whether a fee is taxable.
-          example: true
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes that provide more context for the fee, such as the source of the fee.
-            example:
-              source: eco
-          description: Custom attributes that provide more context for the fee, such as the source of the fee.
-          example:
-            source: eco
-        tax:
-          $ref: '#/components/schemas/TaxCollection'
-        updatedAt:
-          type: string
-          description: The date and time when the fee was last updated.
-          example: 2024-06-13 16:50:00.682000+00:00
-        createdAt:
-          type: string
-          description: The date and time when the fee was created.
-          example: 2024-06-13 16:50:00.682000+00:00
-        taxDetails:
-          $ref: '#/components/schemas/FeeTaxDetails'
-      description: Fee
-    ClientError:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: BAD_REQUEST
-        message:
-          type: string
-          description: Human-readable error description
-          example: x-fabric-tenant-id is required
-      description: Client error details
-    ResourcePrice:
-      required:
-      - amount
-      type: object
-      properties:
-        amount:
-          minimum: 0
-          type: number
-          description: Total fees amount
-          example: 12.99
-      description: Price details
-    FeeTaxDetails:
-      type: object
-      properties:
-        destinationAddress:
-          type: string
-          description: The destination address where the item will be delivered.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-        originAddress:
-          type: string
-          description: The origin address from which the item will be fulfilled.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-      description: Tax details used to determine tax for a cart fee.
   securitySchemes:
     bearerAuth:
       type: http

@@ -407,14 +407,137 @@ paths:
       tags:
       - Networks
 components:
-  headers:
-    xFabricRequestIdResponseHeader:
+  parameters:
+    xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
       required: false
       schema:
         type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
   schemas:
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    createNetwork:
+      description: Sample request to create network
+      properties:
+        code:
+          description: Unique network code
+          example: DC
+          type: string
+        description:
+          description: Network description
+          example: network-mar6th
+          type: string
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Network name
+          example: Distribution Center
+          type: string
+        networkId:
+          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        rule:
+          description: Rule by which a network will be created with the group of inventories
+          example:
+            locationData.attributes.safetyStock: 10
+            locationData.isActive: true
+            locationData.type: Store
+            productData.attributes.brand: ABC
+            productData.attributes.isSoldOnline: true
+          type: object
+        safetyStock:
+          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
+          example: 10
+          format: int32
+          type: integer
+      required:
+      - code
+      - name
+      - rule
+      type: object
+    updateNetwork:
+      description: Request sample to update network
+      properties:
+        description:
+          description: Network description
+          example: network-mar6th
+          type: string
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Network name
+          example: Distribution Center
+          type: string
+        networkId:
+          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        rule:
+          description: Rule by which a network will be created with the group of inventories
+          example:
+            locationData.attributes.safetyStock: 10
+            locationData.isActive: true
+            locationData.type: Store
+            productData.attributes.brand: ABC
+            productData.attributes.isSoldOnline: true
+          type: object
+        safetyStock:
+          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
+          example: 10
+          format: int32
+          type: integer
+      required:
+      - name
+      - rule
+      type: object
     network:
       description: Network response details
       properties:
@@ -468,68 +591,6 @@ components:
       - name
       - rule
       type: object
-    pagination:
-      description: Pagination response
-      properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
-    updateNetwork:
-      description: Request sample to update network
-      properties:
-        description:
-          description: Network description
-          example: network-mar6th
-          type: string
-        lowStock:
-          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
-          example: 10
-          format: int32
-          type: integer
-        name:
-          description: Network name
-          example: Distribution Center
-          type: string
-        networkId:
-          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
-          example: 5349b4ddd2781d08c09890f4
-          type: string
-        rule:
-          description: Rule by which a network will be created with the group of inventories
-          example:
-            locationData.attributes.safetyStock: 10
-            locationData.isActive: true
-            locationData.type: Store
-            productData.attributes.brand: ABC
-            productData.attributes.isSoldOnline: true
-          type: object
-        safetyStock:
-          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
-          example: 10
-          format: int32
-          type: integer
-      required:
-      - name
-      - rule
-      type: object
     networkSearchResponse:
       description: Network search response
       properties:
@@ -557,72 +618,11 @@ components:
           example: CLIENT_ERROR
           type: string
       type: object
-    createNetwork:
-      description: Sample request to create network
-      properties:
-        code:
-          description: Unique network code
-          example: DC
-          type: string
-        description:
-          description: Network description
-          example: network-mar6th
-          type: string
-        lowStock:
-          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
-          example: 10
-          format: int32
-          type: integer
-        name:
-          description: Network name
-          example: Distribution Center
-          type: string
-        networkId:
-          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
-          example: 5349b4ddd2781d08c09890f4
-          type: string
-        rule:
-          description: Rule by which a network will be created with the group of inventories
-          example:
-            locationData.attributes.safetyStock: 10
-            locationData.isActive: true
-            locationData.type: Store
-            productData.attributes.brand: ABC
-            productData.attributes.isSoldOnline: true
-          type: object
-        safetyStock:
-          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
-          example: 10
-          format: int32
-          type: integer
-      required:
-      - code
-      - name
-      - rule
-      type: object
-  parameters:
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-    xFabricRequestId:
+  headers:
+    xFabricRequestIdResponseHeader:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
       required: false
-      schema:
-        type: string
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
       schema:
         type: string
   securitySchemes:

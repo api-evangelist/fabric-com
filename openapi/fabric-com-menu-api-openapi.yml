@@ -262,6 +262,19 @@ paths:
                 message: An internal error occurred. If the issue persists please contact support@fabric.inc.
 components:
   schemas:
+    Error:
+      type: object
+      description: Server error response object
+      properties:
+        code:
+          type: string
+          description: Code associated with the type of server error
+        message:
+          type: string
+          description: Message associated with the server error
+      required:
+      - code
+      - message
     BrowseMenuItem:
       type: object
       description: Browse menu item object
@@ -318,16 +331,3 @@ components:
           description: Database ID for menu item parent
         children:
           $ref: '#/components/schemas/BrowseMenuItem'
-    Error:
-      type: object
-      description: Server error response object
-      properties:
-        code:
-          type: string
-          description: Code associated with the type of server error
-        message:
-          type: string
-          description: Message associated with the server error
-      required:
-      - code
-      - message

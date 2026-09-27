@@ -1025,7 +1025,184 @@ paths:
       tags:
       - Returns
 components:
+  parameters:
+    xFabricRequestId:
+      description: Unique request ID
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
+      required: false
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
   schemas:
+    returnsExchangeData:
+      description: Item exchange and return details.
+      properties:
+        isRefundingDisabled:
+          description: '**true:** Refund is disabled. **false:** Refund is enabled.'
+          example: true
+          type: boolean
+        items:
+          description: Item to be shipped in exchange for returned item
+          items:
+            $ref: '#/components/schemas/returnsExchangeItem'
+          type: array
+        refund:
+          $ref: '#/components/schemas/orderRefund'
+      required:
+      - items
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    eligibilityResponse:
+      description: Eligibility details object.
+      properties:
+        eligibleReasonCodes:
+          description: Reason codes for returns
+          items:
+            $ref: '#/components/schemas/reasonCodeAndDescription'
+          type: array
+        fees:
+          description: Fee details
+          items:
+            $ref: '#/components/schemas/policyFeeResource'
+          type: array
+        items:
+          description: Item's eligibility for return, cancellation, or exchange
+          items:
+            $ref: '#/components/schemas/itemEligibilityResource'
+          type: array
+        orderId:
+          description: 24-character system-generated order ID
+          example: 62f3982438bcab1951be0a19
+          type: string
+        period:
+          description: Return, exchange or cancellation window as per merchant policy
+          example: 30D00H00M
+          type: string
+        policyType:
+          description: Policy type that determines eligibility of exchange, return, or cancellation. If omitted, the default policy is considered.
+          example: Company Policy 2023
+          type: string
+      type: object
+    amountInCurrency:
+      description: Amount in currency object details.
+      properties:
+        amount:
+          description: The amount displayed in the primary currency.
+          example: 123.45
+          format: double
+          type: number
+        currency:
+          description: Currency in ISO-4217
+          example: USD
+          type: string
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
+          type: string
+      required:
+      - currency
+      - group
+      type: object
+    returnItemResponse:
+      description: Return details
+      properties:
+        lineItemId:
+          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it (in UUID format) during order creation.
+          example: 62f3dfc438bcab1951be0a19
+          type: string
+        policyCode:
+          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
+          example: policyCode
+          type: string
+        refundAmount:
+          description: Merchant-defined total refund amount
+          example: 21.5
+          format: double
+          type: number
+        returnQuantity:
+          description: Returned quantity of given item
+          example: 2
+          format: int32
+          type: integer
+        returnStatus:
+          description: Return status
+          enum:
+          - VALID
+          - POLICY_VIOLATION
+          - PENDING
+          - PROCESSING
+          - REJECTED
+          example: VALID
+          type: string
+      type: object
+    returnsExchangeItem:
+      description: Item details for return or exchange
+      properties:
+        initiateReshipment:
+          description: '**true:** Proceed with reshipment immediately, do not wait for return. **false:** Proceed with the reshipment after return is successful.'
+          example: true
+          type: boolean
+        itemId:
+          description: Unique identifier of item from fabric Products (PIM) service
+          example: 1234
+          format: int32
+          type: integer
+        itemUnitPrice:
+          description: Item's unit price
+          example: 10
+          format: double
+          type: number
+        itemUnitPriceInCurrencies:
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        quantity:
+          description: Number of items to be exchanged.
+          example: 10
+          format: int32
+          type: integer
+        sku:
+          description: Stock Keeping Unit (SKU), unique identifier of item
+          example: P1234
+          type: string
+      required:
+      - itemId
+      - quantity
+      - sku
+      type: object
     itemEligibilityResource:
       description: Item's eligibility for return, cancellation, or exchange
       properties:
@@ -1106,23 +1283,6 @@ components:
       required:
       - items
       - source
-      type: object
-    returnsExchangeData:
-      description: Item exchange and return details.
-      properties:
-        isRefundingDisabled:
-          description: '**true:** Refund is disabled. **false:** Refund is enabled.'
-          example: true
-          type: boolean
-        items:
-          description: Item to be shipped in exchange for returned item
-          items:
-            $ref: '#/components/schemas/returnsExchangeItem'
-          type: array
-        refund:
-          $ref: '#/components/schemas/orderRefund'
-      required:
-      - items
       type: object
     returnItem:
       description: An object containing return details for an item.
@@ -1207,23 +1367,6 @@ components:
       - shipmentId
       - shipmentLineId
       type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
     creditsRequest:
       description: Request for credits
       properties:
@@ -1288,11 +1431,11 @@ components:
       - source
       - type
       type: object
-    returnFeeDetail:
-      description: An object containing return fee details.
+    orderRefund:
+      description: Order refund
       properties:
         amount:
-          description: Merchant-defined return amount
+          description: Merchant-defined refund amount
           example: 34.56
           format: double
           type: number
@@ -1300,68 +1443,17 @@ components:
           items:
             $ref: '#/components/schemas/amountInCurrency'
           type: array
-        name:
-          description: Fee name
-          example: RETURN_FEE
-          type: string
-        reason:
-          description: Merchant-defined return reason
-          example: Return fee
-          type: string
-        type:
-          description: Return fee type
-          enum:
-          - TAX
-          - DISCOUNT
-          - FEE
-          - ITEM
-          - ADJUSTMENT
-          example: FEE
-          type: string
-      type: object
-    reasonCodeAndDescription:
-      description: Return or exchange reason
-      properties:
-        code:
-          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
-          example: 1DMG
-          type: string
-        description:
-          description: Brief description for the return `code`
-          example: Damaged
-          type: string
-      type: object
-    returnItemResponse:
-      description: Return details
-      properties:
-        lineItemId:
-          description: Merchant-defined unique identifier for each item in an order. When omitted, fabric will generate it (in UUID format) during order creation.
-          example: 62f3dfc438bcab1951be0a19
-          type: string
-        policyCode:
-          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
-          example: policyCode
-          type: string
-        refundAmount:
-          description: Merchant-defined total refund amount
-          example: 21.5
+        conversion:
+          description: Conversion required for currency
+          example: 1
           format: double
           type: number
-        returnQuantity:
-          description: Returned quantity of given item
-          example: 2
-          format: int32
-          type: integer
-        returnStatus:
-          description: Return status
-          enum:
-          - VALID
-          - POLICY_VIOLATION
-          - PENDING
-          - PROCESSING
-          - REJECTED
-          example: VALID
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
           type: string
+      required:
+      - amount
       type: object
     returnOrderResponse:
       description: An object containing the details of a returned order.
@@ -1412,11 +1504,11 @@ components:
           format: double
           type: number
       type: object
-    orderRefund:
-      description: Order refund
+    returnFeeDetail:
+      description: An object containing return fee details.
       properties:
         amount:
-          description: Merchant-defined refund amount
+          description: Merchant-defined return amount
           example: 34.56
           format: double
           type: number
@@ -1424,72 +1516,24 @@ components:
           items:
             $ref: '#/components/schemas/amountInCurrency'
           type: array
-        conversion:
-          description: Conversion required for currency
-          example: 1
-          format: double
-          type: number
-        currency:
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
+        name:
+          description: Fee name
+          example: RETURN_FEE
           type: string
-      required:
-      - amount
-      type: object
-    returnsExchangeItem:
-      description: Item details for return or exchange
-      properties:
-        initiateReshipment:
-          description: '**true:** Proceed with reshipment immediately, do not wait for return. **false:** Proceed with the reshipment after return is successful.'
-          example: true
-          type: boolean
-        itemId:
-          description: Unique identifier of item from fabric Products (PIM) service
-          example: 1234
-          format: int32
-          type: integer
-        itemUnitPrice:
-          description: Item's unit price
-          example: 10
-          format: double
-          type: number
-        itemUnitPriceInCurrencies:
-          items:
-            $ref: '#/components/schemas/amountInCurrency'
-          type: array
-        quantity:
-          description: Number of items to be exchanged.
-          example: 10
-          format: int32
-          type: integer
-        sku:
-          description: Stock Keeping Unit (SKU), unique identifier of item
-          example: P1234
+        reason:
+          description: Merchant-defined return reason
+          example: Return fee
           type: string
-      required:
-      - itemId
-      - quantity
-      - sku
-      type: object
-    amountInCurrency:
-      description: Amount in currency object details.
-      properties:
-        amount:
-          description: The amount displayed in the primary currency.
-          example: 123.45
-          format: double
-          type: number
-        currency:
-          description: Currency in ISO-4217
-          example: USD
+        type:
+          description: Return fee type
+          enum:
+          - TAX
+          - DISCOUNT
+          - FEE
+          - ITEM
+          - ADJUSTMENT
+          example: FEE
           type: string
-        group:
-          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
-          example: SHOPPER
-          type: string
-      required:
-      - currency
-      - group
       type: object
     requestReferenceContextResource:
       type: object
@@ -1516,35 +1560,16 @@ components:
           example:
             attribute: N
             someFlag: true
-    eligibilityResponse:
-      description: Eligibility details object.
+    reasonCodeAndDescription:
+      description: Return or exchange reason
       properties:
-        eligibleReasonCodes:
-          description: Reason codes for returns
-          items:
-            $ref: '#/components/schemas/reasonCodeAndDescription'
-          type: array
-        fees:
-          description: Fee details
-          items:
-            $ref: '#/components/schemas/policyFeeResource'
-          type: array
-        items:
-          description: Item's eligibility for return, cancellation, or exchange
-          items:
-            $ref: '#/components/schemas/itemEligibilityResource'
-          type: array
-        orderId:
-          description: 24-character system-generated order ID
-          example: 62f3982438bcab1951be0a19
+        code:
+          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
+          example: 1DMG
           type: string
-        period:
-          description: Return, exchange or cancellation window as per merchant policy
-          example: 30D00H00M
-          type: string
-        policyType:
-          description: Policy type that determines eligibility of exchange, return, or cancellation. If omitted, the default policy is considered.
-          example: Company Policy 2023
+        description:
+          description: Brief description for the return `code`
+          example: Damaged
           type: string
       type: object
   headers:
@@ -1552,31 +1577,6 @@ components:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
       required: false
-      schema:
-        type: string
-  parameters:
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-    xFabricRequestId:
-      description: Unique request ID
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
       schema:
         type: string
   securitySchemes:

@@ -100,18 +100,133 @@ paths:
                 $ref: '#/components/schemas/error500'
 components:
   schemas:
-    error401:
+    error500:
       type: object
-      description: Unauthorized error
+      description: Internal server error
       properties:
         type:
           description: Error type
           type: string
-          example: UNAUTHORIZED
+          example: INTERNAL_SERVER_ERROR
         message:
           description: Error description
           type: string
-          example: Unauthorized user
+          example: Internal server error
+    error400:
+      type: object
+      description: Bad request
+      properties:
+        type:
+          description: Error type
+          type: string
+          example: BAD_REQUEST
+        message:
+          description: Error description
+          type: string
+          example: Bad Request
+    paymentErrorResponse:
+      description: Payment mismatch response details. It's displayed when `totalAmount` and `orderTotal` are different. The user must authorize payment of the total order amount.
+      type: object
+      properties:
+        paymentError:
+          type: object
+          description: Indicates payment error details
+          properties:
+            totalAmount:
+              allOf:
+              - $ref: '#/components/schemas/money'
+              - description: Total authorized amount
+            orderTotal:
+              allOf:
+              - $ref: '#/components/schemas/money'
+              - description: Order total. It includes cart amount + taxes.
+    note:
+      description: Notes section for use by customer service representative only
+      type: object
+      properties:
+        notedAt:
+          allOf:
+          - $ref: '#/components/schemas/date'
+          - description: Time note was created
+        user:
+          type:
+          - string
+          - 'null'
+          description: Customer service representative ID
+          example: 261AF48
+        notes:
+          type:
+          - string
+          - 'null'
+          description: Note content
+          example: Additional notes...
+    billingPhone:
+      description: Individual's phone details (for billing purposes)
+      type: object
+      properties:
+        number:
+          type: string
+          description: Phone number
+          example: 123-456-7890
+        type:
+          type:
+          - string
+          - 'null'
+          description: Phone type
+          example: office
+    estimatedTax:
+      description: Estimated taxes for items, shipping and fees
+      required:
+      - itemTaxes
+      - shippingTaxes
+      type: object
+      properties:
+        itemTaxes:
+          type: array
+          description: Item taxes
+          items:
+            $ref: '#/components/schemas/itemTaxes'
+        shippingTaxes:
+          type: array
+          description: Shipping taxes
+          items:
+            $ref: '#/components/schemas/shippingTaxes'
+        feeTaxes:
+          type:
+          - array
+          - 'null'
+          description: Taxes related to fees
+          items:
+            $ref: '#/components/schemas/feeTaxes'
+    cartNotFound:
+      type: object
+      description: Cart not found error
+      properties:
+        type:
+          description: Error code
+          type: string
+          example: NOT_FOUND
+        message:
+          description: Error description
+          type: string
+          example: Cart not found
+    checkoutSessionResponse:
+      description: Checkout response details
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+          - COMPLETED
+          - PENDING
+          description: 'Checkout session state.<br />COMPLETED: Checkout is complete<br />PENDING: Checkout is incomplete'
+          example: COMPLETED
+        orderId:
+          type:
+          - string
+          - 'null'
+          description: Order ID
+          example: 111-123-4421
     feeTaxes:
       description: Fee taxes
       type: object
@@ -137,6 +252,141 @@ components:
           type: string
           description: Three-letter currency code as defined by ISO-4217
           example: USD
+    date:
+      description: Date and time in ISO-8601 format
+      type: string
+      format: date-time
+      example: '2022-09-06T14:07:17.000Z'
+    error401:
+      type: object
+      description: Unauthorized error
+      properties:
+        type:
+          description: Error type
+          type: string
+          example: UNAUTHORIZED
+        message:
+          description: Error description
+          type: string
+          example: Unauthorized user
+    dependencyFailure:
+      description: Checkout dependency failure type
+      type: string
+      example: PAYMENT
+      enum:
+      - CART
+      - PAYMENT
+      - ORDER
+    customerAddress:
+      type: object
+      description: Customer's address
+      properties:
+        addressLine1:
+          description: Address line 1
+          type: string
+          example: 123 Main St.
+        addressLine2:
+          description: Address line 2
+          type: string
+          example: Suite 100
+        addressLine3:
+          type: string
+          description: Address line 3
+          example: Seventh floor
+        addressLine4:
+          type: string
+          description: Address line 4
+          example: 'Attention: Pat E. Kake'
+        city:
+          description: City
+          type: string
+          example: Seattle
+        region:
+          type: string
+          description: Region or state
+          example: WA
+        postalCode:
+          type: string
+          description: Postal or zip code
+          example: '98121'
+        country:
+          description: Country (can be full name, or ISO 3166-1 alpha-2 or alpha-3 code)
+          type: string
+          example: US
+    paymentDetailsRequest:
+      description: Payment request details.Empty if there is no payment configuration.
+      type: object
+      required:
+      - paymentProvider
+      properties:
+        paymentProvider:
+          type: string
+          description: Payment gateway service provider
+          example: authorize.net
+        paymentMethod:
+          type:
+          - string
+          - 'null'
+          description: Payment method
+          example: card
+        paymentToken:
+          type: object
+          properties:
+            token:
+              type: string
+              description: Payment token
+              example: pi_34tr6787rt
+            paymentType:
+              type: string
+              description: Payment type, for credit card payments
+              example: VISA
+          description: Order payment token model
+        amount:
+          type: number
+          format: double
+          description: Payment amount
+          example: 150.25
+        currency:
+          type: string
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+        billingAddress:
+          $ref: '#/components/schemas/billingAddress'
+        attributes:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: Additional data passed by the caller
+          example:
+            paymentId: 620d8896058edb0009385311
+    shippingTaxes:
+      description: Shipping taxes
+      type: object
+      required:
+      - shippingDetailsId
+      properties:
+        shippingDetailsId:
+          type:
+          - string
+          - 'null'
+          description: Unique shipping ID
+          example: fef78121-bee3-4448-bf1c-d5b5461dbda2
+        amount:
+          type: number
+          format: double
+          description: Currency amount
+          example: 150.25
+        currency:
+          type: string
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+        name:
+          type:
+          - string
+          - 'null'
+          description: Tax name
+          example: state tax
     billingAddress:
       allOf:
       - $ref: '#/components/schemas/customerAddress'
@@ -177,71 +427,25 @@ components:
             format: double
             description: Address longitude
             example: -122.3493
-    money:
+    checkoutSessionErrorResponse:
+      description: Checkout error response details
       type: object
-      description: Payment amount
-      properties:
-        amount:
-          type: number
-          format: double
-          description: Currency amount
-          example: 150.25
-        currency:
-          type: string
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-    error500:
-      type: object
-      description: Internal server error
       properties:
         type:
+          type: string
           description: Error type
-          type: string
-          example: INTERNAL_SERVER_ERROR
+          example: PAYMENT_FAILURE
         message:
+          type: string
           description: Error description
-          type: string
-          example: Internal server error
-    lineItemShippingDetailsNotFound:
-      type: object
-      description: Ship to not found error
-      properties:
-        type:
-          description: Error code
-          type: string
-          example: NOT_FOUND
-        message:
-          description: Error description
-          type: string
-          example: Cart item ship to's are missing.
-    paymentErrorResponse:
-      description: Payment mismatch response details. It's displayed when `totalAmount` and `orderTotal` are different. The user must authorize payment of the total order amount.
-      type: object
-      properties:
-        paymentError:
+          example: Payment authorization failed due to payment mismatch
+        pointOfFailure:
+          $ref: '#/components/schemas/dependencyFailure'
+        details:
           type: object
-          description: Indicates payment error details
-          properties:
-            totalAmount:
-              allOf:
-              - $ref: '#/components/schemas/money'
-              - description: Total authorized amount
-            orderTotal:
-              allOf:
-              - $ref: '#/components/schemas/money'
-              - description: Order total. It includes cart amount + taxes.
-    cartNotFound:
-      type: object
-      description: Cart not found error
-      properties:
-        type:
-          description: Error code
-          type: string
-          example: NOT_FOUND
-        message:
-          description: Error description
-          type: string
-          example: Cart not found
+          description: Error details
+          oneOf:
+          - $ref: '#/components/schemas/paymentErrorResponse'
     checkoutSessionRequest:
       description: Checkout request body
       required:
@@ -338,183 +542,31 @@ components:
               description: Customer service representative's notes
               items:
                 $ref: '#/components/schemas/note'
-    billingPhone:
-      description: Individual's phone details (for billing purposes)
+    money:
       type: object
+      description: Payment amount
       properties:
-        number:
-          type: string
-          description: Phone number
-          example: 123-456-7890
-        type:
-          type:
-          - string
-          - 'null'
-          description: Phone type
-          example: office
-    paymentDetailsRequest:
-      description: Payment request details.Empty if there is no payment configuration.
-      type: object
-      required:
-      - paymentProvider
-      properties:
-        paymentProvider:
-          type: string
-          description: Payment gateway service provider
-          example: authorize.net
-        paymentMethod:
-          type:
-          - string
-          - 'null'
-          description: Payment method
-          example: card
-        paymentToken:
-          type: object
-          properties:
-            token:
-              type: string
-              description: Payment token
-              example: pi_34tr6787rt
-            paymentType:
-              type: string
-              description: Payment type, for credit card payments
-              example: VISA
-          description: Order payment token model
         amount:
           type: number
           format: double
-          description: Payment amount
+          description: Currency amount
           example: 150.25
         currency:
           type: string
           description: Three-letter currency code as defined by ISO-4217
           example: USD
-        billingAddress:
-          $ref: '#/components/schemas/billingAddress'
-        attributes:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          description: Additional data passed by the caller
-          example:
-            paymentId: 620d8896058edb0009385311
-    customerAddress:
+    lineItemShippingDetailsNotFound:
       type: object
-      description: Customer's address
-      properties:
-        addressLine1:
-          description: Address line 1
-          type: string
-          example: 123 Main St.
-        addressLine2:
-          description: Address line 2
-          type: string
-          example: Suite 100
-        addressLine3:
-          type: string
-          description: Address line 3
-          example: Seventh floor
-        addressLine4:
-          type: string
-          description: Address line 4
-          example: 'Attention: Pat E. Kake'
-        city:
-          description: City
-          type: string
-          example: Seattle
-        region:
-          type: string
-          description: Region or state
-          example: WA
-        postalCode:
-          type: string
-          description: Postal or zip code
-          example: '98121'
-        country:
-          description: Country (can be full name, or ISO 3166-1 alpha-2 or alpha-3 code)
-          type: string
-          example: US
-    date:
-      description: Date and time in ISO-8601 format
-      type: string
-      format: date-time
-      example: '2022-09-06T14:07:17.000Z'
-    note:
-      description: Notes section for use by customer service representative only
-      type: object
-      properties:
-        notedAt:
-          allOf:
-          - $ref: '#/components/schemas/date'
-          - description: Time note was created
-        user:
-          type:
-          - string
-          - 'null'
-          description: Customer service representative ID
-          example: 261AF48
-        notes:
-          type:
-          - string
-          - 'null'
-          description: Note content
-          example: Additional notes...
-    checkoutSessionErrorResponse:
-      description: Checkout error response details
-      type: object
+      description: Ship to not found error
       properties:
         type:
+          description: Error code
           type: string
-          description: Error type
-          example: PAYMENT_FAILURE
-        message:
-          type: string
-          description: Error description
-          example: Payment authorization failed due to payment mismatch
-        pointOfFailure:
-          $ref: '#/components/schemas/dependencyFailure'
-        details:
-          type: object
-          description: Error details
-          oneOf:
-          - $ref: '#/components/schemas/paymentErrorResponse'
-    error400:
-      type: object
-      description: Bad request
-      properties:
-        type:
-          description: Error type
-          type: string
-          example: BAD_REQUEST
+          example: NOT_FOUND
         message:
           description: Error description
           type: string
-          example: Bad Request
-    estimatedTax:
-      description: Estimated taxes for items, shipping and fees
-      required:
-      - itemTaxes
-      - shippingTaxes
-      type: object
-      properties:
-        itemTaxes:
-          type: array
-          description: Item taxes
-          items:
-            $ref: '#/components/schemas/itemTaxes'
-        shippingTaxes:
-          type: array
-          description: Shipping taxes
-          items:
-            $ref: '#/components/schemas/shippingTaxes'
-        feeTaxes:
-          type:
-          - array
-          - 'null'
-          description: Taxes related to fees
-          items:
-            $ref: '#/components/schemas/feeTaxes'
+          example: Cart item ship to's are missing.
     name:
       description: Individual's name
       type: object
@@ -533,33 +585,6 @@ components:
           type: string
           description: Individual's last name
           example: Kake
-    shippingTaxes:
-      description: Shipping taxes
-      type: object
-      required:
-      - shippingDetailsId
-      properties:
-        shippingDetailsId:
-          type:
-          - string
-          - 'null'
-          description: Unique shipping ID
-          example: fef78121-bee3-4448-bf1c-d5b5461dbda2
-        amount:
-          type: number
-          format: double
-          description: Currency amount
-          example: 150.25
-        currency:
-          type: string
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-        name:
-          type:
-          - string
-          - 'null'
-          description: Tax name
-          example: state tax
     itemTaxes:
       description: Cart line item tax
       type: object
@@ -601,47 +626,7 @@ components:
           description: Rate
           format: double
           example: 10
-    checkoutSessionResponse:
-      description: Checkout response details
-      type: object
-      properties:
-        state:
-          type: string
-          enum:
-          - COMPLETED
-          - PENDING
-          description: 'Checkout session state.<br />COMPLETED: Checkout is complete<br />PENDING: Checkout is incomplete'
-          example: COMPLETED
-        orderId:
-          type:
-          - string
-          - 'null'
-          description: Order ID
-          example: 111-123-4421
-    dependencyFailure:
-      description: Checkout dependency failure type
-      type: string
-      example: PAYMENT
-      enum:
-      - CART
-      - PAYMENT
-      - ORDER
-  headers:
-    xFabricRequestId:
-      description: Unique request ID
-      schema:
-        type: string
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
   parameters:
-    xFabricChannelId:
-      in: header
-      name: x-fabric-channel-id
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      schema:
-        type: string
-      example: '12'
-      required: false
     xFabricRequestId:
       in: header
       name: x-fabric-request-id
@@ -649,6 +634,14 @@ components:
       schema:
         type: string
       example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    xFabricChannelId:
+      in: header
+      name: x-fabric-channel-id
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      schema:
+        type: string
+      example: '12'
       required: false
     xFabricTenantId:
       in: header
@@ -658,6 +651,13 @@ components:
         type: string
       example: 617329dfd5288b0011332311
       required: true
+  headers:
+    xFabricRequestId:
+      description: Unique request ID
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
   securitySchemes:
     bearerAuth:
       type: http

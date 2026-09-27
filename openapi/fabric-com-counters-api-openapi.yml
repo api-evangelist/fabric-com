@@ -341,14 +341,40 @@ paths:
       tags:
       - Counters
 components:
-  headers:
-    xFabricRequestIdResponseHeader:
+  parameters:
+    xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
+      in: header
+      name: x-fabric-request-id
       required: false
       schema:
         type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
   schemas:
+    updateCounterRequest:
+      description: Update counter request
+      properties:
+        name:
+          description: Counter name
+          example: onHand
+          type: string
+      type: object
     pagination:
       description: Pagination response
       properties:
@@ -372,6 +398,20 @@ components:
           format: int32
           minimum: 0
           type: integer
+      type: object
+    createCounterRequest:
+      description: Sample to create counter
+      properties:
+        code:
+          description: Counter code
+          example: onHand
+          type: string
+        name:
+          description: Counter name
+          example: onHand
+          type: string
+      required:
+      - code
       type: object
     counterSearchResponse:
       description: Counter search response
@@ -418,51 +458,11 @@ components:
           example: CLIENT_ERROR
           type: string
       type: object
-    updateCounterRequest:
-      description: Update counter request
-      properties:
-        name:
-          description: Counter name
-          example: onHand
-          type: string
-      type: object
-    createCounterRequest:
-      description: Sample to create counter
-      properties:
-        code:
-          description: Counter code
-          example: onHand
-          type: string
-        name:
-          description: Counter name
-          example: onHand
-          type: string
-      required:
-      - code
-      type: object
-  parameters:
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-    xFabricRequestId:
+  headers:
+    xFabricRequestIdResponseHeader:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
-      in: header
-      name: x-fabric-request-id
       required: false
-      schema:
-        type: string
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
-      required: true
       schema:
         type: string
   securitySchemes:
