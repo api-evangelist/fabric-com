@@ -251,6 +251,18 @@ components:
           description: The date and time when the adjustment was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Adjustment
+    ClientError:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: Human-readable error description
+          example: x-fabric-tenant-id is required
+      description: Client error details
     CreateAdjustmentRequest:
       required:
       - price
@@ -286,49 +298,6 @@ components:
           description: Human-readable error description
           example: Cart not found
       description: Resource Not Found
-    UpdateAdjustmentRequest:
-      type: object
-      properties:
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        reason:
-          type: string
-          description: The reason for the adjustment.
-          example: Price adjustment from Customer Representative
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context, such as who made the adjustment.
-            example:
-              source: CSR
-          description: Custom attributes to provide more context, such as who made the adjustment.
-          example:
-            source: CSR
-      description: Adjustment Request
-    ClientError:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: BAD_REQUEST
-        message:
-          type: string
-          description: Human-readable error description
-          example: x-fabric-tenant-id is required
-      description: Client error details
-    ResourcePrice:
-      required:
-      - amount
-      type: object
-      properties:
-        amount:
-          minimum: 0
-          type: number
-          description: Total fees amount
-          example: 12.99
-      description: Price details
     Adjustment:
       type: object
       properties:
@@ -361,6 +330,37 @@ components:
           description: The date and time when the adjustment was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Adjustment
+    UpdateAdjustmentRequest:
+      type: object
+      properties:
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        reason:
+          type: string
+          description: The reason for the adjustment.
+          example: Price adjustment from Customer Representative
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes to provide more context, such as who made the adjustment.
+            example:
+              source: CSR
+          description: Custom attributes to provide more context, such as who made the adjustment.
+          example:
+            source: CSR
+      description: Adjustment Request
+    ResourcePrice:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
   securitySchemes:
     bearerAuth:
       type: http

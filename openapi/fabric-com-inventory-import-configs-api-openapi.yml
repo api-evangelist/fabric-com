@@ -408,6 +408,76 @@ paths:
       - Inventory Import Configs
 components:
   schemas:
+    inventoryImportFileConfigResponse:
+      description: BulkUploadFileConfigResponse info
+      properties:
+        filePrefix:
+          description: ID
+          example: oms_
+          type: string
+        groupName:
+          description: Group name
+          example: Location0or2
+          type: string
+        id:
+          description: ID
+          example: '821018391'
+          type: string
+        rules:
+          $ref: '#/components/schemas/rulesResource'
+      required:
+      - filePrefix
+      - groupName
+      - rules
+      type: object
+    apiResponse:
+      description: Response message
+      properties:
+        message:
+          description: Response message
+          example: OK
+          type: string
+      type: object
+    rulesLocationFilter:
+      description: Criteria to search locations. To search using a single value, `valueSearchFilter` is used. To search using multiple values, `valuesSearchFilter` is used.
+      discriminator:
+        mapping:
+          EQ: '#/components/schemas/valueSearchFilterForRules'
+          GT: '#/components/schemas/valueSearchFilterForRules'
+          GTE: '#/components/schemas/valueSearchFilterForRules'
+          IN: '#/components/schemas/valuesSearchFilterForRules'
+          LT: '#/components/schemas/valueSearchFilterForRules'
+          LTE: '#/components/schemas/valueSearchFilterForRules'
+          NEQ: '#/components/schemas/valueSearchFilterForRules'
+          NIN: '#/components/schemas/valuesSearchFilterForRules'
+        propertyName: condition
+      oneOf:
+      - $ref: '#/components/schemas/valueSearchFilterForRules'
+      - $ref: '#/components/schemas/valuesSearchFilterForRules'
+      properties:
+        condition:
+          default: EQ
+          description: 'Filter conditions. EQ (Equal to): Searches for exact match. NEQ (Not equal to): Searches by excluding the specified value. IN: Search for multiple values. NIN (Not IN): Excludes the specified values in the search. LT (Less than): Searches for values that are less than the specified value. GT (Greater than):  Search for values that are greater than the specified value. LTE (Less than or equal to): Searches for values that are less than or equal to the specified value. GTE (Greater than or equal to): Searches for values that are greater than or equal to the specified value.'
+          enum:
+          - EQ
+          - NEQ
+          - IN
+          - NIN
+          - LT
+          - GT
+          - LTE
+          - GTE
+          example: EQ
+          type: string
+        field:
+          description: Field name
+          example: location.locationNum
+          pattern: ^location\.[a-zA-Z.\-_]*
+          type: string
+      required:
+      - condition
+      - field
+      type: object
     rulesResource:
       description: Rules model
       example:
@@ -430,8 +500,54 @@ components:
       required:
       - locationFilters
       type: object
-    inventoryImportFileConfigResponse:
-      description: BulkUploadFileConfigResponse info
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    valuesSearchFilterForRules:
+      allOf:
+      - properties:
+          values:
+            items:
+              description: Multiple values for `field` using which locations are searched
+              example: ORDER_CREATE
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+              type: object
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find locations using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    inventoryImportFileConfigRequest:
+      description: InventoryImportFileConfigRequest info
       properties:
         filePrefix:
           description: ID
@@ -511,136 +627,20 @@ components:
         pagination:
           $ref: '#/components/schemas/pagination'
       type: object
-    rulesLocationFilter:
-      description: Criteria to search locations. To search using a single value, `valueSearchFilter` is used. To search using multiple values, `valuesSearchFilter` is used.
-      discriminator:
-        mapping:
-          EQ: '#/components/schemas/valueSearchFilterForRules'
-          GT: '#/components/schemas/valueSearchFilterForRules'
-          GTE: '#/components/schemas/valueSearchFilterForRules'
-          IN: '#/components/schemas/valuesSearchFilterForRules'
-          LT: '#/components/schemas/valueSearchFilterForRules'
-          LTE: '#/components/schemas/valueSearchFilterForRules'
-          NEQ: '#/components/schemas/valueSearchFilterForRules'
-          NIN: '#/components/schemas/valuesSearchFilterForRules'
-        propertyName: condition
-      oneOf:
-      - $ref: '#/components/schemas/valueSearchFilterForRules'
-      - $ref: '#/components/schemas/valuesSearchFilterForRules'
-      properties:
-        condition:
-          default: EQ
-          description: 'Filter conditions. EQ (Equal to): Searches for exact match. NEQ (Not equal to): Searches by excluding the specified value. IN: Search for multiple values. NIN (Not IN): Excludes the specified values in the search. LT (Less than): Searches for values that are less than the specified value. GT (Greater than):  Search for values that are greater than the specified value. LTE (Less than or equal to): Searches for values that are less than or equal to the specified value. GTE (Greater than or equal to): Searches for values that are greater than or equal to the specified value.'
-          enum:
-          - EQ
-          - NEQ
-          - IN
-          - NIN
-          - LT
-          - GT
-          - LTE
-          - GTE
-          example: EQ
-          type: string
-        field:
-          description: Field name
-          example: location.locationNum
-          pattern: ^location\.[a-zA-Z.\-_]*
-          type: string
-      required:
-      - condition
-      - field
-      type: object
-    inventoryImportFileConfigRequest:
-      description: InventoryImportFileConfigRequest info
-      properties:
-        filePrefix:
-          description: ID
-          example: oms_
-          type: string
-        groupName:
-          description: Group name
-          example: Location0or2
-          type: string
-        id:
-          description: ID
-          example: '821018391'
-          type: string
-        rules:
-          $ref: '#/components/schemas/rulesResource'
-      required:
-      - filePrefix
-      - groupName
-      - rules
-      type: object
-    apiResponse:
-      description: Response message
-      properties:
-        message:
-          description: Response message
-          example: OK
-          type: string
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    valuesSearchFilterForRules:
-      allOf:
-      - properties:
-          values:
-            items:
-              description: Multiple values for `field` using which locations are searched
-              example: ORDER_CREATE
-              oneOf:
-              - description: Target record's non-numeric identifier
-                example: ORDER_CREATE
-                type: string
-              - description: Target record's numeric identifier
-                example: 112233
-                format: int64
-                type: number
-              - description: Target record's numeric identifier
-                example: 1122.33
-                format: double
-                type: number
-              type: object
-            maxItems: 25
-            minItems: 1
-            type: array
-        type: object
-      description: Criteria to find locations using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
-      required:
-      - condition
-      - field
-      type: object
   parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
     xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
       in: header
       name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
-    xFabricChannelIdOptional:
-      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
       required: false
       schema:
         type: string
@@ -652,12 +652,12 @@ components:
       required: true
       schema:
         type: string
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
+    xFabricChannelIdOptional:
+      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
+      example: '12'
       in: header
-      name: x-fabric-tenant-id
-      required: true
+      name: x-fabric-channel-id
+      required: false
       schema:
         type: string
   headers:

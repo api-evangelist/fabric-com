@@ -269,51 +269,18 @@ paths:
           $ref: '#/components/responses/internalServerError'
 components:
   schemas:
-    message:
-      description: The response message.
+    searchCounty:
       type: object
-      properties:
-        type:
-          description: A machine-readable code.
-          type: string
-          example: SUCCESS
-        message:
-          description: A human-friendly message corresponding to the `type`.
-          type: string
-          example: Success message
-      required:
-      - type
-      - message
-    searchNumberOrDateOperation:
-      type: object
-      description: The criteria to search for records by number, date, range of numbers, or range of dates.
+      description: The criteria to search for customer's address based on the `county` given in the address.
       properties:
         op:
           type: string
-          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
-          enum:
-          - EQUALS
-          - LTE
-          - GTE
-          - GT
-          - LT
-          - RANGE
-          example: LTE
+          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations. - IN - NOT_IN - EQUALS - CONTAINS - NOT_EQUALS
+          example: IN
         value:
           type: string
-          description: The value of the number or the date.
-          example: '2023-08-30T23:20:42.822Z'
-        fromValue:
-          type: string
-          description: The starting value of the number or date range. This is used with the `toValue` property.
-          example: '2023-08-30T23:20:42.822Z'
-        toValue:
-          type: string
-          description: The ending value of the number or date range. This is used with the `fromValue` property.
-          example: '2023-08-31T23:20:42.822Z'
-      example:
-        op: LTE
-        value: '2023-08-30T23:20:42.822Z'
+          description: The county name.
+          example: King County
     searchType:
       type: object
       description: The criteria to search based on the type of address.
@@ -349,38 +316,42 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/customerAddressResponse'
-    searchDeletedAt:
+    customerAddressMatch:
       type: object
-      description: The criteria to search for customers or their addresses based on a specific deletion date or within a deletion date range.
+      description: The criteria to search for customer's address.
       properties:
-        op:
-          type: string
-          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
-          enum:
-          - EQUALS
-          - LTE
-          - GTE
-          - GT
-          - LT
-          - RANGE
-          example: LTE
-        value:
-          type: string
-          description: The time of deletion, in UTC format.
-          example: '2023-08-30T23:20:42.822Z'
-        startDeletedAt:
-          type: string
-          description: The starting value of the `deletedAt` date range. This is used with the `endDeletedAt` property.
-          example: '2023-08-30T23:20:42.822Z'
-        endDeletedAt:
-          type: string
-          description: The ending value of the `deletedAt` date range. This is used with the `startDeletedAt` property.
-          example: '2023-08-31T23:20:42.822Z'
-      example:
-        op: LTE
-        value: '2023-08-30T23:20:42.822Z'
-      required:
-      - op
+        id:
+          $ref: '#/components/schemas/searchId'
+        type:
+          $ref: '#/components/schemas/searchType'
+        addressLine1:
+          $ref: '#/components/schemas/searchAddressLine'
+        city:
+          $ref: '#/components/schemas/searchCity'
+        region:
+          $ref: '#/components/schemas/searchRegion'
+        postalCode:
+          $ref: '#/components/schemas/searchPostalCode'
+        county:
+          $ref: '#/components/schemas/searchCounty'
+        country:
+          $ref: '#/components/schemas/searchCountry'
+        latitude:
+          $ref: '#/components/schemas/searchLatitude'
+        longitude:
+          $ref: '#/components/schemas/searchLongitude'
+        createdAt:
+          $ref: '#/components/schemas/searchCreatedAt'
+        updatedAt:
+          $ref: '#/components/schemas/searchUpdatedAt'
+        deletedAt:
+          $ref: '#/components/schemas/searchDeletedAt'
+        additionalAttributes:
+          $ref: '#/components/schemas/searchAdditionalAttribute'
+        isDeleted:
+          $ref: '#/components/schemas/searchIsDeleted'
+        isDefault:
+          $ref: '#/components/schemas/searchIsDefault'
     searchAddressLine:
       type: object
       description: The criteria to search by the first, second, or third line of the customer's address.
@@ -402,118 +373,65 @@ components:
       required:
       - op
       - value
-    searchPostalCode:
+    searchIsDefault:
+      type: boolean
+      description: A flag indicating whether the search results should include only default addresses. Set to 'true' to include only default addresses and 'false' to exclude default addresses.
+      enum:
+      - false
+      - true
+      example: true
+    Query:
       type: object
-      description: The criteria to search for customer's addresses based on `postalCode` given in the address.
+      description: The pagination criteria.
       properties:
-        op:
-          type: string
-          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations.
-          enum:
-          - IN
-          - NOT_IN
-          - EQUALS
-          - CONTAINS
-          - NOT_EQUALS
-          example: IN
-        value:
-          type: string
-          description: The postal or ZIP code of the address.
-          example: 98121
-      required:
-      - op
-      - value
-    searchLatitude:
+        offset:
+          type: number
+          description: The number of records to skip before returning records. For example, when offset is 20 and limit's 10, you get records from 21 to 30. When they're not specified, you get up to 10 records.
+          example: 0
+        limit:
+          type: number
+          description: The maximum number of records per page.
+          example: 20
+        count:
+          type: number
+          description: The total number of records in the response.
+          example: 100
+    message:
+      description: The response message.
       type: object
-      description: The criteria to search for customer's address based on latitude or a range of latitudes given in the address.
       properties:
-        op:
+        type:
+          description: A machine-readable code.
           type: string
-          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
-          enum:
-          - EQUALS
-          - LTE
-          - GTE
-          - GT
-          - LT
-          - RANGE
-          example: LTE
-        value:
-          type: number
-          description: The latitude value in decimal degrees format; negative is degrees West.
-          format: double
-          example: 47.6205
-        startLatitude:
-          type: number
-          description: The starting value of the latitude range. This is used with the `endLatitude` property. The coordinates are provided in decimal degrees format, with negative values indicating locations to the west.
-          format: double
-          example: 47.6205
-        endLatitude:
-          type: number
-          format: double
-          description: The ending value of the latitude range. This is used with the `startLatitude` property. The coordinates are provided in decimal degrees format, with negative values indicating locations to the west.
-          example: 47.6205
-      example:
-        op: LTE
-        value: 47.6205
+          example: SUCCESS
+        message:
+          description: A human-friendly message corresponding to the `type`.
+          type: string
+          example: Success message
       required:
-      - op
-    searchLongitude:
+      - type
+      - message
+    searchIsDeleted:
+      type: boolean
+      description: A flag indicating whether the search results should include only deleted addresses. Set to `true` to include only deleted addresses and `false` to exclude deleted addresses.
+      enum:
+      - false
+      - true
+      example: false
+    updateCustomerAddressRequest:
       type: object
-      description: The criteria to search for customer's address based on longitude or a range of longitude given in the address.
       properties:
-        op:
-          type: string
-          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
-          enum:
-          - EQUALS
-          - LTE
-          - GTE
-          - GT
-          - LT
-          - RANGE
-          example: LTE
-        value:
-          type: number
-          description: The longitude value in decimal degrees format; negative is degrees West.
-          format: double
-          example: -77.0364
-        startLongitude:
-          type: number
-          description: The starting value of the longitude range. This is used with the `endLongitude` property and formatted to decimal degrees; negative is degrees West.
-          format: double
-          example: -77.0364
-        endLongitude:
-          type: number
-          format: double
-          description: The ending value of the longitude range. This is used with the `startLongitude` property and formatted to decimal degrees; negative is degrees West.
-          example: -77.0364
-      example:
-        op: LTE
-        value: -77.0364
-      required:
-      - op
-    searchCountry:
-      type: object
-      description: The criteria to search for the customer's address based on the `country` given in the address.
-      properties:
-        op:
-          type: string
-          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations.
-          enum:
-          - IN
-          - NOT_IN
-          - EQUALS
-          - CONTAINS
-          - NOT_EQUALS
-          example: IN
-        value:
-          type: string
-          description: The country code, which can be a full name, ISO 3166-1 alpha-2, or an alpha-3 code.
-          example: US
-      required:
-      - op
-      - value
+        address:
+          $ref: '#/components/schemas/updateCommonAddressRequest'
+        isDefault:
+          description: A flag indicating whether the address is the default one. `true` indicates the address is the default address and `false` indicates otherwise.
+          type: boolean
+          example: false
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            landmark: Beach
     searchCreatedAt:
       type: object
       description: The criteria to search for customers or their addresses based on a specific creation date or within a creation date range.
@@ -546,6 +464,30 @@ components:
         value: '2023-08-30T23:20:42.822Z'
       required:
       - op
+    customerAddressSearchRequest:
+      type: object
+      description: The criteria to search for customer's addresses.
+      required:
+      - match
+      properties:
+        sort:
+          type: string
+          description: The criteria to sort results, where `-` indicates a descending order and `+` indicates an ascending order. You can sort the following fields - `createdAt`, `updatedAt`, `type`, and `country`.
+          example: -createdAt
+        match:
+          description: match
+          allOf:
+          - $ref: '#/components/schemas/customerAddressMatch'
+        offset:
+          type: number
+          description: The number of records to skip before returning records. For example, when offset is 20 and limit's 10, this endpoint returns records from 21 to 30.
+          default: 0
+          example: 0
+        limit:
+          type: number
+          description: The maximum number of records in a single page.
+          example: 10
+          default: 20
     customerAddressResponse:
       required:
       - id
@@ -594,28 +536,6 @@ components:
           - 'null'
           format: date-time
           example: '2023-08-30T23:20:42.822Z'
-    searchIsDeleted:
-      type: boolean
-      description: A flag indicating whether the search results should include only deleted addresses. Set to `true` to include only deleted addresses and `false` to exclude deleted addresses.
-      enum:
-      - false
-      - true
-      example: false
-    searchCity:
-      type: object
-      description: The criteria to search for customer's addresses based on the `city` given in the address.
-      properties:
-        op:
-          type: string
-          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations. - IN - NOT_IN - EQUALS - CONTAINS - NOT_EQUALS
-          example: IN
-        value:
-          type: string
-          description: The city name.
-          example: Seattle
-      required:
-      - op
-      - value
     searchAdditionalAttribute:
       type: object
       description: The criteria to search for customers or their addresses based on additional attributes.
@@ -630,108 +550,6 @@ components:
       required:
       - key
       - op
-    searchUpdatedAt:
-      type: object
-      description: The criteria to search for customers or their addresses based on a specific date or date range in which the record was updated.
-      properties:
-        op:
-          type: string
-          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
-          enum:
-          - EQUALS
-          - LTE
-          - GTE
-          - GT
-          - LT
-          - RANGE
-          example: LTE
-        value:
-          type: string
-          description: The time of last update, in UTC format.
-          example: '2023-08-30T23:20:42.822Z'
-        startUpdatedAt:
-          type: string
-          description: The starting value of the `updatedAt` date range. This is used with the `endUpdatedAt` property.
-          example: '2023-08-30T23:20:42.822Z'
-        endUpdatedAt:
-          type: string
-          description: The ending value of the `updatedAt` date range. This is used with the `startUpdatedAt` property.
-          example: '2023-08-31T23:20:42.822Z'
-      example:
-        op: LTE
-        value: '2023-08-30T23:20:42.822Z'
-      required:
-      - op
-    customerAddressRequest:
-      required:
-      - address
-      type: object
-      properties:
-        address:
-          $ref: '#/components/schemas/commonAddress'
-        isDefault:
-          description: A flag indicating whether the address is the default one. `true` indicates the address is the default address and `false` indicates otherwise.
-          type: boolean
-          example: false
-        additionalAttributes:
-          description: A placeholder for additional info, in key-value pairs.
-          type: object
-          example:
-            landmark: Beach
-    searchIsDefault:
-      type: boolean
-      description: A flag indicating whether the search results should include only default addresses. Set to 'true' to include only default addresses and 'false' to exclude default addresses.
-      enum:
-      - false
-      - true
-      example: true
-    searchCounty:
-      type: object
-      description: The criteria to search for customer's address based on the `county` given in the address.
-      properties:
-        op:
-          type: string
-          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations. - IN - NOT_IN - EQUALS - CONTAINS - NOT_EQUALS
-          example: IN
-        value:
-          type: string
-          description: The county name.
-          example: King County
-    updateCustomerAddressRequest:
-      type: object
-      properties:
-        address:
-          $ref: '#/components/schemas/updateCommonAddressRequest'
-        isDefault:
-          description: A flag indicating whether the address is the default one. `true` indicates the address is the default address and `false` indicates otherwise.
-          type: boolean
-          example: false
-        additionalAttributes:
-          description: A placeholder for additional info, in key-value pairs.
-          type: object
-          example:
-            landmark: Beach
-    searchRegion:
-      type: object
-      description: The criteria to search for customer's addresses based on the `region` given in the address.
-      properties:
-        op:
-          type: string
-          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations.
-          enum:
-          - IN
-          - NOT_IN
-          - EQUALS
-          - CONTAINS
-          - NOT_EQUALS
-          example: IN
-        value:
-          type: string
-          description: The region name.
-          example: WA
-      required:
-      - op
-      - value
     commonAddress:
       type: object
       description: The address details.
@@ -809,46 +627,232 @@ components:
           type: string
           description: The value of the string.
           example: beach
-    Query:
+    searchUpdatedAt:
       type: object
-      description: The pagination criteria.
+      description: The criteria to search for customers or their addresses based on a specific date or date range in which the record was updated.
       properties:
-        offset:
-          type: number
-          description: The number of records to skip before returning records. For example, when offset is 20 and limit's 10, you get records from 21 to 30. When they're not specified, you get up to 10 records.
-          example: 0
-        limit:
-          type: number
-          description: The maximum number of records per page.
-          example: 20
-        count:
-          type: number
-          description: The total number of records in the response.
-          example: 100
-    customerAddressSearchRequest:
-      type: object
-      description: The criteria to search for customer's addresses.
-      required:
-      - match
-      properties:
-        sort:
+        op:
           type: string
-          description: The criteria to sort results, where `-` indicates a descending order and `+` indicates an ascending order. You can sort the following fields - `createdAt`, `updatedAt`, `type`, and `country`.
-          example: -createdAt
-        match:
-          description: match
-          allOf:
-          - $ref: '#/components/schemas/customerAddressMatch'
-        offset:
+          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
+          enum:
+          - EQUALS
+          - LTE
+          - GTE
+          - GT
+          - LT
+          - RANGE
+          example: LTE
+        value:
+          type: string
+          description: The time of last update, in UTC format.
+          example: '2023-08-30T23:20:42.822Z'
+        startUpdatedAt:
+          type: string
+          description: The starting value of the `updatedAt` date range. This is used with the `endUpdatedAt` property.
+          example: '2023-08-30T23:20:42.822Z'
+        endUpdatedAt:
+          type: string
+          description: The ending value of the `updatedAt` date range. This is used with the `startUpdatedAt` property.
+          example: '2023-08-31T23:20:42.822Z'
+      example:
+        op: LTE
+        value: '2023-08-30T23:20:42.822Z'
+      required:
+      - op
+    searchCountry:
+      type: object
+      description: The criteria to search for the customer's address based on the `country` given in the address.
+      properties:
+        op:
+          type: string
+          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations.
+          enum:
+          - IN
+          - NOT_IN
+          - EQUALS
+          - CONTAINS
+          - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The country code, which can be a full name, ISO 3166-1 alpha-2, or an alpha-3 code.
+          example: US
+      required:
+      - op
+      - value
+    searchId:
+      type: object
+      description: A unique identifier of the search criteria.
+      properties:
+        op:
+          type: string
+          enum:
+          - IN
+          - EQUALS
+          description: The type of search operation.
+          example: IN
+        value:
+          type: string
+          description: A 24-character system-generated ID of the given search criteria.
+          example: 61df41892bf06d00092d0d8a
+      required:
+      - op
+      - value
+    searchLatitude:
+      type: object
+      description: The criteria to search for customer's address based on latitude or a range of latitudes given in the address.
+      properties:
+        op:
+          type: string
+          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
+          enum:
+          - EQUALS
+          - LTE
+          - GTE
+          - GT
+          - LT
+          - RANGE
+          example: LTE
+        value:
           type: number
-          description: The number of records to skip before returning records. For example, when offset is 20 and limit's 10, this endpoint returns records from 21 to 30.
-          default: 0
-          example: 0
-        limit:
+          description: The latitude value in decimal degrees format; negative is degrees West.
+          format: double
+          example: 47.6205
+        startLatitude:
           type: number
-          description: The maximum number of records in a single page.
-          example: 10
-          default: 20
+          description: The starting value of the latitude range. This is used with the `endLatitude` property. The coordinates are provided in decimal degrees format, with negative values indicating locations to the west.
+          format: double
+          example: 47.6205
+        endLatitude:
+          type: number
+          format: double
+          description: The ending value of the latitude range. This is used with the `startLatitude` property. The coordinates are provided in decimal degrees format, with negative values indicating locations to the west.
+          example: 47.6205
+      example:
+        op: LTE
+        value: 47.6205
+      required:
+      - op
+    searchRegion:
+      type: object
+      description: The criteria to search for customer's addresses based on the `region` given in the address.
+      properties:
+        op:
+          type: string
+          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations.
+          enum:
+          - IN
+          - NOT_IN
+          - EQUALS
+          - CONTAINS
+          - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The region name.
+          example: WA
+      required:
+      - op
+      - value
+    searchNumberOrDateOperation:
+      type: object
+      description: The criteria to search for records by number, date, range of numbers, or range of dates.
+      properties:
+        op:
+          type: string
+          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
+          enum:
+          - EQUALS
+          - LTE
+          - GTE
+          - GT
+          - LT
+          - RANGE
+          example: LTE
+        value:
+          type: string
+          description: The value of the number or the date.
+          example: '2023-08-30T23:20:42.822Z'
+        fromValue:
+          type: string
+          description: The starting value of the number or date range. This is used with the `toValue` property.
+          example: '2023-08-30T23:20:42.822Z'
+        toValue:
+          type: string
+          description: The ending value of the number or date range. This is used with the `fromValue` property.
+          example: '2023-08-31T23:20:42.822Z'
+      example:
+        op: LTE
+        value: '2023-08-30T23:20:42.822Z'
+    searchPostalCode:
+      type: object
+      description: The criteria to search for customer's addresses based on `postalCode` given in the address.
+      properties:
+        op:
+          type: string
+          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations.
+          enum:
+          - IN
+          - NOT_IN
+          - EQUALS
+          - CONTAINS
+          - NOT_EQUALS
+          example: IN
+        value:
+          type: string
+          description: The postal or ZIP code of the address.
+          example: 98121
+      required:
+      - op
+      - value
+    customerAddressRequest:
+      required:
+      - address
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/commonAddress'
+        isDefault:
+          description: A flag indicating whether the address is the default one. `true` indicates the address is the default address and `false` indicates otherwise.
+          type: boolean
+          example: false
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            landmark: Beach
+    searchDeletedAt:
+      type: object
+      description: The criteria to search for customers or their addresses based on a specific deletion date or within a deletion date range.
+      properties:
+        op:
+          type: string
+          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
+          enum:
+          - EQUALS
+          - LTE
+          - GTE
+          - GT
+          - LT
+          - RANGE
+          example: LTE
+        value:
+          type: string
+          description: The time of deletion, in UTC format.
+          example: '2023-08-30T23:20:42.822Z'
+        startDeletedAt:
+          type: string
+          description: The starting value of the `deletedAt` date range. This is used with the `endDeletedAt` property.
+          example: '2023-08-30T23:20:42.822Z'
+        endDeletedAt:
+          type: string
+          description: The ending value of the `deletedAt` date range. This is used with the `startDeletedAt` property.
+          example: '2023-08-31T23:20:42.822Z'
+      example:
+        op: LTE
+        value: '2023-08-30T23:20:42.822Z'
+      required:
+      - op
     updateCommonAddressRequest:
       type: object
       description: The address details.
@@ -895,145 +899,57 @@ components:
           type: number
           format: double
           example: -122.3493
-    customerAddressMatch:
+    searchLongitude:
       type: object
-      description: The criteria to search for customer's address.
-      properties:
-        id:
-          $ref: '#/components/schemas/searchId'
-        type:
-          $ref: '#/components/schemas/searchType'
-        addressLine1:
-          $ref: '#/components/schemas/searchAddressLine'
-        city:
-          $ref: '#/components/schemas/searchCity'
-        region:
-          $ref: '#/components/schemas/searchRegion'
-        postalCode:
-          $ref: '#/components/schemas/searchPostalCode'
-        county:
-          $ref: '#/components/schemas/searchCounty'
-        country:
-          $ref: '#/components/schemas/searchCountry'
-        latitude:
-          $ref: '#/components/schemas/searchLatitude'
-        longitude:
-          $ref: '#/components/schemas/searchLongitude'
-        createdAt:
-          $ref: '#/components/schemas/searchCreatedAt'
-        updatedAt:
-          $ref: '#/components/schemas/searchUpdatedAt'
-        deletedAt:
-          $ref: '#/components/schemas/searchDeletedAt'
-        additionalAttributes:
-          $ref: '#/components/schemas/searchAdditionalAttribute'
-        isDeleted:
-          $ref: '#/components/schemas/searchIsDeleted'
-        isDefault:
-          $ref: '#/components/schemas/searchIsDefault'
-    searchId:
-      type: object
-      description: A unique identifier of the search criteria.
+      description: The criteria to search for customer's address based on longitude or a range of longitude given in the address.
       properties:
         op:
           type: string
+          description: The type of search operation, such as equals, less than (LT), greater than (GT), less than or equal to (LTE), greater than or equal to (GTE), or within a specified range.
           enum:
-          - IN
           - EQUALS
-          description: The type of search operation.
+          - LTE
+          - GTE
+          - GT
+          - LT
+          - RANGE
+          example: LTE
+        value:
+          type: number
+          description: The longitude value in decimal degrees format; negative is degrees West.
+          format: double
+          example: -77.0364
+        startLongitude:
+          type: number
+          description: The starting value of the longitude range. This is used with the `endLongitude` property and formatted to decimal degrees; negative is degrees West.
+          format: double
+          example: -77.0364
+        endLongitude:
+          type: number
+          format: double
+          description: The ending value of the longitude range. This is used with the `startLongitude` property and formatted to decimal degrees; negative is degrees West.
+          example: -77.0364
+      example:
+        op: LTE
+        value: -77.0364
+      required:
+      - op
+    searchCity:
+      type: object
+      description: The criteria to search for customer's addresses based on the `city` given in the address.
+      properties:
+        op:
+          type: string
+          description: The type of search operation. Multiple values, separated by commas, can be used for the IN and NOT_IN operations, while only a single value can be used for the EQUALS, CONTAINS, and NOT_EQUALS operations. - IN - NOT_IN - EQUALS - CONTAINS - NOT_EQUALS
           example: IN
         value:
           type: string
-          description: A 24-character system-generated ID of the given search criteria.
-          example: 61df41892bf06d00092d0d8a
+          description: The city name.
+          example: Seattle
       required:
       - op
       - value
-  parameters:
-    xFabricRequestId:
-      name: x-fabric-request-id
-      in: header
-      description: A UUID of the request.
-      schema:
-        type: string
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
-    customerIdPathParam:
-      in: path
-      name: customerId
-      description: A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint.
-      required: true
-      style: simple
-      schema:
-        type: string
-        example: 61a558b1b155125f02be7fb1
-    addressIdPathParam:
-      in: path
-      name: addressId
-      description: A 24-character system-generated ID of the customer's address.
-      required: true
-      style: simple
-      schema:
-        type: string
-        example: 61a558b1b155125f02be7fb2
-    xFabricTenantId:
-      name: x-fabric-tenant-id
-      in: header
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      schema:
-        type: string
-        example: 517fa9dfd42d8b00g1o3k312
   responses:
-    deleteCustomerAddressResponse:
-      description: Delete customer address response
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          examples:
-            customerAddressDeletionSuccess:
-              value:
-                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
-                message: Customer address deleted successfully
-            customerAddressDeletedAlready:
-              value:
-                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
-                message: Customer address already deleted
-    customerAddressNotFound:
-      description: The specified resource isn't found
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          examples:
-            CustomerNotFound:
-              value:
-                type: CUSTOMER_NOT_FOUND
-                message: Data with the given identifier isn't found.
-            CustomerAddressNotFound:
-              value:
-                type: CUSTOMER_ADDRESS_NOT_FOUND
-                message: Data with the given identifier isn't found.
-    badRequest:
-      description: Bad request
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          examples:
-            invalidAccountProvided:
-              value:
-                type: INVALID_ACCOUNT_PROVIDED
-                message: Invalid account provided for the request.
     forbidden:
       description: Forbidden Request
       headers:
@@ -1049,23 +965,6 @@ components:
           example:
             type: REQUEST_DENIED
             message: Forbidden
-    searchBadRequest:
-      description: Bad request
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          examples:
-            invalidAccountProvided:
-              value:
-                type: INVALID_ACCOUNT_PROVIDED
-                message: Invalid account provided for the request.
-            invalidSearchOperation:
-              value:
-                type: INVALID_SEARCH_OPERATION
     customerNotFound:
       description: The resource isn't found
       headers:
@@ -1090,6 +989,107 @@ components:
           example:
             type: INTERNAL_SERVER_ERROR
             message: Internal server error
+    searchBadRequest:
+      description: Bad request
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            invalidAccountProvided:
+              value:
+                type: INVALID_ACCOUNT_PROVIDED
+                message: Invalid account provided for the request.
+            invalidSearchOperation:
+              value:
+                type: INVALID_SEARCH_OPERATION
+    badRequest:
+      description: Bad request
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            invalidAccountProvided:
+              value:
+                type: INVALID_ACCOUNT_PROVIDED
+                message: Invalid account provided for the request.
+    customerAddressNotFound:
+      description: The specified resource isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            CustomerNotFound:
+              value:
+                type: CUSTOMER_NOT_FOUND
+                message: Data with the given identifier isn't found.
+            CustomerAddressNotFound:
+              value:
+                type: CUSTOMER_ADDRESS_NOT_FOUND
+                message: Data with the given identifier isn't found.
+    deleteCustomerAddressResponse:
+      description: Delete customer address response
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            customerAddressDeletionSuccess:
+              value:
+                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
+                message: Customer address deleted successfully
+            customerAddressDeletedAlready:
+              value:
+                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
+                message: Customer address already deleted
+  parameters:
+    xFabricTenantId:
+      name: x-fabric-tenant-id
+      in: header
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      schema:
+        type: string
+        example: 517fa9dfd42d8b00g1o3k312
+    addressIdPathParam:
+      in: path
+      name: addressId
+      description: A 24-character system-generated ID of the customer's address.
+      required: true
+      style: simple
+      schema:
+        type: string
+        example: 61a558b1b155125f02be7fb2
+    xFabricRequestId:
+      name: x-fabric-request-id
+      in: header
+      description: A UUID of the request.
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    customerIdPathParam:
+      in: path
+      name: customerId
+      description: A 24-character system-generated ID of the customer. This is returned in the response of the `POST /customers` endpoint.
+      required: true
+      style: simple
+      schema:
+        type: string
+        example: 61a558b1b155125f02be7fb1
   securitySchemes:
     bearerAuth:
       description: The access token.

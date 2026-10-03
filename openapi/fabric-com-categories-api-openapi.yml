@@ -185,6 +185,31 @@ components:
           example: CLIENT_ERROR
           type: string
       type: object
+    CategoryImportAcceptedResponse:
+      type: object
+      required:
+      - import_id
+      - status
+      - message
+      - created_at
+      properties:
+        import_id:
+          type: string
+          format: uuid
+          description: Identifier for the import job.
+          example: a0cf63a0-55b8-4a25-9218-d972d4d65a79
+        status:
+          type: string
+          example: PENDING
+        message:
+          type: string
+          description: Status message for the queued import.
+          example: Import queued. Use GET /categories/import/{import_id} to track progress.
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the import was created.
+          example: '2026-03-12T17:58:13.605818Z'
     CategoryImportStatusResponse:
       type: object
       required:
@@ -254,31 +279,6 @@ components:
         created_at:
           type: string
           format: date-time
-    CategoryImportAcceptedResponse:
-      type: object
-      required:
-      - import_id
-      - status
-      - message
-      - created_at
-      properties:
-        import_id:
-          type: string
-          format: uuid
-          description: Identifier for the import job.
-          example: a0cf63a0-55b8-4a25-9218-d972d4d65a79
-        status:
-          type: string
-          example: PENDING
-        message:
-          type: string
-          description: Status message for the queued import.
-          example: Import queued. Use GET /categories/import/{import_id} to track progress.
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when the import was created.
-          example: '2026-03-12T17:58:13.605818Z'
   parameters:
     DomainHeader:
       name: domain

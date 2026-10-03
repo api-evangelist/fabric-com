@@ -445,65 +445,6 @@ paths:
       - Optimize
 components:
   schemas:
-    AuditPrincipal:
-      type: object
-      required:
-      - id
-      - type
-      description: 'Resolved reference for the `created_by` and `updated_by` audit fields. A `type` of `unknown` is returned when the referenced identifier can no longer be resolved (for example, when a user has been hard-deleted).
-
-        '
-      properties:
-        id:
-          type: string
-          description: Either `auth_users.id` or `auth_service_clients.client_id`.
-          example: user_xyz
-        type:
-          type: string
-          enum:
-          - user
-          - service
-          - unknown
-          description: 'Indicates the principal type: `user` for end-user actors, `service` for machine clients, and `unknown` when the principal cannot be resolved.'
-        name:
-          type:
-          - string
-          - 'null'
-          description: Display name. Null when `type` is `unknown`.
-          example: Alex Reviewer
-        email:
-          type:
-          - string
-          - 'null'
-          description: Email address. Null when `type` is `service` or `unknown`.
-          example: alex@acme.com
-    ArtifactInput:
-      type: object
-      required:
-      - artifact_id
-      properties:
-        artifact_id:
-          type: string
-          description: Identifier returned by `POST /v2/optimize/artifacts`.
-          example: art_95c650ded4824dc79bb6df16427e4a10
-    UploadArtifactRequest:
-      type: object
-      required:
-      - file
-      properties:
-        file:
-          type: string
-          format: binary
-          description: The catalog file to upload. The file must be a CSV.
-        kind:
-          allOf:
-          - $ref: '#/components/schemas/ArtifactKind'
-          description: Optional. When omitted, the server infers the kind from the filename extension or content type. The supported value is `csv`.
-    ArtifactKind:
-      type: string
-      enum:
-      - csv
-      description: Artifact file format. The supported value is `csv`.
     OptimizeWorkflowResponse:
       type: object
       required:
@@ -628,51 +569,6 @@ components:
           type: string
           format: date-time
           example: '2026-05-15T10:42:08Z'
-    WorkflowReviewerSummaryResponse:
-      type: object
-      required:
-      - reviewer_user_id
-      description: Per-reviewer summary included in the workflow response. The `name` and `email` fields are resolved from `auth_users` at read time.
-      properties:
-        reviewer_user_id:
-          type: string
-          example: user_xyz
-        name:
-          type:
-          - string
-          - 'null'
-          example: Alex Reviewer
-        email:
-          type:
-          - string
-          - 'null'
-          example: alex@acme.com
-        first_name:
-          type:
-          - string
-          - 'null'
-          example: Alex
-        last_name:
-          type:
-          - string
-          - 'null'
-          example: Reviewer
-        category_ids:
-          type: array
-          items:
-            type: string
-          example:
-          - cat_apparel
-          - cat_outerwear
-        categories_at_open_gate:
-          type: integer
-          default: 0
-          example: 2
-        current_gate:
-          type:
-          - string
-          - 'null'
-          example: TAXONOMY_REVIEW
     ArtifactSource:
       type: string
       enum:
@@ -683,48 +579,69 @@ components:
       description: 'Indicates how the artifact was ingested. `upload` denotes a direct multipart upload, `presigned` denotes the presigned-URL flow used for large files, `uri` denotes a server-side fetch from an external URI, and `generated` denotes a system-produced artifact.
 
         '
-    WorkflowProgress:
-      type: object
-      description: 'Phase-keyed progress for the workflow, computed at read time. The `phases` object contains one key per phase (`validation`, `taxonomy`, `enrichment`, `publish`), each carrying a phase-specific structure.
-
-        '
-      properties:
-        current_phase:
-          type:
-          - string
-          - 'null'
-          example: taxonomy
-        current_step:
-          type:
-          - string
-          - 'null'
-          example: TAXONOMY_MAP
-        current_gate:
-          type:
-          - string
-          - 'null'
-          example: TAXONOMY_REVIEW
-        phases:
-          type: object
-          additionalProperties: true
-          description: Phase-keyed progress map. Keys are `validation`, `taxonomy`, `enrichment`, `publish`; each value is a phase-specific progress object.
-    ValidationError:
+    ArtifactKind:
+      type: string
+      enum:
+      - csv
+      description: Artifact file format. The supported value is `csv`.
+    ArtifactInput:
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - artifact_id
       properties:
-        loc:
-          type: array
+        artifact_id:
+          type: string
+          description: Identifier returned by `POST /v2/optimize/artifacts`.
+          example: art_95c650ded4824dc79bb6df16427e4a10
+    CreateWorkflowRequest:
+      type: object
+      required:
+      - input
+      description: Request body for creating an optimization workflow. Customer integrations should set `origin` to `API`. Supervised review gating is applied automatically.
+      properties:
+        input:
+          $ref: '#/components/schemas/WorkflowInput'
+        name:
+          type:
+          - string
+          - 'null'
+          description: Human-readable name displayed in the Commerce OS UI.
+          example: Spring 2026 catalog enrichment
+        tags:
+          type:
+          - array
+          - 'null'
           items:
-            oneOf:
-            - type: string
-            - type: integer
-        msg:
+            type: string
+          example: []
+        origin:
+          type:
+          - string
+          - 'null'
+          enum:
+          - COMMERCEOS
+          - API
+          default: API
+          description: Set to `API` for customer integrations. Defaults to `API` when omitted.
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: Arbitrary JSON object stored on the workflow for caller use.
+    UploadArtifactRequest:
+      type: object
+      required:
+      - file
+      properties:
+        file:
           type: string
-        type:
-          type: string
+          format: binary
+          description: The catalog file to upload. The file must be a CSV.
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/ArtifactKind'
+          description: Optional. When omitted, the server infers the kind from the filename extension or content type. The supported value is `csv`.
     ArtifactResponse:
       type: object
       required:
@@ -779,14 +696,6 @@ components:
           format: date-time
           description: Upload timestamp in UTC.
           example: '2026-05-15T10:30:00Z'
-    HTTPValidationError:
-      type: object
-      description: Validation error response body returned with HTTP 422.
-      properties:
-        detail:
-          type: array
-          items:
-            $ref: '#/components/schemas/ValidationError'
     WorkflowReviewSummary:
       type: object
       description: 'Aggregate counts across categories at the current enrichment-side review gate. This summary supports diagnosing which categories are blocking progression. For non-enrichment gates (taxonomy, validation, publish) the counts are typically zero, because those gates are workflow-level rather than per-category.
@@ -814,6 +723,51 @@ components:
         published_categories:
           type: integer
           default: 0
+    WorkflowReviewerSummaryResponse:
+      type: object
+      required:
+      - reviewer_user_id
+      description: Per-reviewer summary included in the workflow response. The `name` and `email` fields are resolved from `auth_users` at read time.
+      properties:
+        reviewer_user_id:
+          type: string
+          example: user_xyz
+        name:
+          type:
+          - string
+          - 'null'
+          example: Alex Reviewer
+        email:
+          type:
+          - string
+          - 'null'
+          example: alex@acme.com
+        first_name:
+          type:
+          - string
+          - 'null'
+          example: Alex
+        last_name:
+          type:
+          - string
+          - 'null'
+          example: Reviewer
+        category_ids:
+          type: array
+          items:
+            type: string
+          example:
+          - cat_apparel
+          - cat_outerwear
+        categories_at_open_gate:
+          type: integer
+          default: 0
+          example: 2
+        current_gate:
+          type:
+          - string
+          - 'null'
+          example: TAXONOMY_REVIEW
     WorkflowInput:
       type: object
       required:
@@ -822,59 +776,23 @@ components:
       properties:
         artifact:
           $ref: '#/components/schemas/ArtifactInput'
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    CreateWorkflowRequest:
+    ValidationError:
       type: object
       required:
-      - input
-      description: Request body for creating an optimization workflow. Customer integrations should set `origin` to `API`. Supervised review gating is applied automatically.
+      - loc
+      - msg
+      - type
       properties:
-        input:
-          $ref: '#/components/schemas/WorkflowInput'
-        name:
-          type:
-          - string
-          - 'null'
-          description: Human-readable name displayed in the Commerce OS UI.
-          example: Spring 2026 catalog enrichment
-        tags:
-          type:
-          - array
-          - 'null'
+        loc:
+          type: array
           items:
-            type: string
-          example: []
-        origin:
-          type:
-          - string
-          - 'null'
-          enum:
-          - COMMERCEOS
-          - API
-          default: API
-          description: Set to `API` for customer integrations. Defaults to `API` when omitted.
-        metadata:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          description: Arbitrary JSON object stored on the workflow for caller use.
+            oneOf:
+            - type: string
+            - type: integer
+        msg:
+          type: string
+        type:
+          type: string
     ArtifactReadResponse:
       type: object
       required:
@@ -933,6 +851,88 @@ components:
           format: date-time
           description: Expiry timestamp in UTC for `download_url`. After this time, call `GET /v2/optimize/artifacts/{artifact_id}` again to obtain a new URL.
           example: '2026-05-15T10:45:00Z'
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    AuditPrincipal:
+      type: object
+      required:
+      - id
+      - type
+      description: 'Resolved reference for the `created_by` and `updated_by` audit fields. A `type` of `unknown` is returned when the referenced identifier can no longer be resolved (for example, when a user has been hard-deleted).
+
+        '
+      properties:
+        id:
+          type: string
+          description: Either `auth_users.id` or `auth_service_clients.client_id`.
+          example: user_xyz
+        type:
+          type: string
+          enum:
+          - user
+          - service
+          - unknown
+          description: 'Indicates the principal type: `user` for end-user actors, `service` for machine clients, and `unknown` when the principal cannot be resolved.'
+        name:
+          type:
+          - string
+          - 'null'
+          description: Display name. Null when `type` is `unknown`.
+          example: Alex Reviewer
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email address. Null when `type` is `service` or `unknown`.
+          example: alex@acme.com
+    WorkflowProgress:
+      type: object
+      description: 'Phase-keyed progress for the workflow, computed at read time. The `phases` object contains one key per phase (`validation`, `taxonomy`, `enrichment`, `publish`), each carrying a phase-specific structure.
+
+        '
+      properties:
+        current_phase:
+          type:
+          - string
+          - 'null'
+          example: taxonomy
+        current_step:
+          type:
+          - string
+          - 'null'
+          example: TAXONOMY_MAP
+        current_gate:
+          type:
+          - string
+          - 'null'
+          example: TAXONOMY_REVIEW
+        phases:
+          type: object
+          additionalProperties: true
+          description: Phase-keyed progress map. Keys are `validation`, `taxonomy`, `enrichment`, `publish`; each value is a phase-specific progress object.
+    HTTPValidationError:
+      type: object
+      description: Validation error response body returned with HTTP 422.
+      properties:
+        detail:
+          type: array
+          items:
+            $ref: '#/components/schemas/ValidationError'
   parameters:
     DomainHeader:
       name: domain

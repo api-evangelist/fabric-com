@@ -892,14 +892,6 @@ paths:
       - Credits
 components:
   schemas:
-    orderCreditsResponse:
-      description: Credits response
-      properties:
-        credits:
-          items:
-            $ref: '#/components/schemas/creditsResponse'
-          type: array
-      type: object
     orderCreditsRequest:
       description: Credits request
       properties:
@@ -939,85 +931,49 @@ components:
       - creditId
       - statusCode
       type: object
-    creditsRequest:
-      description: Request for credits
+    amountInCurrency:
+      description: Amount in currency object details.
       properties:
         amount:
-          description: Credits amount
-          example: 21.5
+          description: The amount displayed in the primary currency.
+          example: 123.45
           format: double
           type: number
-        amountInCurrencies:
-          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrency'
-          type: array
-        attributes:
-          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
-          example:
-            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
-          type: object
         currency:
-          description: Three-letter currency code as defined by ISO-4217
+          description: Currency in ISO-4217
           example: USD
           type: string
-        employeeId:
-          description: Employee (ID or name) who initiated a the credits request
-          example: '12312232'
-          type: string
-        note:
-          description: Note
-          example: Credit request initiated
-          type: string
-        paymentCounter:
-          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
-          example: 1
-          format: int32
-          type: integer
-        policyCode:
-          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
-          example: RC1
-          type: string
-        reasonCode:
-          description: Reason code
-          example: EC
-          type: string
-        source:
-          description: Source of credits request
-          example: CSR
-          type: string
-        subReasonCode:
-          description: Subreason code
-          example: ACC
-          type: string
-        type:
-          description: Credit type. Currently, supports only Gift Card
-          enum:
-          - GIFT_CARD
-          example: GIFT_CARD
+        group:
+          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
+          example: SHOPPER
           type: string
       required:
-      - amount
       - currency
-      - reasonCode
-      - source
-      - type
+      - group
       type: object
-    errorResponse:
-      description: Error response
+    creditsEligibilityResponse:
+      description: Credits eligibility model
       properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
+        description:
+          description: Description provided while requesting credits (for reference)
+          example: Policy used to add credits
           type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
+        eligibleReasonCodes:
+          description: Reason codes to support credits request
+          items:
+            $ref: '#/components/schemas/reasonCodeAndDescription'
+          type: array
+        orderId:
+          description: 24-character system-generated order ID
+          example: 62f3982438bcab1951be0a19
+          type: string
+        policyName:
+          description: Merchant-given policy name.
+          example: Credits policy
+          type: string
+        policyType:
+          description: Policy type used to check credits eligibility
+          example: credits
           type: string
       type: object
     creditsResponse:
@@ -1107,6 +1063,95 @@ components:
       - source
       - type
       type: object
+    creditsRequest:
+      description: Request for credits
+      properties:
+        amount:
+          description: Credits amount
+          example: 21.5
+          format: double
+          type: number
+        amountInCurrencies:
+          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
+          example:
+            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated a the credits request
+          example: '12312232'
+          type: string
+        note:
+          description: Note
+          example: Credit request initiated
+          type: string
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        policyCode:
+          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
+          example: RC1
+          type: string
+        reasonCode:
+          description: Reason code
+          example: EC
+          type: string
+        source:
+          description: Source of credits request
+          example: CSR
+          type: string
+        subReasonCode:
+          description: Subreason code
+          example: ACC
+          type: string
+        type:
+          description: Credit type. Currently, supports only Gift Card
+          enum:
+          - GIFT_CARD
+          example: GIFT_CARD
+          type: string
+      required:
+      - amount
+      - currency
+      - reasonCode
+      - source
+      - type
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    orderCreditsResponse:
+      description: Credits response
+      properties:
+        credits:
+          items:
+            $ref: '#/components/schemas/creditsResponse'
+          type: array
+      type: object
     reasonCodeAndDescription:
       description: Return or exchange reason
       properties:
@@ -1119,52 +1164,15 @@ components:
           example: Damaged
           type: string
       type: object
-    creditsEligibilityResponse:
-      description: Credits eligibility model
-      properties:
-        description:
-          description: Description provided while requesting credits (for reference)
-          example: Policy used to add credits
-          type: string
-        eligibleReasonCodes:
-          description: Reason codes to support credits request
-          items:
-            $ref: '#/components/schemas/reasonCodeAndDescription'
-          type: array
-        orderId:
-          description: 24-character system-generated order ID
-          example: 62f3982438bcab1951be0a19
-          type: string
-        policyName:
-          description: Merchant-given policy name.
-          example: Credits policy
-          type: string
-        policyType:
-          description: Policy type used to check credits eligibility
-          example: credits
-          type: string
-      type: object
-    amountInCurrency:
-      description: Amount in currency object details.
-      properties:
-        amount:
-          description: The amount displayed in the primary currency.
-          example: 123.45
-          format: double
-          type: number
-        currency:
-          description: Currency in ISO-4217
-          example: USD
-          type: string
-        group:
-          description: A unique identifier for currencies. All calculations and invoicing are based on this identifier. For example, the `Shopper` group uses USD, while the `Retailer` group uses EUR.
-          example: SHOPPER
-          type: string
-      required:
-      - currency
-      - group
-      type: object
   parameters:
+    xFabricTenantId:
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      example: 5f328bf0b5f328bf0b5f328b
+      in: header
+      name: x-fabric-tenant-id
+      required: true
+      schema:
+        type: string
     xFabricRequestId:
       description: Unique request ID
       example: 263e731c-45c8-11ed-b878-0242ac120002
@@ -1178,14 +1186,6 @@ components:
       example: '12'
       in: header
       name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-    xFabricTenantId:
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      example: 5f328bf0b5f328bf0b5f328b
-      in: header
-      name: x-fabric-tenant-id
       required: true
       schema:
         type: string

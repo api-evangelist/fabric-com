@@ -594,14 +594,24 @@ paths:
                 $ref: '#/components/schemas/error500'
 components:
   schemas:
-    promotionPriceLists:
+    promotionLimits:
       type: array
-      description: Price list IDs to be considered for this promotion.
+      description: Restrictions or conditions that apply to the use of a promotion
       items:
-        type: integer
-        format: int32
-        example: 10000056
-        description: The price list ID.
+        type: object
+        description: Promotion limit detail. Limits for promotions can only be configured at cart level.
+        properties:
+          type:
+            type: string
+            description: Promotion limit type
+            enum:
+            - ORDER
+            example: ORDER
+          quantity:
+            type: integer
+            format: int32
+            description: Number of times a promotion can be applied in the same cart.
+            example: 3
     error500:
       type: object
       description: Internal server error
@@ -614,310 +624,6 @@ components:
           description: An error message corresponding to the `type`.
           type: string
           example: Internal server error
-    searchPromotionResponse:
-      type: object
-      description: The search results including the pagination data.
-      properties:
-        query:
-          $ref: '#/components/schemas/offsetQuery'
-        data:
-          description: The response of the search request.
-          type: array
-          items:
-            $ref: '#/components/schemas/promoSearchObject'
-    togglePromotionRequest:
-      type: object
-      description: Toggle data request
-      required:
-      - isEnabled
-      properties:
-        isEnabled:
-          description: '- `true`: Promotion will be enabled.
-
-            - `false`: Promotion will be disabled.
-
-            '
-          type: boolean
-          example: false
-    promotionInvalidId:
-      type: object
-      description: Promotion invalid ID error
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: PROMO_ID_NOT_VALID
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Promotion ID isn't valid, it must be a valid object ID
-    promotionDiscounts:
-      type: array
-      description: An array containing discount details.
-      minItems: 1
-      items:
-        type: object
-        description: Discount details
-        required:
-        - unit
-        - amount
-        - type
-        properties:
-          unit:
-            type: string
-            description: Discount type
-            enum:
-            - PERCENTAGE_OFF
-            - AMOUNT_OFF
-            - FIXED
-            example: PERCENTAGE_OFF
-          amount:
-            type: number
-            format: double
-            description: Discount amount to be given
-            example: 15
-          type:
-            type: string
-            description: 'Discount type for where the discount applies. The following are valid target options for applying the discount:
-
-              - `SKU`: Discount is applied to products.
-
-              - `CART`: Discount is applied to the entire cart value.
-
-              - `SERVICE`: Discount is applied to SKU shipping.
-
-              - `SERVICE_CART`: Discount is applied to cart shipping cost.
-
-              '
-            enum:
-            - SKU
-            - CART
-            - SERVICE
-            - SERVICE_CART
-            example: SKU
-          values:
-            oneOf:
-            - type:
-              - string
-              - 'null'
-              description: Should be null for SKU and CART
-              example: 'null'
-            - type: array
-              items:
-                type: object
-                description: Detail for the promotion to apply, details must be sent for CART and SERVICE_CART
-                example: {}
-          maximumQuantity:
-            type: number
-            format: double
-            description: Maximum quantity of items that can receive the discount. Quantity is required when the promotion type is SPEND_GET or BUYGET.
-            example: 2
-          includeOperator:
-            type: string
-            description: "Select the `AND` or `OR` condition to include products in a promotion. \n- Use the `OR` condition to apply a single rule for product inclusion. \n- Use the `AND` condition to apply multiple rules for product inclusion.\n"
-            default: OR
-            example: OR
-            enum:
-            - AND
-            - OR
-          excludeOperator:
-            type: string
-            description: "Select the `AND` or `OR` condition to exclude products from a promotion. \n- Use the `OR` condition to apply a single rule for product exclusion.\n- Use the `AND` condition to apply multiple rules for product exclusion.\n"
-            default: AND
-            example: AND
-            enum:
-            - AND
-            - OR
-          discountId:
-            type: string
-            description: Discount ID to link `discount` and `targetProduct`. It's required for BUYGET and SPEND_GET promotions.
-            example: '1'
-          isAutoAdd:
-            type: boolean
-            description: Represents if validate endpoint (evaluation endpoint from Real-time Pricing Engine) should suggest free items. Currently used for BUY-GET type of promotion.
-            default: false
-            example: false
-          sets:
-            type: array
-            description: Reserved for additional information. It's used to create a group of items in a set so that you can easily apply promotions or coupons to the defined set of items.
-            items:
-              description: Set ID
-              type: string
-              example: A
-              enum:
-              - A
-              - B
-              - C
-              - D
-              - E
-              - F
-              - G
-              - H
-              - I
-              - J
-              - K
-              - L
-              - M
-              - N
-              - O
-              - P
-              - Q
-              - R
-              - S
-              - T
-              - U
-              - V
-              - W
-              - X
-              - Y
-              - Z
-    promotionNameExists:
-      type: object
-      description: Promotion name duplicated error
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: PROMO_TITLE_EXISTS
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Promotion name already exists
-    error400:
-      type: object
-      description: Bad request error
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: BAD_REQUEST
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Bad request
-    promotionTermsAndConditions:
-      type: array
-      description: Terms and conditions for the promotion
-      items:
-        type: object
-        description: Promotion terms and conditions
-        properties:
-          name:
-            type: string
-            description: Terms and conditions name
-            example: Terms Applied
-          description:
-            type: string
-            description: Terms and conditions description
-            example: Items can't be exchanged
-    promotionDeleteError:
-      type: object
-      description: Only upcoming promotions can be deleted
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: PROMO_CANNOT_BE_DELETED
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Promotion can only be deleted in scheduled status
-    promotionMessages:
-      type: array
-      description: Message description for the promotion
-      required:
-      - title
-      - locales
-      - pages
-      items:
-        type: object
-        description: Message description for the promotion
-        properties:
-          title:
-            type: string
-            description: Message name
-            example: Buy 2 get 1 free
-          message:
-            type: string
-            description: Message description
-            example: Offer valid at participating stores through September 5, 2023.
-          pages:
-            type: array
-            description: The types of web pages where the message is displayed.
-            items:
-              type: string
-              description: Page type
-              example: PDP
-            example:
-            - PDP
-            - Cart
-          locales:
-            type: array
-            description: The locales in which the promotion message is displayed. Locale is a set of language or country-based preferences for user interface.
-            items:
-              type: string
-              description: Locale
-              example: en-CA
-            example:
-            - en-CA
-            - fr-CA
-    togglePromotionResponse:
-      allOf:
-      - $ref: '#/components/schemas/promotionResponse'
-      - type: object
-        description: Toggled promotion detail
-        properties:
-          status:
-            description: Promotion status
-            example: DISABLED
-    invalidSearchFilterField:
-      type: object
-      description: An error indicating an invalid search.
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: INVALID_SEARCH_FILTER_FIELD
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: The search filter field isn't valid.
-    promotionNotFound:
-      type: object
-      description: Promotion not found error
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: PROMOTION_NOT_FOUND
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: The promotion you entered doesn't exist
-    promotionActiveError:
-      type: object
-      description: Promotion isn't allowed to be updated when it's active
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: PROMO_NOT_UPDATED
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Active promotion can't be updated
-    promotionIsExpired:
-      type: object
-      description: No actions over expired promotions is allowed
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: PROMO_IS_EXPIRED
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Promotion is expired
     promotionDiscountRequired:
       type: object
       description: Validations for BUYGET promotion don't meet the criteria
@@ -930,20 +636,6 @@ components:
           description: An error message corresponding to the `type`.
           type: string
           example: Discount ID is required in `discounts` and `targetProducts` array for BUYGET promotion or coupon
-    deletePromotionResponse:
-      $ref: '#/components/schemas/promotionResponse'
-    promotionExpired:
-      type: object
-      description: Promotion expired error
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: PROMO_NOT_UPDATED
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Promotion can't be updated in EXPIRED status
     proximityMessages:
       type: object
       properties:
@@ -967,23 +659,208 @@ components:
                 type: string
                 description: The localized message for the specified locales.
                 example: Buy some more to get the discount!
-    createdAt:
-      type: string
-      format: date-time
-      description: Record's creation time
-      example: 2019-08-20 14:15:22+00:00
-    promotionShipmentMethods:
+    promotionEndResponse:
+      allOf:
+      - $ref: '#/components/schemas/promotionResponse'
+      - type: object
+        description: Stopped promotion detail
+        properties:
+          status:
+            example: EXPIRED
+          startAt:
+            example: 2021-10-18 23:45:40.289000+00:00
+          endAt:
+            example: 2021-10-18 23:45:40.289000+00:00
+    promotionTargetProduct:
       type: array
-      description: Required for *Shipping* type promotion to provide eligible shipment methods.
+      description: A list of target products for applying the discount.
+      minItems: 1
       items:
-        type: string
-        description: Shipping method ID. This ID is used to evaluate cart promotion.
-        example: '1000001'
+        type: object
+        description: The details of the target products.
+        required:
+        - type
+        - values
+        - operator
+        properties:
+          type:
+            type: string
+            description: The target type for the promotion.
+            enum:
+            - SKU
+            - CATEGORY
+            - ATTRIBUTE
+            - PRICE_TYPE
+            - COLLECTION
+            - PREVIOUS_DISCOUNTS
+            example: SKU
+          values:
+            description: The values corresponding to the selection `type`.
+            oneOf:
+            - type: string
+              description: A list of target products. An asterisk (*) indicates all products are selected; hence, the discount is applied on all products.
+              example: '*'
+            - type: array
+              items:
+                oneOf:
+                - type: integer
+                  format: int32
+                  description: A numeric identifier of the target record.
+                  example: 10006123
+                - type: string
+                  description: A non-numeric identifier of the target record.
+                  example: 61df12345678900009b7091c
+                - type: object
+                  description: The merchant-defined attributes associated with the promotion.
+                  required:
+                  - name
+                  - value
+                  properties:
+                    name:
+                      type: string
+                      example: couponId
+                      description: The merchant-defined `key` for the promotion.
+                    value:
+                      oneOf:
+                      - type: string
+                        example: '19822'
+                        description: The merchant-defined `value` for the `key`.
+                      - type: boolean
+                        description: Represents a boolean value.
+                        example: true
+                      - type: number
+                        description: Represents a numeric value.
+                        example: 10006123
+            - type: integer
+              format: int32
+              description: Condition numeric identifier
+              example: 10006123
+          operator:
+            description: 'Indicates whether a target product is included or excluded from discounts. The following options are available:
+
+              - `IN`: The target product, with the specified `type` and `value`, is included for the discount to be applied.
+
+              - `NOT_IN`: The target product, with the specified `type` and `value`, is excluded from being discounted.
+
+              - `EQUAL`: The target product will be eligible for the discount if the defined `type` and `value` match the product selection.
+
+              '
+            type: string
+            enum:
+            - IN
+            - NOT_IN
+            - EQUAL
+            - GREATER_THAN
+            example: IN
+          discountId:
+            type: string
+            description: Discount ID to link `discount` and `targetProduct`; required for `BUYGET` promotion
+            example: '1'
+    invalidSearchFilterField:
+      type: object
+      description: An error indicating an invalid search.
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: INVALID_SEARCH_FILTER_FIELD
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: The search filter field isn't valid.
     updatedAt:
       type: string
       format: date-time
       description: Record's last updated time
       example: 2019-08-20 14:15:22+00:00
+    deletePromotionResponse:
+      $ref: '#/components/schemas/promotionResponse'
+    createPromotionResponse:
+      $ref: '#/components/schemas/promotionResponse'
+    invalidPromoStackingType:
+      type: object
+      description: An error indicating the type of promotion stacking is invalid.
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: INVALID_PROMO_STACKING_TYPE
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: The promotion stacking type filter isn't valid.
+    invalidPromoState:
+      type: object
+      description: An error indicating that the state of the promotion is invalid.
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: INVALID_PROMO_STATE
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: The promotion state isn't valid.
+    promotionDateError:
+      type: object
+      description: Inconsistent start and end dates error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: DATE_ERROR
+        message:
+          description: Error description
+          type: string
+          example: An error message corresponding to the `type`.
+    promotionNotFound:
+      type: object
+      description: Promotion not found error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: PROMOTION_NOT_FOUND
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: The promotion you entered doesn't exist
+    error401:
+      type: object
+      description: Unauthorized error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: UNAUTHORIZED
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Invalid credentials
+    updatePromotionRequest:
+      allOf:
+      - $ref: '#/components/schemas/createPromotionRequest'
+      - type: object
+        description: Promotion record detail
+        properties:
+          details:
+            type: array
+            description: Promotion setup details
+            minItems: 1
+            items:
+              type: object
+              description: Promotion setup detail
+              required:
+              - discounts
+              - targetProducts
+              - conditions
+              properties:
+                discounts:
+                  $ref: '#/components/schemas/promotionDiscounts'
+                targetProducts:
+                  $ref: '#/components/schemas/promotionTargetProduct'
+                conditions:
+                  $ref: '#/components/schemas/promotionConditionUpdate'
     invalidFilterOperator:
       type: object
       description: An error code indicating the filter operation is invalid
@@ -996,43 +873,43 @@ components:
           description: An error message corresponding to the `type`.
           type: string
           example: The search filter operator isn't valid.
-    missingTenantHeader:
+    promotionResponse:
       type: object
-      description: Tenant header is missing
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: TENANT_HEADER_REQUIRED
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: x-fabric-tenant-id header is required
-    createPromotionRequest:
-      type: object
-      description: Promotion details to be created
+      description: The details of the promotion.
       required:
+      - id
       - name
-      - details
       - startAt
       - endAt
+      - status
       - type
       properties:
-        name:
+        id:
           type: string
-          minLength: 3
-          maxLength: 120
+          description: A 24-character system-generated The promotion ID generated when using the [create promotion](/v3/api-reference/offers/promotions/create-promotion) endpoint.
+          example: 6380e7ecb419a30009865fad
+        name:
           description: The name of the promotion.
           example: Black Friday Promotion
+          type: string
+        status:
+          type: string
+          description: The current status of the promotion.
+          enum:
+          - ACTIVE
+          - SCHEDULED
+          - DISABLED
+          - EXPIRED
+          example: SCHEDULED
         startAt:
           type: string
-          description: Promotion start time
           format: date-time
+          description: The start time of the promotion, in UTC format.
           example: 2019-08-24 14:15:22+00:00
         endAt:
           type: string
-          description: Promotion end time
           format: date-time
+          description: The end time of the promotion, in UTC format.
           example: 2019-08-25 14:15:22+00:00
         type:
           type: string
@@ -1059,52 +936,10 @@ components:
           - BUYGET
           - SPEND_GET
           example: PRODUCT
-        buyOperator:
-          type: string
-          description: Operator for conditions array. It's applied only when the promotion type is `BUYGET`. It's used as an operator between different *conditions* mentioned in the *details* array.
-          default: OR
-          enum:
-          - AND
-          - OR
-          example: OR
-        details:
-          type: array
-          minItems: 1
-          description: Promotion setup details
-          items:
-            type: object
-            description: Promotion setup detail
-            required:
-            - discounts
-            - targetProducts
-            - conditions
-            properties:
-              discounts:
-                $ref: '#/components/schemas/promotionDiscounts'
-              targetProducts:
-                $ref: '#/components/schemas/promotionTargetProduct'
-              conditions:
-                $ref: '#/components/schemas/promotionCondition'
-        termsAndConditions:
-          $ref: '#/components/schemas/promotionTermsAndConditions'
-        promotionMessages:
-          $ref: '#/components/schemas/promotionMessages'
-        proximityMessages:
-          $ref: '#/components/schemas/proximityMessages'
-        promotionConditionDetail:
-          $ref: '#/components/schemas/promotionConditionDetail'
-        shipmentMethodIds:
-          $ref: '#/components/schemas/promotionShipmentMethods'
-        eligiblePriceLists:
-          $ref: '#/components/schemas/promotionPriceLists'
-        limits:
-          $ref: '#/components/schemas/promotionLimits'
-        additionalAttributes:
-          $ref: '#/components/schemas/promotionAdditionalAttributes'
-        note:
-          type: string
-          example: Independence day sale
-          description: Promotion note or description
+        createdAt:
+          $ref: '#/components/schemas/createdAt'
+        updatedAt:
+          $ref: '#/components/schemas/updatedAt'
         level:
           type: integer
           format: int32
@@ -1129,157 +964,62 @@ components:
           type: boolean
           example: false
           description: A flag indicating whether the promotion is always applied regardless of any exclusive promotions on the same item. Set to `true` if the promotion is always applied and set to `false` if the promotion isn't applied on the item by default.
-    updatePromotionRequest:
-      allOf:
-      - $ref: '#/components/schemas/createPromotionRequest'
-      - type: object
-        description: Promotion record detail
-        properties:
-          details:
-            type: array
-            description: Promotion setup details
-            minItems: 1
-            items:
-              type: object
-              description: Promotion setup detail
-              required:
-              - discounts
-              - targetProducts
-              - conditions
-              properties:
-                discounts:
-                  $ref: '#/components/schemas/promotionDiscounts'
-                targetProducts:
-                  $ref: '#/components/schemas/promotionTargetProduct'
-                conditions:
-                  $ref: '#/components/schemas/promotionConditionUpdate'
-    promotionDateError:
+        additionalAttributes:
+          type: array
+          description: A placeholder for additional attributes related to promotions, in name-values pairs.
+          items:
+            type: object
+            description: Details of additional attributes.
+            required:
+            - name
+            - values
+            properties:
+              name:
+                type: string
+                description: The attribute name.
+                example: type
+              values:
+                description: The attribute value or values corresponding to the `name`.
+                oneOf:
+                - type: string
+                  description: The value of the additional attribute.
+                  example: Birthday
+                - type: array
+                  items:
+                    type: string
+                    description: The values of the additional attributes.
+                    example:
+                    - Birthday
+                    - Holiday
+              attributeId:
+                type: number
+                description: A unique identifier of the attribute, for external use.
+                example: 100000
+        promotionMessages:
+          $ref: '#/components/schemas/promotionMessages'
+    promotionDisabledError:
       type: object
-      description: Inconsistent start and end dates error
+      description: Promotion can't be activated if it's not disabled
       properties:
         type:
           description: The error code.
           type: string
-          example: DATE_ERROR
-        message:
-          description: Error description
-          type: string
-          example: An error message corresponding to the `type`.
-    promotionConditionUpdate:
-      type: array
-      description: Condition list for the promotion to be qualified
-      minItems: 1
-      items:
-        type: object
-        description: Promotion conditions
-        required:
-        - id
-        - operator
-        - conditions
-        properties:
-          id:
-            description: Promotional condition ID that's linked with the promotion. If not provided, an existing condition ID is used.
-            type:
-            - string
-            - 'null'
-            example: 634989a78cb443d74e4435d9
-          operator:
-            type: string
-            description: Operator among each object of *conditions* array
-            enum:
-            - AND
-            - OR
-            example: AND
-          includeOperator:
-            type: string
-            description: "Select the `AND` or `OR` condition to include products in a promotion. \n- Use the `OR` condition to apply a single rule for product inclusion. \n- Use the `AND` condition to apply multiple rules for product inclusion.\n"
-            default: OR
-            example: OR
-            enum:
-            - AND
-            - OR
-          excludeOperator:
-            type: string
-            description: "Select the `AND` or `OR` condition to include products in a promotion. \n- Use the `OR` condition to apply a single rule for product inclusion. \n- Use the `AND` condition to apply multiple rules for product inclusion.\n"
-            default: AND
-            example: AND
-            enum:
-            - AND
-            - OR
-          conditions:
-            type: array
-            description: Promotion conditions to apply over the specific targets
-            minItems: 1
-            items:
-              $ref: '#/components/schemas/promotionConditionDetail'
-          set:
-            type: string
-            default: A
-            description: It's used to create a group of items in a set so that you can easily apply promotions or coupons to the defined set of items.
-            example: A
-            enum:
-            - A
-            - B
-            - C
-            - D
-            - E
-            - F
-            - G
-            - H
-            - I
-            - J
-            - K
-            - L
-            - M
-            - N
-            - O
-            - P
-            - Q
-            - R
-            - S
-            - T
-            - U
-            - V
-            - W
-            - X
-            - Y
-            - Z
-    error401:
-      type: object
-      description: Unauthorized error
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: UNAUTHORIZED
+          example: PROMO_NOT_IN_DISABLED_STATUS
         message:
           description: An error message corresponding to the `type`.
           type: string
-          example: Invalid credentials
-    promotionDiscountError:
+          example: Promotion can't be activated if it's not DISABLED
+    searchPromotionRequest:
       type: object
-      description: Inconsistent discountId
-      properties:
-        type:
-          description: The error code.
-          type: string
-          example: DISCOUNTID_NOT_VALID
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Discount ID in `targetProducts` should match with a `discountId` in discounts array
-    offsetQuery:
-      type: object
-      description: Provides pagination data.
+      description: The search criteria.
       properties:
         size:
-          type: integer
-          format: int32
-          example: 10
+          type: number
+          default: 10
           minimum: 1
           maximum: 100
-          default: 10
           description: The maximum number of records per page.
+          example: 10
         offset:
           type: integer
           format: int32
@@ -1287,23 +1027,94 @@ components:
           minimum: 0
           default: 0
           description: The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, you will get records from 21 to 30.
-        count:
-          type: integer
-          format: int32
-          example: 50
-          description: The total number of available records.
-    invalidPromoState:
+        sort:
+          type: string
+          description: The criteria to sort the results. Use the format {sort order}{field name}, where `-` refers to a descending order and `+` refers to an ascending order.
+          enum:
+          - +updatedAt
+          - +name
+          - +startAt
+          - +endAt
+          - +level
+          - -updatedAt
+          - -name
+          - -startAt
+          - -endAt
+          - -level
+        filters:
+          type: array
+          items:
+            type: object
+            maxItems: 20
+            required:
+            - field
+            - value
+            - operator
+            description: The filter conditions.
+            properties:
+              field:
+                type: string
+                description: The name of the field. This is always paired with `value`.
+                minLength: 3
+                maxLength: 120
+                example: name
+              value:
+                description: The value or values corresponding to the `field`. This is always paired with `field`.
+                oneOf:
+                - type: string
+                  minLength: 1
+                  maxLength: 120
+                  example: Summer
+                - type: array
+                  minItems: 1
+                  maxItems: 10
+                  items:
+                    description: Search multiple values in the same field.
+                    oneOf:
+                    - type: string
+                      example: collectionId
+                    - type: number
+                      example: 100000234
+                    - type: object
+                      properties:
+                        name:
+                          type: string
+                          description: The name to search. This is used to search based on segments or additional attributes.
+                          minLength: 1
+                          maxLength: 120
+                          example: Season
+                        value:
+                          description: The value corresponding to the `name`. This is used to search based on segments or additional attributes.
+                          oneOf:
+                          - type: string
+                            minLength: 1
+                            maxLength: 120
+                            example: Winter
+                          - type: boolean
+                            example: true
+                          - type: number
+                            example: 111
+              operator:
+                type: string
+                description: The type of search operation. You can use multiple values, separated by commas, for the IN operation; however, you can only use a single value for the EQUALS, GREATER_THAN_OR_EQUAL_TO, and LESS_THAN operations.
+                enum:
+                - EQUAL
+                - GREATER_THAN_OR_EQUAL_TO
+                - LESS_THAN
+                - IN
+                example: EQUAL
+    promotionIsExpired:
       type: object
-      description: An error indicating that the state of the promotion is invalid.
+      description: No actions over expired promotions is allowed
       properties:
         type:
           description: The error code.
           type: string
-          example: INVALID_PROMO_STATE
+          example: PROMO_IS_EXPIRED
         message:
           description: An error message corresponding to the `type`.
           type: string
-          example: The promotion state isn't valid.
+          example: Promotion is expired
     promoSearchObject:
       type: object
       properties:
@@ -1442,38 +1253,51 @@ components:
           $ref: '#/components/schemas/promotionMessages'
         proximityMessages:
           $ref: '#/components/schemas/proximityMessages'
-    promotionDisabledError:
+    offsetQuery:
       type: object
-      description: Promotion can't be activated if it's not disabled
+      description: Provides pagination data.
       properties:
-        type:
-          description: The error code.
-          type: string
-          example: PROMO_NOT_IN_DISABLED_STATUS
-        message:
-          description: An error message corresponding to the `type`.
-          type: string
-          example: Promotion can't be activated if it's not DISABLED
-    promotionCondition:
+        size:
+          type: integer
+          format: int32
+          example: 10
+          minimum: 1
+          maximum: 100
+          default: 10
+          description: The maximum number of records per page.
+        offset:
+          type: integer
+          format: int32
+          example: 10
+          minimum: 0
+          default: 0
+          description: The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, you will get records from 21 to 30.
+        count:
+          type: integer
+          format: int32
+          example: 50
+          description: The total number of available records.
+    promotionConditionUpdate:
       type: array
-      description: Conditions list for the promotion to be applied
+      description: Condition list for the promotion to be qualified
       minItems: 1
       items:
         type: object
-        description: Conditions for the promotion to be applied
+        description: Promotion conditions
         required:
+        - id
         - operator
         - conditions
         properties:
           id:
+            description: Promotional condition ID that's linked with the promotion. If not provided, an existing condition ID is used.
             type:
             - string
             - 'null'
-            description: Promotion condition ID
-            example: 6380e7ecb419a30009865fad
+            example: 634989a78cb443d74e4435d9
           operator:
             type: string
-            description: Operator for condition within each object of the `conditions` array
+            description: Operator among each object of *conditions* array
             enum:
             - AND
             - OR
@@ -1496,7 +1320,7 @@ components:
             - OR
           conditions:
             type: array
-            description: Conditions for the promotion to apply on specific targets
+            description: Promotion conditions to apply over the specific targets
             minItems: 1
             items:
               $ref: '#/components/schemas/promotionConditionDetail'
@@ -1532,6 +1356,11 @@ components:
             - X
             - Y
             - Z
+    createdAt:
+      type: string
+      format: date-time
+      description: Record's creation time
+      example: 2019-08-20 14:15:22+00:00
     badSizeError:
       type: object
       description: Pagination size error, an invalid value was sent
@@ -1544,6 +1373,126 @@ components:
           description: An error message corresponding to the `type`.
           type: string
           example: Size should be a valid number
+    promotionDiscounts:
+      type: array
+      description: An array containing discount details.
+      minItems: 1
+      items:
+        type: object
+        description: Discount details
+        required:
+        - unit
+        - amount
+        - type
+        properties:
+          unit:
+            type: string
+            description: Discount type
+            enum:
+            - PERCENTAGE_OFF
+            - AMOUNT_OFF
+            - FIXED
+            example: PERCENTAGE_OFF
+          amount:
+            type: number
+            format: double
+            description: Discount amount to be given
+            example: 15
+          type:
+            type: string
+            description: 'Discount type for where the discount applies. The following are valid target options for applying the discount:
+
+              - `SKU`: Discount is applied to products.
+
+              - `CART`: Discount is applied to the entire cart value.
+
+              - `SERVICE`: Discount is applied to SKU shipping.
+
+              - `SERVICE_CART`: Discount is applied to cart shipping cost.
+
+              '
+            enum:
+            - SKU
+            - CART
+            - SERVICE
+            - SERVICE_CART
+            example: SKU
+          values:
+            oneOf:
+            - type:
+              - string
+              - 'null'
+              description: Should be null for SKU and CART
+              example: 'null'
+            - type: array
+              items:
+                type: object
+                description: Detail for the promotion to apply, details must be sent for CART and SERVICE_CART
+                example: {}
+          maximumQuantity:
+            type: number
+            format: double
+            description: Maximum quantity of items that can receive the discount. Quantity is required when the promotion type is SPEND_GET or BUYGET.
+            example: 2
+          includeOperator:
+            type: string
+            description: "Select the `AND` or `OR` condition to include products in a promotion. \n- Use the `OR` condition to apply a single rule for product inclusion. \n- Use the `AND` condition to apply multiple rules for product inclusion.\n"
+            default: OR
+            example: OR
+            enum:
+            - AND
+            - OR
+          excludeOperator:
+            type: string
+            description: "Select the `AND` or `OR` condition to exclude products from a promotion. \n- Use the `OR` condition to apply a single rule for product exclusion.\n- Use the `AND` condition to apply multiple rules for product exclusion.\n"
+            default: AND
+            example: AND
+            enum:
+            - AND
+            - OR
+          discountId:
+            type: string
+            description: Discount ID to link `discount` and `targetProduct`. It's required for BUYGET and SPEND_GET promotions.
+            example: '1'
+          isAutoAdd:
+            type: boolean
+            description: Represents if validate endpoint (evaluation endpoint from Real-time Pricing Engine) should suggest free items. Currently used for BUY-GET type of promotion.
+            default: false
+            example: false
+          sets:
+            type: array
+            description: Reserved for additional information. It's used to create a group of items in a set so that you can easily apply promotions or coupons to the defined set of items.
+            items:
+              description: Set ID
+              type: string
+              example: A
+              enum:
+              - A
+              - B
+              - C
+              - D
+              - E
+              - F
+              - G
+              - H
+              - I
+              - J
+              - K
+              - L
+              - M
+              - N
+              - O
+              - P
+              - Q
+              - R
+              - S
+              - T
+              - U
+              - V
+              - W
+              - X
+              - Y
+              - Z
     promotionSegment:
       type: object
       description: The segment details.
@@ -1579,229 +1528,83 @@ components:
           - type: string
             description: All Segments
             example: '*'
-    promotionFixedError:
+    promotionNameExists:
       type: object
-      description: Validations for the promotion haven't been met
+      description: Promotion name duplicated error
       properties:
         type:
           description: The error code.
           type: string
-          example: FIXED_PRICE_ERROR
+          example: PROMO_TITLE_EXISTS
         message:
           description: An error message corresponding to the `type`.
           type: string
-          example: Fixed price isn't compatible with CART and SHIPPING
-    promotionTargetProduct:
+          example: Promotion name already exists
+    updatePromotionResponse:
+      $ref: '#/components/schemas/promotionResponse'
+    promotionAdditionalAttributes:
+      description: Merchant-specified attributes associated with the promotion.
       type: array
-      description: A list of target products for applying the discount.
-      minItems: 1
       items:
         type: object
-        description: The details of the target products.
+        description: Merchant-specified attributes associated with the promotion.
         required:
-        - type
+        - name
         - values
-        - operator
         properties:
-          type:
+          name:
+            description: Merchant-specified attribute `name` associated with the promotion.
             type: string
-            description: The target type for the promotion.
-            enum:
-            - SKU
-            - CATEGORY
-            - ATTRIBUTE
-            - PRICE_TYPE
-            - COLLECTION
-            - PREVIOUS_DISCOUNTS
-            example: SKU
+            example: eventName
           values:
-            description: The values corresponding to the selection `type`.
             oneOf:
             - type: string
-              description: A list of target products. An asterisk (*) indicates all products are selected; hence, the discount is applied on all products.
-              example: '*'
+              description: Merchant-specified attribute `value` associated with the promotion.
+              example: Store sale
             - type: array
+              description: Merchant-specified attribute `values` associated with the promotion.
               items:
-                oneOf:
-                - type: integer
-                  format: int32
-                  description: A numeric identifier of the target record.
-                  example: 10006123
-                - type: string
-                  description: A non-numeric identifier of the target record.
-                  example: 61df12345678900009b7091c
-                - type: object
-                  description: The merchant-defined attributes associated with the promotion.
-                  required:
-                  - name
-                  - value
-                  properties:
-                    name:
-                      type: string
-                      example: couponId
-                      description: The merchant-defined `key` for the promotion.
-                    value:
-                      oneOf:
-                      - type: string
-                        example: '19822'
-                        description: The merchant-defined `value` for the `key`.
-                      - type: boolean
-                        description: Represents a boolean value.
-                        example: true
-                      - type: number
-                        description: Represents a numeric value.
-                        example: 10006123
-            - type: integer
-              format: int32
-              description: Condition numeric identifier
-              example: 10006123
-          operator:
-            description: 'Indicates whether a target product is included or excluded from discounts. The following options are available:
-
-              - `IN`: The target product, with the specified `type` and `value`, is included for the discount to be applied.
-
-              - `NOT_IN`: The target product, with the specified `type` and `value`, is excluded from being discounted.
-
-              - `EQUAL`: The target product will be eligible for the discount if the defined `type` and `value` match the product selection.
-
-              '
-            type: string
-            enum:
-            - IN
-            - NOT_IN
-            - EQUAL
-            - GREATER_THAN
-            example: IN
-          discountId:
-            type: string
-            description: Discount ID to link `discount` and `targetProduct`; required for `BUYGET` promotion
-            example: '1'
-    searchPromotionRequest:
-      type: object
-      description: The search criteria.
-      properties:
-        size:
-          type: number
-          default: 10
-          minimum: 1
-          maximum: 100
-          description: The maximum number of records per page.
-          example: 10
-        offset:
-          type: integer
-          format: int32
-          example: 10
-          minimum: 0
-          default: 0
-          description: The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, you will get records from 21 to 30.
-        sort:
-          type: string
-          description: The criteria to sort the results. Use the format {sort order}{field name}, where `-` refers to a descending order and `+` refers to an ascending order.
-          enum:
-          - +updatedAt
-          - +name
-          - +startAt
-          - +endAt
-          - +level
-          - -updatedAt
-          - -name
-          - -startAt
-          - -endAt
-          - -level
-        filters:
-          type: array
-          items:
-            type: object
-            maxItems: 20
-            required:
-            - field
-            - value
-            - operator
-            description: The filter conditions.
-            properties:
-              field:
                 type: string
-                description: The name of the field. This is always paired with `value`.
-                minLength: 3
-                maxLength: 120
-                example: name
-              value:
-                description: The value or values corresponding to the `field`. This is always paired with `field`.
-                oneOf:
-                - type: string
-                  minLength: 1
-                  maxLength: 120
-                  example: Summer
-                - type: array
-                  minItems: 1
-                  maxItems: 10
-                  items:
-                    description: Search multiple values in the same field.
-                    oneOf:
-                    - type: string
-                      example: collectionId
-                    - type: number
-                      example: 100000234
-                    - type: object
-                      properties:
-                        name:
-                          type: string
-                          description: The name to search. This is used to search based on segments or additional attributes.
-                          minLength: 1
-                          maxLength: 120
-                          example: Season
-                        value:
-                          description: The value corresponding to the `name`. This is used to search based on segments or additional attributes.
-                          oneOf:
-                          - type: string
-                            minLength: 1
-                            maxLength: 120
-                            example: Winter
-                          - type: boolean
-                            example: true
-                          - type: number
-                            example: 111
-              operator:
-                type: string
-                description: The type of search operation. You can use multiple values, separated by commas, for the IN operation; however, you can only use a single value for the EQUALS, GREATER_THAN_OR_EQUAL_TO, and LESS_THAN operations.
-                enum:
-                - EQUAL
-                - GREATER_THAN_OR_EQUAL_TO
-                - LESS_THAN
-                - IN
-                example: EQUAL
-    createPromotionResponse:
-      $ref: '#/components/schemas/promotionResponse'
-    promotionLimits:
-      type: array
-      description: Restrictions or conditions that apply to the use of a promotion
-      items:
-        type: object
-        description: Promotion limit detail. Limits for promotions can only be configured at cart level.
-        properties:
-          type:
-            type: string
-            description: Promotion limit type
-            enum:
-            - ORDER
-            example: ORDER
-          quantity:
-            type: integer
-            format: int32
-            description: Number of times a promotion can be applied in the same cart.
-            example: 3
-    invalidPromoStackingType:
+                description: Merchant-specified attribute `value` associated with the promotion.
+                example:
+                - Holiday
+                - Christmas
+    promotionDiscountError:
       type: object
-      description: An error indicating the type of promotion stacking is invalid.
+      description: Inconsistent discountId
       properties:
         type:
           description: The error code.
           type: string
-          example: INVALID_PROMO_STACKING_TYPE
+          example: DISCOUNTID_NOT_VALID
         message:
           description: An error message corresponding to the `type`.
           type: string
-          example: The promotion stacking type filter isn't valid.
+          example: Discount ID in `targetProducts` should match with a `discountId` in discounts array
+    missingTenantHeader:
+      type: object
+      description: Tenant header is missing
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: TENANT_HEADER_REQUIRED
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: x-fabric-tenant-id header is required
+    promotionBuyOperatorError:
+      type: object
+      description: Validations for `BUYGET` promotion don't meet the criteria
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: BUYOPERATOR_IS_REQUIRED
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Buy operator is required for BUYGET promotion or coupon
     getPromotionsResponse:
       type: object
       description: Promotions list
@@ -1813,6 +1616,29 @@ components:
           description: Promotions list
           items:
             $ref: '#/components/schemas/promotionResponse'
+    togglePromotionRequest:
+      type: object
+      description: Toggle data request
+      required:
+      - isEnabled
+      properties:
+        isEnabled:
+          description: '- `true`: Promotion will be enabled.
+
+            - `false`: Promotion will be disabled.
+
+            '
+          type: boolean
+          example: false
+    togglePromotionResponse:
+      allOf:
+      - $ref: '#/components/schemas/promotionResponse'
+      - type: object
+        description: Toggled promotion detail
+        properties:
+          status:
+            description: Promotion status
+            example: DISABLED
     badSortingError:
       type: object
       description: Invalid sorting values sent
@@ -1825,6 +1651,240 @@ components:
           description: An error message corresponding to the `type`. In this case. an invalid sorting value was sent.
           type: string
           example: Sorting value must be one of the allowed values
+    promotionMessages:
+      type: array
+      description: Message description for the promotion
+      required:
+      - title
+      - locales
+      - pages
+      items:
+        type: object
+        description: Message description for the promotion
+        properties:
+          title:
+            type: string
+            description: Message name
+            example: Buy 2 get 1 free
+          message:
+            type: string
+            description: Message description
+            example: Offer valid at participating stores through September 5, 2023.
+          pages:
+            type: array
+            description: The types of web pages where the message is displayed.
+            items:
+              type: string
+              description: Page type
+              example: PDP
+            example:
+            - PDP
+            - Cart
+          locales:
+            type: array
+            description: The locales in which the promotion message is displayed. Locale is a set of language or country-based preferences for user interface.
+            items:
+              type: string
+              description: Locale
+              example: en-CA
+            example:
+            - en-CA
+            - fr-CA
+    promotionDeleteError:
+      type: object
+      description: Only upcoming promotions can be deleted
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: PROMO_CANNOT_BE_DELETED
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Promotion can only be deleted in scheduled status
+    error400:
+      type: object
+      description: Bad request error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: BAD_REQUEST
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Bad request
+    createPromotionRequest:
+      type: object
+      description: Promotion details to be created
+      required:
+      - name
+      - details
+      - startAt
+      - endAt
+      - type
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 120
+          description: The name of the promotion.
+          example: Black Friday Promotion
+        startAt:
+          type: string
+          description: Promotion start time
+          format: date-time
+          example: 2019-08-24 14:15:22+00:00
+        endAt:
+          type: string
+          description: Promotion end time
+          format: date-time
+          example: 2019-08-25 14:15:22+00:00
+        type:
+          type: string
+          description: 'The type of promotion you want to create. The following are the promotion types you can create:
+
+            - `PRODUCT`: A SKU promotion. Applies a discount to SKUs based on the value specified in the `discount` object of the request body.
+
+            - `CART`: A cart promotion. Applies a discount to the minimum order amount of the cart based on the `ORDER_VALUE` specified in the `condition` object of the request body.
+
+            - `QUANTITY`: A quantity promotion. Provides discounts on items based on the quantity requirement set in the promotion.
+
+            - `SHIPPING`: A shipping promotion. Provides discounts on the shipping cost.
+
+            - `BUYGET`: A BuyGet promotion. Specifies the _Buy_ conditions and corresponding _Get_ discounts.
+
+            - `SPEND_GET`: A SpendGet promotion. Specifies the total order value required to qualify for discounts and the applicable discounts based on the order value.
+
+            '
+          enum:
+          - PRODUCT
+          - CART
+          - QUANTITY
+          - SHIPPING
+          - BUYGET
+          - SPEND_GET
+          example: PRODUCT
+        buyOperator:
+          type: string
+          description: Operator for conditions array. It's applied only when the promotion type is `BUYGET`. It's used as an operator between different *conditions* mentioned in the *details* array.
+          default: OR
+          enum:
+          - AND
+          - OR
+          example: OR
+        details:
+          type: array
+          minItems: 1
+          description: Promotion setup details
+          items:
+            type: object
+            description: Promotion setup detail
+            required:
+            - discounts
+            - targetProducts
+            - conditions
+            properties:
+              discounts:
+                $ref: '#/components/schemas/promotionDiscounts'
+              targetProducts:
+                $ref: '#/components/schemas/promotionTargetProduct'
+              conditions:
+                $ref: '#/components/schemas/promotionCondition'
+        termsAndConditions:
+          $ref: '#/components/schemas/promotionTermsAndConditions'
+        promotionMessages:
+          $ref: '#/components/schemas/promotionMessages'
+        proximityMessages:
+          $ref: '#/components/schemas/proximityMessages'
+        promotionConditionDetail:
+          $ref: '#/components/schemas/promotionConditionDetail'
+        shipmentMethodIds:
+          $ref: '#/components/schemas/promotionShipmentMethods'
+        eligiblePriceLists:
+          $ref: '#/components/schemas/promotionPriceLists'
+        limits:
+          $ref: '#/components/schemas/promotionLimits'
+        additionalAttributes:
+          $ref: '#/components/schemas/promotionAdditionalAttributes'
+        note:
+          type: string
+          example: Independence day sale
+          description: Promotion note or description
+        level:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 5
+          description: Promotion execution order. Promotion types are assigned a default execution order. First, level 1 promotions will be evaluated. The result of level 1 will be used as a base price for level 2. Similarly, the result of level 2 will be used as a base price for level 3.
+          example: 3
+        stackingType:
+          type: string
+          description: "Defines the rules for how a promotion can be combined with other promotions. This field determines whether a specific promotion can be applied in conjunction with other active promotions during a transaction or if it must be used exclusively. If configured, `stackingType` will have precedence over the `isStackable` and `isAlwaysApplied`. The following are possible `stackingType` values:\n- `STACKABLE`: This promotion can be combined with other stackable promotions, allowing multiple \n  discounts to be applied together. The order in which stackable promotions are applied \n  is determined by the `level` field, with promotions having a higher priority (lower numeric value)\n  being applied before those with a lower priority.\n- `EXCLUSIVE`: This promotion can't be combined with any other promotions. The `level` field is\n  used to determine which exclusive promotion will be evaluated and applied first. Once an exclusive\n  promotion is applied, no other promotions can be used in the same transaction.\n- `TYPE_EXCLUSIVE`: This promotion can't be combined with other promotions of the same type.\n  The `level` field is used to determine which promotion within the same type will be evaluated and\n  applied first.\n- `UNIVERSAL`: This promotion can be combined with any other promotions without restrictions.\n  Universal promotions will be evaluated last.\n"
+          enum:
+          - STACKABLE
+          - EXCLUSIVE
+          - TYPE_EXCLUSIVE
+          - UNIVERSAL
+          example: STACKABLE
+        isStackable:
+          type: boolean
+          example: false
+          description: "- `true`: The promotion can be stacked, and its discounts will be summed together with other promotions.  \n- `false`: The promotion can't be applied with any other promotions.  \n"
+        isAlwaysApplied:
+          type: boolean
+          example: false
+          description: A flag indicating whether the promotion is always applied regardless of any exclusive promotions on the same item. Set to `true` if the promotion is always applied and set to `false` if the promotion isn't applied on the item by default.
+    promotionTermsAndConditions:
+      type: array
+      description: Terms and conditions for the promotion
+      items:
+        type: object
+        description: Promotion terms and conditions
+        properties:
+          name:
+            type: string
+            description: Terms and conditions name
+            example: Terms Applied
+          description:
+            type: string
+            description: Terms and conditions description
+            example: Items can't be exchanged
+    promotionInvalidId:
+      type: object
+      description: Promotion invalid ID error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: PROMO_ID_NOT_VALID
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Promotion ID isn't valid, it must be a valid object ID
+    promotionExpired:
+      type: object
+      description: Promotion expired error
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: PROMO_NOT_UPDATED
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Promotion can't be updated in EXPIRED status
+    searchPromotionResponse:
+      type: object
+      description: The search results including the pagination data.
+      properties:
+        query:
+          $ref: '#/components/schemas/offsetQuery'
+        data:
+          description: The response of the search request.
+          type: array
+          items:
+            $ref: '#/components/schemas/promoSearchObject'
     promotionConditionDetail:
       type: object
       description: Represents the conditions based on which the promotions apply. For example, consider the `type` is `USER_SEGMENT` with multiple values. To target all the specified segments, use the `AND` operator and to target any one of the segments, use the `OR` operator.
@@ -1909,173 +1969,101 @@ components:
           - LESS_THAN_OR_EQUAL_TO
           - NOT_IN
           - IN
-    promotionAdditionalAttributes:
-      description: Merchant-specified attributes associated with the promotion.
-      type: array
-      items:
-        type: object
-        description: Merchant-specified attributes associated with the promotion.
-        required:
-        - name
-        - values
-        properties:
-          name:
-            description: Merchant-specified attribute `name` associated with the promotion.
-            type: string
-            example: eventName
-          values:
-            oneOf:
-            - type: string
-              description: Merchant-specified attribute `value` associated with the promotion.
-              example: Store sale
-            - type: array
-              description: Merchant-specified attribute `values` associated with the promotion.
-              items:
-                type: string
-                description: Merchant-specified attribute `value` associated with the promotion.
-                example:
-                - Holiday
-                - Christmas
-    promotionEndResponse:
-      allOf:
-      - $ref: '#/components/schemas/promotionResponse'
-      - type: object
-        description: Stopped promotion detail
-        properties:
-          status:
-            example: EXPIRED
-          startAt:
-            example: 2021-10-18 23:45:40.289000+00:00
-          endAt:
-            example: 2021-10-18 23:45:40.289000+00:00
-    promotionResponse:
-      type: object
-      description: The details of the promotion.
-      required:
-      - id
-      - name
-      - startAt
-      - endAt
-      - status
-      - type
-      properties:
-        id:
-          type: string
-          description: A 24-character system-generated The promotion ID generated when using the [create promotion](/v3/api-reference/offers/promotions/create-promotion) endpoint.
-          example: 6380e7ecb419a30009865fad
-        name:
-          description: The name of the promotion.
-          example: Black Friday Promotion
-          type: string
-        status:
-          type: string
-          description: The current status of the promotion.
-          enum:
-          - ACTIVE
-          - SCHEDULED
-          - DISABLED
-          - EXPIRED
-          example: SCHEDULED
-        startAt:
-          type: string
-          format: date-time
-          description: The start time of the promotion, in UTC format.
-          example: 2019-08-24 14:15:22+00:00
-        endAt:
-          type: string
-          format: date-time
-          description: The end time of the promotion, in UTC format.
-          example: 2019-08-25 14:15:22+00:00
-        type:
-          type: string
-          description: 'The type of promotion you want to create. The following are the promotion types you can create:
-
-            - `PRODUCT`: A SKU promotion. Applies a discount to SKUs based on the value specified in the `discount` object of the request body.
-
-            - `CART`: A cart promotion. Applies a discount to the minimum order amount of the cart based on the `ORDER_VALUE` specified in the `condition` object of the request body.
-
-            - `QUANTITY`: A quantity promotion. Provides discounts on items based on the quantity requirement set in the promotion.
-
-            - `SHIPPING`: A shipping promotion. Provides discounts on the shipping cost.
-
-            - `BUYGET`: A BuyGet promotion. Specifies the _Buy_ conditions and corresponding _Get_ discounts.
-
-            - `SPEND_GET`: A SpendGet promotion. Specifies the total order value required to qualify for discounts and the applicable discounts based on the order value.
-
-            '
-          enum:
-          - PRODUCT
-          - CART
-          - QUANTITY
-          - SHIPPING
-          - BUYGET
-          - SPEND_GET
-          example: PRODUCT
-        createdAt:
-          $ref: '#/components/schemas/createdAt'
-        updatedAt:
-          $ref: '#/components/schemas/updatedAt'
-        level:
-          type: integer
-          format: int32
-          minimum: 0
-          maximum: 5
-          description: Promotion execution order. Promotion types are assigned a default execution order. First, level 1 promotions will be evaluated. The result of level 1 will be used as a base price for level 2. Similarly, the result of level 2 will be used as a base price for level 3.
-          example: 3
-        stackingType:
-          type: string
-          description: "Defines the rules for how a promotion can be combined with other promotions. This field determines whether a specific promotion can be applied in conjunction with other active promotions during a transaction or if it must be used exclusively. If configured, `stackingType` will have precedence over the `isStackable` and `isAlwaysApplied`. The following are possible `stackingType` values:\n- `STACKABLE`: This promotion can be combined with other stackable promotions, allowing multiple \n  discounts to be applied together. The order in which stackable promotions are applied \n  is determined by the `level` field, with promotions having a higher priority (lower numeric value)\n  being applied before those with a lower priority.\n- `EXCLUSIVE`: This promotion can't be combined with any other promotions. The `level` field is\n  used to determine which exclusive promotion will be evaluated and applied first. Once an exclusive\n  promotion is applied, no other promotions can be used in the same transaction.\n- `TYPE_EXCLUSIVE`: This promotion can't be combined with other promotions of the same type.\n  The `level` field is used to determine which promotion within the same type will be evaluated and\n  applied first.\n- `UNIVERSAL`: This promotion can be combined with any other promotions without restrictions.\n  Universal promotions will be evaluated last.\n"
-          enum:
-          - STACKABLE
-          - EXCLUSIVE
-          - TYPE_EXCLUSIVE
-          - UNIVERSAL
-          example: STACKABLE
-        isStackable:
-          type: boolean
-          example: false
-          description: "- `true`: The promotion can be stacked, and its discounts will be summed together with other promotions.  \n- `false`: The promotion can't be applied with any other promotions.  \n"
-        isAlwaysApplied:
-          type: boolean
-          example: false
-          description: A flag indicating whether the promotion is always applied regardless of any exclusive promotions on the same item. Set to `true` if the promotion is always applied and set to `false` if the promotion isn't applied on the item by default.
-        additionalAttributes:
-          type: array
-          description: A placeholder for additional attributes related to promotions, in name-values pairs.
-          items:
-            type: object
-            description: Details of additional attributes.
-            required:
-            - name
-            - values
-            properties:
-              name:
-                type: string
-                description: The attribute name.
-                example: type
-              values:
-                description: The attribute value or values corresponding to the `name`.
-                oneOf:
-                - type: string
-                  description: The value of the additional attribute.
-                  example: Birthday
-                - type: array
-                  items:
-                    type: string
-                    description: The values of the additional attributes.
-                    example:
-                    - Birthday
-                    - Holiday
-              attributeId:
-                type: number
-                description: A unique identifier of the attribute, for external use.
-                example: 100000
-        promotionMessages:
-          $ref: '#/components/schemas/promotionMessages'
-    updatePromotionResponse:
-      $ref: '#/components/schemas/promotionResponse'
     getPromotionResponse:
       $ref: '#/components/schemas/promotion'
+    promotionShipmentMethods:
+      type: array
+      description: Required for *Shipping* type promotion to provide eligible shipment methods.
+      items:
+        type: string
+        description: Shipping method ID. This ID is used to evaluate cart promotion.
+        example: '1000001'
+    promotionPriceLists:
+      type: array
+      description: Price list IDs to be considered for this promotion.
+      items:
+        type: integer
+        format: int32
+        example: 10000056
+        description: The price list ID.
+    promotionCondition:
+      type: array
+      description: Conditions list for the promotion to be applied
+      minItems: 1
+      items:
+        type: object
+        description: Conditions for the promotion to be applied
+        required:
+        - operator
+        - conditions
+        properties:
+          id:
+            type:
+            - string
+            - 'null'
+            description: Promotion condition ID
+            example: 6380e7ecb419a30009865fad
+          operator:
+            type: string
+            description: Operator for condition within each object of the `conditions` array
+            enum:
+            - AND
+            - OR
+            example: AND
+          includeOperator:
+            type: string
+            description: "Select the `AND` or `OR` condition to include products in a promotion. \n- Use the `OR` condition to apply a single rule for product inclusion. \n- Use the `AND` condition to apply multiple rules for product inclusion.\n"
+            default: OR
+            example: OR
+            enum:
+            - AND
+            - OR
+          excludeOperator:
+            type: string
+            description: "Select the `AND` or `OR` condition to include products in a promotion. \n- Use the `OR` condition to apply a single rule for product inclusion. \n- Use the `AND` condition to apply multiple rules for product inclusion.\n"
+            default: AND
+            example: AND
+            enum:
+            - AND
+            - OR
+          conditions:
+            type: array
+            description: Conditions for the promotion to apply on specific targets
+            minItems: 1
+            items:
+              $ref: '#/components/schemas/promotionConditionDetail'
+          set:
+            type: string
+            default: A
+            description: It's used to create a group of items in a set so that you can easily apply promotions or coupons to the defined set of items.
+            example: A
+            enum:
+            - A
+            - B
+            - C
+            - D
+            - E
+            - F
+            - G
+            - H
+            - I
+            - J
+            - K
+            - L
+            - M
+            - N
+            - O
+            - P
+            - Q
+            - R
+            - S
+            - T
+            - U
+            - V
+            - W
+            - X
+            - Y
+            - Z
     promotion:
       type: object
       description: Promotion record detail
@@ -2208,19 +2196,59 @@ components:
           type: boolean
           example: false
           description: A flag indicating whether the promotion is always applied. Set to true if the promotion is always applied, even in non-stackable scenarios, and false if the promotion is applied based on configured conditions.
-    promotionBuyOperatorError:
+    promotionActiveError:
       type: object
-      description: Validations for `BUYGET` promotion don't meet the criteria
+      description: Promotion isn't allowed to be updated when it's active
       properties:
         type:
           description: The error code.
           type: string
-          example: BUYOPERATOR_IS_REQUIRED
+          example: PROMO_NOT_UPDATED
         message:
           description: An error message corresponding to the `type`.
           type: string
-          example: Buy operator is required for BUYGET promotion or coupon
+          example: Active promotion can't be updated
+    promotionFixedError:
+      type: object
+      description: Validations for the promotion haven't been met
+      properties:
+        type:
+          description: The error code.
+          type: string
+          example: FIXED_PRICE_ERROR
+        message:
+          description: An error message corresponding to the `type`.
+          type: string
+          example: Fixed price isn't compatible with CART and SHIPPING
   parameters:
+    queryParameterOffset:
+      name: offset
+      in: query
+      description: The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, you will get records from 21 to 30.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+        example: 0
+        default: 0
+    xFabricTenantId:
+      in: header
+      name: x-fabric-tenant-id
+      schema:
+        type: string
+        minLength: 24
+        maxLength: 24
+      required: true
+      example: 5f328bf0b5f328bf0b5f328b
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+    xFabricChannelId:
+      in: header
+      name: x-fabric-channel-id
+      schema:
+        type: string
+        example: '12'
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
     xFabricRequestId:
       in: header
       name: x-fabric-request-id
@@ -2248,34 +2276,6 @@ components:
         minimum: 1
         default: 10
         maximum: 100
-    xFabricChannelId:
-      in: header
-      name: x-fabric-channel-id
-      schema:
-        type: string
-        example: '12'
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-    queryParameterOffset:
-      name: offset
-      in: query
-      description: The number of records to skip before returning records. For example, with an offset of 20 and limit of 10, you will get records from 21 to 30.
-      required: false
-      schema:
-        type: integer
-        format: int32
-        minimum: 0
-        example: 0
-        default: 0
-    xFabricTenantId:
-      in: header
-      name: x-fabric-tenant-id
-      schema:
-        type: string
-        minLength: 24
-        maxLength: 24
-      required: true
-      example: 5f328bf0b5f328bf0b5f328b
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
   headers:
     xFabricRequestIdResponse:
       description: Unique request ID
