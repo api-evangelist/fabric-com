@@ -254,73 +254,6 @@ components:
           description: Human-readable error description
           example: x-fabric-tenant-id is required
       description: Client error details
-    ItemAdjustment:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The Item Adjustment ID generated when an adjustment was created using the [Create item adjustment](/v3/cart-and-checkout/api-reference/carts-v3/item-adjustments/create-item-adjustments) endpoint.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        reason:
-          type: string
-          description: The reason for the adjustment.
-          example: Price adjustment from customer representative.
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes used for price adjustments.
-            example:
-              source: CSR
-          description: Custom attributes used for price adjustments.
-          example:
-            source: CSR
-        updatedAt:
-          type: string
-          description: The date and time when the adjustment was last updated.
-          example: 2024-06-13 16:50:00.682000+00:00
-        createdAt:
-          type: string
-          description: The date and time when the adjustment was created.
-          example: 2024-06-13 16:50:00.682000+00:00
-      description: Adjustment
-    CreateAdjustmentRequest:
-      required:
-      - price
-      - reason
-      type: object
-      properties:
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        reason:
-          type: string
-          description: The reason for the adjustment.
-          example: Price adjustment from Customer Representative
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context, such as who made the adjustment.
-            example:
-              source: CSR
-          description: Custom attributes to provide more context, such as who made the adjustment.
-          example:
-            source: CSR
-      description: Adjustment Request
-    NotFound:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: CART_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error description
-          example: Cart not found
-      description: Resource Not Found
     NewItemAdjustment:
       type: object
       properties:
@@ -353,7 +286,22 @@ components:
           description: The date and time when the adjustment was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Adjustment
-    UpdateAdjustmentRequest:
+    NotFound:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
+    CreateAdjustmentRequest:
+      required:
+      - price
+      - reason
       type: object
       properties:
         price:
@@ -384,6 +332,58 @@ components:
           description: Total fees amount
           example: 12.99
       description: Price details
+    UpdateAdjustmentRequest:
+      type: object
+      properties:
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        reason:
+          type: string
+          description: The reason for the adjustment.
+          example: Price adjustment from Customer Representative
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes to provide more context, such as who made the adjustment.
+            example:
+              source: CSR
+          description: Custom attributes to provide more context, such as who made the adjustment.
+          example:
+            source: CSR
+      description: Adjustment Request
+    ItemAdjustment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Item Adjustment ID generated when an adjustment was created using the [Create item adjustment](/v3/cart-and-checkout/api-reference/carts-v3/item-adjustments/create-item-adjustments) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        reason:
+          type: string
+          description: The reason for the adjustment.
+          example: Price adjustment from customer representative.
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes used for price adjustments.
+            example:
+              source: CSR
+          description: Custom attributes used for price adjustments.
+          example:
+            source: CSR
+        updatedAt:
+          type: string
+          description: The date and time when the adjustment was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the adjustment was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+      description: Adjustment
   securitySchemes:
     bearerAuth:
       type: http

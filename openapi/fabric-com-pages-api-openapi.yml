@@ -549,6 +549,59 @@ components:
             description: Attached fields and values of the component
             additionalProperties: true
         additionalProperties: true
+    Page:
+      type: object
+      description: Page details
+      properties:
+        name:
+          type: string
+          description: Page name
+        pageUrl:
+          type: string
+          description: Relative page URL
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of page creation
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of when page was last updated
+        isActive:
+          type: boolean
+          description: True = page is active <br /> false = page is not active
+        isArchived:
+          type: boolean
+          description: True = page is archived <br /> false = page is not archived
+        pageId:
+          type: integer
+          description: Page ID
+        channels:
+          type: array
+          description: Channel IDs associated with the page
+          items:
+            type: string
+            description: Channel ID associated with the page
+        seoFields:
+          $ref: '#/components/schemas/SeoFields'
+        typeName:
+          type: string
+          description: Name of the page type of page (optional)
+        typeUrl:
+          type: string
+          description: URL of the page type of page (optional)
+        _id:
+          type: string
+          description: Database ID associated with the page
+        __v:
+          type: integer
+          description: VersionKey associated with the page
+        channel:
+          type: array
+          description: deprecated field holding channel information
+          items:
+            type: integer
+            description: Channel identifier
     PageMetaData:
       type: object
       description: Page metadata
@@ -678,56 +731,3 @@ components:
         _id:
           type: string
           description: Virtual ID associated with the SEO field
-    Page:
-      type: object
-      description: Page details
-      properties:
-        name:
-          type: string
-          description: Page name
-        pageUrl:
-          type: string
-          description: Relative page URL
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp of page creation
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp of when page was last updated
-        isActive:
-          type: boolean
-          description: True = page is active <br /> false = page is not active
-        isArchived:
-          type: boolean
-          description: True = page is archived <br /> false = page is not archived
-        pageId:
-          type: integer
-          description: Page ID
-        channels:
-          type: array
-          description: Channel IDs associated with the page
-          items:
-            type: string
-            description: Channel ID associated with the page
-        seoFields:
-          $ref: '#/components/schemas/SeoFields'
-        typeName:
-          type: string
-          description: Name of the page type of page (optional)
-        typeUrl:
-          type: string
-          description: URL of the page type of page (optional)
-        _id:
-          type: string
-          description: Database ID associated with the page
-        __v:
-          type: integer
-          description: VersionKey associated with the page
-        channel:
-          type: array
-          description: deprecated field holding channel information
-          items:
-            type: integer
-            description: Channel identifier

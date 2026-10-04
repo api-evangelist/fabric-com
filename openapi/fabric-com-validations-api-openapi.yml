@@ -395,74 +395,26 @@ paths:
                 $ref: '#/components/schemas/NotFound'
 components:
   schemas:
-    ClientError:
+    Coupon:
       type: object
       properties:
-        type:
+        code:
           type: string
-          description: Error code, meant for machine consumption
-          example: BAD_REQUEST
-        message:
-          type: string
-          description: Human-readable error description
-          example: x-fabric-tenant-id is required
-      description: Client error details
-    PaymentCollection:
-      type: object
-      properties:
-        authorized:
-          type: number
-          description: The payments that have been authorized within the collection.
-          example: 800
-        collection:
-          type: array
-          description: An array containing payments within the collection.
-          items:
-            $ref: '#/components/schemas/Payment'
-      description: An object containing a collection of payments added to the corresponding cart.
-    ProrationsRequest:
-      type: object
-      properties:
-        spread:
-          type: array
-          description: An array containing details about adjustments made to charges based on partial usage. Each entry in the array represents a specific proration adjustment, including the amount.
-          items:
-            $ref: '#/components/schemas/ProrationRequest'
-      description: Proration Request
-    TaxValidationData:
-      type: object
-      properties:
+          description: Coupon code
+          example: VALID_COUPON
         updatedAt:
           type: string
-          description: Latest date the tax was added to the corresponding cart.
+          description: The date when the coupon was added to the corresponding cart.
           example: 2024-06-13 16:50:00.682000+00:00
-      description: An object that contains tax validation data.
-    Proration:
+      description: Coupon
+    ProductRequest:
       type: object
       properties:
-        amount:
-          type: number
-          description: Proration amount for the item
-          example: 5
-        quantity:
-          type: integer
-          description: Proration quantity the amount is applicable for
-          format: int32
-          example: 3
-      description: Proration details of the item used for returns in an OMS system
-    AdjustmentCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Adjustments total in a collection.
-          example: 2
-        collection:
+        availableSkus:
           type: array
-          description: An array containing adjustments in the collection.
           items:
-            $ref: '#/components/schemas/Adjustment'
-      description: A collection of adjustments made to the corresponding cart.
+            $ref: '#/components/schemas/SKUValidationDataRequest'
+      description: Product Request
     ProductBehavior:
       type: object
       properties:
@@ -523,406 +475,54 @@ components:
           - REJECT
           - NONE
       description: Behaviors related to inventory actions, such as adding the item or removing the item.
-    Adjustment:
+    OrderValidateConfiguration:
       type: object
       properties:
-        id:
-          type: string
-          description: The Adjustment ID generated when an adjustment was created using the [Create adjustment](/v3/cart-and-checkout/api-reference/carts-v3/carts-adjustments/create-adjustments) endpoint.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        reason:
-          type: string
-          description: The reason for the adjustment.
-          example: Price adjustment from customer representative.
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes used for price adjustments.
-            example:
-              source: CSR
-          description: Custom attributes used for price adjustments.
-          example:
-            source: CSR
-        updatedAt:
-          type: string
-          description: The date and time when the adjustment was last updated.
-          example: 2024-06-13 16:50:00.682000+00:00
-        createdAt:
-          type: string
-          description: The date and time when the adjustment was created.
-          example: 2024-06-13 16:50:00.682000+00:00
-      description: Adjustment
-    Price:
-      type: object
-      properties:
-        total:
-          type: number
-          description: The grand total, inclusive of all charges and discounts.
-          example: 800
-        subtotal:
-          type: number
-          description: The subtotal of all items amount.
-          example: 750
-        tax:
-          type: number
-          description: The tax total amount.
-          example: 20
-        fulfillments:
-          type: number
-          description: The fulfillments total amount.
-          example: 25
-        discounts:
-          type: number
-          description: The discounts total amount.
-          example: 10
-        fees:
-          type: number
-          description: The fees total amount.
-          example: 5
-        adjustments:
-          type: number
-          description: The adjustments total amount.
-          example: 10
-      description: The sum of the total amount of the cart.
-    SummaryResponse:
-      type: object
-      properties:
-        totalItems:
-          type: integer
-          description: The total number of items in the cart, inclusive of quantity.
-          format: int32
-          example: 1
-        totalUniqueItems:
-          type: integer
-          description: The total number of unique items in the cart.
-          format: int32
-          example: 1
-      description: A summary of items in the cart.
-    Tax:
-      type: object
-      properties:
-        amount:
-          type: number
-          description: Tax amount
-          example: 3
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
-            example:
-              rate: '5.0'
-              type: COUNTY
-          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
-          example:
-            rate: '5.0'
-            type: COUNTY
-      description: Tax
-    ItemFulfillmentTaxRequest:
-      required:
-      - tax
-      type: object
-      properties:
-        tax:
-          type: array
-          description: An array containing item fulfillment taxes.
-          items:
-            $ref: '#/components/schemas/TaxData'
-      description: Item Fulfillment Tax Request
-    InventoryValidationData:
-      type: object
-      properties:
-        channels:
-          type: object
-          additionalProperties:
-            type: string
-            description: The inventory channels associated with the item.
-            example: '{"networkCode":"ShipToHome"}'
-          description: The inventory channels associated with the item.
-          example:
-            networkCode: ShipToHome
-        counters:
-          type: object
-          additionalProperties:
-            type: integer
-            description: The inventory counters available for the item.
-            format: int32
-          description: The inventory counters available for the item.
-          example:
-            backOrder: 15
-            preOrder: 100
-        updatedAt:
-          type: string
-          description: The latest date when inventory was added to the corresponding cart.
-          example: 2024-06-13 16:50:00.682000+00:00
-      description: Inventory validation details
-    Fulfillment:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The Fulfillment ID generated when a fulfillment was created using the [Create fulfillment](/v3/cart-and-checkout/api-reference/carts-v3/fulfillment/create-fulfillments) endpoint.
-          example: d6229cdb-0c5b-4885-b1b2-13b94d02488e
-        type:
-          type: string
-          description: Determines the type of fulfillment.
-          example: SHIP_TO
-          enum:
-          - SHIP_TO
-          - BOPIS
-          - ROPIS
-        refId:
-          type: string
-          description: An alternative identifier for fulfillments, used for additional tracking or referencing.
-          example: '398427903843'
-        attributes:
-          type: object
-          description: Custom attributes to provide more context to the fulfillment, such as where it was made.
-          additionalProperties:
-            type: object
-            description: Custom attributes to provide more context to the fulfillment, such as where it was made.
-            example:
-              source: store
-          example:
-            source: store
-        originAddress:
-          type: string
-          description: The identifier of the address where the item is being fulfilled.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        destinationAddress:
-          type: string
-          description: The identifier of the address where the item is being shipped.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        locationId:
-          type: string
-          description: Unique identifier of the store.
-          example: CA
-        pickupPerson:
-          $ref: '#/components/schemas/PickupPerson'
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        promotions:
-          $ref: '#/components/schemas/FulfillmentPromotionCollection'
-        fees:
-          $ref: '#/components/schemas/FeesCollection'
-        adjustments:
-          $ref: '#/components/schemas/AdjustmentCollection'
-        tax:
-          $ref: '#/components/schemas/TaxCollection'
-      description: A fulfillment object containing important fulfillment information.
-    ProrationSpread:
-      type: object
-      properties:
-        spread:
-          type: array
-          description: An array containing details about adjustments made to charges based on partial usage. Each entry in the array represents a specific proration adjustment, including the amount.
-          items:
-            $ref: '#/components/schemas/Proration'
-      description: Prorations
-    ItemPromotionsCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Discount total in the collection.
-          example: 2
-        collection:
-          type: array
-          description: An array containing promotions in the collection.
-          items:
-            $ref: '#/components/schemas/ItemPromotion'
-      description: Collection of item promotions.
-    Phone:
-      type: object
-      properties:
-        number:
-          type: string
-          description: Phone Number
-          example: 123-456-7890
-        type:
-          type: string
-          description: Phone Number Type
-          example: MOBILE
-          enum:
-          - MOBILE
-          - BUSINESS
-          - HOME
-      description: Phone
-    FulfillmentPromotionRequest:
-      required:
-      - amount
-      - id
-      type: object
-      properties:
-        id:
-          type: string
-          description: Identifier of a promotion
-          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
-        amount:
-          minimum: 0
-          type: number
-          description: Discount amount applied to a fulfillment
-          example: 10
-      description: Fulfillment Promotion Request
-    PromotionsRequest:
-      type: object
-      properties:
-        promotions:
-          type: array
-          items:
-            $ref: '#/components/schemas/PromotionAppliedRequest'
-      description: An array containing promotions applied to the corresponding cart.
-    MaxQtyBehavior:
-      type: object
-      properties:
-        add:
+        paymentsRemaining:
           type: string
           description: 'The behavior that is executed based on the selected configuration.
 
 
-            The default setting is REJECT.
+            The default behavior is BLOCK.
 
             '
-          example: REJECT
           enum:
-          - WARN
-          - DROP
-          - REJECT
+          - BLOCK
           - NONE
-        update:
+        taxRemaining:
           type: string
           description: 'The behavior that is executed based on the selected configuration.
 
 
-            The default behavior is WARN.
+            The default behavior is BLOCK.
 
             '
-          example: WARN
           enum:
-          - WARN
-          - DROP
-          - REJECT
+          - BLOCK
           - NONE
-        get:
+        invalidItem:
           type: string
           description: 'The behavior that is executed based on the selected configuration.
 
 
-            The default behavior is WARN.
+            The default behavior is BLOCK.
 
             '
-          example: WARN
           enum:
-          - WARN
-          - DROP
-          - REJECT
+          - BLOCK
           - NONE
-      description: Max quantity behaviors
-    TaxConfiguration:
-      type: object
-      properties:
-        cacheExpiry:
-          type: integer
-          description: Duration in seconds until the tax data expires.
-          format: int64
-          example: 7776000
-        behaviors:
-          $ref: '#/components/schemas/TaxBehavior'
-      description: Configuration settings for tax calculations and behaviors.
-    NotFound:
-      type: object
-      properties:
-        type:
+        itemOutOfStock:
           type: string
-          description: Error code, meant for machine consumption
-          example: CART_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error description
-          example: Cart not found
-      description: Resource Not Found
-    SegmentObject:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Segment name
-          example: membership
-        value:
-          type: array
-          description: Segment values
-          example:
-          - gold
-          - silver
-          items:
-            type: string
-            description: Segment values
-            example: '["gold","silver"]'
-      description: Segment
-    TaxData:
-      required:
-      - amount
-      type: object
-      properties:
-        amount:
-          minimum: 0
-          type: number
-          description: Tax amount
-          example: 3
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes used to determine how items are taxed, such as by county.
-            example:
-              rate: '5.0'
-              type: COUNTY
-          description: Custom attributes used to determine how items are taxed, such as by county.
-          example:
-            rate: '5.0'
-            type: COUNTY
-      description: Tax Data
-    ItemCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Item total in a collection.
-          example: 100
-        collection:
-          type: array
-          description: An array containing items in the collection.
-          items:
-            $ref: '#/components/schemas/ItemResponseDto'
-      description: A collection of items in the cart.
-    ItemPromotionRequest:
-      required:
-      - amount
-      - id
-      - quantity
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the promotion.
-          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
-        amount:
-          minimum: 0
-          type: number
-          description: Discount amount applied to the item, exclusive of quantity
-          example: 15
-        quantity:
-          minimum: 1
-          type: integer
-          description: The quantity of the item to which the discount is applicable.
-          format: int32
-          example: 3
-        proration:
-          $ref: '#/components/schemas/ProrationsRequest'
-      description: Item Promotion Request
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is BLOCK.
+
+            '
+          enum:
+          - BLOCK
+          - NONE
+      description: Order validate determines the blocking behavior when creating an order draft.
     SKUValidationDataRequest:
       required:
       - sku
@@ -993,259 +593,33 @@ components:
           example:
             gift-card-name: custom name
       description: Cart Payment
-    ProductConfiguration:
+    State:
       type: object
       properties:
-        cacheExpiry:
-          type: integer
-          description: Duration in seconds until product validation data expires.
-          format: int64
-          example: 7776000
-        behaviors:
-          $ref: '#/components/schemas/ProductBehavior'
-        maxQuantity:
-          $ref: '#/components/schemas/MaxQtyConfiguration'
-      description: Configuration settings related to product behavior and cache expiry.
-    FeeTaxDetails:
-      type: object
-      properties:
-        destinationAddress:
+        resource:
           type: string
-          description: The destination address where the item will be delivered.
+          description: The type of resource indicating its current state, such as a cart.
+          example: CART
+          enum:
+          - ITEM
+          - CART
+          - FULFILLMENT
+          - PAYMENT
+          - FEE
+          - VALIDATION
+        resourceId:
+          type: string
+          description: The ID used to reference the resource's state, such as a cart.
           example: c86f777b-1885-4ddf-961d-542ba80a69b8
-        originAddress:
+        key:
           type: string
-          description: The origin address from which the item will be fulfilled.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-      description: Tax details used to determine tax for a cart fee.
-    InventoryRequest:
-      required:
-      - lineItems
-      type: object
-      properties:
-        lineItems:
-          type: array
-          items:
-            $ref: '#/components/schemas/InventoryValidationRequest'
-      description: Inventory Request
-    ValidationData:
-      type: object
-      properties:
-        promotions:
-          $ref: '#/components/schemas/PromotionValidationData'
-        lineItems:
-          type: array
-          items:
-            $ref: '#/components/schemas/LineItemValidationData'
-        product:
-          $ref: '#/components/schemas/PIMValidationData'
-        tax:
-          $ref: '#/components/schemas/TaxValidationData'
-    LineItemValidationData:
-      type: object
-      properties:
-        sku:
+          description: The key used to map the state of the resource.
+          example: MISSING_PAYMENT_DETAILS
+        description:
           type: string
-          description: The SKU of the item.
-          example: SKU3
-        inventory:
-          $ref: '#/components/schemas/InventoryValidationData'
-      description: An object that contains item validation data.
-    OrderValidateConfiguration:
-      type: object
-      properties:
-        paymentsRemaining:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is BLOCK.
-
-            '
-          enum:
-          - BLOCK
-          - NONE
-        taxRemaining:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is BLOCK.
-
-            '
-          enum:
-          - BLOCK
-          - NONE
-        invalidItem:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is BLOCK.
-
-            '
-          enum:
-          - BLOCK
-          - NONE
-        itemOutOfStock:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is BLOCK.
-
-            '
-          enum:
-          - BLOCK
-          - NONE
-      description: Order validate determines the blocking behavior when creating an order draft.
-    Fee:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the fee associated with the corresponding cart that was generated when making [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        name:
-          type: string
-          description: Name of the fee
-          example: Eco Fee
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        taxable:
-          type: boolean
-          description: A boolean value that determines whether a fee is taxable.
-          example: true
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes that provide more context for the fee, such as the source of the fee.
-            example:
-              source: eco
-          description: Custom attributes that provide more context for the fee, such as the source of the fee.
-          example:
-            source: eco
-        tax:
-          $ref: '#/components/schemas/TaxCollection'
-        updatedAt:
-          type: string
-          description: The date and time when the fee was last updated.
-          example: 2024-06-13 16:50:00.682000+00:00
-        createdAt:
-          type: string
-          description: The date and time when the fee was created.
-          example: 2024-06-13 16:50:00.682000+00:00
-        taxDetails:
-          $ref: '#/components/schemas/FeeTaxDetails'
-      description: Fee
-    PromotionAppliedRequest:
-      required:
-      - id
-      - title
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the promotion.
-          example: 542ba80a69b8
-        title:
-          type: string
-          description: Promotion Title
-          example: 15 Percent All Products
-        code:
-          type: string
-          description: Coupon Code
-          example: 15_PERCENT
-        type:
-          type: string
-          description: Promotion Type (e.g. percentage or fixed value)
-          example: PERCENTAGE
-        value:
-          type: number
-          description: Promotion Value
-          example: 15
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes
-            example:
-              source: cart
-          description: Custom attributes
-          example:
-            source: cart
-        lineItems:
-          type: array
-          description: An array containing promotions applied to items.
-          items:
-            $ref: '#/components/schemas/ItemPromotionRequest'
-        fulfillments:
-          type: array
-          description: An array containing promotions applied to fulfillments.
-          items:
-            $ref: '#/components/schemas/FulfillmentPromotionRequest'
-      description: Promotions Request
-    InventoryBehavior:
-      type: object
-      properties:
-        add:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default setting is REJECT.
-
-            '
-          example: REJECT
-          enum:
-          - WARN
-          - DROP
-          - REJECT
-          - NONE
-        update:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is WARN.
-
-            '
-          example: WARN
-          enum:
-          - WARN
-          - DROP
-          - REJECT
-          - NONE
-        get:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is WARN.
-
-            '
-          example: WARN
-          enum:
-          - WARN
-          - DROP
-          - REJECT
-          - NONE
-        cacheExpiry:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is WARN.
-
-            '
-          example: WARN
-          enum:
-          - WARN
-          - DROP
-          - REJECT
-          - NONE
-      description: Behaviors related to inventory actions, such as adding the item or removing the item.
+          description: A detailed description of the resource's current state, such as the absence of payment details.
+          example: No payment details have been added to this Cart
+      description: Cart State
     PromotionValidationData:
       type: object
       properties:
@@ -1267,137 +641,62 @@ components:
           description: A boolean value that determines whether promotions require a refresh.
           example: false
       description: An object that contains promotion validation data.
-    TaxCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Tax total in the collection.
-          example: 3
-        collection:
-          type: array
-          description: An array containing taxes in a collection.
-          items:
-            $ref: '#/components/schemas/Tax'
-      description: A collection of taxes.
-    MaxQtyConfiguration:
-      type: object
-      properties:
-        limit:
-          type: integer
-          description: Maximum quantity for an individual line item
-          format: int32
-          example: 100
-        behaviors:
-          $ref: '#/components/schemas/MaxQtyBehavior'
-      description: Item max quantity configurations
-    CartMaxQtyConfiguration:
-      type: object
-      properties:
-        limit:
-          type: integer
-          description: The maximum quantity allowed across all items in the cart.
-          format: int32
-          example: 100
-        behaviors:
-          $ref: '#/components/schemas/MaxQtyBehavior'
-      description: Maximum quantity configurations to set when the cart reaches its limit.
-    PaymentAuthorization:
+    ItemPromotionRequest:
       required:
       - amount
-      type: object
-      properties:
-        amount:
-          type: number
-          description: The amount for which the payment has been authorized.
-          example: 8
-          exclusiveMinimum: 0
-        expiry:
-          type: string
-          description: The date when the payment authorization expires.
-          example: 2024-06-13 16:50:00.682000+00:00
-        verifier:
-          $ref: '#/components/schemas/Verifier'
-      description: Payment authorization
-    OrderConfiguration:
-      type: object
-      properties:
-        validate:
-          $ref: '#/components/schemas/OrderValidateConfiguration'
-      description: Configuration settings related to order validation and processing.
-    ItemTaxRequest:
-      required:
       - id
-      - tax
+      - quantity
       type: object
       properties:
         id:
           type: string
-          description: The unique identifier of the item that was linked from making [Create item](/v3/cart-and-checkout/api-reference/carts-v3/items/items) endpoint.
+          description: The unique identifier of the promotion.
           example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
-        tax:
-          type: array
-          description: An array containing item taxes.
-          items:
-            $ref: '#/components/schemas/TaxData'
-        fees:
-          type: array
-          description: An array containing item fee taxes.
-          items:
-            $ref: '#/components/schemas/FeeTaxRequest'
-        fulfillment:
-          $ref: '#/components/schemas/ItemFulfillmentTaxRequest'
-      description: Item Tax Request
-    PIMValidationData:
+        amount:
+          minimum: 0
+          type: number
+          description: Discount amount applied to the item, exclusive of quantity
+          example: 15
+        quantity:
+          minimum: 1
+          type: integer
+          description: The quantity of the item to which the discount is applicable.
+          format: int32
+          example: 3
+        proration:
+          $ref: '#/components/schemas/ProrationsRequest'
+      description: Item Promotion Request
+    ItemPromotion:
       type: object
       properties:
-        availableSkus:
-          type: array
-          description: An array containing product validation data.
-          items:
-            $ref: '#/components/schemas/SKUValidationData'
-      description: Product validation data
-    Person:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/Name'
-        email:
+        id:
           type: string
-          description: Email of the pickup person.
-          example: john@test.com
-        phone:
-          $ref: '#/components/schemas/Phone'
-      description: Name of the pickup person.
-    TaxRequest:
+          description: The unique identifier of the promotion.
+          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
+        amount:
+          type: number
+          description: The discount amount applied to the item, excluding quantity.
+          example: 15
+        quantity:
+          type: integer
+          description: The quantity of the item for which the discount is applicable.
+          format: int32
+          example: 3
+        proration:
+          $ref: '#/components/schemas/ProrationSpread'
+      description: Item Promotion
+    ClientError:
       type: object
       properties:
-        items:
-          type: array
-          description: An array containing item taxes.
-          items:
-            $ref: '#/components/schemas/ItemTaxRequest'
-        fulfillments:
-          type: array
-          description: An array containing fulfillment taxes.
-          items:
-            $ref: '#/components/schemas/FulfillmentTaxRequest'
-        fees:
-          type: array
-          description: An array containing cart fee taxes.
-          items:
-            $ref: '#/components/schemas/FeeTaxRequest'
-      description: Tax Request
-    ProductRequest:
-      type: object
-      properties:
-        availableSkus:
-          type: array
-          items:
-            $ref: '#/components/schemas/SKUValidationDataRequest'
-      description: Product Request
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: Human-readable error description
+          example: x-fabric-tenant-id is required
+      description: Client error details
     InventoryValidationRequest:
       required:
       - channels
@@ -1429,139 +728,35 @@ components:
             backOrder: 15
             preOrder: 100
       description: Inventory validation details
-    PromotionApplied:
+    Phone:
       type: object
       properties:
-        id:
+        number:
           type: string
-          description: The unique identifier of the promotion.
-          example: 542ba80a69b8
-        title:
-          type: string
-          description: Promotion title
-          example: 15 Percent All Products
-        code:
-          type: string
-          description: Coupon code
-          example: 15_PERCENT
+          description: Phone Number
+          example: 123-456-7890
         type:
           type: string
-          description: The type of promotion, such as percentage or fixed value.
-          example: PERCENTAGE
-        value:
-          type: number
-          description: The value of the promotion, indicating the amount of the discount applied. This can be a fixed amount or a percentage.
-          example: 15
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes provide more context for the promotion.
-            example:
-              source: cart
-          description: Custom attributes provide more context for the promotion.
-          example:
-            source: cart
-      description: Promotions applied
-    FulfillmentPromotion:
+          description: Phone Number Type
+          example: MOBILE
+          enum:
+          - MOBILE
+          - BUSINESS
+          - HOME
+      description: Phone
+    Proration:
       type: object
       properties:
-        id:
-          type: string
-          description: Identifier of a promotion
-          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
         amount:
           type: number
-          description: The discount amount applied to a fulfillment.
-          example: 15
-      description: Fulfillment Promotion
-    Name:
-      type: object
-      properties:
-        first:
-          type: string
-          description: First name
-          example: John
-        middle:
-          type: string
-          description: Middle name
-          example: S
-        last:
-          type: string
-          description: Last name
-          example: Doe
-      description: Name of the recipient of the order.
-    ItemPrice:
-      type: object
-      properties:
-        unit:
-          type: number
-          description: The unit price of the item.
-          example: 10
-        amount:
-          type: number
-          description: The total price of the item, inclusive of quantity.
-          example: 100
-      description: Item price
-    FeeTaxRequest:
-      required:
-      - id
-      - tax
-      type: object
-      properties:
-        id:
-          type: string
-          description: Identifier of a fee.
-          example: 724a0dd3-c545-4277-b1b2-edc9dcda034e
-        tax:
-          type: array
-          description: An array containing taxes of a fee.
-          items:
-            $ref: '#/components/schemas/TaxData'
-      description: Fee Tax Request
-    PromotionBehavior:
-      type: object
-      properties:
-        cacheExpiry:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is WARN.
-
-            '
-          example: WARN
-          enum:
-          - WARN
-          - NONE
-      description: Promotion behaviors
-    State:
-      type: object
-      properties:
-        resource:
-          type: string
-          description: The type of resource indicating its current state, such as a cart.
-          example: CART
-          enum:
-          - ITEM
-          - CART
-          - FULFILLMENT
-          - PAYMENT
-          - FEE
-          - VALIDATION
-        resourceId:
-          type: string
-          description: The ID used to reference the resource's state, such as a cart.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-        key:
-          type: string
-          description: The key used to map the state of the resource.
-          example: MISSING_PAYMENT_DETAILS
-        description:
-          type: string
-          description: A detailed description of the resource's current state, such as the absence of payment details.
-          example: No payment details have been added to this Cart
-      description: Cart State
+          description: Proration amount for the item
+          example: 5
+        quantity:
+          type: integer
+          description: Proration quantity the amount is applicable for
+          format: int32
+          example: 3
+      description: Proration details of the item used for returns in an OMS system
     CartResponse:
       type: object
       properties:
@@ -1655,33 +850,42 @@ components:
           description: The date and time when the cart was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Cart Response
-    FeesCollection:
+    CartMaxQtyConfiguration:
       type: object
       properties:
-        total:
-          type: number
-          description: The total fees amount in the collection.
-          example: 5
-        collection:
-          type: array
-          description: An array containing all fees and their details in a collection.
-          items:
-            $ref: '#/components/schemas/Fee'
-      description: A collection of fees associated with the corresponding cart.
-    ItemFulfillment:
+        limit:
+          type: integer
+          description: The maximum quantity allowed across all items in the cart.
+          format: int32
+          example: 100
+        behaviors:
+          $ref: '#/components/schemas/MaxQtyBehavior'
+      description: Maximum quantity configurations to set when the cart reaches its limit.
+    NotFound:
       type: object
       properties:
-        id:
+        type:
           type: string
-          description: The identifier of the fulfillment linked to the item.
-          example: 6d65755f-b1d9-4c9d-bb5b-118d317f8db4
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        inventory:
-          $ref: '#/components/schemas/Inventory'
-        tax:
-          $ref: '#/components/schemas/TaxCollection'
-      description: Item Fulfillment
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
+    ProductConfiguration:
+      type: object
+      properties:
+        cacheExpiry:
+          type: integer
+          description: Duration in seconds until product validation data expires.
+          format: int64
+          example: 7776000
+        behaviors:
+          $ref: '#/components/schemas/ProductBehavior'
+        maxQuantity:
+          $ref: '#/components/schemas/MaxQtyConfiguration'
+      description: Configuration settings related to product behavior and cache expiry.
     PromotionConfiguration:
       type: object
       properties:
@@ -1693,30 +897,32 @@ components:
         behaviors:
           $ref: '#/components/schemas/PromotionBehavior'
       description: Configuration settings related to promotions and their cache expiry.
-    Verifier:
+    TaxValidationData:
       type: object
       properties:
-        type:
-          type: string
-          description: The type of verification used, such as a token.
-          example: TOKEN
-        key:
-          type: string
-          description: The key used for payment verification.
-          example: CH39082K439R0
-      description: Payment verifier
-    Coupon:
-      type: object
-      properties:
-        code:
-          type: string
-          description: Coupon code
-          example: VALID_COUPON
         updatedAt:
           type: string
-          description: The date when the coupon was added to the corresponding cart.
+          description: Latest date the tax was added to the corresponding cart.
           example: 2024-06-13 16:50:00.682000+00:00
-      description: Coupon
+      description: An object that contains tax validation data.
+    SegmentObject:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Segment name
+          example: membership
+        value:
+          type: array
+          description: Segment values
+          example:
+          - gold
+          - silver
+          items:
+            type: string
+            description: Segment values
+            example: '["gold","silver"]'
+      description: Segment
     PickupPerson:
       type: object
       properties:
@@ -1728,93 +934,38 @@ components:
           items:
             $ref: '#/components/schemas/Person'
       description: Pickup person details
-    ProrationRequest:
-      required:
-      - amount
-      - quantity
+    PromotionsRequest:
       type: object
       properties:
-        amount:
-          minimum: 0
-          type: number
-          description: Proration amount for the item
-          example: 5
-        quantity:
-          minimum: 1
+        promotions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromotionAppliedRequest'
+      description: An array containing promotions applied to the corresponding cart.
+    MaxQtyConfiguration:
+      type: object
+      properties:
+        limit:
           type: integer
-          description: Proration quantity the amount is applicable for
+          description: Maximum quantity for an individual line item
           format: int32
-          example: 3
-      description: Proration details of the item used for returns in an OMS system
-    TaxBehavior:
-      type: object
-      properties:
-        cacheExpiry:
-          type: string
-          description: 'The behavior that is executed based on the selected configuration.
-
-
-            The default behavior is WARN.
-
-            '
-          example: WARN
-          enum:
-          - WARN
-          - NONE
-      description: tax behaviors
-    FulfillmentTaxRequest:
-      required:
-      - id
-      - tax
-      type: object
-      properties:
-        id:
-          type: string
-          description: The Fulfillment ID generated when a fulfillment was created using the [Create fulfillment](/v3/cart-and-checkout/api-reference/carts-v3/fulfillment/create-fulfillments) endpoint.
-          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
-        tax:
-          type: array
-          description: An array containing fulfillment tax data.
-          items:
-            $ref: '#/components/schemas/TaxData'
-        fees:
-          type: array
-          description: An array containing fulfillment fee taxes.
-          items:
-            $ref: '#/components/schemas/FeeTaxRequest'
-      description: Fulfillment Tax Request
-    CartPromotionCollection:
+          example: 100
+        behaviors:
+          $ref: '#/components/schemas/MaxQtyBehavior'
+      description: Item max quantity configurations
+    TaxCollection:
       type: object
       properties:
         total:
           type: number
-          description: The total value of all applied promotions.
-          example: 32
+          description: Tax total in the collection.
+          example: 3
         collection:
           type: array
-          description: An array containing promotions in the collection.
+          description: An array containing taxes in a collection.
           items:
-            $ref: '#/components/schemas/PromotionApplied'
-      description: A collection of promotions applied to the corresponding cart.
-    ItemPromotion:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The unique identifier of the promotion.
-          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
-        amount:
-          type: number
-          description: The discount amount applied to the item, excluding quantity.
-          example: 15
-        quantity:
-          type: integer
-          description: The quantity of the item for which the discount is applicable.
-          format: int32
-          example: 3
-        proration:
-          $ref: '#/components/schemas/ProrationSpread'
-      description: Item Promotion
+            $ref: '#/components/schemas/Tax'
+      description: A collection of taxes.
     CustomerContext:
       type: object
       properties:
@@ -1842,23 +993,513 @@ components:
           description: Session ID of the customer.
           example: 3a5fd2d3-5c96-4e57-b069-7ff2a88c1119
       description: Customer context object containing customer information.
-    Inventory:
+    TaxConfiguration:
+      type: object
+      properties:
+        cacheExpiry:
+          type: integer
+          description: Duration in seconds until the tax data expires.
+          format: int64
+          example: 7776000
+        behaviors:
+          $ref: '#/components/schemas/TaxBehavior'
+      description: Configuration settings for tax calculations and behaviors.
+    ItemPromotionsCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Discount total in the collection.
+          example: 2
+        collection:
+          type: array
+          description: An array containing promotions in the collection.
+          items:
+            $ref: '#/components/schemas/ItemPromotion'
+      description: Collection of item promotions.
+    FeeTaxDetails:
+      type: object
+      properties:
+        destinationAddress:
+          type: string
+          description: The destination address where the item will be delivered.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+        originAddress:
+          type: string
+          description: The origin address from which the item will be fulfilled.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+      description: Tax details used to determine tax for a cart fee.
+    TaxBehavior:
+      type: object
+      properties:
+        cacheExpiry:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - NONE
+      description: tax behaviors
+    MaxQtyBehavior:
+      type: object
+      properties:
+        add:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default setting is REJECT.
+
+            '
+          example: REJECT
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        update:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        get:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+      description: Max quantity behaviors
+    ItemFulfillment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The identifier of the fulfillment linked to the item.
+          example: 6d65755f-b1d9-4c9d-bb5b-118d317f8db4
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        inventory:
+          $ref: '#/components/schemas/Inventory'
+        tax:
+          $ref: '#/components/schemas/TaxCollection'
+      description: Item Fulfillment
+    Tax:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Tax amount
+          example: 3
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+            example:
+              rate: '5.0'
+              type: COUNTY
+          description: Custom attributes to provide more context to the tax, such as the rate and the type of tax.
+          example:
+            rate: '5.0'
+            type: COUNTY
+      description: Tax
+    OrderConfiguration:
+      type: object
+      properties:
+        validate:
+          $ref: '#/components/schemas/OrderValidateConfiguration'
+      description: Configuration settings related to order validation and processing.
+    TaxRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          description: An array containing item taxes.
+          items:
+            $ref: '#/components/schemas/ItemTaxRequest'
+        fulfillments:
+          type: array
+          description: An array containing fulfillment taxes.
+          items:
+            $ref: '#/components/schemas/FulfillmentTaxRequest'
+        fees:
+          type: array
+          description: An array containing cart fee taxes.
+          items:
+            $ref: '#/components/schemas/FeeTaxRequest'
+      description: Tax Request
+    ProrationsRequest:
+      type: object
+      properties:
+        spread:
+          type: array
+          description: An array containing details about adjustments made to charges based on partial usage. Each entry in the array represents a specific proration adjustment, including the amount.
+          items:
+            $ref: '#/components/schemas/ProrationRequest'
+      description: Proration Request
+    ProrationSpread:
+      type: object
+      properties:
+        spread:
+          type: array
+          description: An array containing details about adjustments made to charges based on partial usage. Each entry in the array represents a specific proration adjustment, including the amount.
+          items:
+            $ref: '#/components/schemas/Proration'
+      description: Prorations
+    Fee:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the fee associated with the corresponding cart that was generated when making [Create fee](/v3/cart-and-checkout/api-reference/carts-v3/fees/create-fees) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        name:
+          type: string
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes that provide more context for the fee, such as the source of the fee.
+            example:
+              source: eco
+          description: Custom attributes that provide more context for the fee, such as the source of the fee.
+          example:
+            source: eco
+        tax:
+          $ref: '#/components/schemas/TaxCollection'
+        updatedAt:
+          type: string
+          description: The date and time when the fee was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the fee was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+        taxDetails:
+          $ref: '#/components/schemas/FeeTaxDetails'
+      description: Fee
+    PromotionApplied:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the promotion.
+          example: 542ba80a69b8
+        title:
+          type: string
+          description: Promotion title
+          example: 15 Percent All Products
+        code:
+          type: string
+          description: Coupon code
+          example: 15_PERCENT
+        type:
+          type: string
+          description: The type of promotion, such as percentage or fixed value.
+          example: PERCENTAGE
+        value:
+          type: number
+          description: The value of the promotion, indicating the amount of the discount applied. This can be a fixed amount or a percentage.
+          example: 15
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes provide more context for the promotion.
+            example:
+              source: cart
+          description: Custom attributes provide more context for the promotion.
+          example:
+            source: cart
+      description: Promotions applied
+    Adjustment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Adjustment ID generated when an adjustment was created using the [Create adjustment](/v3/cart-and-checkout/api-reference/carts-v3/carts-adjustments/create-adjustments) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        reason:
+          type: string
+          description: The reason for the adjustment.
+          example: Price adjustment from customer representative.
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes used for price adjustments.
+            example:
+              source: CSR
+          description: Custom attributes used for price adjustments.
+          example:
+            source: CSR
+        updatedAt:
+          type: string
+          description: The date and time when the adjustment was last updated.
+          example: 2024-06-13 16:50:00.682000+00:00
+        createdAt:
+          type: string
+          description: The date and time when the adjustment was created.
+          example: 2024-06-13 16:50:00.682000+00:00
+      description: Adjustment
+    Price:
+      type: object
+      properties:
+        total:
+          type: number
+          description: The grand total, inclusive of all charges and discounts.
+          example: 800
+        subtotal:
+          type: number
+          description: The subtotal of all items amount.
+          example: 750
+        tax:
+          type: number
+          description: The tax total amount.
+          example: 20
+        fulfillments:
+          type: number
+          description: The fulfillments total amount.
+          example: 25
+        discounts:
+          type: number
+          description: The discounts total amount.
+          example: 10
+        fees:
+          type: number
+          description: The fees total amount.
+          example: 5
+        adjustments:
+          type: number
+          description: The adjustments total amount.
+          example: 10
+      description: The sum of the total amount of the cart.
+    FulfillmentPromotionCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: The total discount applied within a collection.
+          example: 15
+        collection:
+          type: array
+          description: An array containing the promotions within a collection.
+          items:
+            $ref: '#/components/schemas/FulfillmentPromotion'
+      description: A collection of promotions applied to the fulfillment.
+    FeeTaxRequest:
+      required:
+      - id
+      - tax
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier of a fee.
+          example: 724a0dd3-c545-4277-b1b2-edc9dcda034e
+        tax:
+          type: array
+          description: An array containing taxes of a fee.
+          items:
+            $ref: '#/components/schemas/TaxData'
+      description: Fee Tax Request
+    LineItemValidationData:
+      type: object
+      properties:
+        sku:
+          type: string
+          description: The SKU of the item.
+          example: SKU3
+        inventory:
+          $ref: '#/components/schemas/InventoryValidationData'
+      description: An object that contains item validation data.
+    Verifier:
       type: object
       properties:
         type:
           type: string
-          description: The type used to determine which counter to compare the quantity against.
-          example: backOrder
-        channels:
+          description: The type of verification used, such as a token.
+          example: TOKEN
+        key:
+          type: string
+          description: The key used for payment verification.
+          example: CH39082K439R0
+      description: Payment verifier
+    ValidationData:
+      type: object
+      properties:
+        promotions:
+          $ref: '#/components/schemas/PromotionValidationData'
+        lineItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineItemValidationData'
+        product:
+          $ref: '#/components/schemas/PIMValidationData'
+        tax:
+          $ref: '#/components/schemas/TaxValidationData'
+    Name:
+      type: object
+      properties:
+        first:
+          type: string
+          description: First name
+          example: John
+        middle:
+          type: string
+          description: Middle name
+          example: S
+        last:
+          type: string
+          description: Last name
+          example: Doe
+      description: Name of the recipient of the order.
+    Configuration:
+      type: object
+      properties:
+        order:
+          $ref: '#/components/schemas/OrderConfiguration'
+        product:
+          $ref: '#/components/schemas/ProductConfiguration'
+        inventory:
+          $ref: '#/components/schemas/InventoryConfiguration'
+        tax:
+          $ref: '#/components/schemas/TaxConfiguration'
+        promotions:
+          $ref: '#/components/schemas/PromotionConfiguration'
+        maxQuantity:
+          $ref: '#/components/schemas/CartMaxQtyConfiguration'
+      description: Cart [configurations](/v3/cart-and-checkout/api-reference/carts-v3/configuration-behaviors) determine the behavior within the cart.
+    InventoryRequest:
+      required:
+      - lineItems
+      type: object
+      properties:
+        lineItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/InventoryValidationRequest'
+      description: Inventory Request
+    Fulfillment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Fulfillment ID generated when a fulfillment was created using the [Create fulfillment](/v3/cart-and-checkout/api-reference/carts-v3/fulfillment/create-fulfillments) endpoint.
+          example: d6229cdb-0c5b-4885-b1b2-13b94d02488e
+        type:
+          type: string
+          description: Determines the type of fulfillment.
+          example: SHIP_TO
+          enum:
+          - SHIP_TO
+          - BOPIS
+          - ROPIS
+        refId:
+          type: string
+          description: An alternative identifier for fulfillments, used for additional tracking or referencing.
+          example: '398427903843'
+        attributes:
           type: object
+          description: Custom attributes to provide more context to the fulfillment, such as where it was made.
           additionalProperties:
-            type: string
-            description: The inventory channels associated with the item.
-            example: '{"networkCode":"ShipToHome"}'
-          description: The inventory channels associated with the item.
+            type: object
+            description: Custom attributes to provide more context to the fulfillment, such as where it was made.
+            example:
+              source: store
           example:
-            networkCode: ShipToHome
-      description: Inventory
+            source: store
+        originAddress:
+          type: string
+          description: The identifier of the address where the item is being fulfilled.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        destinationAddress:
+          type: string
+          description: The identifier of the address where the item is being shipped.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        locationId:
+          type: string
+          description: Unique identifier of the store.
+          example: CA
+        pickupPerson:
+          $ref: '#/components/schemas/PickupPerson'
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        promotions:
+          $ref: '#/components/schemas/FulfillmentPromotionCollection'
+        fees:
+          $ref: '#/components/schemas/FeesCollection'
+        adjustments:
+          $ref: '#/components/schemas/AdjustmentCollection'
+        tax:
+          $ref: '#/components/schemas/TaxCollection'
+      description: A fulfillment object containing important fulfillment information.
+    PIMValidationData:
+      type: object
+      properties:
+        availableSkus:
+          type: array
+          description: An array containing product validation data.
+          items:
+            $ref: '#/components/schemas/SKUValidationData'
+      description: Product validation data
+    ItemPrice:
+      type: object
+      properties:
+        unit:
+          type: number
+          description: The unit price of the item.
+          example: 10
+        amount:
+          type: number
+          description: The total price of the item, inclusive of quantity.
+          example: 100
+      description: Item price
+    ItemCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Item total in a collection.
+          example: 100
+        collection:
+          type: array
+          description: An array containing items in the collection.
+          items:
+            $ref: '#/components/schemas/ItemResponseDto'
+      description: A collection of items in the cart.
     Address:
       type: object
       properties:
@@ -1912,53 +1553,147 @@ components:
           description: The date and time the address was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Address
-    Configuration:
-      type: object
-      properties:
-        order:
-          $ref: '#/components/schemas/OrderConfiguration'
-        product:
-          $ref: '#/components/schemas/ProductConfiguration'
-        inventory:
-          $ref: '#/components/schemas/InventoryConfiguration'
-        tax:
-          $ref: '#/components/schemas/TaxConfiguration'
-        promotions:
-          $ref: '#/components/schemas/PromotionConfiguration'
-        maxQuantity:
-          $ref: '#/components/schemas/CartMaxQtyConfiguration'
-      description: Cart [configurations](/v3/cart-and-checkout/api-reference/carts-v3/configuration-behaviors) determine the behavior within the cart.
-    InventoryConfiguration:
-      type: object
-      properties:
-        cacheExpiry:
-          type: integer
-          description: Duration in seconds until inventory validation data expires.
-          format: int64
-          example: 7776000
-        behaviors:
-          $ref: '#/components/schemas/InventoryBehavior'
-        check:
-          type: string
-          description: This setting is used to determine how you check inventory. The options are SKU or LINE_ITEM.
-          example: SKU
-          enum:
-          - SKU
-          - LINE_ITEM
-      description: Configuration settings related to inventory management and checks.
-    FulfillmentPromotionCollection:
+    AdjustmentCollection:
       type: object
       properties:
         total:
           type: number
-          description: The total discount applied within a collection.
-          example: 15
+          description: Adjustments total in a collection.
+          example: 2
         collection:
           type: array
-          description: An array containing the promotions within a collection.
+          description: An array containing adjustments in the collection.
           items:
-            $ref: '#/components/schemas/FulfillmentPromotion'
-      description: A collection of promotions applied to the fulfillment.
+            $ref: '#/components/schemas/Adjustment'
+      description: A collection of adjustments made to the corresponding cart.
+    TaxData:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Tax amount
+          example: 3
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes used to determine how items are taxed, such as by county.
+            example:
+              rate: '5.0'
+              type: COUNTY
+          description: Custom attributes used to determine how items are taxed, such as by county.
+          example:
+            rate: '5.0'
+            type: COUNTY
+      description: Tax Data
+    Person:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        email:
+          type: string
+          description: Email of the pickup person.
+          example: john@test.com
+        phone:
+          $ref: '#/components/schemas/Phone'
+      description: Name of the pickup person.
+    FulfillmentTaxRequest:
+      required:
+      - id
+      - tax
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Fulfillment ID generated when a fulfillment was created using the [Create fulfillment](/v3/cart-and-checkout/api-reference/carts-v3/fulfillment/create-fulfillments) endpoint.
+          example: a8577d7f-0d4d-4b22-8e85-7b4a2e90dc93
+        tax:
+          type: array
+          description: An array containing fulfillment tax data.
+          items:
+            $ref: '#/components/schemas/TaxData'
+        fees:
+          type: array
+          description: An array containing fulfillment fee taxes.
+          items:
+            $ref: '#/components/schemas/FeeTaxRequest'
+      description: Fulfillment Tax Request
+    Inventory:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type used to determine which counter to compare the quantity against.
+          example: backOrder
+        channels:
+          type: object
+          additionalProperties:
+            type: string
+            description: The inventory channels associated with the item.
+            example: '{"networkCode":"ShipToHome"}'
+          description: The inventory channels associated with the item.
+          example:
+            networkCode: ShipToHome
+      description: Inventory
+    ResourcePrice:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          minimum: 0
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
+    PaymentAuthorization:
+      required:
+      - amount
+      type: object
+      properties:
+        amount:
+          type: number
+          description: The amount for which the payment has been authorized.
+          example: 8
+          exclusiveMinimum: 0
+        expiry:
+          type: string
+          description: The date when the payment authorization expires.
+          example: 2024-06-13 16:50:00.682000+00:00
+        verifier:
+          $ref: '#/components/schemas/Verifier'
+      description: Payment authorization
+    FeesCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: The total fees amount in the collection.
+          example: 5
+        collection:
+          type: array
+          description: An array containing all fees and their details in a collection.
+          items:
+            $ref: '#/components/schemas/Fee'
+      description: A collection of fees associated with the corresponding cart.
+    FulfillmentPromotion:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier of a promotion
+          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
+        amount:
+          type: number
+          description: The discount amount applied to a fulfillment.
+          example: 15
+      description: Fulfillment Promotion
     SKUValidationData:
       type: object
       properties:
@@ -1976,17 +1711,140 @@ components:
           format: int32
           example: 100
       description: Product validation data to determine product existence
-    ResourcePrice:
+    ItemFulfillmentTaxRequest:
+      required:
+      - tax
+      type: object
+      properties:
+        tax:
+          type: array
+          description: An array containing item fulfillment taxes.
+          items:
+            $ref: '#/components/schemas/TaxData'
+      description: Item Fulfillment Tax Request
+    PromotionAppliedRequest:
+      required:
+      - id
+      - title
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the promotion.
+          example: 542ba80a69b8
+        title:
+          type: string
+          description: Promotion Title
+          example: 15 Percent All Products
+        code:
+          type: string
+          description: Coupon Code
+          example: 15_PERCENT
+        type:
+          type: string
+          description: Promotion Type (e.g. percentage or fixed value)
+          example: PERCENTAGE
+        value:
+          type: number
+          description: Promotion Value
+          example: 15
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes
+            example:
+              source: cart
+          description: Custom attributes
+          example:
+            source: cart
+        lineItems:
+          type: array
+          description: An array containing promotions applied to items.
+          items:
+            $ref: '#/components/schemas/ItemPromotionRequest'
+        fulfillments:
+          type: array
+          description: An array containing promotions applied to fulfillments.
+          items:
+            $ref: '#/components/schemas/FulfillmentPromotionRequest'
+      description: Promotions Request
+    ProrationRequest:
       required:
       - amount
+      - quantity
       type: object
       properties:
         amount:
           minimum: 0
           type: number
-          description: Total fees amount
-          example: 12.99
-      description: Price details
+          description: Proration amount for the item
+          example: 5
+        quantity:
+          minimum: 1
+          type: integer
+          description: Proration quantity the amount is applicable for
+          format: int32
+          example: 3
+      description: Proration details of the item used for returns in an OMS system
+    PaymentCollection:
+      type: object
+      properties:
+        authorized:
+          type: number
+          description: The payments that have been authorized within the collection.
+          example: 800
+        collection:
+          type: array
+          description: An array containing payments within the collection.
+          items:
+            $ref: '#/components/schemas/Payment'
+      description: An object containing a collection of payments added to the corresponding cart.
+    CartPromotionCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: The total value of all applied promotions.
+          example: 32
+        collection:
+          type: array
+          description: An array containing promotions in the collection.
+          items:
+            $ref: '#/components/schemas/PromotionApplied'
+      description: A collection of promotions applied to the corresponding cart.
+    FulfillmentPromotionRequest:
+      required:
+      - amount
+      - id
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier of a promotion
+          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
+        amount:
+          minimum: 0
+          type: number
+          description: Discount amount applied to a fulfillment
+          example: 10
+      description: Fulfillment Promotion Request
+    PromotionBehavior:
+      type: object
+      properties:
+        cacheExpiry:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - NONE
+      description: Promotion behaviors
     ItemResponseDto:
       type: object
       properties:
@@ -2051,6 +1909,148 @@ components:
           description: The date and time a Item was created
           example: 2024-06-13 16:50:00.682000+00:00
       description: Item Response
+    InventoryValidationData:
+      type: object
+      properties:
+        channels:
+          type: object
+          additionalProperties:
+            type: string
+            description: The inventory channels associated with the item.
+            example: '{"networkCode":"ShipToHome"}'
+          description: The inventory channels associated with the item.
+          example:
+            networkCode: ShipToHome
+        counters:
+          type: object
+          additionalProperties:
+            type: integer
+            description: The inventory counters available for the item.
+            format: int32
+          description: The inventory counters available for the item.
+          example:
+            backOrder: 15
+            preOrder: 100
+        updatedAt:
+          type: string
+          description: The latest date when inventory was added to the corresponding cart.
+          example: 2024-06-13 16:50:00.682000+00:00
+      description: Inventory validation details
+    InventoryBehavior:
+      type: object
+      properties:
+        add:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default setting is REJECT.
+
+            '
+          example: REJECT
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        update:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        get:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+        cacheExpiry:
+          type: string
+          description: 'The behavior that is executed based on the selected configuration.
+
+
+            The default behavior is WARN.
+
+            '
+          example: WARN
+          enum:
+          - WARN
+          - DROP
+          - REJECT
+          - NONE
+      description: Behaviors related to inventory actions, such as adding the item or removing the item.
+    InventoryConfiguration:
+      type: object
+      properties:
+        cacheExpiry:
+          type: integer
+          description: Duration in seconds until inventory validation data expires.
+          format: int64
+          example: 7776000
+        behaviors:
+          $ref: '#/components/schemas/InventoryBehavior'
+        check:
+          type: string
+          description: This setting is used to determine how you check inventory. The options are SKU or LINE_ITEM.
+          example: SKU
+          enum:
+          - SKU
+          - LINE_ITEM
+      description: Configuration settings related to inventory management and checks.
+    SummaryResponse:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+          description: The total number of items in the cart, inclusive of quantity.
+          format: int32
+          example: 1
+        totalUniqueItems:
+          type: integer
+          description: The total number of unique items in the cart.
+          format: int32
+          example: 1
+      description: A summary of items in the cart.
+    ItemTaxRequest:
+      required:
+      - id
+      - tax
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the item that was linked from making [Create item](/v3/cart-and-checkout/api-reference/carts-v3/items/items) endpoint.
+          example: bb44db95-6fbd-4eed-a1ed-4d99bc91250f
+        tax:
+          type: array
+          description: An array containing item taxes.
+          items:
+            $ref: '#/components/schemas/TaxData'
+        fees:
+          type: array
+          description: An array containing item fee taxes.
+          items:
+            $ref: '#/components/schemas/FeeTaxRequest'
+        fulfillment:
+          $ref: '#/components/schemas/ItemFulfillmentTaxRequest'
+      description: Item Tax Request
   securitySchemes:
     bearerAuth:
       type: http

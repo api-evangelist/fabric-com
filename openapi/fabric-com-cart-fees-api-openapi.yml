@@ -215,6 +215,55 @@ paths:
                 $ref: '#/components/schemas/NotFound'
 components:
   schemas:
+    FeeTaxDetails:
+      type: object
+      properties:
+        destinationAddress:
+          type: string
+          description: The destination address where the item will be delivered.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+        originAddress:
+          type: string
+          description: The origin address from which the item will be fulfilled.
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+      description: Tax details used to determine tax for a cart fee.
+    ClientError:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: BAD_REQUEST
+        message:
+          type: string
+          description: Human-readable error description
+          example: x-fabric-tenant-id is required
+      description: Client error details
+    TaxCollection:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Tax total in the collection.
+          example: 3
+        collection:
+          type: array
+          description: An array containing taxes in a collection.
+          items:
+            $ref: '#/components/schemas/Tax'
+      description: A collection of taxes.
+    NotFound:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
     UpdateFeeRequestWithTaxDetails:
       type: object
       properties:
@@ -241,18 +290,29 @@ components:
         taxDetails:
           $ref: '#/components/schemas/FeeTaxDetailsRequest'
       description: Fee Request
-    ClientError:
+    ResourcePrice:
+      required:
+      - amount
       type: object
       properties:
-        type:
+        amount:
+          minimum: 0
+          type: number
+          description: Total fees amount
+          example: 12.99
+      description: Price details
+    FeeTaxDetailsRequest:
+      type: object
+      properties:
+        destinationAddress:
           type: string
-          description: Error code, meant for machine consumption
-          example: BAD_REQUEST
-        message:
+          description: Identifier of the address
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+        originAddress:
           type: string
-          description: Human-readable error description
-          example: x-fabric-tenant-id is required
-      description: Client error details
+          description: Identifier of the address
+          example: c86f777b-1885-4ddf-961d-542ba80a69b8
+      description: Tax details used to determine tax for a cart fee
     Tax:
       type: object
       properties:
@@ -273,42 +333,35 @@ components:
             rate: '5.0'
             type: COUNTY
       description: Tax
-    NotFound:
+    CreateFeeRequestWithTaxDetails:
+      required:
+      - name
+      - price
       type: object
       properties:
-        type:
+        taxDetails:
+          $ref: '#/components/schemas/FeeTaxDetailsRequest'
+        name:
           type: string
-          description: Error code, meant for machine consumption
-          example: CART_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error description
-          example: Cart not found
-      description: Resource Not Found
-    FeeTaxDetailsRequest:
-      type: object
-      properties:
-        destinationAddress:
-          type: string
-          description: Identifier of the address
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-        originAddress:
-          type: string
-          description: Identifier of the address
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-      description: Tax details used to determine tax for a cart fee
-    FeeTaxDetails:
-      type: object
-      properties:
-        destinationAddress:
-          type: string
-          description: The destination address where the item will be delivered.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-        originAddress:
-          type: string
-          description: The origin address from which the item will be fulfilled.
-          example: c86f777b-1885-4ddf-961d-542ba80a69b8
-      description: Tax details used to determine tax for a cart fee.
+          description: Name of the fee
+          example: Eco Fee
+        price:
+          $ref: '#/components/schemas/ResourcePrice'
+        taxable:
+          type: boolean
+          description: A boolean value that determines whether a fee is taxable.
+          example: true
+        attributes:
+          type: object
+          additionalProperties:
+            type: object
+            description: Custom attributes that describe the fee, such as an eco fee.
+            example:
+              source: eco
+          description: Custom attributes that describe the fee, such as an eco fee.
+          example:
+            source: eco
+      description: Fee Request
     NewFee:
       type: object
       properties:
@@ -389,59 +442,6 @@ components:
         taxDetails:
           $ref: '#/components/schemas/FeeTaxDetails'
       description: Fee
-    CreateFeeRequestWithTaxDetails:
-      required:
-      - name
-      - price
-      type: object
-      properties:
-        taxDetails:
-          $ref: '#/components/schemas/FeeTaxDetailsRequest'
-        name:
-          type: string
-          description: Name of the fee
-          example: Eco Fee
-        price:
-          $ref: '#/components/schemas/ResourcePrice'
-        taxable:
-          type: boolean
-          description: A boolean value that determines whether a fee is taxable.
-          example: true
-        attributes:
-          type: object
-          additionalProperties:
-            type: object
-            description: Custom attributes that describe the fee, such as an eco fee.
-            example:
-              source: eco
-          description: Custom attributes that describe the fee, such as an eco fee.
-          example:
-            source: eco
-      description: Fee Request
-    TaxCollection:
-      type: object
-      properties:
-        total:
-          type: number
-          description: Tax total in the collection.
-          example: 3
-        collection:
-          type: array
-          description: An array containing taxes in a collection.
-          items:
-            $ref: '#/components/schemas/Tax'
-      description: A collection of taxes.
-    ResourcePrice:
-      required:
-      - amount
-      type: object
-      properties:
-        amount:
-          minimum: 0
-          type: number
-          description: Total fees amount
-          example: 12.99
-      description: Price details
   securitySchemes:
     bearerAuth:
       type: http

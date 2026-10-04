@@ -292,81 +292,6 @@ components:
           description: Human-readable error description
           example: x-fabric-tenant-id is required
       description: Client error details
-    Name:
-      type: object
-      properties:
-        first:
-          type: string
-          description: First name
-          example: John
-        middle:
-          type: string
-          description: Middle name
-          example: S
-        last:
-          type: string
-          description: Last name
-          example: Doe
-      description: Name of the recipient of the order.
-    NotFound:
-      type: object
-      properties:
-        type:
-          type: string
-          description: Error code, meant for machine consumption
-          example: CART_NOT_FOUND
-        message:
-          type: string
-          description: Human-readable error description
-          example: Cart not found
-      description: Resource Not Found
-    CreateAddressRequest:
-      required:
-      - addressLine1
-      - city
-      - country
-      - postalCode
-      - region
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/ForCreateName'
-        email:
-          type: string
-          description: Email
-          example: john@test.com
-        phone:
-          $ref: '#/components/schemas/ForCreate'
-        addressLine1:
-          type: string
-          description: Address line 1
-          example: 123 Park Road
-        addressLine2:
-          type: string
-          description: Address line 2
-        addressLine3:
-          type: string
-          description: Address line 3
-        addressLine4:
-          type: string
-          description: Address line 4
-        city:
-          type: string
-          description: City
-          example: Santa Cruz
-        region:
-          type: string
-          description: State, Province or Area
-          example: California
-        country:
-          type: string
-          description: Country
-          example: USA
-        postalCode:
-          type: string
-          description: Postal code or zip code
-          example: '12345'
-      description: Address
     NewAddress:
       type: object
       properties:
@@ -420,6 +345,33 @@ components:
           description: The date and time the address was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Address
+    NotFound:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Error code, meant for machine consumption
+          example: CART_NOT_FOUND
+        message:
+          type: string
+          description: Human-readable error description
+          example: Cart not found
+      description: Resource Not Found
+    ForUpdate:
+      type: object
+      properties:
+        number:
+          type: string
+          description: Phone Number
+          example: 123-456-7890
+        type:
+          type: string
+          description: Phone Number Type
+          example: MOBILE
+          enum:
+          - MOBILE
+          - BUSINESS
+          - HOME
     ForCreateName:
       required:
       - first
@@ -435,6 +387,98 @@ components:
           description: Last name on the address.
           example: Doe
       description: Name details
+    ForCreate:
+      required:
+      - number
+      - type
+      type: object
+      properties:
+        number:
+          type: string
+          description: Phone Number
+          example: 123-456-7890
+        type:
+          type: string
+          description: Phone Number Type
+          example: MOBILE
+          enum:
+          - MOBILE
+          - BUSINESS
+          - HOME
+      description: Phone details
+    Phone:
+      type: object
+      properties:
+        number:
+          type: string
+          description: Phone Number
+          example: 123-456-7890
+        type:
+          type: string
+          description: Phone Number Type
+          example: MOBILE
+          enum:
+          - MOBILE
+          - BUSINESS
+          - HOME
+      description: Phone
+    UpdateAddressRequest:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/ForUpdate'
+        email:
+          type: string
+          description: Email
+          example: john@test.com
+        phone:
+          $ref: '#/components/schemas/ForUpdate'
+        addressLine1:
+          type: string
+          description: Address line 1
+          example: 123 Park Road
+        addressLine2:
+          type: string
+          description: Address line 2
+        addressLine3:
+          type: string
+          description: Address line 3
+        addressLine4:
+          type: string
+          description: Address line 4
+        city:
+          type: string
+          description: City
+          example: Santa Cruz
+        region:
+          type: string
+          description: State, Province or Area
+          example: California
+        country:
+          type: string
+          description: Country
+          example: USA
+        postalCode:
+          type: string
+          description: Postal code or zip code
+          example: '12345'
+      description: Address
+    Name:
+      type: object
+      properties:
+        first:
+          type: string
+          description: First name
+          example: John
+        middle:
+          type: string
+          description: Middle name
+          example: S
+        last:
+          type: string
+          description: Last name
+          example: Doe
+      description: Name of the recipient of the order.
     Address:
       type: object
       properties:
@@ -488,67 +532,23 @@ components:
           description: The date and time the address was created.
           example: 2024-06-13 16:50:00.682000+00:00
       description: Address
-    ForUpdate:
-      type: object
-      properties:
-        number:
-          type: string
-          description: Phone Number
-          example: 123-456-7890
-        type:
-          type: string
-          description: Phone Number Type
-          example: MOBILE
-          enum:
-          - MOBILE
-          - BUSINESS
-          - HOME
-    ForCreate:
+    CreateAddressRequest:
       required:
-      - number
-      - type
-      type: object
-      properties:
-        number:
-          type: string
-          description: Phone Number
-          example: 123-456-7890
-        type:
-          type: string
-          description: Phone Number Type
-          example: MOBILE
-          enum:
-          - MOBILE
-          - BUSINESS
-          - HOME
-      description: Phone details
-    Phone:
-      type: object
-      properties:
-        number:
-          type: string
-          description: Phone Number
-          example: 123-456-7890
-        type:
-          type: string
-          description: Phone Number Type
-          example: MOBILE
-          enum:
-          - MOBILE
-          - BUSINESS
-          - HOME
-      description: Phone
-    UpdateAddressRequest:
+      - addressLine1
+      - city
+      - country
+      - postalCode
+      - region
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/ForUpdate'
+          $ref: '#/components/schemas/ForCreateName'
         email:
           type: string
           description: Email
           example: john@test.com
         phone:
-          $ref: '#/components/schemas/ForUpdate'
+          $ref: '#/components/schemas/ForCreate'
         addressLine1:
           type: string
           description: Address line 1

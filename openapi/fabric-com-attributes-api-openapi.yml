@@ -428,58 +428,541 @@ paths:
     - url: https://commerceos.aiagents.fabric.inc/api
       description: Production API
 components:
+  parameters:
+    xSiteContent:
+      name: x-site-context
+      in: header
+      description: The `x-site-context` header is a JSON object that contains information about the source you wish to pull from. The mandatory `account` is the 24 character identifier found in Copilot. The `channel` (Sales channel ID), `stage` (environment name), and `date` attributes can be used to further narrow the scope of your data source.
+      required: true
+      schema:
+        type: string
+        example: '{"date": "2023-01-01T00:00:00.000Z", "channel": 12, "account": "1234abcd5678efgh9ijklmno","stage":"production"}'
+    DomainHeader:
+      name: domain
+      in: header
+      required: true
+      schema:
+        type: string
+        example: vessel.com
+      description: The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.
   schemas:
-    BulkAttributeResponse:
+    ImpactedAttributes:
+      type: object
+      properties: {}
+    AttributeValidation:
       type: object
       properties:
-        attributes:
+        required:
+          description: Indicates mandatory attribute
+          type: boolean
+        inheritable:
+          description: 'true: Parent attributes are inherited to children items <br /> false: Parent attributes are not inherited to children items.'
+          type: boolean
+          example: true
+        inverse:
+          description: 'true: Inverts existing validation (example - requires that the validation does not pass) <br /> false: Follows existing validation'
+          type: boolean
+          example: false
+        unique:
+          description: 'true: Value is unique across all items or categories <br /> false: Value is not unique'
+          type: boolean
+        exact:
+          description: Specified value must exactly match this value
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+        attributeTypes:
+          description: Attribute types
+          type: array
+          items:
+            type: string
+            enum:
+            - TEXT
+            - BOOLEAN
+            - SERIAL
+            - DECIMAL
+            - INTEGER
+            - ASSET
+            - DATETIME
+        contains:
+          description: Specified value must contain this string
+          type: string
+        range:
+          description: Specified range of values must be between this min and/or max
           type: object
           properties:
-            success:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    example: 622932439c73c975335cb654
-                    description: A 24-character system-generated attribute ID
-                  name:
-                    type: string
-                    example: name
-                    description: Attribute name
-                  message:
-                    type: string
-                    description: Success message
-                    example: Attribute created successfully
-            failed:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                    example: ITEM_ATTRIBUTE_VALUE_IS_INVALID
-                    description: Failure reason as stored backend
-                  errors:
-                    type: array
-                    items:
-                      type: string
-                      example:
-                      - Attribute value is invalid
-                      - Attribute value not found
-                      description: Human-readable failure reasons
-    ClientError:
+            min:
+              description: Specified value must be greater than or equal to this value
+              oneOf:
+              - type: string
+              - type: number
+            max:
+              description: Specified value must be less than or equal to this value
+              oneOf:
+              - type: string
+              - type: number
+        formula:
+          description: JavaScript expression to determine if the value matches
+          type: string
+          example: value < 10 || value > 20
+        oneOf:
+          description: Match the value if it is one of these.
+          oneOf:
+          - type: array
+            items:
+              type: string
+          - type: array
+            items:
+              type: number
+          - type: array
+            items:
+              type: boolean
+    WorkflowAttributes:
+      type: object
+      properties: {}
+    AttributeGroupSearchResponse:
+      type: object
+      properties:
+        totalSize:
+          description: Total number of records (attribute group)
+          example: 7
+          type: number
+        pageSize:
+          description: Number of records (attribute group) per page
+          example: 10
+          type: number
+        pages:
+          description: Number of pages for the given `pageSize`
+          example: 1
+          type: number
+        attributeGroups:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                description: A 24-character system-generated ID of the attribute group
+                example: 6259ec8d006b0d00092b3189
+                type: string
+              description:
+                description: Accurate description of the attribute and what it represents
+                example: Item weight, in KG
+                type: string
+              type:
+                description: Attribute group type
+                example: COLLECTION
+                type: string
+                enum:
+                - WORKFLOW
+                - COLLECTION
+              name:
+                description: Attribute group name
+                example: weight
+                type: string
+              priorityOrder:
+                description: Priority order of attribute group
+                example: 1
+                type: number
+              createdOn:
+                description: Time of attribute group creation (UTC format)
+                example: '2022-04-15T22:07:09.921Z'
+                type: string
+              modifiedOn:
+                description: Time when attribute group was last modified (UTC format)
+                example: '2022-04-15T22:10:05.427Z'
+                type: string
+              totalAttributes:
+                description: Number of attributes in the attribute group
+                example: 1
+                type: number
+              EditableAttributes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttributeGroupTypeResponse'
+              ReadOnlyAttributes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttributeGroupTypeResponse'
+              WorkflowAttributes:
+                items:
+                  description: Uses same response as AttributeGroupTypeResponse
+                  $ref: '#/components/schemas/WorkflowAttributes'
+              ImpactedAttributes:
+                items:
+                  description: Uses same response as AttributeGroupTypeResponse
+                  $ref: '#/components/schemas/ImpactedAttributes'
+    AttributeGroupRequest:
+      type: object
+      required:
+      - transactional
+      properties:
+        transactional:
+          description: 'true: All updates succeed or fail as a unit <br /> false: Some can succeed or fail'
+          type: boolean
+        attributeGroup:
+          type: array
+          items:
+            type: object
+            properties:
+              action:
+                type: string
+                enum:
+                - CREATE
+                - UPDATE
+                - DELETE
+                example: UPDATE
+                description: Action type. For `CREATE`, 'priorityOrder', 'type', 'name,' and 'editableAttributes' are mandatory. For `UPDATE` and `DELETE`, only `id` is mandatory.
+              type:
+                description: Type of attribute group
+                example: COLLECTION
+                type: string
+                enum:
+                - WORKFLOW
+                - COLLECTION
+              description:
+                description: Accurate description of attribute and what it represents
+                example: Item weight, in KG
+                type: string
+              name:
+                description: Attribute group nam
+                example: weight
+                type: string
+              priorityOrder:
+                description: 'Attribute groups can be assigned a priority order. This is used for  attributes that are under multiple attribute groups. They will be returned just once in the attribute group that has the highest priority. <br /> **Note**: Mandatory attribute for ''CREATE'', must be unique and start from 0 for the first group.'
+                example: 1
+                type: number
+              id:
+                description: A 24-character system-generated attribute group ID. Applicable only for `UPDATE` and `DELETE` actions. To be omitted for 'CREATE'.
+                example: 6259ec8d006b0d00092b3189
+                type: string
+              editableAttributes:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AttributeGroupTypeRequest'
+    AttributeMappingMatch:
+      description: Specification for matching attribute mapping.
+      type: object
+      properties:
+        target:
+          description: Attribute mapping for the specified target
+          type: string
+        mapping:
+          description: Attribute mapping
+          type: string
+        attributeId:
+          description: A 24-character system-generated Attribute ID
+          type: string
+          example: 62e2ae29c3004a000950ad5f
+        name:
+          description: Mapping for an attribute whose name contains the specified value
+          type: string
+        description:
+          description: Mapping for an attribute whose description contains the specified value.
+          type: string
+        required:
+          description: 'true: Returns only the attribute mappings that are mandatory'
+          type: boolean
+          example: true
+    StatusResponse:
       type: object
       properties:
         code:
-          description: Error code for machine consumption
+          description: Status code
           type: string
-          example: 400
-        message:
-          description: Human-readable error description
+        type:
+          description: Status type
           type: string
-          example: Client error
+          enum:
+          - ATTRIBUTE
+          - ATTRIBUTE_VALUE
+          - ITEM
+          - BUNDLE
+          - NODE
+          - HIERARCHY
+        source:
+          description: Status source
+          type: string
+          enum:
+          - PIM
+          - WAM
+        name:
+          description: Status name
+          type: string
+        description:
+          description: Status description
+          type: string
+        createdOn:
+          description: Time of file creation
+          type: string
+          format: date-time
+        createdBy:
+          description: User ID that created the file
+          type: string
+          example: broma0
+        modifiedOn:
+          type: string
+          format: date-time
+          description: Time when file was last modified
+        modifiedBy:
+          type: string
+          example: broma0
+          description: User ID that last modified the file
+    AttributeMappingModify:
+      type: object
+      properties:
+        mappings:
+          type: array
+          items:
+            type: object
+            properties:
+              attributeId:
+                description: Attribute ID
+                type: string
+                example: ATTR1234
+              mapping:
+                description: Attribute mapping
+                type: string
+                example: SKU
+              name:
+                description: Name of the attribute mapping
+                type: string
+              description:
+                description: Description of the attribute mapping
+                type: string
+                example: Item SKU
+              validation:
+                $ref: '#/components/schemas/AttributeValidation'
+              required:
+                description: 'true: Mapping is mandatory <br /> false: Mapping is optional'
+                type: boolean
+    AttributeMappingResponse:
+      type: object
+      properties:
+        attributeId:
+          description: A 24-character system-generated attribute ID
+          type: string
+          example: 62e2ae29c3004a000950ad5f
+        attribute:
+          $ref: '#/components/schemas/AttributeResponse'
+          description: 'Represents the mapped attributes. Only populated when `include.attribute` is true. <br /> **Note**: Not applicable for an attribute mapping  modify request'
+        mapping:
+          description: Attribute mapping
+          type: string
+          example: SKU
+        target:
+          description: Returns attribute mapping for the specified target
+          type: string
+          example: ITEM
+        name:
+          description: Name of attribute mapping
+          type: string
+          example: Item SKU
+        description:
+          description: Description for attribute mapping
+          type: string
+          example: Item SKU
+        required:
+          description: 'true: Mapping is mandatory; <br /> false: mapping is optional'
+          type: boolean
+        validation:
+          $ref: '#/components/schemas/AttributeValidation'
+        createdOn:
+          description: Time of attribute creation (UTC format)
+          type: string
+          format: date-time
+          example: '2021-09-23T17:47:04.231Z'
+        createdBy:
+          description: User ID that created item attribute
+          type: string
+          example: broma0
+        modifiedOn:
+          description: Time of when the attribute was last modified
+          type: string
+          format: date-time
+        modifiedBy:
+          description: User ID that last modified item attribute
+          type: string
+          example: broma0
+    AttributeGroupSearchRequest:
+      type: object
+      properties:
+        page:
+          description: Page number to be retrieved
+          example: 0
+          type: number
+        size:
+          description: Number of records (attribute groups) per page
+          example: 10
+          type: number
+        include:
+          type: object
+          properties:
+            attributes:
+              type: boolean
+              description: 'true: Includes attributes <br /> false: Excludes attributes'
+        match:
+          type: object
+          properties:
+            target:
+              description: Search target. Currently, supports only ITEM.
+              example: ITEM
+              type: string
+            or:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    description: Attribute group name
+                    example: weight
+                    type: string
+        sort:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                description: Field on which the results must be sorted
+                example: priorityOrder
+                type: string
+              direction:
+                description: Direction (ascending or descending) or sorting the response
+                example: DESC
+                type: string
+                enum:
+                - ASC
+                - DESC
+    AttributeMappingPaginationResponse:
+      type: object
+      properties:
+        totalSize:
+          description: Total number of records
+          type: number
+          example: 100
+        pageSize:
+          description: Number of records in a page
+          type: number
+          example: 10
+        pages:
+          description: Total number of pages in the response
+          type: number
+          example: 10
+        mappings:
+          type: array
+          items:
+            $ref: '#/components/schemas/AttributeMappingResponse'
+    AttributeMappingSearch:
+      type: object
+      required:
+      - page
+      - size
+      properties:
+        include:
+          type: object
+          properties:
+            attribute:
+              type: boolean
+              description: 'true: include the `attribute` in the response; <br /> false: exclude `attribute` in the response'
+        sort:
+          $ref: '#/components/schemas/AttributeMappingSort'
+        match:
+          $ref: '#/components/schemas/AttributeMappingMatch'
+        page:
+          description: 'Page number to be retrieved. <br /> **Note**: <br /> 1) Applicable only in a paginated response. <br /> 2) Always paired with `size`'
+          type: number
+          example: 0
+        size:
+          description: 'Number of records per page <br /> **Note**: <br /> 1) Applicable only in a paginated response. <br /> 2) Always paired with `page`'
+          type: number
+          example: 10
+    AttributeGroupTypeRequest:
+      type: object
+      properties:
+        action:
+          description: 'Action type. <br /> **Note**: <br /> 1) Attribute ID is required only for `UPDATE` and `DELETE` actions (not for CREATE). <br /> 2) The Create action replaces any existing category attribute with the same name.'
+          type: string
+          enum:
+          - ADD
+          - UPDATE
+          - DELETE
+          example: UPDATE
+        id:
+          description: A 24-character system-generated ID of item attribute
+          example: 6245f16d11ae770009f19292
+          type: string
+        order:
+          description: Order of item attributes within the attribute group. Relevant for sorting in the UI.
+          example: 0
+          type: number
+    AttributeGroupResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            description: A 24-character system-generated attribute group ID
+            example: 6259ec8d006b0d00092b3189
+            type: string
+          description:
+            description: Accurate description of attribute group and what it represents
+            example: Item weight, in KG
+            type: string
+          type:
+            description: Attribute group type
+            example: COLLECTION
+            type: string
+            enum:
+            - WORKFLOW
+            - COLLECTION
+          name:
+            description: Attribute group name
+            example: weight
+            type: string
+          priorityOrder:
+            description: Order of priority of the attribute group
+            example: 1
+            type: number
+          createdOn:
+            description: Time of attribute group creation (UTC format).
+            example: '2022-04-15T22:07:09.921Z'
+            type: string
+          modifiedOn:
+            description: Time when attribute group was last modified (UTC format).
+            example: '2022-04-15T22:10:05.427Z'
+            type: string
+          attributes:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  description: A 24-character system-generated attribute ID
+                  example: 6259ec8defc2116dd6c0f3fc
+                  type: string
+                attributeGroupId:
+                  description: A 24-character system-generated attribute group ID of items
+                  example: 6259ec8d006b0d00092b3189
+                  type: string
+                attributeId:
+                  description: A 24-character system-generated attribute ID. This is same as the `_id`.
+                  example: 6245f16d11ae770009f19292
+                  type: string
+                isEditable:
+                  type: boolean
+                  description: 'true: Attribute is editable <br /> false: Attribute is non-editable'
+                createdOn:
+                  description: Time of attribute creation (UTC format)
+                  example: '2022-04-15T22:07:09.932Z'
+                  type: string
+                modifiedOn:
+                  description: Time of when attribute was last modified (UTC format).
+                  example: '2022-04-15T22:10:05.444Z'
+                  type: string
+                order:
+                  description: Order of item within the attribute group
+                  example: 0
+                  type: number
     BulkProductAttributeRequest:
       type: array
       items:
@@ -644,145 +1127,17 @@ components:
                 - type: array
                   items:
                     type: boolean
-    FileResponse:
+    ClientError:
       type: object
       properties:
-        type:
-          description: Status type
+        code:
+          description: Error code for machine consumption
           type: string
-          enum:
-          - IMPORT
-          - EXPORT
-        name:
-          description: File name
+          example: 400
+        message:
+          description: Human-readable error description
           type: string
-        statuses:
-          description: Current status of the file
-          type: array
-          items:
-            $ref: '#/components/schemas/StatusResponse'
-        progress:
-          description: Import progress in percentage
-          type: number
-          example: 100
-        createdOn:
-          description: Time of file creation
-          type: string
-          format: date-time
-        createdBy:
-          description: User ID that created the file
-          type: string
-          example: broma0
-        modifiedOn:
-          description: Time when file was last modified
-          type: string
-          format: date-time
-        modifiedBy:
-          type: string
-          example: broma0
-          description: User ID that last modified the file
-        secondsTakenToImport:
-          description: Time taken to import the file (doesn't include the whole time for the full bulk import process).
-          type: number
-        secondsTakenToProcess:
-          description: Time taken to process the file after the file was read
-          type: number
-    AttributeMappingModify:
-      type: object
-      properties:
-        mappings:
-          type: array
-          items:
-            type: object
-            properties:
-              attributeId:
-                description: Attribute ID
-                type: string
-                example: ATTR1234
-              mapping:
-                description: Attribute mapping
-                type: string
-                example: SKU
-              name:
-                description: Name of the attribute mapping
-                type: string
-              description:
-                description: Description of the attribute mapping
-                type: string
-                example: Item SKU
-              validation:
-                $ref: '#/components/schemas/AttributeValidation'
-              required:
-                description: 'true: Mapping is mandatory <br /> false: Mapping is optional'
-                type: boolean
-    AttributeGroupResponse:
-      type: array
-      items:
-        type: object
-        properties:
-          _id:
-            description: A 24-character system-generated attribute group ID
-            example: 6259ec8d006b0d00092b3189
-            type: string
-          description:
-            description: Accurate description of attribute group and what it represents
-            example: Item weight, in KG
-            type: string
-          type:
-            description: Attribute group type
-            example: COLLECTION
-            type: string
-            enum:
-            - WORKFLOW
-            - COLLECTION
-          name:
-            description: Attribute group name
-            example: weight
-            type: string
-          priorityOrder:
-            description: Order of priority of the attribute group
-            example: 1
-            type: number
-          createdOn:
-            description: Time of attribute group creation (UTC format).
-            example: '2022-04-15T22:07:09.921Z'
-            type: string
-          modifiedOn:
-            description: Time when attribute group was last modified (UTC format).
-            example: '2022-04-15T22:10:05.427Z'
-            type: string
-          attributes:
-            type: array
-            items:
-              type: object
-              properties:
-                _id:
-                  description: A 24-character system-generated attribute ID
-                  example: 6259ec8defc2116dd6c0f3fc
-                  type: string
-                attributeGroupId:
-                  description: A 24-character system-generated attribute group ID of items
-                  example: 6259ec8d006b0d00092b3189
-                  type: string
-                attributeId:
-                  description: A 24-character system-generated attribute ID. This is same as the `_id`.
-                  example: 6245f16d11ae770009f19292
-                  type: string
-                isEditable:
-                  type: boolean
-                  description: 'true: Attribute is editable <br /> false: Attribute is non-editable'
-                createdOn:
-                  description: Time of attribute creation (UTC format)
-                  example: '2022-04-15T22:07:09.932Z'
-                  type: string
-                modifiedOn:
-                  description: Time of when attribute was last modified (UTC format).
-                  example: '2022-04-15T22:10:05.444Z'
-                  type: string
-                order:
-                  description: Order of item within the attribute group
-                  example: 0
-                  type: number
+          example: Client error
     AttributeGroupTypeResponse:
       type: object
       properties:
@@ -862,50 +1217,46 @@ components:
                 description: Time when the attribute was last modified (UTC format)
                 example: '2022-04-15T22:10:05.444Z'
                 type: string
-    AttributeMappingMatch:
-      description: Specification for matching attribute mapping.
+    BulkAttributeResponse:
       type: object
       properties:
-        target:
-          description: Attribute mapping for the specified target
-          type: string
-        mapping:
-          description: Attribute mapping
-          type: string
-        attributeId:
-          description: A 24-character system-generated Attribute ID
-          type: string
-          example: 62e2ae29c3004a000950ad5f
-        name:
-          description: Mapping for an attribute whose name contains the specified value
-          type: string
-        description:
-          description: Mapping for an attribute whose description contains the specified value.
-          type: string
-        required:
-          description: 'true: Returns only the attribute mappings that are mandatory'
-          type: boolean
-          example: true
-    AttributeMappingSort:
-      description: Sorting preference
-      type: array
-      items:
-        type: object
-        description: Individual fields to sort
-        properties:
-          field:
-            type: string
-            enum:
-            - createdOn
-            - updatedOn
-            - mapping
-            description: The field to sort must be specified. Sorting is based on the attribute's *raw* value.
-          direction:
-            type: string
-            enum:
-            - ASC
-            - DESC
-            description: Sorting direction
+        attributes:
+          type: object
+          properties:
+            success:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 622932439c73c975335cb654
+                    description: A 24-character system-generated attribute ID
+                  name:
+                    type: string
+                    example: name
+                    description: Attribute name
+                  message:
+                    type: string
+                    description: Success message
+                    example: Attribute created successfully
+            failed:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: ITEM_ATTRIBUTE_VALUE_IS_INVALID
+                    description: Failure reason as stored backend
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example:
+                      - Attribute value is invalid
+                      - Attribute value not found
+                      description: Human-readable failure reasons
     AttributeResponse:
       type: object
       properties:
@@ -994,6 +1345,49 @@ components:
           description: User ID that last modified the attribute
           type: string
           example: broma0
+    FileResponse:
+      type: object
+      properties:
+        type:
+          description: Status type
+          type: string
+          enum:
+          - IMPORT
+          - EXPORT
+        name:
+          description: File name
+          type: string
+        statuses:
+          description: Current status of the file
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusResponse'
+        progress:
+          description: Import progress in percentage
+          type: number
+          example: 100
+        createdOn:
+          description: Time of file creation
+          type: string
+          format: date-time
+        createdBy:
+          description: User ID that created the file
+          type: string
+          example: broma0
+        modifiedOn:
+          description: Time when file was last modified
+          type: string
+          format: date-time
+        modifiedBy:
+          type: string
+          example: broma0
+          description: User ID that last modified the file
+        secondsTakenToImport:
+          description: Time taken to import the file (doesn't include the whole time for the full bulk import process).
+          type: number
+        secondsTakenToProcess:
+          description: Time taken to process the file after the file was read
+          type: number
     ServerError:
       type: object
       properties:
@@ -1005,210 +1399,26 @@ components:
           description: Human-readable error description
           type: string
           example: An internal error occurred. If the issue persists please contact support@fabric.inc.
-    AttributeGroupRequest:
-      type: object
-      required:
-      - transactional
-      properties:
-        transactional:
-          description: 'true: All updates succeed or fail as a unit <br /> false: Some can succeed or fail'
-          type: boolean
-        attributeGroup:
-          type: array
-          items:
-            type: object
-            properties:
-              action:
-                type: string
-                enum:
-                - CREATE
-                - UPDATE
-                - DELETE
-                example: UPDATE
-                description: Action type. For `CREATE`, 'priorityOrder', 'type', 'name,' and 'editableAttributes' are mandatory. For `UPDATE` and `DELETE`, only `id` is mandatory.
-              type:
-                description: Type of attribute group
-                example: COLLECTION
-                type: string
-                enum:
-                - WORKFLOW
-                - COLLECTION
-              description:
-                description: Accurate description of attribute and what it represents
-                example: Item weight, in KG
-                type: string
-              name:
-                description: Attribute group nam
-                example: weight
-                type: string
-              priorityOrder:
-                description: 'Attribute groups can be assigned a priority order. This is used for  attributes that are under multiple attribute groups. They will be returned just once in the attribute group that has the highest priority. <br /> **Note**: Mandatory attribute for ''CREATE'', must be unique and start from 0 for the first group.'
-                example: 1
-                type: number
-              id:
-                description: A 24-character system-generated attribute group ID. Applicable only for `UPDATE` and `DELETE` actions. To be omitted for 'CREATE'.
-                example: 6259ec8d006b0d00092b3189
-                type: string
-              editableAttributes:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AttributeGroupTypeRequest'
-    AttributeMappingSearch:
-      type: object
-      required:
-      - page
-      - size
-      properties:
-        include:
-          type: object
-          properties:
-            attribute:
-              type: boolean
-              description: 'true: include the `attribute` in the response; <br /> false: exclude `attribute` in the response'
-        sort:
-          $ref: '#/components/schemas/AttributeMappingSort'
-        match:
-          $ref: '#/components/schemas/AttributeMappingMatch'
-        page:
-          description: 'Page number to be retrieved. <br /> **Note**: <br /> 1) Applicable only in a paginated response. <br /> 2) Always paired with `size`'
-          type: number
-          example: 0
-        size:
-          description: 'Number of records per page <br /> **Note**: <br /> 1) Applicable only in a paginated response. <br /> 2) Always paired with `page`'
-          type: number
-          example: 10
-    StatusResponse:
-      type: object
-      properties:
-        code:
-          description: Status code
-          type: string
-        type:
-          description: Status type
-          type: string
-          enum:
-          - ATTRIBUTE
-          - ATTRIBUTE_VALUE
-          - ITEM
-          - BUNDLE
-          - NODE
-          - HIERARCHY
-        source:
-          description: Status source
-          type: string
-          enum:
-          - PIM
-          - WAM
-        name:
-          description: Status name
-          type: string
-        description:
-          description: Status description
-          type: string
-        createdOn:
-          description: Time of file creation
-          type: string
-          format: date-time
-        createdBy:
-          description: User ID that created the file
-          type: string
-          example: broma0
-        modifiedOn:
-          type: string
-          format: date-time
-          description: Time when file was last modified
-        modifiedBy:
-          type: string
-          example: broma0
-          description: User ID that last modified the file
-    AttributeGroupTypeRequest:
-      type: object
-      properties:
-        action:
-          description: 'Action type. <br /> **Note**: <br /> 1) Attribute ID is required only for `UPDATE` and `DELETE` actions (not for CREATE). <br /> 2) The Create action replaces any existing category attribute with the same name.'
-          type: string
-          enum:
-          - ADD
-          - UPDATE
-          - DELETE
-          example: UPDATE
-        id:
-          description: A 24-character system-generated ID of item attribute
-          example: 6245f16d11ae770009f19292
-          type: string
-        order:
-          description: Order of item attributes within the attribute group. Relevant for sorting in the UI.
-          example: 0
-          type: number
-    AttributeValidation:
-      type: object
-      properties:
-        required:
-          description: Indicates mandatory attribute
-          type: boolean
-        inheritable:
-          description: 'true: Parent attributes are inherited to children items <br /> false: Parent attributes are not inherited to children items.'
-          type: boolean
-          example: true
-        inverse:
-          description: 'true: Inverts existing validation (example - requires that the validation does not pass) <br /> false: Follows existing validation'
-          type: boolean
-          example: false
-        unique:
-          description: 'true: Value is unique across all items or categories <br /> false: Value is not unique'
-          type: boolean
-        exact:
-          description: Specified value must exactly match this value
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-        attributeTypes:
-          description: Attribute types
-          type: array
-          items:
+    AttributeMappingSort:
+      description: Sorting preference
+      type: array
+      items:
+        type: object
+        description: Individual fields to sort
+        properties:
+          field:
             type: string
             enum:
-            - TEXT
-            - BOOLEAN
-            - SERIAL
-            - DECIMAL
-            - INTEGER
-            - ASSET
-            - DATETIME
-        contains:
-          description: Specified value must contain this string
-          type: string
-        range:
-          description: Specified range of values must be between this min and/or max
-          type: object
-          properties:
-            min:
-              description: Specified value must be greater than or equal to this value
-              oneOf:
-              - type: string
-              - type: number
-            max:
-              description: Specified value must be less than or equal to this value
-              oneOf:
-              - type: string
-              - type: number
-        formula:
-          description: JavaScript expression to determine if the value matches
-          type: string
-          example: value < 10 || value > 20
-        oneOf:
-          description: Match the value if it is one of these.
-          oneOf:
-          - type: array
-            items:
-              type: string
-          - type: array
-            items:
-              type: number
-          - type: array
-            items:
-              type: boolean
+            - createdOn
+            - updatedOn
+            - mapping
+            description: The field to sort must be specified. Sorting is based on the attribute's *raw* value.
+          direction:
+            type: string
+            enum:
+            - ASC
+            - DESC
+            description: Sorting direction
     BulkAttributeRequest:
       type: array
       items:
@@ -1351,199 +1561,81 @@ components:
                 - type: array
                   items:
                     type: boolean
-    AttributeGroupSearchRequest:
+    AttributeImportStatusResponse:
       type: object
+      required:
+      - import_id
+      - status
+      - total_rows
+      - processed_rows
+      - created_at
       properties:
-        page:
-          description: Page number to be retrieved
-          example: 0
-          type: number
-        size:
-          description: Number of records (attribute groups) per page
-          example: 10
-          type: number
-        include:
-          type: object
-          properties:
-            attributes:
-              type: boolean
-              description: 'true: Includes attributes <br /> false: Excludes attributes'
-        match:
-          type: object
-          properties:
-            target:
-              description: Search target. Currently, supports only ITEM.
-              example: ITEM
-              type: string
-            or:
-              type: array
-              items:
-                type: object
-                properties:
-                  name:
-                    description: Attribute group name
-                    example: weight
-                    type: string
-        sort:
-          type: array
-          items:
-            type: object
-            properties:
-              field:
-                description: Field on which the results must be sorted
-                example: priorityOrder
-                type: string
-              direction:
-                description: Direction (ascending or descending) or sorting the response
-                example: DESC
-                type: string
-                enum:
-                - ASC
-                - DESC
-    AttributeGroupSearchResponse:
-      type: object
-      properties:
-        totalSize:
-          description: Total number of records (attribute group)
-          example: 7
-          type: number
-        pageSize:
-          description: Number of records (attribute group) per page
-          example: 10
-          type: number
-        pages:
-          description: Number of pages for the given `pageSize`
-          example: 1
-          type: number
-        attributeGroups:
-          type: array
-          items:
-            type: object
-            properties:
-              _id:
-                description: A 24-character system-generated ID of the attribute group
-                example: 6259ec8d006b0d00092b3189
-                type: string
-              description:
-                description: Accurate description of the attribute and what it represents
-                example: Item weight, in KG
-                type: string
-              type:
-                description: Attribute group type
-                example: COLLECTION
-                type: string
-                enum:
-                - WORKFLOW
-                - COLLECTION
-              name:
-                description: Attribute group name
-                example: weight
-                type: string
-              priorityOrder:
-                description: Priority order of attribute group
-                example: 1
-                type: number
-              createdOn:
-                description: Time of attribute group creation (UTC format)
-                example: '2022-04-15T22:07:09.921Z'
-                type: string
-              modifiedOn:
-                description: Time when attribute group was last modified (UTC format)
-                example: '2022-04-15T22:10:05.427Z'
-                type: string
-              totalAttributes:
-                description: Number of attributes in the attribute group
-                example: 1
-                type: number
-              EditableAttributes:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AttributeGroupTypeResponse'
-              ReadOnlyAttributes:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AttributeGroupTypeResponse'
-              WorkflowAttributes:
-                items:
-                  description: Uses same response as AttributeGroupTypeResponse
-                  $ref: '#/components/schemas/WorkflowAttributes'
-              ImpactedAttributes:
-                items:
-                  description: Uses same response as AttributeGroupTypeResponse
-                  $ref: '#/components/schemas/ImpactedAttributes'
-    ImpactedAttributes:
-      type: object
-      properties: {}
-    WorkflowAttributes:
-      type: object
-      properties: {}
-    AttributeMappingResponse:
-      type: object
-      properties:
-        attributeId:
-          description: A 24-character system-generated attribute ID
+        import_id:
           type: string
-          example: 62e2ae29c3004a000950ad5f
-        attribute:
-          $ref: '#/components/schemas/AttributeResponse'
-          description: 'Represents the mapped attributes. Only populated when `include.attribute` is true. <br /> **Note**: Not applicable for an attribute mapping  modify request'
-        mapping:
-          description: Attribute mapping
-          type: string
-          example: SKU
-        target:
-          description: Returns attribute mapping for the specified target
-          type: string
-          example: ITEM
+          format: uuid
         name:
-          description: Name of attribute mapping
           type: string
-          example: Item SKU
-        description:
-          description: Description for attribute mapping
+          example: attribute_test.csv
+        status:
           type: string
-          example: Item SKU
-        required:
-          description: 'true: Mapping is mandatory; <br /> false: mapping is optional'
-          type: boolean
-        validation:
-          $ref: '#/components/schemas/AttributeValidation'
-        createdOn:
-          description: Time of attribute creation (UTC format)
+          example: COMPLETED
+        total_rows:
+          type: integer
+          example: 36
+        processed_rows:
+          type: integer
+          example: 36
+        created_count:
+          type: integer
+          example: 35
+        updated_count:
+          type: integer
+          example: 0
+        skipped_count:
+          type: integer
+          example: 0
+        failed_count:
+          type: integer
+          example: 1
+        input_filename:
           type: string
-          format: date-time
-          example: '2021-09-23T17:47:04.231Z'
-        createdBy:
-          description: User ID that created item attribute
-          type: string
-          example: broma0
-        modifiedOn:
-          description: Time of when the attribute was last modified
-          type: string
-          format: date-time
-        modifiedBy:
-          description: User ID that last modified item attribute
-          type: string
-          example: broma0
-    AttributeMappingPaginationResponse:
-      type: object
-      properties:
-        totalSize:
-          description: Total number of records
-          type: number
-          example: 100
-        pageSize:
-          description: Number of records in a page
-          type: number
-          example: 10
-        pages:
-          description: Total number of pages in the response
-          type: number
-          example: 10
-        mappings:
+          example: attribute_test.csv
+        input_file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://example.com/input.csv
+        error_file_url:
+          type:
+          - string
+          - 'null'
+          format: uri
+          example: https://example.com/errors.csv
+        error_message:
+          type:
+          - string
+          - 'null'
+          example: null
+        errors:
           type: array
           items:
-            $ref: '#/components/schemas/AttributeMappingResponse'
+            type: string
+          example:
+          - 'Row 35: invalid data_type ''BOOLREAN'''
+        started_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        completed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
     errorResponse:
       description: Error response
       properties:
@@ -1648,98 +1740,6 @@ components:
           type: string
           format: date-time
           example: '2026-03-12T18:04:03.879876Z'
-    AttributeImportStatusResponse:
-      type: object
-      required:
-      - import_id
-      - status
-      - total_rows
-      - processed_rows
-      - created_at
-      properties:
-        import_id:
-          type: string
-          format: uuid
-        name:
-          type: string
-          example: attribute_test.csv
-        status:
-          type: string
-          example: COMPLETED
-        total_rows:
-          type: integer
-          example: 36
-        processed_rows:
-          type: integer
-          example: 36
-        created_count:
-          type: integer
-          example: 35
-        updated_count:
-          type: integer
-          example: 0
-        skipped_count:
-          type: integer
-          example: 0
-        failed_count:
-          type: integer
-          example: 1
-        input_filename:
-          type: string
-          example: attribute_test.csv
-        input_file_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://example.com/input.csv
-        error_file_url:
-          type:
-          - string
-          - 'null'
-          format: uri
-          example: https://example.com/errors.csv
-        error_message:
-          type:
-          - string
-          - 'null'
-          example: null
-        errors:
-          type: array
-          items:
-            type: string
-          example:
-          - 'Row 35: invalid data_type ''BOOLREAN'''
-        started_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        completed_at:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-  parameters:
-    xSiteContent:
-      name: x-site-context
-      in: header
-      description: The `x-site-context` header is a JSON object that contains information about the source you wish to pull from. The mandatory `account` is the 24 character identifier found in Copilot. The `channel` (Sales channel ID), `stage` (environment name), and `date` attributes can be used to further narrow the scope of your data source.
-      required: true
-      schema:
-        type: string
-        example: '{"date": "2023-01-01T00:00:00.000Z", "channel": 12, "account": "1234abcd5678efgh9ijklmno","stage":"production"}'
-    DomainHeader:
-      name: domain
-      in: header
-      required: true
-      schema:
-        type: string
-        example: vessel.com
-      description: The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.
   securitySchemes:
     api_key:
       type: apiKey

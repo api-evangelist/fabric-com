@@ -408,6 +408,102 @@ paths:
       - Inventory Import Configs
 components:
   schemas:
+    valuesSearchFilterForRules:
+      allOf:
+      - properties:
+          values:
+            items:
+              description: Multiple values for `field` using which locations are searched
+              example: ORDER_CREATE
+              oneOf:
+              - description: Target record's non-numeric identifier
+                example: ORDER_CREATE
+                type: string
+              - description: Target record's numeric identifier
+                example: 112233
+                format: int64
+                type: number
+              - description: Target record's numeric identifier
+                example: 1122.33
+                format: double
+                type: number
+              type: object
+            maxItems: 25
+            minItems: 1
+            type: array
+        type: object
+      description: Criteria to find locations using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    pagination:
+      description: Pagination response
+      properties:
+        count:
+          description: Total number of search results
+          example: 1000
+          format: int32
+          type: integer
+        limit:
+          default: 10
+          description: Maximum number of records per page
+          example: 10
+          format: int32
+          maximum: 100
+          minimum: 1
+          type: integer
+        offset:
+          default: 0
+          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
+          example: 1
+          format: int32
+          minimum: 0
+          type: integer
+      type: object
+    valueSearchFilterForRules:
+      allOf:
+      - properties:
+          value:
+            description: A single value for `field` using which data is searched
+            example: ORDER_CREATE
+            oneOf:
+            - description: Target record's non-numeric identifier
+              example: ORDER_CREATE
+              type: string
+            - description: Target record's numeric identifier
+              example: 112233
+              format: int64
+              type: number
+            - description: Target record's numeric identifier
+              example: 1122.33
+              format: double
+              type: number
+            type: object
+        type: object
+      description: Criteria to find location using a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
+      required:
+      - condition
+      - field
+      type: object
+    inventoryImportFileConfigSearchResponse:
+      description: An object containing the inventory import file configuration search response details.
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/inventoryImportFileConfigResponse'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    apiResponse:
+      description: Response message
+      properties:
+        message:
+          description: Response message
+          example: OK
+          type: string
+      type: object
     inventoryImportFileConfigResponse:
       description: BulkUploadFileConfigResponse info
       properties:
@@ -429,14 +525,6 @@ components:
       - filePrefix
       - groupName
       - rules
-      type: object
-    apiResponse:
-      description: Response message
-      properties:
-        message:
-          description: Response message
-          example: OK
-          type: string
       type: object
     rulesLocationFilter:
       description: Criteria to search locations. To search using a single value, `valueSearchFilter` is used. To search using multiple values, `valuesSearchFilter` is used.
@@ -500,52 +588,6 @@ components:
       required:
       - locationFilters
       type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    valuesSearchFilterForRules:
-      allOf:
-      - properties:
-          values:
-            items:
-              description: Multiple values for `field` using which locations are searched
-              example: ORDER_CREATE
-              oneOf:
-              - description: Target record's non-numeric identifier
-                example: ORDER_CREATE
-                type: string
-              - description: Target record's numeric identifier
-                example: 112233
-                format: int64
-                type: number
-              - description: Target record's numeric identifier
-                example: 1122.33
-                format: double
-                type: number
-              type: object
-            maxItems: 25
-            minItems: 1
-            type: array
-        type: object
-      description: Criteria to find locations using multiple values. Condition between `field` and `values` is either IN or NIN when `valuesSearchFilter` is used.
-      required:
-      - condition
-      - field
-      type: object
     inventoryImportFileConfigRequest:
       description: InventoryImportFileConfigRequest info
       properties:
@@ -568,66 +610,40 @@ components:
       - groupName
       - rules
       type: object
-    pagination:
-      description: Pagination response
+    errorResponse:
+      description: Error response
       properties:
-        count:
-          description: Total number of search results
-          example: 1000
-          format: int32
-          type: integer
-        limit:
-          default: 10
-          description: Maximum number of records per page
-          example: 10
-          format: int32
-          maximum: 100
-          minimum: 1
-          type: integer
-        offset:
-          default: 0
-          description: Number of records to skip before returning all records. For example, `offset=20, limit=10` returns records 21-30.
-          example: 1
-          format: int32
-          minimum: 0
-          type: integer
-      type: object
-    valueSearchFilterForRules:
-      allOf:
-      - properties:
-          value:
-            description: A single value for `field` using which data is searched
-            example: ORDER_CREATE
-            oneOf:
-            - description: Target record's non-numeric identifier
-              example: ORDER_CREATE
-              type: string
-            - description: Target record's numeric identifier
-              example: 112233
-              format: int64
-              type: number
-            - description: Target record's numeric identifier
-              example: 1122.33
-              format: double
-              type: number
-            type: object
-        type: object
-      description: Criteria to find location using a single value. Condition between `field` and `value` is anything except IN and NIN when `valueSearchFilter` is used.
-      required:
-      - condition
-      - field
-      type: object
-    inventoryImportFileConfigSearchResponse:
-      description: An object containing the inventory import file configuration search response details.
-      properties:
-        data:
+        errors:
+          description: Errors
           items:
-            $ref: '#/components/schemas/inventoryImportFileConfigResponse'
+            $ref: '#/components/schemas/errorResponse'
           type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
       type: object
   parameters:
+    xFabricChannelIdOptional:
+      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: false
+      schema:
+        type: string
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
     xFabricTenantId:
       description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
       example: 5f328bf0b5f328bf0b5f328b
@@ -641,22 +657,6 @@ components:
       example: 263e731c-45c8-11ed-b878-0242ac120002
       in: header
       name: x-fabric-request-id
-      required: false
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
-      schema:
-        type: string
-    xFabricChannelIdOptional:
-      description: x-fabric-channel-id identifies the sales channel through which the API request is being made; primarily for multichannel use cases. It is an optional field. The default US channel is 12 while the default Canada channel is 13.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
       required: false
       schema:
         type: string

@@ -270,133 +270,62 @@ paths:
         '500':
           $ref: '#/components/responses/internalServerError'
 components:
-  responses:
-    forbidden:
-      description: Forbidden Request
-      headers:
-        x-fabric-request-id:
-          description: Unique request ID
-          schema:
-            type: string
-            example: 263e731c-45c8-11ed-b878-0242ac120002
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          example:
-            type: REQUEST_DENIED
-            message: Forbidden
-    customerNotFound:
-      description: The resource isn't found
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          example:
-            type: CUSTOMER_NOT_FOUND
-            message: Data with the given identifier isn't found
-    internalServerError:
-      description: The request is received but an internal error occurred
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          example:
-            type: INTERNAL_SERVER_ERROR
-            message: Internal server error
-    badRequest:
-      description: Bad request
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          examples:
-            invalidAccountProvided:
-              value:
-                type: INVALID_ACCOUNT_PROVIDED
-                message: Invalid account provided for the request.
-    customerAddressNotFound:
-      description: The specified resource isn't found
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          examples:
-            CustomerNotFound:
-              value:
-                type: CUSTOMER_NOT_FOUND
-                message: Data with the given identifier isn't found.
-            CustomerAddressNotFound:
-              value:
-                type: CUSTOMER_ADDRESS_NOT_FOUND
-                message: Data with the given identifier isn't found.
-    deleteCustomerAddressResponse:
-      description: Delete customer address response
-      headers:
-        x-fabric-request-id:
-          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/message'
-          examples:
-            customerAddressDeletionSuccess:
-              value:
-                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
-                message: Customer address deleted successfully
-            customerAddressDeletedAlready:
-              value:
-                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
-                message: Customer address already deleted
-  parameters:
-    xFabricTenantId:
-      name: x-fabric-tenant-id
-      in: header
-      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
-      schema:
-        type: string
-        example: 517fa9dfd42d8b00g1o3k312
-    addressIdPathParam:
-      in: path
-      name: addressId
-      description: A 24-character system-generated ID of the customer's address.
-      required: true
-      style: simple
-      schema:
-        type: string
-        example: 61a558b1b155125f02be7fb2
-    xFabricRequestId:
-      name: x-fabric-request-id
-      in: header
-      description: A UUID of the request.
-      schema:
-        type: string
-      example: 263e731c-45c8-11ed-b878-0242ac120002
-      required: false
   schemas:
-    listCustomerAddressResponse:
-      description: The list of customer addresses for the customerId.
+    updateCommonNameRequest:
+      type: object
+      description: The customer's full name.
+      properties:
+        title:
+          description: The customer's title, such as Mr., Mrs, Dr, and more.
+          type: string
+          example: Dr.
+        firstName:
+          description: The customer's first name.
+          type: string
+          example: Pat
+        middleName:
+          description: The customer's middle name or initial.
+          type: string
+          example: E
+        lastName:
+          description: The customer's last name.
+          type: string
+          example: Kake
+        suffix:
+          description: The suffix for the customer's name, such as Jr., PhD, and more.
+          type: string
+          example: Jr.
+    customerAddressRequest:
+      required:
+      - address
       type: object
       properties:
-        query:
-          $ref: '#/components/schemas/Query'
-        data:
-          description: addresses of the sent customer
-          type: array
-          items:
-            $ref: '#/components/schemas/customerAddressResponse'
+        address:
+          $ref: '#/components/schemas/commonAddress'
+        isDefault:
+          description: A flag indicating whether the address is the default one. `true` indicates the address is the default address and `false` indicates otherwise.
+          type: boolean
+          example: false
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            landmark: Beach
+    message:
+      description: The response message.
+      type: object
+      properties:
+        type:
+          description: A machine-readable code.
+          type: string
+          example: SUCCESS
+        message:
+          description: A human-friendly message corresponding to the `type`.
+          type: string
+          example: Success message
+      required:
+      - type
+      - message
     updateCustomerSelfRequest:
       type: object
       required:
@@ -433,113 +362,6 @@ components:
           type: number
           description: The total number of records in the response.
           example: 100
-    message:
-      description: The response message.
-      type: object
-      properties:
-        type:
-          description: A machine-readable code.
-          type: string
-          example: SUCCESS
-        message:
-          description: A human-friendly message corresponding to the `type`.
-          type: string
-          example: Success message
-      required:
-      - type
-      - message
-    commonName:
-      type: object
-      description: The full name of the customer.
-      required:
-      - firstName
-      - lastName
-      properties:
-        title:
-          description: The customer's title, such as Mr., Mrs, and Dr.
-          type: string
-          example: Dr.
-        firstName:
-          description: The customer's first name.
-          type: string
-          example: Pat
-        middleName:
-          description: The customer's middle name.
-          type: string
-          example: E
-        lastName:
-          description: The customer's last name.
-          type: string
-          example: Doe
-        suffix:
-          description: The suffix for the customer's name, such as Jr., PhD, and more.
-          type: string
-          example: Jr.
-    customerAddressResponse:
-      required:
-      - id
-      - address
-      - isDeleted
-      - createdAt
-      - updatedAt
-      type: object
-      properties:
-        id:
-          type: string
-          description: A 24-character system-generated ID of the address.
-          example: 61604a30fdfacd0009816e44
-          uniqueItems: true
-        address:
-          $ref: '#/components/schemas/commonAddress'
-        additionalAttributes:
-          description: A placeholder for additional info, in key-value pairs.
-          type: object
-          example:
-            landmark: Beach
-        isDeleted:
-          type: boolean
-          description: A flag indicating whether the address is deleted. `true` indicates the address is deleted and `false` indicates otherwise.
-          example: false
-        isDefault:
-          description: A flag indicating whether the address is the default one.`true` indicates the given address is the default address and `false` indicates otherwise.
-          type: boolean
-          example: false
-        deletedAt:
-          description: The time when the address was deleted, in UTC format.
-          type:
-          - string
-          - 'null'
-          format: date-time
-          example: '2023-08-30T23:20:42.822Z'
-        createdAt:
-          description: The time when the address was created, in UTC format.
-          type: string
-          format: date-time
-          example: '2023-08-30T23:20:42.822Z'
-        updatedAt:
-          description: The time when the address was the last updated, in UTC format.
-          type:
-          - string
-          - 'null'
-          format: date-time
-          example: '2023-08-30T23:20:42.822Z'
-    phone:
-      type: object
-      properties:
-        number:
-          type: string
-          description: The customer's phone number.
-          example: 15555551234
-        type:
-          type:
-          - string
-          - 'null'
-          description: The type of phone number.
-          example: MOBILE
-          enum:
-          - MOBILE
-          - HOME
-          - BUSINESS
     commonAddress:
       type: object
       description: The address details.
@@ -599,12 +421,15 @@ components:
           type: number
           format: double
           example: -122.3493
-    updateCommonNameRequest:
+    commonName:
       type: object
-      description: The customer's full name.
+      description: The full name of the customer.
+      required:
+      - firstName
+      - lastName
       properties:
         title:
-          description: The customer's title, such as Mr., Mrs, Dr, and more.
+          description: The customer's title, such as Mr., Mrs, and Dr.
           type: string
           example: Dr.
         firstName:
@@ -612,17 +437,76 @@ components:
           type: string
           example: Pat
         middleName:
-          description: The customer's middle name or initial.
+          description: The customer's middle name.
           type: string
           example: E
         lastName:
           description: The customer's last name.
           type: string
-          example: Kake
+          example: Doe
         suffix:
           description: The suffix for the customer's name, such as Jr., PhD, and more.
           type: string
           example: Jr.
+    listCustomerAddressResponse:
+      description: The list of customer addresses for the customerId.
+      type: object
+      properties:
+        query:
+          $ref: '#/components/schemas/Query'
+        data:
+          description: addresses of the sent customer
+          type: array
+          items:
+            $ref: '#/components/schemas/customerAddressResponse'
+    customerAddressResponse:
+      required:
+      - id
+      - address
+      - isDeleted
+      - createdAt
+      - updatedAt
+      type: object
+      properties:
+        id:
+          type: string
+          description: A 24-character system-generated ID of the address.
+          example: 61604a30fdfacd0009816e44
+          uniqueItems: true
+        address:
+          $ref: '#/components/schemas/commonAddress'
+        additionalAttributes:
+          description: A placeholder for additional info, in key-value pairs.
+          type: object
+          example:
+            landmark: Beach
+        isDeleted:
+          type: boolean
+          description: A flag indicating whether the address is deleted. `true` indicates the address is deleted and `false` indicates otherwise.
+          example: false
+        isDefault:
+          description: A flag indicating whether the address is the default one.`true` indicates the given address is the default address and `false` indicates otherwise.
+          type: boolean
+          example: false
+        deletedAt:
+          description: The time when the address was deleted, in UTC format.
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+        createdAt:
+          description: The time when the address was created, in UTC format.
+          type: string
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
+        updatedAt:
+          description: The time when the address was the last updated, in UTC format.
+          type:
+          - string
+          - 'null'
+          format: date-time
+          example: '2023-08-30T23:20:42.822Z'
     customer:
       required:
       - id
@@ -692,22 +576,138 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/customerAddressResponse'
-    customerAddressRequest:
-      required:
-      - address
+    phone:
       type: object
       properties:
-        address:
-          $ref: '#/components/schemas/commonAddress'
-        isDefault:
-          description: A flag indicating whether the address is the default one. `true` indicates the address is the default address and `false` indicates otherwise.
-          type: boolean
-          example: false
-        additionalAttributes:
-          description: A placeholder for additional info, in key-value pairs.
-          type: object
+        number:
+          type: string
+          description: The customer's phone number.
+          example: 15555551234
+        type:
+          type:
+          - string
+          - 'null'
+          description: The type of phone number.
+          example: MOBILE
+          enum:
+          - MOBILE
+          - HOME
+          - BUSINESS
+  parameters:
+    addressIdPathParam:
+      in: path
+      name: addressId
+      description: A 24-character system-generated ID of the customer's address.
+      required: true
+      style: simple
+      schema:
+        type: string
+        example: 61a558b1b155125f02be7fb2
+    xFabricRequestId:
+      name: x-fabric-request-id
+      in: header
+      description: A UUID of the request.
+      schema:
+        type: string
+      example: 263e731c-45c8-11ed-b878-0242ac120002
+      required: false
+    xFabricTenantId:
+      name: x-fabric-tenant-id
+      in: header
+      description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
+      schema:
+        type: string
+        example: 517fa9dfd42d8b00g1o3k312
+  responses:
+    internalServerError:
+      description: The request is received but an internal error occurred
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
           example:
-            landmark: Beach
+            type: INTERNAL_SERVER_ERROR
+            message: Internal server error
+    forbidden:
+      description: Forbidden Request
+      headers:
+        x-fabric-request-id:
+          description: Unique request ID
+          schema:
+            type: string
+            example: 263e731c-45c8-11ed-b878-0242ac120002
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          example:
+            type: REQUEST_DENIED
+            message: Forbidden
+    customerNotFound:
+      description: The resource isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          example:
+            type: CUSTOMER_NOT_FOUND
+            message: Data with the given identifier isn't found
+    customerAddressNotFound:
+      description: The specified resource isn't found
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            CustomerNotFound:
+              value:
+                type: CUSTOMER_NOT_FOUND
+                message: Data with the given identifier isn't found.
+            CustomerAddressNotFound:
+              value:
+                type: CUSTOMER_ADDRESS_NOT_FOUND
+                message: Data with the given identifier isn't found.
+    deleteCustomerAddressResponse:
+      description: Delete customer address response
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            customerAddressDeletionSuccess:
+              value:
+                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
+                message: Customer address deleted successfully
+            customerAddressDeletedAlready:
+              value:
+                type: CUSTOMER_ADDRESS_DELETED_SUCCESSFULLY
+                message: Customer address already deleted
+    badRequest:
+      description: Bad request
+      headers:
+        x-fabric-request-id:
+          $ref: '#/components/responses/forbidden/headers/x-fabric-request-id'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/message'
+          examples:
+            invalidAccountProvided:
+              value:
+                type: INVALID_ACCOUNT_PROVIDED
+                message: Invalid account provided for the request.
   securitySchemes:
     bearerAuth:
       description: The access token.

@@ -342,63 +342,6 @@ paths:
       - Counters
 components:
   schemas:
-    createCounterRequest:
-      description: Sample to create counter
-      properties:
-        code:
-          description: Counter code
-          example: onHand
-          type: string
-        name:
-          description: Counter name
-          example: onHand
-          type: string
-      required:
-      - code
-      type: object
-    updateCounterRequest:
-      description: Update counter request
-      properties:
-        name:
-          description: Counter name
-          example: onHand
-          type: string
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    counter:
-      description: Counter response sample
-      properties:
-        code:
-          description: Counter code
-          example: onHand
-          type: string
-        id:
-          description: fabric system-generated counter ID
-          example: 38271022e832a1
-          type: string
-        name:
-          description: Counter name
-          example: onHand
-          type: string
-      required:
-      - code
-      type: object
     pagination:
       description: Pagination response
       properties:
@@ -423,6 +366,28 @@ components:
           minimum: 0
           type: integer
       type: object
+    createCounterRequest:
+      description: Sample to create counter
+      properties:
+        code:
+          description: Counter code
+          example: onHand
+          type: string
+        name:
+          description: Counter name
+          example: onHand
+          type: string
+      required:
+      - code
+      type: object
+    updateCounterRequest:
+      description: Update counter request
+      properties:
+        name:
+          description: Counter name
+          example: onHand
+          type: string
+      type: object
     counterSearchResponse:
       description: Counter search response
       properties:
@@ -433,7 +398,50 @@ components:
         pagination:
           $ref: '#/components/schemas/pagination'
       type: object
+    counter:
+      description: Counter response sample
+      properties:
+        code:
+          description: Counter code
+          example: onHand
+          type: string
+        id:
+          description: fabric system-generated counter ID
+          example: 38271022e832a1
+          type: string
+        name:
+          description: Counter name
+          example: onHand
+          type: string
+      required:
+      - code
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
   parameters:
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
     xFabricTenantId:
       description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
       example: 5f328bf0b5f328bf0b5f328b
@@ -448,14 +456,6 @@ components:
       in: header
       name: x-fabric-request-id
       required: false
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
       schema:
         type: string
   headers:

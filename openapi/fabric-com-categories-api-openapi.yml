@@ -167,24 +167,16 @@ paths:
       tags:
       - Categories
 components:
+  parameters:
+    DomainHeader:
+      name: domain
+      in: header
+      required: true
+      schema:
+        type: string
+        example: vessel.com
+      description: The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.
   schemas:
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
     CategoryImportAcceptedResponse:
       type: object
       required:
@@ -279,15 +271,23 @@ components:
         created_at:
           type: string
           format: date-time
-  parameters:
-    DomainHeader:
-      name: domain
-      in: header
-      required: true
-      schema:
-        type: string
-        example: vessel.com
-      description: The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
   securitySchemes:
     authorization:
       bearerFormat: JWT

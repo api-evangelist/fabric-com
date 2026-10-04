@@ -892,15 +892,38 @@ paths:
       - Credits
 components:
   schemas:
-    orderCreditsRequest:
-      description: Credits request
+    orderCreditsResponse:
+      description: Credits response
       properties:
         credits:
           items:
-            $ref: '#/components/schemas/creditsRequest'
+            $ref: '#/components/schemas/creditsResponse'
           type: array
-      required:
-      - credits
+      type: object
+    creditsEligibilityResponse:
+      description: Credits eligibility model
+      properties:
+        description:
+          description: Description provided while requesting credits (for reference)
+          example: Policy used to add credits
+          type: string
+        eligibleReasonCodes:
+          description: Reason codes to support credits request
+          items:
+            $ref: '#/components/schemas/reasonCodeAndDescription'
+          type: array
+        orderId:
+          description: 24-character system-generated order ID
+          example: 62f3982438bcab1951be0a19
+          type: string
+        policyName:
+          description: Merchant-given policy name.
+          example: Credits policy
+          type: string
+        policyType:
+          description: Policy type used to check credits eligibility
+          example: credits
+          type: string
       type: object
     orderCreditUpdateRequest:
       description: An object containing update credits details. This is only triggered on request.
@@ -951,30 +974,27 @@ components:
       - currency
       - group
       type: object
-    creditsEligibilityResponse:
-      description: Credits eligibility model
+    reasonCodeAndDescription:
+      description: Return or exchange reason
       properties:
+        code:
+          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
+          example: 1DMG
+          type: string
         description:
-          description: Description provided while requesting credits (for reference)
-          example: Policy used to add credits
+          description: Brief description for the return `code`
+          example: Damaged
           type: string
-        eligibleReasonCodes:
-          description: Reason codes to support credits request
+      type: object
+    orderCreditsRequest:
+      description: Credits request
+      properties:
+        credits:
           items:
-            $ref: '#/components/schemas/reasonCodeAndDescription'
+            $ref: '#/components/schemas/creditsRequest'
           type: array
-        orderId:
-          description: 24-character system-generated order ID
-          example: 62f3982438bcab1951be0a19
-          type: string
-        policyName:
-          description: Merchant-given policy name.
-          example: Credits policy
-          type: string
-        policyType:
-          description: Policy type used to check credits eligibility
-          example: credits
-          type: string
+      required:
+      - credits
       type: object
     creditsResponse:
       description: Credit response
@@ -1144,27 +1164,15 @@ components:
           example: CLIENT_ERROR
           type: string
       type: object
-    orderCreditsResponse:
-      description: Credits response
-      properties:
-        credits:
-          items:
-            $ref: '#/components/schemas/creditsResponse'
-          type: array
-      type: object
-    reasonCodeAndDescription:
-      description: Return or exchange reason
-      properties:
-        code:
-          description: Reason code for return, cancellation, or exchange. Values are configurable as per requirement.
-          example: 1DMG
-          type: string
-        description:
-          description: Brief description for the return `code`
-          example: Damaged
-          type: string
-      type: object
   parameters:
+    xFabricChannelId:
+      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
+      example: '12'
+      in: header
+      name: x-fabric-channel-id
+      required: true
+      schema:
+        type: string
     xFabricTenantId:
       description: A header used by fabric to identify the tenant making the request. You must include tenant id in the authentication header for an API request to access any of fabric’s endpoints. You can retrieve the tenant id , which is also called account id, from [Copilot](/v3/platform/settings/account-details/getting-the-account-id). This header is required.
       example: 5f328bf0b5f328bf0b5f328b
@@ -1179,14 +1187,6 @@ components:
       in: header
       name: x-fabric-request-id
       required: false
-      schema:
-        type: string
-    xFabricChannelId:
-      description: x-fabric-channel-id identifies the sales channel where the API request is being made; primarily for multichannel use cases. The channel ids are 12 corresponding to US and 13 corresponding to Canada. The default channel id is 12. This field is required.
-      example: '12'
-      in: header
-      name: x-fabric-channel-id
-      required: true
       schema:
         type: string
   headers:
