@@ -408,6 +408,86 @@ paths:
       - Networks
 components:
   schemas:
+    networkSearchResponse:
+      description: Network search response
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/network'
+          type: array
+        pagination:
+          $ref: '#/components/schemas/pagination'
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
+    network:
+      description: Network response details
+      properties:
+        code:
+          description: Unique network code
+          example: DC
+          type: string
+        createdAt:
+          description: Time network was configured
+          example: 2022-08-01 18:03:28.483000+00:00
+          format: date-time
+          type: string
+        description:
+          description: Network description
+          example: network-mar6th
+          type: string
+        lowStock:
+          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
+          example: 10
+          format: int32
+          type: integer
+        name:
+          description: Network name
+          example: Distribution Center
+          type: string
+        networkId:
+          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
+          example: 5349b4ddd2781d08c09890f4
+          type: string
+        rule:
+          description: Rule by which a network will be created with the group of inventories
+          example:
+            locationData.attributes.safetyStock: 10
+            locationData.isActive: true
+            locationData.type: Store
+            productData.attributes.brand: ABC
+            productData.attributes.isSoldOnline: true
+          type: object
+        safetyStock:
+          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
+          example: 10
+          format: int32
+          type: integer
+        updatedAt:
+          description: Time network was last updated
+          example: 2022-08-01 18:03:28.483000+00:00
+          format: date-time
+          type: string
+      required:
+      - code
+      - name
+      - rule
+      type: object
     pagination:
       description: Pagination response
       properties:
@@ -512,86 +592,6 @@ components:
       - code
       - name
       - rule
-      type: object
-    network:
-      description: Network response details
-      properties:
-        code:
-          description: Unique network code
-          example: DC
-          type: string
-        createdAt:
-          description: Time network was configured
-          example: 2022-08-01 18:03:28.483000+00:00
-          format: date-time
-          type: string
-        description:
-          description: Network description
-          example: network-mar6th
-          type: string
-        lowStock:
-          description: Inventory quantity below which consumer service wants to be alerted as low stock at the network
-          example: 10
-          format: int32
-          type: integer
-        name:
-          description: Network name
-          example: Distribution Center
-          type: string
-        networkId:
-          description: A fabric system-generated unique ID that is auto generated once the network is created successfully.
-          example: 5349b4ddd2781d08c09890f4
-          type: string
-        rule:
-          description: Rule by which a network will be created with the group of inventories
-          example:
-            locationData.attributes.safetyStock: 10
-            locationData.isActive: true
-            locationData.type: Store
-            productData.attributes.brand: ABC
-            productData.attributes.isSoldOnline: true
-          type: object
-        safetyStock:
-          description: Safety stock count. The reserve quantity of an item kept to fulfill an emergency requirement, in case of damage to the product that is set for sale.
-          example: 10
-          format: int32
-          type: integer
-        updatedAt:
-          description: Time network was last updated
-          example: 2022-08-01 18:03:28.483000+00:00
-          format: date-time
-          type: string
-      required:
-      - code
-      - name
-      - rule
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
-    networkSearchResponse:
-      description: Network search response
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/network'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
       type: object
   parameters:
     xFabricChannelId:

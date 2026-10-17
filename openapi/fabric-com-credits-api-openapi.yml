@@ -892,13 +892,22 @@ paths:
       - Credits
 components:
   schemas:
-    orderCreditsResponse:
-      description: Credits response
+    errorResponse:
+      description: Error response
       properties:
-        credits:
+        errors:
+          description: Errors
           items:
-            $ref: '#/components/schemas/creditsResponse'
+            $ref: '#/components/schemas/errorResponse'
           type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
       type: object
     creditsEligibilityResponse:
       description: Credits eligibility model
@@ -924,6 +933,14 @@ components:
           description: Policy type used to check credits eligibility
           example: credits
           type: string
+      type: object
+    orderCreditsResponse:
+      description: Credits response
+      properties:
+        credits:
+          items:
+            $ref: '#/components/schemas/creditsResponse'
+          type: array
       type: object
     orderCreditUpdateRequest:
       description: An object containing update credits details. This is only triggered on request.
@@ -985,6 +1002,70 @@ components:
           description: Brief description for the return `code`
           example: Damaged
           type: string
+      type: object
+    creditsRequest:
+      description: Request for credits
+      properties:
+        amount:
+          description: Credits amount
+          example: 21.5
+          format: double
+          type: number
+        amountInCurrencies:
+          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
+          items:
+            $ref: '#/components/schemas/amountInCurrency'
+          type: array
+        attributes:
+          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
+          example:
+            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
+          type: object
+        currency:
+          description: Three-letter currency code as defined by ISO-4217
+          example: USD
+          type: string
+        employeeId:
+          description: Employee (ID or name) who initiated a the credits request
+          example: '12312232'
+          type: string
+        note:
+          description: Note
+          example: Credit request initiated
+          type: string
+        paymentCounter:
+          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
+          example: 1
+          format: int32
+          type: integer
+        policyCode:
+          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
+          example: RC1
+          type: string
+        reasonCode:
+          description: Reason code
+          example: EC
+          type: string
+        source:
+          description: Source of credits request
+          example: CSR
+          type: string
+        subReasonCode:
+          description: Subreason code
+          example: ACC
+          type: string
+        type:
+          description: Credit type. Currently, supports only Gift Card
+          enum:
+          - GIFT_CARD
+          example: GIFT_CARD
+          type: string
+      required:
+      - amount
+      - currency
+      - reasonCode
+      - source
+      - type
       type: object
     orderCreditsRequest:
       description: Credits request
@@ -1082,87 +1163,6 @@ components:
       - reasonCode
       - source
       - type
-      type: object
-    creditsRequest:
-      description: Request for credits
-      properties:
-        amount:
-          description: Credits amount
-          example: 21.5
-          format: double
-          type: number
-        amountInCurrencies:
-          description: "A list of amounts represented in different currencies.  \nEach item includes a monetary value and its corresponding currency code,  \nfollowing the structure defined in the `amountInCurrency` schema.  \nThis field is used to represent multi-currency totals or balances.\n"
-          items:
-            $ref: '#/components/schemas/amountInCurrency'
-          type: array
-        attributes:
-          description: Merchant-defined custom attributes. This is a placeholder for additional info in key-value pairs.
-          example:
-            giftCardNumber: XlQZTmFDFtPFGMxJP6oiAqN3vo+qKZ
-          type: object
-        currency:
-          description: Three-letter currency code as defined by ISO-4217
-          example: USD
-          type: string
-        employeeId:
-          description: Employee (ID or name) who initiated a the credits request
-          example: '12312232'
-          type: string
-        note:
-          description: Note
-          example: Credit request initiated
-          type: string
-        paymentCounter:
-          description: A sequential or incremental counter associated with a payment for an order. Applicable in refund scenarios to identify the specific payment for refund.
-          example: 1
-          format: int32
-          type: integer
-        policyCode:
-          description: Merchant-defined policy code, varies from merchant to merchant. If omitted, the default policy is used.
-          example: RC1
-          type: string
-        reasonCode:
-          description: Reason code
-          example: EC
-          type: string
-        source:
-          description: Source of credits request
-          example: CSR
-          type: string
-        subReasonCode:
-          description: Subreason code
-          example: ACC
-          type: string
-        type:
-          description: Credit type. Currently, supports only Gift Card
-          enum:
-          - GIFT_CARD
-          example: GIFT_CARD
-          type: string
-      required:
-      - amount
-      - currency
-      - reasonCode
-      - source
-      - type
-      type: object
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
       type: object
   parameters:
     xFabricChannelId:

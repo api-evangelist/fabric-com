@@ -342,6 +342,31 @@ paths:
       - Counters
 components:
   schemas:
+    updateCounterRequest:
+      description: Update counter request
+      properties:
+        name:
+          description: Counter name
+          example: onHand
+          type: string
+      type: object
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
     pagination:
       description: Pagination response
       properties:
@@ -366,38 +391,6 @@ components:
           minimum: 0
           type: integer
       type: object
-    createCounterRequest:
-      description: Sample to create counter
-      properties:
-        code:
-          description: Counter code
-          example: onHand
-          type: string
-        name:
-          description: Counter name
-          example: onHand
-          type: string
-      required:
-      - code
-      type: object
-    updateCounterRequest:
-      description: Update counter request
-      properties:
-        name:
-          description: Counter name
-          example: onHand
-          type: string
-      type: object
-    counterSearchResponse:
-      description: Counter search response
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/counter'
-          type: array
-        pagination:
-          $ref: '#/components/schemas/pagination'
-      type: object
     counter:
       description: Counter response sample
       properties:
@@ -416,22 +409,29 @@ components:
       required:
       - code
       type: object
-    errorResponse:
-      description: Error response
+    createCounterRequest:
+      description: Sample to create counter
       properties:
-        errors:
-          description: Errors
+        code:
+          description: Counter code
+          example: onHand
+          type: string
+        name:
+          description: Counter name
+          example: onHand
+          type: string
+      required:
+      - code
+      type: object
+    counterSearchResponse:
+      description: Counter search response
+      properties:
+        data:
           items:
-            $ref: '#/components/schemas/errorResponse'
+            $ref: '#/components/schemas/counter'
           type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
+        pagination:
+          $ref: '#/components/schemas/pagination'
       type: object
   parameters:
     xFabricChannelId:

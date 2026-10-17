@@ -167,15 +167,6 @@ paths:
       tags:
       - Categories
 components:
-  parameters:
-    DomainHeader:
-      name: domain
-      in: header
-      required: true
-      schema:
-        type: string
-        example: vessel.com
-      description: The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.
   schemas:
     CategoryImportAcceptedResponse:
       type: object
@@ -202,6 +193,23 @@ components:
           format: date-time
           description: Timestamp when the import was created.
           example: '2026-03-12T17:58:13.605818Z'
+    errorResponse:
+      description: Error response
+      properties:
+        errors:
+          description: Errors
+          items:
+            $ref: '#/components/schemas/errorResponse'
+          type: array
+        message:
+          description: Error message
+          example: Bad request
+          type: string
+        type:
+          description: Error type
+          example: CLIENT_ERROR
+          type: string
+      type: object
     CategoryImportStatusResponse:
       type: object
       required:
@@ -271,23 +279,15 @@ components:
         created_at:
           type: string
           format: date-time
-    errorResponse:
-      description: Error response
-      properties:
-        errors:
-          description: Errors
-          items:
-            $ref: '#/components/schemas/errorResponse'
-          type: array
-        message:
-          description: Error message
-          example: Bad request
-          type: string
-        type:
-          description: Error type
-          example: CLIENT_ERROR
-          type: string
-      type: object
+  parameters:
+    DomainHeader:
+      name: domain
+      in: header
+      required: true
+      schema:
+        type: string
+        example: vessel.com
+      description: The brand domain name (for example, `vessel.com` or `containerstore.com`) used to scope the request to a specific brand's data and configuration. The authenticated principal must be authorized for the specified brand.
   securitySchemes:
     authorization:
       bearerFormat: JWT
