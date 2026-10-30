@@ -1,4 +1,4 @@
-# fabric (fabric-com)
+# fabric
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,404 +64,246 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/fabric-com/refs/heads/main/apis.yml)
+fabric is a composable, headless commerce platform. Its API covers catalog and product information management, pricing and promotions, cart and checkout, orders and order management, inventory, customers and addresses, and returns and appeasements.
+
+**Areas:** Commerce · Composable Commerce · Headless Commerce · E-Commerce · Retail · Cart · Catalog · Product Information Management · OMS · Inventory · Offers · Pricing
+
+## fabric on APIs.io
+
+Everything profiled for fabric is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/fabric-com/](https://apis.io/providers/fabric-com/)** — or go straight to one of the APIs or properties below.
+
+### APIs (61)
+
+- [fabric Actions Endpoints API](https://apis.io/apis/fabric-com/fabric-com-actions-endpoints-api/) — This endpoint helps perform additional operations for inventory management.
+- [fabric Addresses API](https://apis.io/apis/fabric-com/fabric-com-addresses-api/) — Address endpoints are used to add add, update and remove addresses from the Cart.
+- [fabric Appeasements API](https://apis.io/apis/fabric-com/fabric-com-appeasements-api/) — These endpoints help create appeasement requests.
+- [fabric Attributes API](https://apis.io/apis/fabric-com/fabric-com-attributes-api/) — Item attributes are the objective and factual descriptions of items that shoppers see when they browse through your site. Attributes may be technical…
+- [fabric Authentication Endpoints API](https://apis.io/apis/fabric-com/fabric-com-authentication-endpoints-api/) — These endpoints allow apps to authenticate themselves or their end users using fabric Identity. The main objective of these endpoints is to provide access…
+- [fabric Bulk Import API](https://apis.io/apis/fabric-com/fabric-com-bulk-import-api/) — Set of endpoints to help bulk import of items, bundles, categories and attributes through CSV files
+- [fabric Cancellations API](https://apis.io/apis/fabric-com/fabric-com-cancellations-api/) — These endpoints check eligibility of order cancellation requests and if eligible, processes order cancellation.
+- [fabric Cart Actions API](https://apis.io/apis/fabric-com/fabric-com-cart-actions-api/) — The Cart Actions API from fabric — 3 operation(s) for cart actions.
+- [fabric Cart Adjustments API](https://apis.io/apis/fabric-com/fabric-com-cart-adjustments-api/) — Cart adjustment endpoints are used to add, update and remove adjustments at the Cart level.
+- [fabric Cart API](https://apis.io/apis/fabric-com/fabric-com-cart-api/) — Cart endpoints are used to do basic cart operations, such as create a cart, add item to the corresponding cart, update items, remove items, delete cart,…
+- [fabric Cart Fees API](https://apis.io/apis/fabric-com/fabric-com-cart-fees-api/) — Cart fee endpoints are used to add, update and remove fees at the Cart level.
+- [fabric Carts API](https://apis.io/apis/fabric-com/fabric-com-carts-api/) — Cart endpoints are used to perform basic cart operations, such as create, update, delete and more.
+- [fabric Catalog Connector Files API](https://apis.io/apis/fabric-com/fabric-com-catalog-connector-files-api/) — Retrieve an import template, import a file to the Catalog Connector, view import and export status, and download a previously processed file.
+- [fabric Catalog Connector Jobs API](https://apis.io/apis/fabric-com/fabric-com-catalog-connector-jobs-api/) — Export data from the Catalog Connector and retrieve the status of previously processed files.
+- [fabric Catalog Connector Operations by Item ID API](https://apis.io/apis/fabric-com/fabric-com-catalog-connector-operations-by-item-id-api/) — Supports product operations based on Item ID.
+- [fabric Catalog Connector Operations by Product ID API](https://apis.io/apis/fabric-com/fabric-com-catalog-connector-operations-by-product-id-api/) — Supports product operations based on Product ID.
+- [fabric Catalog Connector Operations by SKU API](https://apis.io/apis/fabric-com/fabric-com-catalog-connector-operations-by-sku-api/) — Supports product operations based on SKU.
+- [fabric Categories API](https://apis.io/apis/fabric-com/fabric-com-categories-api/) — The Categories API from fabric — 2 operation(s) for categories.
+- [fabric Category API](https://apis.io/apis/fabric-com/fabric-com-category-api/) — Categories (also called hierarchies or nodes) are hierarchical structures to organize items and services into intuitive groups. Organizing items in this way…
+- [fabric Checkout Session API](https://apis.io/apis/fabric-com/fabric-com-checkout-session-api/) — The Checkout Session endpoint lets you create and complete a checkout session, and place an order for the cart items.
+- [fabric Counters API](https://apis.io/apis/fabric-com/fabric-com-counters-api/) — Counter refers to inventory positions such as, available, in-transit, on-hand, or other custom positions. These endpoints let you read, update, and create…
+- [fabric Coupons API](https://apis.io/apis/fabric-com/fabric-com-coupons-api/) — Coupon endpoints are used to add and remove coupons from the Cart
+- [fabric Credits API](https://apis.io/apis/fabric-com/fabric-com-credits-api/) — Credits are refunds to customers, often in the form of gift cards or credit notes, when customers have made payments with cash or a card that has…
+- [fabric Customer Address API](https://apis.io/apis/fabric-com/fabric-com-customer-address-api/) — These endpoints provide the features for store admins to create and manage customers' addresses.
+- [fabric Customer API](https://apis.io/apis/fabric-com/fabric-com-customer-api/) — Customer endpoints are used do basic customer operations, such as update a customer, add attributes and more.
+- [fabric Customer Profile API](https://apis.io/apis/fabric-com/fabric-com-customer-profile-api/) — These endpoints provide the features for store admins to create and manage customers' details.
+- [fabric Customer Self API](https://apis.io/apis/fabric-com/fabric-com-customer-self-api/) — These endpoints provide the feature for customers or shoppers to independently manage their details in the storefront.
+- [fabric Frauds API](https://apis.io/apis/fabric-com/fabric-com-frauds-api/) — These endpoints deal with potential fraud orders.
+- [fabric Fulfillment Adjustments API](https://apis.io/apis/fabric-com/fabric-com-fulfillment-adjustments-api/) — Fulfillment adjustments endpoints are used to add, update and remove adjustments at the Fulfillment level.
+- [fabric Fulfillment Fees API](https://apis.io/apis/fabric-com/fabric-com-fulfillment-fees-api/) — Fulfillment fees endpoints are used to add, update and remove fees at the Fulfillment level.
+- [fabric Fulfillments API](https://apis.io/apis/fabric-com/fabric-com-fulfillments-api/) — Fulfillment endpoints are used to add add, update and remove fulfillments from the Cart.
+- [fabric General Catalog Connector Operations API](https://apis.io/apis/fabric-com/fabric-com-general-catalog-connector-operations-api/) — Search for products based on the specified filter conditions.
+- [fabric Global Components API](https://apis.io/apis/fabric-com/fabric-com-global-components-api/) — XM Global Components API allows you to fetch all the live global component data
+- [fabric Inventory API](https://apis.io/apis/fabric-com/fabric-com-inventory-api/) — fabric **Inventory** API lets organizations use *Inventory* as a standalone service, which functions as the repository of product availability for order…
+- [fabric Inventory Import Configs API](https://apis.io/apis/fabric-com/fabric-com-inventory-import-configs-api/) — These endpoints help in performing inventory import file config operations
+- [fabric Inventory Imports API](https://apis.io/apis/fabric-com/fabric-com-inventory-imports-api/) — Inventory Imports endpoints let you upload and download inventory details, in bulk, using a CSV file to and from AWS (Amazon Web Service) server presigned…
+- [fabric Invoices API](https://apis.io/apis/fabric-com/fabric-com-invoices-api/) — fabric **Invoices** API helps in generating invoices that can be used by any third party system for order fulfillment operation.
+- [fabric Item Actions API](https://apis.io/apis/fabric-com/fabric-com-item-actions-api/) — The Item Actions API from fabric — 3 operation(s) for item actions.
+- [fabric Item Adjustments API](https://apis.io/apis/fabric-com/fabric-com-item-adjustments-api/) — Item adjustments endpoints are used to add, update and remove adjustments at the Item level.
+- [fabric Item Fees API](https://apis.io/apis/fabric-com/fabric-com-item-fees-api/) — Item fee endpoints are used to add, update and remove fees at the Item level.
+- [fabric Items API](https://apis.io/apis/fabric-com/fabric-com-items-api/) — Item endpoints are used to add, update and remove items from the Cart.
+- [fabric Menu API](https://apis.io/apis/fabric-com/fabric-com-menu-api/) — XM Menu API allows you to fetch menus and their items
+- [fabric Networks API](https://apis.io/apis/fabric-com/fabric-com-networks-api/) — Network refers to a group of locations having a group of SKUs in each location. These endpoints let you read, create, and manage an inventory-network by…
+- [fabric Optimize API](https://apis.io/apis/fabric-com/fabric-com-optimize-api/) — The Optimize API from fabric — 4 operation(s) for optimize.
+- [fabric OrderDrafts API](https://apis.io/apis/fabric-com/fabric-com-orderdrafts-api/) — Order draft endpoints are used to create an order draft or get a generated order draft.
+- [fabric Orders API](https://apis.io/apis/fabric-com/fabric-com-orders-api/) — These endpoints create orders, update pickup details (for BOPIS scenarios) and get order details.
+- [fabric Pages API](https://apis.io/apis/fabric-com/fabric-com-pages-api/) — XM Pages API allows you to fetch all the live pages, or a live page by a specific URL
+- [fabric Payments API](https://apis.io/apis/fabric-com/fabric-com-payments-api/) — Payments endpoints are used to add add, update and remove payments from the Cart.
+- [fabric Platform API](https://apis.io/apis/fabric-com/fabric-com-platform-api/) — The Platform API from fabric — 1 operation(s) for platform.
+- [fabric Prices API](https://apis.io/apis/fabric-com/fabric-com-prices-api/) — The Prices API from fabric — 4 operation(s) for prices.
+- [fabric Product API](https://apis.io/apis/fabric-com/fabric-com-product-api/) — **Product**, a subset of Product Catalog endpoints, aims at making item management more efficient. They create, update, and get items, which may be…
+- [fabric Promotions API](https://apis.io/apis/fabric-com/fabric-com-promotions-api/) — The Promotions API from fabric — 5 operation(s) for promotions.
+- [fabric Real-time Pricing Engine API](https://apis.io/apis/fabric-com/fabric-com-real-time-pricing-engine-api/) — The Real-time Pricing Engine API from fabric — 3 operation(s) for real-time pricing engine.
+- [fabric ReservedNetwork Endpoints API](https://apis.io/apis/fabric-com/fabric-com-reservednetwork-endpoints-api/) — These endpoints help in performing reserved network operations
+- [fabric Returns API](https://apis.io/apis/fabric-com/fabric-com-returns-api/) — These endpoints check eligibility of order return or exchanges requests and, if eligible, processes order return or exchanges.
+- [fabric Shipments API](https://apis.io/apis/fabric-com/fabric-com-shipments-api/) — fabric **Shipments** API is a multi-tenant service that enables you to manage shipments for existing 'Allocations.' Shipments serve as records of the…
+- [fabric Tracking API](https://apis.io/apis/fabric-com/fabric-com-tracking-api/) — These endpoints track orders.
+- [fabric Transfer Shipment Controller API](https://apis.io/apis/fabric-com/fabric-com-transfer-shipment-controller-api/) — The transfer-shipment-controller API from fabric — 9 operation(s) for transfer-shipment-controller.
+- [fabric Validations API](https://apis.io/apis/fabric-com/fabric-com-validations-api/) — Validation endpoints are used to pass in data from fabric and third-party services to perform business logic on the Cart
+- [fabric Cart Payments API](https://apis.io/apis/fabric-com/fabric-com-cart-payments-api/) — CartPayments endpoints are used to authorize or void payments that are located within the shopping cart.
+- [fabric Line Items API](https://apis.io/apis/fabric-com/fabric-com-line-items-api/) — LineItem endpoints are used to performbasic lineItem operations, such as create, update, delete and more.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Fabric Com Agentic Access](https://apis.io/agentic-access/fabric-com/fabric-com-agentic-access/)
+
+#### JSON Schema (4)
+
+The data models the API reads and writes.
+
+- [fabric Cart](https://apis.io/schemas/fabric-com/fabric-cart/)
+- [fabric Order](https://apis.io/schemas/fabric-com/fabric-order/)
+- [fabric Product](https://apis.io/schemas/fabric-com/fabric-product/)
+- [fabric Promotion](https://apis.io/schemas/fabric-com/fabric-promotion/)
+
+#### JSON Structure (2)
+
+Data models expressed in JSON Structure.
+
+- [Fabric Order Structure](https://apis.io/json-structure/fabric-com/fabric-order-structure/)
+- [Fabric Product Structure](https://apis.io/json-structure/fabric-com/fabric-product-structure/)
+
+#### JSON-LD (1)
+
+Linked-data contexts for the provider's vocabulary.
 
-## Scope
+- [Fabric Com Context](https://apis.io/jsonld/fabric-com/fabric-com-context/)
 
-- **Access:** 3rd-Party
+#### Vocabulary (1)
 
-## Tags
+The provider's domain terms, defined.
 
-- Commerce
-- Composable Commerce
-- Headless Commerce
-- E-commerce
-- Retail
-- Cart
-- Catalog
-- PIM
-- OMS
-- Inventory
-- Offers
-- Pricing
-- Promotions
-- Checkout
-- Identity
-- Experiences
-- Agentic Commerce
+- [fabric Commerce Vocabulary](https://apis.io/vocabularies/fabric-com/fabric-com-vocabulary/)
 
-## Timestamps
+#### Examples (4)
 
-- **Created:** 2026-05-25
-- **Modified:** 2026-05-25
+Example requests and responses.
 
-## APIs
+- [Fabric Create Cart Example](https://apis.io/examples/fabric-com/fabric-create-cart-example/)
+- [Fabric Evaluate Cart Pricing Example](https://apis.io/examples/fabric-com/fabric-evaluate-cart-pricing-example/)
+- [Fabric Toggle Promotion Example](https://apis.io/examples/fabric-com/fabric-toggle-promotion-example/)
+- [Fabric Update Order Status Example](https://apis.io/examples/fabric-com/fabric-update-order-status-example/)
 
-### fabric Identity API
+#### Collections (77)
 
-fabric's Identity API issues OAuth2 access tokens used by every other fabric service. Implements the standard authorization-code and client-credentials flows on a per-tenant Okta-backed auth server, returning bearer tokens scoped to the calling account. Used to authenticate both first-party storefronts and third-party integrations against the v3 commerce APIs.
+Postman and Open Collection request collections.
 
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/identity](https://developer.fabric.inc/v3/api-reference/identity)
-- **Base URL:** `https://{customer_name}.login.fabric.inc`
+- [Cart API](https://apis.io/collections/fabric-com/open-fabric-cart/)
+- [Catalog - Connector](https://apis.io/collections/fabric-com/open-fabric-catalog/)
+- [Checkout](https://apis.io/collections/fabric-com/open-fabric-checkout/)
+- [Cart Actions Endpoints API](https://apis.io/collections/fabric-com/open-fabric-com-actions-endpoints-api/)
+- [Cart Actions Endpoints Addresses API](https://apis.io/collections/fabric-com/open-fabric-com-addresses-api/)
+- [Cart Actions Endpoints Appeasements API](https://apis.io/collections/fabric-com/open-fabric-com-appeasements-api/)
+- [Cart Actions Endpoints Attributes API](https://apis.io/collections/fabric-com/open-fabric-com-attributes-api/)
+- [Cart Actions Endpoints Authentication Endpoints API](https://apis.io/collections/fabric-com/open-fabric-com-authentication-endpoints-api/)
+- [Cart Actions Endpoints Bulk Import API](https://apis.io/collections/fabric-com/open-fabric-com-bulk-import-api/)
+- [Cart Actions Endpoints Cancellations API](https://apis.io/collections/fabric-com/open-fabric-com-cancellations-api/)
+- [Endpoints Cart Actions API](https://apis.io/collections/fabric-com/open-fabric-com-cart-actions-api/)
+- [Cart Actions Endpoints Cart Adjustments API](https://apis.io/collections/fabric-com/open-fabric-com-cart-adjustments-api/)
+- [Actions Endpoints Cart API](https://apis.io/collections/fabric-com/open-fabric-com-cart-api/)
+- [Cart Actions Endpoints Cart Fees API](https://apis.io/collections/fabric-com/open-fabric-com-cart-fees-api/)
+- [Cart Actions Endpoints CartPayments API](https://apis.io/collections/fabric-com/open-fabric-com-cartpayments-api/)
+- [Cart Actions Endpoints Carts API](https://apis.io/collections/fabric-com/open-fabric-com-carts-api/)
+- [Cart Actions Endpoints Catalog Connector Files API](https://apis.io/collections/fabric-com/open-fabric-com-catalog-connector-files-api/)
+- [Cart Actions Endpoints Catalog Connector Jobs API](https://apis.io/collections/fabric-com/open-fabric-com-catalog-connector-jobs-api/)
+- [Cart Actions Endpoints Catalog Connector Operations by Item ID API](https://apis.io/collections/fabric-com/open-fabric-com-catalog-connector-operations-by-item-id-api/)
+- [Cart Actions Endpoints Catalog Connector Operations by Product ID API](https://apis.io/collections/fabric-com/open-fabric-com-catalog-connector-operations-by-product-id-api/)
+- [Cart Actions Endpoints Catalog Connector Operations by SKU API](https://apis.io/collections/fabric-com/open-fabric-com-catalog-connector-operations-by-sku-api/)
+- [Cart Actions Endpoints Categories API](https://apis.io/collections/fabric-com/open-fabric-com-categories-api/)
+- [Cart Actions Endpoints Category API](https://apis.io/collections/fabric-com/open-fabric-com-category-api/)
+- [Cart Actions Endpoints Checkout Session API](https://apis.io/collections/fabric-com/open-fabric-com-checkout-session-api/)
+- [Cart Actions Endpoints Counters API](https://apis.io/collections/fabric-com/open-fabric-com-counters-api/)
+- …and 52 more published on APIs.io
 
-#### Tags
+#### Governance rules (2)
 
-- Authentication
-- Authorization
-- Identity
-- OAuth2
+Spectral rulesets for the provider's contracts.
 
-#### Properties
+- [fabric — jsonschema rules](https://apis.io/rules/fabric-com/fabric-com-jsonschema-spectral-rules/)
+- [fabric API Rules](https://apis.io/rules/fabric-com/fabric-com-rules/)
 
-- [Documentation](https://developer.fabric.inc/v3/api-reference/identity)
-- [OpenAPI](openapi/fabric-identity-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-identity.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-identity.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Security (2)
 
-### fabric Customers API
+Authentication, trust centre, and vulnerability disclosure.
 
-Create and manage storefront customers (shoppers), their profiles, addresses, and self-service operations. The Customers API is the system of record for shopper identity inside fabric and feeds Cart, Orders, and Experiences with the customer object referenced across the platform.
+- [Fabric Com Authentication](https://apis.io/security/fabric-com/fabric-com-authentication/)
+- [Fabric Com Domain Security](https://apis.io/security/fabric-com/fabric-com-domain-security/)
 
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/customers](https://developer.fabric.inc/v3/api-reference/customers)
-- **Base URL:** `https://api.fabric.inc/v3`
+#### Plans and pricing (1)
 
-#### Tags
+Published plans, tiers and prices.
 
-- Customers
-- Profiles
-- Addresses
-- Shoppers
+- [Fabric Com Plans Pricing](https://apis.io/plans/fabric-com/fabric-com-plans-pricing/)
 
-#### Properties
+#### Rate limits (1)
 
-- [Documentation](https://developer.fabric.inc/v3/api-reference/customers)
-- [OpenAPI](openapi/fabric-customers-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-customers.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-customers.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Published request limits.
 
-### fabric Product Catalog (PIM) API
+- [Fabric Com Rate Limits](https://apis.io/rate-limits/fabric-com/fabric-com-rate-limits/)
 
-fabric's Product Information Management (PIM) service for modeling products, variants, categories, attribute schemas, and bulk imports. Powers the merchandiser-facing Copilot UI and exposes the canonical product catalog that downstream services (Catalog Connector, Cart, Offers, Experiences) consume.
+#### FinOps (1)
 
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/product-catalog](https://developer.fabric.inc/v3/api-reference/product-catalog)
-- **Base URL:** `https://live.copilot.fabric.inc`
+What the API costs to run, by operation.
 
-#### Tags
+- [Fabric Com Finops](https://apis.io/finops/fabric-com/fabric-com-finops/)
 
-- Catalog
-- Products
-- PIM
-- Attributes
-- Categories
+## Where to find this API
 
-#### Properties
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-- [Documentation](https://developer.fabric.inc/v3/api-reference/product-catalog)
-- [OpenAPI](openapi/fabric-pim-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-pim.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-pim.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Git Hub](https://github.com/FabricCommerce/fabric-pim-samples)
-
-### fabric Catalog Connector API
-
-Catalog Connector (formerly PIM Connector) is a lightweight ingestion service for customers who already own their PIM. It accepts CSV/JSON template files, runs async import/export jobs, and pushes the resulting products and SKUs into fabric's downstream commerce surface without forcing migration off the existing system of record.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/catalog-connector](https://developer.fabric.inc/v3/api-reference/catalog-connector)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Catalog
-- Connector
-- Import
-- Export
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/catalog-connector)
-- [OpenAPI](openapi/fabric-catalog-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-catalog.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-catalog.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Offers - Prices API
-
-Create, update, and look up base and sale prices for SKUs across price lists. The Prices API is the system of record for fabric's pricing data and is the source the Real-time Pricing Engine evaluates against at cart time.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/offers](https://developer.fabric.inc/v3/api-reference/offers)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Pricing
-- Offers
-- SKU
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/offers)
-- [OpenAPI](openapi/fabric-offers-prices-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-offers-prices.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-offers-prices.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Offers - Real-time Pricing Engine API
-
-The Real-time Pricing Engine (RTPE) evaluates list prices, sale prices, and active promotions for a set of products, SKUs, or an entire cart in a single call. Returns the calculated effective price and the promotion attribution chain used to surface live prices on storefronts.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/offers](https://developer.fabric.inc/v3/api-reference/offers)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Pricing
-- Engine
-- Offers
-- Cart
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/offers)
-- [OpenAPI](openapi/fabric-offers-pricing-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-offers-pricing.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-offers-pricing.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Offers - Promotions API
-
-Create, search, toggle, and end promotions — discounts on items, carts, or shipping methods. The Promotions API is the authoring surface; the Pricing Engine applies the active promotions returned by these endpoints to live cart and pricing calculations.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/offers](https://developer.fabric.inc/v3/api-reference/offers)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Promotions
-- Discounts
-- Coupons
-- Offers
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/offers)
-- [OpenAPI](openapi/fabric-offers-promotions-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-offers-promotions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-offers-promotions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Inventory API
-
-Manage stock counts, locations, and inventory networks across stores, warehouses, and dropship partners. Inventory feeds the cart, OMS, and storefront product detail pages with the available-to-promise figures that drive fulfillment decisions.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/inventory](https://developer.fabric.inc/v3/api-reference/inventory)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Inventory
-- Stock
-- Locations
-- Networks
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/inventory)
-- [OpenAPI](openapi/fabric-inventory-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-inventory.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-inventory.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Cart API
-
-The v3 Cart API is fabric's modular cart service for adding, updating, and removing items; managing fulfillments, addresses, fees, taxes, coupons, and payments; and producing the order draft that Checkout consumes. Supports both guest and authenticated shopper carts.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/cart](https://developer.fabric.inc/v3/api-reference/cart)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Cart
-- Checkout
-- Commerce
-- Storefront
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/cart)
-- [OpenAPI](openapi/fabric-cart-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-cart.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-cart.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Checkout API
-
-Completes the checkout process and places an order for the items in a cart. Takes the cart-produced order draft, validates payments, and hands the resulting order off to OMS for fulfillment.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/checkout](https://developer.fabric.inc/v3/api-reference/checkout)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Checkout
-- Cart
-- Order Drafts
-- Commerce
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/checkout)
-- [OpenAPI](openapi/fabric-checkout-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-checkout.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-checkout.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Cart Orchestrator (ShopperXP) API
-
-The Cart Orchestrator (ShopperXP) wraps Cart, Offers, Inventory, and Identity into a single storefront-facing surface. Storefront clients call one orchestrator endpoint per shopper action and the service fans out to the underlying commerce APIs in the correct sequence.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/shopper-xp](https://developer.fabric.inc/v3/api-reference/shopper-xp)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Cart
-- Orchestrator
-- ShopperXP
-- Storefront
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/shopper-xp)
-- [OpenAPI](openapi/fabric-shopperxp-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-shopperxp.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-shopperxp.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Orders (OMS) API
-
-fabric's Order Management System (OMS) — order creation, lookup, status transitions, payment authorization, address and fee updates, and the operational surface used by customer service, fulfillment teams, and downstream finance systems.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/orders](https://developer.fabric.inc/v3/api-reference/orders)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Orders
-- OMS
-- Fulfillment
-- Returns
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/orders)
-- [OpenAPI](openapi/fabric-orders-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-orders.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-orders.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Shipments API
-
-Manage the shipment lifecycle inside OMS — create, look up, update, and cancel shipments; associate carrier and tracking information; and notify downstream systems as packages move from the warehouse to the customer.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/orders](https://developer.fabric.inc/v3/api-reference/orders)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Shipments
-- Fulfillment
-- OMS
-- Tracking
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/orders)
-- [OpenAPI](openapi/fabric-shipments-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-shipments.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-shipments.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Invoices API
-
-Issue and manage invoices generated from shipped or fulfilled orders. The Invoices API captures the financial event tied to an order's fulfillment and is the integration point for ERP, tax, and finance systems consuming fabric order data.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/orders](https://developer.fabric.inc/v3/api-reference/orders)
-- **Base URL:** `https://api.fabric.inc/v3`
-
-#### Tags
-
-- Invoices
-- Billing
-- OMS
-- Finance
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/orders)
-- [OpenAPI](openapi/fabric-invoices-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-invoices.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-invoices.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-### fabric Experiences (XM) API
-
-fabric Experiences (formerly XM) is the headless storefront content service — pages, global components, and menus served from a CDN-backed read API. Powers the merchandiser-authored, shopper-facing surfaces of fabric storefronts.
-
-- **Human URL:** [https://developer.fabric.inc/v3/api-reference/experiences](https://developer.fabric.inc/v3/api-reference/experiences)
-- **Base URL:** `https://cdn.xm.fabric.inc/api`
-
-#### Tags
-
-- Experiences
-- XM
-- Content
-- Storefront
-- Pages
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/v3/api-reference/experiences)
-- [OpenAPI](openapi/fabric-experiences-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-experiences.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-experiences.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-- [Git Hub](https://github.com/FabricCommerce/Fabric-React-Components)
-
-### fabric Product Agent API
-
-fabric NEON's Product Agent — the agentic commerce control plane that monitors product visibility across AI search surfaces, benchmarks against custom prompts, and enriches product data with intent signals for downstream channel activation. fabric's headline 2026 capability.
-
-- **Human URL:** [https://developer.fabric.inc/product-agent/overview](https://developer.fabric.inc/product-agent/overview)
-- **Base URL:** `https://commerceos.aiagents.fabric.inc/api`
-
-#### Tags
-
-- AI
-- Agentic Commerce
-- NEON
-- Product Agent
-- Agents
-
-#### Properties
-
-- [Documentation](https://developer.fabric.inc/product-agent/overview)
-- [OpenAPI](openapi/fabric-product-agent-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/fabric-product-agent.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/fabric-product-agent.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-## Common Properties
-
-- [Sign Up](https://fabric.inc/request-demo)
-- [Portal](https://developer.fabric.inc/home)
+- [Website](https://www.fabric.inc/)
 - [Documentation](https://developer.fabric.inc/v3/api-reference)
-- [Documentation](https://developer.fabric.inc/llms.txt)
-- [Authentication](https://developer.fabric.inc/v3/api-reference/identity)
 - [Changelog](https://developer.fabric.inc/release-notes)
 - [Blog](https://fabric.inc/blog)
-- [About](https://fabric.inc/company/about)
-- [Contact Us](https://fabric.inc/contact-us)
-- [Git Hub](https://github.com/FabricCommerce)
-- [Postman](https://github.com/FabricCommerce/public-fabric-api-postman-collections) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [LinkedIn](https://www.linkedin.com/company/fabricinc)
-- [Twitter](https://twitter.com/fabriccommerce)
-- [Press Room](https://fabric.inc/news)
-- [Plans](plans/fabric-com-plans-pricing.yml)
-- [Rate Limits](rate-limits/fabric-com-rate-limits.yml)
-- [Fin Ops](finops/fabric-com-finops.yml)
-- [Vocabulary](vocabulary/fabric-com-vocabulary.yml)
-- [JSON-LD](json-ld/fabric-com-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
-- [Spectral Rules](rules/fabric-com-rules.yml)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** info@apievangelist.com
-**URL:** https://apievangelist.com
+**Kin Score 39.0** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 71.4 |
+| Contract quality | 58.5 |
+| Contract governance | 23.5 |
+| Operational transparency | 5.3 |
+| Developer ergonomics | 26.2 |
+| Access clarity | 18.4 |
+
+**Agent readiness 30.4** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 15.2** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/fabric-com/](https://apis.io/providers/fabric-com/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for fabric: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/fabric-com/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
